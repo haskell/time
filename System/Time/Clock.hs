@@ -97,18 +97,18 @@ unixEpochMJD = 40587
 posixSecondsToUTCTime :: Pico -> UTCTime
 posixSecondsToUTCTime i = let
 	(d,t) = divMod' i posixDaySeconds
- in UTCTime (d + unixEpochMJD) (fromReal t)
+ in UTCTime (d + unixEpochMJD) (realToFrac t)
 
 utcTimeToPOSIXSeconds :: UTCTime -> Pico
 utcTimeToPOSIXSeconds (UTCTime d t) =
- (fromInteger (d - unixEpochMJD) * posixDaySeconds) + min posixDaySeconds (fromReal t)
+ (fromInteger (d - unixEpochMJD) * posixDaySeconds) + min posixDaySeconds (realToFrac t)
 
 
 addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime
-addUTCTime x t = posixSecondsToUTCTime ((fromReal x) + (utcTimeToPOSIXSeconds t))
+addUTCTime x t = posixSecondsToUTCTime ((realToFrac x) + (utcTimeToPOSIXSeconds t))
 
 diffUTCTime :: UTCTime -> UTCTime -> UTCDiffTime
-diffUTCTime a b = fromReal ((utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b))
+diffUTCTime a b = realToFrac ((utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b))
 
 
 -- Get current time

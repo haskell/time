@@ -2,17 +2,13 @@
 
 module Data.Fixed
 (
-	fromReal,div',mod',divMod',
+	div',mod',divMod',
 
 	Fixed,HasResolution(..),
 	showFixed,
 	E6,Micro,
 	E12,Pico
 ) where
-
--- | similar idea to "fromIntegral"
-fromReal :: (Real a,Fractional b) => a -> b
-fromReal = fromRational . toRational
 
 -- | like "div", but with a more useful type
 div' :: (Real a,Integral b) => a -> a -> b
