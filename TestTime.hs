@@ -1,7 +1,7 @@
 module Main where
 
 import System.Time.Clock
---import System.Time.TAI
+import System.Time.TAI
 --import System.Time.Calendar
 
 main :: IO ()
