@@ -6,7 +6,7 @@ module System.Time.Clock
 	ModJulianDay,ModJulianDate,
 
 	-- absolute time intervals
-	DiffTime,timeToSISeconds,siSecondsToTime,
+	DiffTime,siSecond,timeToSISeconds,siSecondsToTime,
 
 	-- UTC arithmetic
 	UTCTime(..),UTCDiffTime,utcTimeToUTCSeconds,utcSecondsToUTCTime,
@@ -34,6 +34,9 @@ newtype DiffTime = MkDiffTime Integer deriving (Eq,Ord,Num,Enum,Real,Integral)
 
 instance Show DiffTime where
 	show (MkDiffTime t) = (show t) ++ "ps"
+
+siSecond :: DiffTime
+siSecond = secondPicoseconds
 
 timeToSISeconds :: (Fractional a) => DiffTime -> a
 timeToSISeconds t = fromRational ((toRational t) / (toRational secondPicoseconds));

@@ -1,13 +1,16 @@
 module System.Time.Calendar
 (
 	-- time zones
-	TimeZone,timezoneToMinutes,minutesToTimezone,
+	TimeZone,timezoneToMinutes,minutesToTimezone,hoursToTimezone,utc,
 
 	-- getting the locale time zone
 
 	-- converting times to Gregorian "calendrical" format
-	TimeOfDay,CalendarDay,CalendarTime,
-	dayToCalendar,calendarToDay
+	TimeOfDay(..),CalendarDay(..),CalendarTime(..),
+	dayToCalendar,calendarToDay,
+	utcToLocalTimeOfDay,localToUTCTimeOfDay,
+	timeToTimeOfDay,timeOfDayToTime,
+	utcToCalendar,calendarToUTC
 
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
@@ -25,6 +28,13 @@ newtype TimeZone = MkTimeZone {
 
 minutesToTimezone :: Int -> TimeZone
 minutesToTimezone = MkTimeZone
+
+hoursToTimezone :: Int -> TimeZone
+hoursToTimezone i = minutesToTimezone (60 * i)
+
+-- | The UTC time zone
+utc :: TimeZone
+utc = minutesToTimezone 0
 
 -- | time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day
 data TimeOfDay = TimeOfDay {
@@ -112,11 +122,49 @@ calendarToDay (CalendarDay year month day) =
 	y = year - a
 	m = month' + (12 * a) - 3
 
+-- | convert a ToD in UTC to a ToD in some timezone, together with a day adjustment
+utcToLocalTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
+utcToLocalTimeOfDay (MkTimeZone tz) (TimeOfDay h m s p) = (fromIntegral (div h' 24),TimeOfDay (mod h' 60) (mod m' 60) s p) where
+	m' = m + tz
+	h' = h + (div m' 60)
+
+-- | convert a ToD in some timezone to a ToD in UTC, together with a day adjustment
+localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
+localToUTCTimeOfDay (MkTimeZone tz) = utcToLocalTimeOfDay (MkTimeZone (negate tz))
+
+-- note: this is also in System.Time.Clock.
+posixDaySeconds :: (Num a) => a
+posixDaySeconds = 86400
+
+posixDay :: DiffTime
+posixDay = siSecondsToTime posixDaySeconds
+
+-- | get a TimeOfDay given a time since midnight
+-- | time more than 24h will be converted to leap-seconds
+timeToTimeOfDay :: DiffTime -> TimeOfDay
+timeToTimeOfDay dt | dt >= posixDay = TimeOfDay 23 59 (60 + s) p where
+	offset = dt - posixDay
+	s = fromIntegral (div offset siSecond)
+	p = fromIntegral (mod offset siSecond)
+timeToTimeOfDay dt = TimeOfDay (fromInteger h) (fromInteger m) (fromInteger s) p where
+	p = fromIntegral (mod dt siSecond)
+	s' = fromIntegral (div dt siSecond)
+	s = mod s' 60
+	m' = div s' 60
+	m = mod m' 60
+	h = div m' 60
+
+-- | find out how much time since midnight a given TimeOfDay is
+timeOfDayToTime :: TimeOfDay -> DiffTime
+timeOfDayToTime (TimeOfDay h m s ps) = (((fromIntegral h) * 60 + (fromIntegral m)) * 60 + (fromIntegral s)) * siSecond + (fromIntegral ps)
 
 utcToCalendar :: TimeZone -> UTCTime -> CalendarTime
-utcToCalendar tz utc = undefined
+utcToCalendar tz (UTCTime day dt) = CalendarTime (dayToCalendar (day + i)) tod where
+	(i,tod) = utcToLocalTimeOfDay tz (timeToTimeOfDay dt)
 
 calendarToUTC :: TimeZone -> CalendarTime -> UTCTime
-calendarToUTC tz cal = undefined
+calendarToUTC tz (CalendarTime cday tod) = UTCTime (day + i) (timeOfDayToTime todUTC) where
+	day = calendarToDay cday
+	(i,todUTC) = localToUTCTimeOfDay tz tod
 
 
