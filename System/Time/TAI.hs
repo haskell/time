@@ -14,6 +14,7 @@ module System.Time.TAI
 ) where
 
 import System.Time.Clock
+import Data.Fixed
 
 -- | TAI as DiffTime from epoch
 newtype AbsoluteTime = MkAbsoluteTime DiffTime deriving (Eq,Ord)
@@ -28,11 +29,11 @@ diffAbsoluteTime (MkAbsoluteTime a) (MkAbsoluteTime b) = a - b
 type LeapSecondTable = ModJulianDay -> Integer
 
 utcDayLength :: LeapSecondTable -> ModJulianDay -> DiffTime
-utcDayLength table day = siSecondsToTime (86400 + (table (day + 1)) - (table day))
+utcDayLength table day = fromReal (86400 + (table (day + 1)) - (table day))
 
 utcToTAITime :: LeapSecondTable -> UTCTime -> AbsoluteTime
 utcToTAITime table (UTCTime day dtime) = MkAbsoluteTime
-	((siSecondsToTime (day * 86400 + (table day))) + dtime)
+	((fromReal (day * 86400 + (table day))) + dtime)
 
 taiToUTCTime :: LeapSecondTable -> AbsoluteTime -> UTCTime
 taiToUTCTime table (MkAbsoluteTime t) = undefined table t

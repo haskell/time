@@ -45,7 +45,7 @@ myzone :: TimeZone
 myzone = hoursToTimezone (- 8)
 
 leapSec1998Cal :: CalendarTime
-leapSec1998Cal = CalendarTime (CalendarDay 1998 12 31) (TimeOfDay 23 59 60 500000000000)
+leapSec1998Cal = CalendarTime (CalendarDay 1998 12 31) (TimeOfDay 23 59 60.5)
 
 leapSec1998 :: UTCTime
 leapSec1998 = calendarToUTC utc leapSec1998Cal

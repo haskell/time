@@ -6,15 +6,17 @@ module System.Time.Clock
 	ModJulianDay,ModJulianDate,
 
 	-- absolute time intervals
-	DiffTime,siSecond,timeToSISeconds,siSecondsToTime,
+	DiffTime,
 
 	-- UTC arithmetic
-	UTCTime(..),UTCDiffTime,utcTimeToUTCSeconds,utcSecondsToUTCTime,
+	UTCTime(..),UTCDiffTime,
 	addUTCTime,diffUTCTime,
 
 	-- getting the current UTC time
 	getCurrentTime
 ) where
+
+import Data.Fixed
 
 import Foreign
 import Foreign.C
@@ -25,15 +27,11 @@ type ModJulianDay = Integer
 -- | standard Modified Julian Date to represent UT1, 1 = 1 day
 type ModJulianDate = Rational
 
--- | the number of picoseconds in a second
-secondPicoseconds :: (Num a) => a
-secondPicoseconds = 1000000000000
-
 -- | a length of time
-newtype DiffTime = MkDiffTime Integer deriving (Eq,Ord,Enum)
+newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord,Enum)
 
 instance Show DiffTime where
-	show (MkDiffTime t) = (show t) ++ "ps"
+	show (MkDiffTime t) = (showFixed True t) ++ "s"
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Num DiffTime where
@@ -50,25 +48,10 @@ instance Real DiffTime where
 	toRational (MkDiffTime a) = toRational a
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
-instance Integral DiffTime where
-	quot (MkDiffTime a) (MkDiffTime b) = MkDiffTime (quot a b)
-	rem (MkDiffTime a) (MkDiffTime b) = MkDiffTime (rem a b)
-	div (MkDiffTime a) (MkDiffTime b) = MkDiffTime (div a b)
-	mod (MkDiffTime a) (MkDiffTime b) = MkDiffTime (mod a b)
-	quotRem (MkDiffTime a) (MkDiffTime b) = (MkDiffTime p,MkDiffTime q) where
-		(p,q) = quotRem a b
-	divMod (MkDiffTime a) (MkDiffTime b) = (MkDiffTime p,MkDiffTime q) where
-		(p,q) = divMod a b
-	toInteger (MkDiffTime a) = toInteger a
-
-siSecond :: DiffTime
-siSecond = secondPicoseconds
-
-timeToSISeconds :: (Fractional a) => DiffTime -> a
-timeToSISeconds t = fromRational ((toRational t) / secondPicoseconds);
-
-siSecondsToTime :: (Real a) => a -> DiffTime
-siSecondsToTime t = fromInteger (round ((toRational t) * secondPicoseconds))
+instance Fractional DiffTime where
+	(MkDiffTime a) / (MkDiffTime b) = MkDiffTime (a / b)
+	recip (MkDiffTime a) = MkDiffTime (recip a)
+	fromRational r = MkDiffTime (fromRational r)
 
 -- | time in UTC
 data UTCTime = UTCTime {
@@ -79,10 +62,10 @@ data UTCTime = UTCTime {
 }
 
 -- | a length of time for UTC, ignoring leap-seconds
-newtype UTCDiffTime = MkUTCDiffTime Integer deriving (Eq,Ord,Enum)
+newtype UTCDiffTime = MkUTCDiffTime Pico deriving (Eq,Ord,Enum)
 
 instance Show UTCDiffTime where
-	show (MkUTCDiffTime t) = (show t) ++ "ps"
+	show (MkUTCDiffTime t) = (showFixed True t) ++ "s"
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Num UTCDiffTime where
@@ -99,54 +82,41 @@ instance Real UTCDiffTime where
 	toRational (MkUTCDiffTime a) = toRational a
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
-instance Integral UTCDiffTime where
-	quot (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (quot a b)
-	rem (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (rem a b)
-	div (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (div a b)
-	mod (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (mod a b)
-	quotRem (MkUTCDiffTime a) (MkUTCDiffTime b) = (MkUTCDiffTime p,MkUTCDiffTime q) where
-		(p,q) = quotRem a b
-	divMod (MkUTCDiffTime a) (MkUTCDiffTime b) = (MkUTCDiffTime p,MkUTCDiffTime q) where
-		(p,q) = divMod a b
-	toInteger (MkUTCDiffTime a) = toInteger a
+instance Fractional UTCDiffTime where
+	(MkUTCDiffTime a) / (MkUTCDiffTime b) = MkUTCDiffTime (a / b)
+	recip (MkUTCDiffTime a) = MkUTCDiffTime (recip a)
+	fromRational r = MkUTCDiffTime (fromRational r)
 
-utcTimeToUTCSeconds :: (Fractional a) => UTCDiffTime -> a
-utcTimeToUTCSeconds t = fromRational ((toRational t) / secondPicoseconds)
-
-utcSecondsToUTCTime :: (Real a) => a -> UTCDiffTime
-utcSecondsToUTCTime t = fromInteger (round ((toRational t) * secondPicoseconds))
-
-posixDaySeconds :: (Num a) => a
+posixDaySeconds :: Pico
 posixDaySeconds = 86400
-
-posixDayPicoseconds :: Integer
-posixDayPicoseconds = posixDaySeconds * secondPicoseconds
 
 unixEpochMJD :: ModJulianDay
 unixEpochMJD = 40587
 
-posixPicosecondsToUTCTime :: Integer -> UTCTime
-posixPicosecondsToUTCTime i = let
-	(d,t) = divMod i posixDayPicoseconds
- in UTCTime (d + unixEpochMJD) (fromInteger t)
 
-utcTimeToPOSIXPicoseconds :: UTCTime -> Integer
-utcTimeToPOSIXPicoseconds (UTCTime d t) =
- ((d - unixEpochMJD) * posixDayPicoseconds) + min posixDayPicoseconds (toInteger t)
+posixSecondsToUTCTime :: Pico -> UTCTime
+posixSecondsToUTCTime i = let
+	(d,t) = divMod' i posixDaySeconds
+ in UTCTime (d + unixEpochMJD) (fromReal t)
+
+utcTimeToPOSIXSeconds :: UTCTime -> Pico
+utcTimeToPOSIXSeconds (UTCTime d t) =
+ (fromInteger (d - unixEpochMJD) * posixDaySeconds) + min posixDaySeconds (fromReal t)
+
 
 addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime
-addUTCTime x t = posixPicosecondsToUTCTime ((toInteger x) + (utcTimeToPOSIXPicoseconds t))
+addUTCTime x t = posixSecondsToUTCTime ((fromReal x) + (utcTimeToPOSIXSeconds t))
 
 diffUTCTime :: UTCTime -> UTCTime -> UTCDiffTime
-diffUTCTime a b = fromInteger ((utcTimeToPOSIXPicoseconds a) - (utcTimeToPOSIXPicoseconds b))
+diffUTCTime a b = fromReal ((utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b))
 
 
 -- Get current time
 
 data CTimeval = MkCTimeval CLong CLong
 
-ctimevalToPosixPicoseconds :: CTimeval -> Integer
-ctimevalToPosixPicoseconds (MkCTimeval s mus) = ((fromIntegral s) * 1000000 + (fromIntegral mus)) * 1000000
+ctimevalToPosixSeconds :: CTimeval -> Pico
+ctimevalToPosixSeconds (MkCTimeval s mus) = ((fromIntegral s) + (fromIntegral mus) / 1000000)
 
 instance Storable CTimeval where
 	sizeOf _ = (sizeOf (undefined :: CLong)) * 2
@@ -168,6 +138,6 @@ getCurrentTime = with (MkCTimeval 0 0) (\ptval -> do
 	if (result == 0)
 	 then do
 	 	tval <- peek ptval
-	 	return (posixPicosecondsToUTCTime (ctimevalToPosixPicoseconds tval))
+	 	return (posixSecondsToUTCTime (ctimevalToPosixSeconds tval))
 	 else fail ("error in gettimeofday: " ++ (show result))
 	)
