@@ -1,21 +1,26 @@
-default: CurrentTime.run TestTime.diff
+default: CurrentTime.run TestTime.diff doc
 
 SRCS = System/Time/Clock.hs System/Time/TAI.hs System/Time/Calendar.hs
 
-TestTime: TestTime.o $(patsubst %.hs,%.o,$(SRCS))
+TestTime: TestTime.o libTimeLib.a
 	ghc $^ -o $@
 
-CurrentTime: CurrentTime.o $(patsubst %.hs,%.o,$(SRCS))
+CurrentTime: CurrentTime.o libTimeLib.a
 	ghc $^ -o $@
 
+libTimeLib.a: $(patsubst %.hs,%.o,$(SRCS))
+	rm -f $@
+	ar cru $@ $^
+	ranlib $@
 
 clean:
-	rm -f TestTime *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
+	rm -rf TestTime doc haddock *.out *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
 
+doc: haddock/index.html
 
-doc: $(SRCS)
-	mkdir -p $@
-	haddock -h -o $@ $^
+haddock/index.html: $(SRCS)
+	mkdir -p haddock
+	haddock -h -o haddock $^
 
 %.diff: %.ref %.out
 	diff -u $^
