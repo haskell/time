@@ -11,7 +11,10 @@ TestTime: TestTime.o libTimeLib.a
 CurrentTime: CurrentTime.o libTimeLib.a
 	ghc $^ -o $@
 
-libTimeLib.a: $(patsubst %.hs,%.o,$(SRCS))
+timestuff.o: timestuff.c timestuff.h
+	gcc -o $@ -c $<
+
+libTimeLib.a: $(patsubst %.hs,%.o,$(SRCS)) timestuff.o
 	rm -f $@
 	ar cru $@ $^
 	ranlib $@

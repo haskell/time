@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -Werror #-}
+{-# OPTIONS -ffi -Wall -Werror #-}
 
 module System.Time.Calendar
 (
@@ -6,6 +6,7 @@ module System.Time.Calendar
 	TimeZone,timezoneToMinutes,minutesToTimezone,hoursToTimezone,utc,
 
 	-- getting the locale time zone
+	getCurrentTimezone,
 
 	-- Gregorian "calendrical" format
 	TimeOfDay(..),CalendarDay(..),CalendarTime(..),
@@ -29,6 +30,9 @@ import System.Time.Clock
 import Data.Fixed
 import Data.Char
 
+import Foreign
+import Foreign.C
+
 -- | count of minutes
 newtype TimeZone = MkTimeZone {
 	timezoneToMinutes :: Int
@@ -43,6 +47,16 @@ hoursToTimezone i = minutesToTimezone (60 * i)
 -- | The UTC time zone
 utc :: TimeZone
 utc = minutesToTimezone 0
+
+foreign import ccall unsafe "timestuff.h get_current_timezone_seconds" get_current_timezone_seconds :: IO CLong
+
+-- | Get the current time-zone
+getCurrentTimezone :: IO TimeZone
+getCurrentTimezone = do
+	secs <- get_current_timezone_seconds
+	case secs of
+		0x80000000 -> fail "localtime_r failed"
+		_ -> return (minutesToTimezone (div (fromIntegral secs) 60))
 
 -- | time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day
 data TimeOfDay = TimeOfDay {
