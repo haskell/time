@@ -10,6 +10,7 @@ module System.Time.Clock
 
 	-- UTC arithmetic
 	UTCTime(..),UTCDiffTime,utcTimeToUTCSeconds,utcSecondsToUTCTime,
+	addUTCTime,diffUTCTime,
 
 	-- getting the current UTC time
 	getCurrentTime
