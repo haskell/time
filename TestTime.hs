@@ -5,7 +5,11 @@ import System.Time.TAI
 import System.Time.Calendar
 
 showCal :: ModJulianDay -> IO ()
-showCal d = putStrLn ((show d) ++ "=" ++ show (dayToCalendar d))
+showCal d = do
+	let cal = dayToCalendar d
+	let d' = calendarToDay cal
+	putStr ((show d) ++ "=" ++ show (dayToCalendar d))
+	putStrLn (if d == d' then "" else "=" ++ (show d') ++ "!")
 
 for :: (Monad m) => (a -> m ()) -> [a] -> m ()
 for _ [] = return ()

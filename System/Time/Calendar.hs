@@ -7,7 +7,7 @@ module System.Time.Calendar
 
 	-- converting times to Gregorian "calendrical" format
 	TimeOfDay,CalendarDay,CalendarTime,
-	dayToCalendar
+	dayToCalendar,calendarToDay
 
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
@@ -101,6 +101,16 @@ dayToCalendar :: ModJulianDay -> CalendarDay
 dayToCalendar mjd = CalendarDay year month day where
 	(year,yd,isleap) = dayToYearDay mjd
 	(month,day) = findMonthDay (months isleap) yd
+
+-- | find out which day a given Gregorian calendar day is
+calendarToDay :: CalendarDay -> ModJulianDay
+-- formula from <http://en.wikipedia.org/wiki/Julian_Day>
+calendarToDay (CalendarDay year month day) =
+	(fromIntegral day) + (div (153 * m + 2) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882 where
+	month' = fromIntegral month
+	a = div (14 - month') 12
+	y = year - a
+	m = month' + (12 * a) - 3
 
 
 utcToCalendar :: TimeZone -> UTCTime -> CalendarTime
