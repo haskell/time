@@ -5,12 +5,17 @@ module System.Time.Calendar
 
 	-- getting the locale time zone
 
-	-- converting times to Gregorian "calendrical" format
+	-- Gregorian "calendrical" format
 	TimeOfDay(..),CalendarDay(..),CalendarTime(..),
 	dayToCalendar,calendarToDay,
+
+	-- converting UTC times to Gregorian "calendrical" format
 	utcToLocalTimeOfDay,localToUTCTimeOfDay,
 	timeToTimeOfDay,timeOfDayToTime,
-	utcToCalendar,calendarToUTC
+	utcToCalendar,calendarToUTC,
+
+	-- converting UT1 times to Gregorian "calendrical" format
+	ut1ToCalendar,calendarToUT1
 
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
@@ -167,4 +172,21 @@ calendarToUTC tz (CalendarTime cday tod) = UTCTime (day + i) (timeOfDayToTime to
 	day = calendarToDay cday
 	(i,todUTC) = localToUTCTimeOfDay tz tod
 
+-- | get a TimeOfDay given the fraction of a day since midnight
+dayFractionToTimeOfDay :: Rational -> TimeOfDay
+dayFractionToTimeOfDay df = timeToTimeOfDay (siSecondsToTime (round (df * posixDaySeconds)))
 
+-- | 1st arg is observation meridian in degrees, positive is East
+ut1ToCalendar :: Rational -> ModJulianDate -> CalendarTime
+ut1ToCalendar long date = CalendarTime (dayToCalendar localDay) (dayFractionToTimeOfDay localToDOffset) where
+	localTime = date + long / 360 :: Rational
+	localDay = floor localTime
+	localToDOffset = localTime - (fromIntegral localDay)
+
+-- | get the fraction of a day since midnight given a TimeOfDay
+timeOfDayToDayFraction :: TimeOfDay -> Rational
+timeOfDayToDayFraction tod = timeToSISeconds (timeOfDayToTime tod) / posixDaySeconds
+	
+-- | 1st arg is observation meridian in degrees, positive is East
+calendarToUT1 :: Rational -> CalendarTime -> ModJulianDate
+calendarToUT1 long (CalendarTime cday tod) = (fromIntegral (calendarToDay cday)) + (timeOfDayToDayFraction tod) - (long / 360)
