@@ -1,3 +1,5 @@
+{-# OPTIONS -Wall -Werror #-}
+
 module System.Time.Calendar
 (
 	-- time zones
@@ -57,7 +59,7 @@ show2 i = let
 	_ -> s
 
 showFraction :: Integer -> Integer -> String
-showFraction d 0 = ""
+showFraction _ 0 = ""
 showFraction d i = (chr (fromInteger (48 + (div i d)))):showFraction (div d 10) (mod i d)
 
 showpicodecimal :: Integer -> String
@@ -138,7 +140,7 @@ localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
 localToUTCTimeOfDay (MkTimeZone tz) = utcToLocalTimeOfDay (MkTimeZone (negate tz))
 
 -- note: this is also in System.Time.Clock.
-posixDaySeconds :: (Num a) => a
+posixDaySeconds :: Rational
 posixDaySeconds = 86400
 
 posixDay :: DiffTime
@@ -174,7 +176,7 @@ calendarToUTC tz (CalendarTime cday tod) = UTCTime (day + i) (timeOfDayToTime to
 
 -- | get a TimeOfDay given the fraction of a day since midnight
 dayFractionToTimeOfDay :: Rational -> TimeOfDay
-dayFractionToTimeOfDay df = timeToTimeOfDay (siSecondsToTime (round (df * posixDaySeconds)))
+dayFractionToTimeOfDay df = timeToTimeOfDay (siSecondsToTime (round (df * posixDaySeconds) :: Integer))
 
 -- | 1st arg is observation meridian in degrees, positive is East
 ut1ToCalendar :: Rational -> ModJulianDate -> CalendarTime

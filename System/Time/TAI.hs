@@ -1,3 +1,5 @@
+{-# OPTIONS -Wall -Werror #-}
+
 -- | most people won't need this module
 module System.Time.TAI
 (
@@ -33,4 +35,4 @@ utcToTAITime table (UTCTime day dtime) = MkAbsoluteTime
 	((siSecondsToTime (day * 86400 + (table day))) + dtime)
 
 taiToUTCTime :: LeapSecondTable -> AbsoluteTime -> UTCTime
-taiToUTCTime table (MkAbsoluteTime t) = undefined
+taiToUTCTime table (MkAbsoluteTime t) = undefined table t

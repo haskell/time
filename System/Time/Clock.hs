@@ -1,4 +1,4 @@
-{-# OPTIONS -ffi -fglasgow-exts #-}
+{-# OPTIONS -ffi -Wall -Werror #-}
 
 module System.Time.Clock
 (
@@ -30,16 +30,42 @@ secondPicoseconds :: (Num a) => a
 secondPicoseconds = 1000000000000
 
 -- | a length of time
-newtype DiffTime = MkDiffTime Integer deriving (Eq,Ord,Num,Enum,Real,Integral)
+newtype DiffTime = MkDiffTime Integer deriving (Eq,Ord,Enum)
 
 instance Show DiffTime where
 	show (MkDiffTime t) = (show t) ++ "ps"
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance Num DiffTime where
+	(MkDiffTime a) + (MkDiffTime b) = MkDiffTime (a + b)
+	(MkDiffTime a) - (MkDiffTime b) = MkDiffTime (a - b)
+	(MkDiffTime a) * (MkDiffTime b) = MkDiffTime (a * b)
+	negate (MkDiffTime a) = MkDiffTime (negate a)
+	abs (MkDiffTime a) = MkDiffTime (abs a)
+	signum (MkDiffTime a) = MkDiffTime (signum a)
+	fromInteger i = MkDiffTime (fromInteger i)
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance Real DiffTime where
+	toRational (MkDiffTime a) = toRational a
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance Integral DiffTime where
+	quot (MkDiffTime a) (MkDiffTime b) = MkDiffTime (quot a b)
+	rem (MkDiffTime a) (MkDiffTime b) = MkDiffTime (rem a b)
+	div (MkDiffTime a) (MkDiffTime b) = MkDiffTime (div a b)
+	mod (MkDiffTime a) (MkDiffTime b) = MkDiffTime (mod a b)
+	quotRem (MkDiffTime a) (MkDiffTime b) = (MkDiffTime p,MkDiffTime q) where
+		(p,q) = quotRem a b
+	divMod (MkDiffTime a) (MkDiffTime b) = (MkDiffTime p,MkDiffTime q) where
+		(p,q) = divMod a b
+	toInteger (MkDiffTime a) = toInteger a
 
 siSecond :: DiffTime
 siSecond = secondPicoseconds
 
 timeToSISeconds :: (Fractional a) => DiffTime -> a
-timeToSISeconds t = fromRational ((toRational t) / (toRational secondPicoseconds));
+timeToSISeconds t = fromRational ((toRational t) / secondPicoseconds);
 
 siSecondsToTime :: (Real a) => a -> DiffTime
 siSecondsToTime t = fromInteger (round ((toRational t) * secondPicoseconds))
@@ -53,13 +79,39 @@ data UTCTime = UTCTime {
 }
 
 -- | a length of time for UTC, ignoring leap-seconds
-newtype UTCDiffTime = MkUTCDiffTime Integer deriving (Eq,Ord,Num,Enum,Real,Integral)
+newtype UTCDiffTime = MkUTCDiffTime Integer deriving (Eq,Ord,Enum)
 
 instance Show UTCDiffTime where
 	show (MkUTCDiffTime t) = (show t) ++ "ps"
 
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance Num UTCDiffTime where
+	(MkUTCDiffTime a) + (MkUTCDiffTime b) = MkUTCDiffTime (a + b)
+	(MkUTCDiffTime a) - (MkUTCDiffTime b) = MkUTCDiffTime (a - b)
+	(MkUTCDiffTime a) * (MkUTCDiffTime b) = MkUTCDiffTime (a * b)
+	negate (MkUTCDiffTime a) = MkUTCDiffTime (negate a)
+	abs (MkUTCDiffTime a) = MkUTCDiffTime (abs a)
+	signum (MkUTCDiffTime a) = MkUTCDiffTime (signum a)
+	fromInteger i = MkUTCDiffTime (fromInteger i)
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance Real UTCDiffTime where
+	toRational (MkUTCDiffTime a) = toRational a
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance Integral UTCDiffTime where
+	quot (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (quot a b)
+	rem (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (rem a b)
+	div (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (div a b)
+	mod (MkUTCDiffTime a) (MkUTCDiffTime b) = MkUTCDiffTime (mod a b)
+	quotRem (MkUTCDiffTime a) (MkUTCDiffTime b) = (MkUTCDiffTime p,MkUTCDiffTime q) where
+		(p,q) = quotRem a b
+	divMod (MkUTCDiffTime a) (MkUTCDiffTime b) = (MkUTCDiffTime p,MkUTCDiffTime q) where
+		(p,q) = divMod a b
+	toInteger (MkUTCDiffTime a) = toInteger a
+
 utcTimeToUTCSeconds :: (Fractional a) => UTCDiffTime -> a
-utcTimeToUTCSeconds t = fromRational ((toRational t) / (toRational secondPicoseconds))
+utcTimeToUTCSeconds t = fromRational ((toRational t) / secondPicoseconds)
 
 utcSecondsToUTCTime :: (Real a) => a -> UTCDiffTime
 utcSecondsToUTCTime t = fromInteger (round ((toRational t) * secondPicoseconds))
