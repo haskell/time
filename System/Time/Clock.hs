@@ -1,4 +1,4 @@
-{-# OPTIONS -ffi #-}
+{-# OPTIONS -ffi -fglasgow-exts #-}
 
 module System.Time.Clock
 (
@@ -27,38 +27,32 @@ type ModJulianDate = Rational
 secondPicoseconds :: (Num a) => a
 secondPicoseconds = 1000000000000
 
-newtype DiffTime = MkDiffTime Integer deriving (Eq,Ord,Show)
+newtype DiffTime = MkDiffTime Integer deriving (Eq,Ord,Num,Enum,Real,Integral)
 
-timeToSIPicoseconds :: DiffTime -> Integer
-timeToSIPicoseconds (MkDiffTime ps) = ps
-
-siPicosecondsToTime :: Integer -> DiffTime
-siPicosecondsToTime = MkDiffTime
+instance Show DiffTime where
+	show (MkDiffTime t) = (show t) ++ "ps"
 
 timeToSISeconds :: (Fractional a) => DiffTime -> a
-timeToSISeconds t = fromRational ((toRational (timeToSIPicoseconds t)) / (toRational secondPicoseconds));
+timeToSISeconds t = fromRational ((toRational t) / (toRational secondPicoseconds));
 
 siSecondsToTime :: (Real a) => a -> DiffTime
-siSecondsToTime t = siPicosecondsToTime (round ((toRational t) * secondPicoseconds))
+siSecondsToTime t = fromInteger (round ((toRational t) * secondPicoseconds))
 
 data UTCTime = UTCTime {
 	utctDay :: ModJulianDay,
 	utctDayTime :: DiffTime
 }
 
-newtype UTCDiffTime = MkUTCDiffTime Integer
+newtype UTCDiffTime = MkUTCDiffTime Integer deriving (Eq,Ord,Num,Enum,Real,Integral)
 
-utcTimeToUTCPicoseconds :: UTCDiffTime -> Integer
-utcTimeToUTCPicoseconds (MkUTCDiffTime ps) = ps
-
-utcPicosecondsToUTCTime :: Integer -> UTCDiffTime
-utcPicosecondsToUTCTime = MkUTCDiffTime
+instance Show UTCDiffTime where
+	show (MkUTCDiffTime t) = (show t) ++ "ps"
 
 utcTimeToUTCSeconds :: (Fractional a) => UTCDiffTime -> a
-utcTimeToUTCSeconds t = fromRational ((toRational (utcTimeToUTCPicoseconds t)) / (toRational secondPicoseconds))
+utcTimeToUTCSeconds t = fromRational ((toRational t) / (toRational secondPicoseconds))
 
 utcSecondsToUTCTime :: (Real a) => a -> UTCDiffTime
-utcSecondsToUTCTime t = utcPicosecondsToUTCTime (round ((toRational t) * secondPicoseconds))
+utcSecondsToUTCTime t = fromInteger (round ((toRational t) * secondPicoseconds))
 
 posixDaySeconds :: (Num a) => a
 posixDaySeconds = 86400
@@ -72,17 +66,17 @@ unixEpochMJD = 40587
 posixPicosecondsToUTCTime :: Integer -> UTCTime
 posixPicosecondsToUTCTime i = let
 	(d,t) = divMod i posixDayPicoseconds
- in UTCTime (d + unixEpochMJD) (siPicosecondsToTime t)
+ in UTCTime (d + unixEpochMJD) (fromInteger t)
 
 utcTimeToPOSIXPicoseconds :: UTCTime -> Integer
 utcTimeToPOSIXPicoseconds (UTCTime d t) =
- ((d - unixEpochMJD) * posixDayPicoseconds) + min posixDayPicoseconds (timeToSIPicoseconds t)
+ ((d - unixEpochMJD) * posixDayPicoseconds) + min posixDayPicoseconds (toInteger t)
 
 addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime
-addUTCTime x t = posixPicosecondsToUTCTime ((utcTimeToUTCPicoseconds x) + (utcTimeToPOSIXPicoseconds t))
+addUTCTime x t = posixPicosecondsToUTCTime ((toInteger x) + (utcTimeToPOSIXPicoseconds t))
 
 diffUTCTime :: UTCTime -> UTCTime -> UTCDiffTime
-diffUTCTime a b = utcPicosecondsToUTCTime ((utcTimeToPOSIXPicoseconds a) - (utcTimeToPOSIXPicoseconds b))
+diffUTCTime a b = fromInteger ((utcTimeToPOSIXPicoseconds a) - (utcTimeToPOSIXPicoseconds b))
 
 
 -- Get current time
