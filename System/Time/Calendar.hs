@@ -1,7 +1,7 @@
 module System.Time.Calendar
 (
 	-- time zones
-	TimeZone,
+	TimeZone,timezoneToMinutes,minutesToTimezone,
 
 	-- getting the locale time zone
 
@@ -19,9 +19,14 @@ import System.Time.Clock
 import Data.Char
 
 -- | count of minutes
-newtype TimeZone = MkTimeZone Int deriving (Eq,Ord)
+newtype TimeZone = MkTimeZone {
+	timezoneToMinutes :: Int
+} deriving (Eq,Ord)
 
+minutesToTimezone :: Int -> TimeZone
+minutesToTimezone = MkTimeZone
 
+-- | time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day
 data TimeOfDay = TimeOfDay {
 	todHour    :: Int,
 	todMin     :: Int,
@@ -47,6 +52,7 @@ showpicodecimal i = '.':(showFraction 100000000000 i)
 instance Show TimeOfDay where
 	show (TimeOfDay h m s ps) = (show2 h) ++ ":" ++ (show2 m) ++ ":" ++ (show2 s) ++ (showpicodecimal ps)
 
+-- | a year, month and day aggregate, suitable for the Gregorian calendar
 data CalendarDay = CalendarDay {
 	cdYear    :: Integer,
 	cdMonth   :: Int,
@@ -56,6 +62,7 @@ data CalendarDay = CalendarDay {
 instance Show CalendarDay where
 	show (CalendarDay y m d) = (if y > 0 then show y else (show (1 - y) ++ "BCE")) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
 
+-- | straightforward date and time aggregate
 data CalendarTime = CalendarTime {
 	ctDay    :: CalendarDay,
 	ctTime   :: TimeOfDay
@@ -83,12 +90,17 @@ findMonthDay :: [Int] -> Int -> (Int,Int)
 findMonthDay (n:ns) yd | yd > n = (\(m,d) -> (m + 1,d)) (findMonthDay ns (yd - n))
 findMonthDay _ yd = (1,yd)
 
+
+months :: Bool -> [Int]
+months isleap = 
+	[31,if isleap then 29 else 28,31,30,31,30,31,31,30,31,30,31]
+	--J        F                   M  A  M  J  J  A  S  O  N  D
+
+-- | name the given day according to the Gregorian calendar
 dayToCalendar :: ModJulianDay -> CalendarDay
 dayToCalendar mjd = CalendarDay year month day where
 	(year,yd,isleap) = dayToYearDay mjd
-	(month,day) = findMonthDay
-		[31,if isleap then 29 else 28,31,30,31,30,31,31,30,31,30,31] yd
-		--J       F                   M  A  M  J  J  A  S  O  N  D
+	(month,day) = findMonthDay (months isleap) yd
 
 
 utcToCalendar :: TimeZone -> UTCTime -> CalendarTime

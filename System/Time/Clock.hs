@@ -19,15 +19,17 @@ module System.Time.Clock
 import Foreign
 import Foreign.C
 
--- | standard Julian count of Earth days
+-- | standard Modified Julian Day, a count of Earth days
 type ModJulianDay = Integer
 
--- | standard Julian dates for UT1, 1 = 1 day
+-- | standard Modified Julian Date to represent UT1, 1 = 1 day
 type ModJulianDate = Rational
 
+-- | the number of picoseconds in a second
 secondPicoseconds :: (Num a) => a
 secondPicoseconds = 1000000000000
 
+-- | a length of time
 newtype DiffTime = MkDiffTime Integer deriving (Eq,Ord,Num,Enum,Real,Integral)
 
 instance Show DiffTime where
@@ -39,11 +41,15 @@ timeToSISeconds t = fromRational ((toRational t) / (toRational secondPicoseconds
 siSecondsToTime :: (Real a) => a -> DiffTime
 siSecondsToTime t = fromInteger (round ((toRational t) * secondPicoseconds))
 
+-- | time in UTC
 data UTCTime = UTCTime {
+	-- | the day
 	utctDay :: ModJulianDay,
+	-- | the time from midnight, 0 <= t < 61s (because of leap-seconds)
 	utctDayTime :: DiffTime
 }
 
+-- | a length of time for UTC, ignoring leap-seconds
 newtype UTCDiffTime = MkUTCDiffTime Integer deriving (Eq,Ord,Num,Enum,Real,Integral)
 
 instance Show UTCDiffTime where
@@ -100,6 +106,7 @@ instance Storable CTimeval where
 
 foreign import ccall unsafe "sys/time.h gettimeofday" gettimeofday :: Ptr CTimeval -> Ptr () -> IO CInt
 
+-- | get the current time
 getCurrentTime :: IO UTCTime
 getCurrentTime = with (MkCTimeval 0 0) (\ptval -> do
 	result <- gettimeofday ptval nullPtr
