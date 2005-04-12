@@ -28,7 +28,17 @@ type ModJulianDay = Integer
 type ModJulianDate = Rational
 
 -- | a length of time
-newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord,Enum)
+newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord)
+
+instance Enum DiffTime where
+	succ (MkDiffTime a) = MkDiffTime (succ a)
+	pred (MkDiffTime a) = MkDiffTime (pred a)
+	toEnum = MkDiffTime . toEnum
+	fromEnum (MkDiffTime a) = fromEnum a
+	enumFrom (MkDiffTime a) = fmap MkDiffTime (enumFrom a)
+	enumFromThen (MkDiffTime a) (MkDiffTime b) = fmap MkDiffTime (enumFromThen a b)
+	enumFromTo (MkDiffTime a) (MkDiffTime b) = fmap MkDiffTime (enumFromTo a b)
+	enumFromThenTo (MkDiffTime a) (MkDiffTime b) (MkDiffTime c) = fmap MkDiffTime (enumFromThenTo a b c)
 
 instance Show DiffTime where
 	show (MkDiffTime t) = (showFixed True t) ++ "s"
@@ -62,7 +72,17 @@ data UTCTime = UTCTime {
 }
 
 -- | a length of time for UTC, ignoring leap-seconds
-newtype UTCDiffTime = MkUTCDiffTime Pico deriving (Eq,Ord,Enum)
+newtype UTCDiffTime = MkUTCDiffTime Pico deriving (Eq,Ord)
+
+instance Enum UTCDiffTime where
+	succ (MkUTCDiffTime a) = MkUTCDiffTime (succ a)
+	pred (MkUTCDiffTime a) = MkUTCDiffTime (pred a)
+	toEnum = MkUTCDiffTime . toEnum
+	fromEnum (MkUTCDiffTime a) = fromEnum a
+	enumFrom (MkUTCDiffTime a) = fmap MkUTCDiffTime (enumFrom a)
+	enumFromThen (MkUTCDiffTime a) (MkUTCDiffTime b) = fmap MkUTCDiffTime (enumFromThen a b)
+	enumFromTo (MkUTCDiffTime a) (MkUTCDiffTime b) = fmap MkUTCDiffTime (enumFromTo a b)
+	enumFromThenTo (MkUTCDiffTime a) (MkUTCDiffTime b) (MkUTCDiffTime c) = fmap MkUTCDiffTime (enumFromThenTo a b c)
 
 instance Show UTCDiffTime where
 	show (MkUTCDiffTime t) = (showFixed True t) ++ "s"

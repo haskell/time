@@ -24,7 +24,7 @@ mod' :: (Real a) => a -> a -> a
 mod' n d = n - (fromInteger f) * d where
 	f = div' n d
 
-newtype Fixed a = MkFixed Integer deriving (Eq,Ord,Enum)
+newtype Fixed a = MkFixed Integer deriving (Eq,Ord)
 
 class HasResolution a where
 	resolution :: a -> Integer
@@ -39,6 +39,16 @@ withType foo = foo undefined
 
 withResolution :: (HasResolution a) => (Integer -> f a) -> f a
 withResolution foo = withType (foo . resolution)
+
+instance Enum (Fixed a) where
+	succ (MkFixed a) = MkFixed (succ a)
+	pred (MkFixed a) = MkFixed (pred a)
+	toEnum = MkFixed . toEnum
+	fromEnum (MkFixed a) = fromEnum a
+	enumFrom (MkFixed a) = fmap MkFixed (enumFrom a)
+	enumFromThen (MkFixed a) (MkFixed b) = fmap MkFixed (enumFromThen a b)
+	enumFromTo (MkFixed a) (MkFixed b) = fmap MkFixed (enumFromTo a b)
+	enumFromThenTo (MkFixed a) (MkFixed b) (MkFixed c) = fmap MkFixed (enumFromThenTo a b c)
 
 instance (HasResolution a) => Num (Fixed a) where
 	(MkFixed a) + (MkFixed b) = MkFixed (a + b)
