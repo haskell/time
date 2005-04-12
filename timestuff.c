@@ -1,4 +1,4 @@
-#include <sys/time.h>
+#include <time.h>
 
 long int get_current_timezone_seconds ()
 {
