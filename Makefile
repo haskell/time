@@ -20,7 +20,7 @@ libTimeLib.a: $(patsubst %.hs,%.o,$(SRCS)) timestuff.o
 	ranlib $@
 
 clean:
-	rm -rf TestTime TestFixed doc haddock *.out *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
+	rm -rf CurrentTime TestTime TestFixed doc haddock *.out *.a *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
 
 doc: haddock/index.html
 
