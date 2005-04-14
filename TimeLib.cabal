@@ -1,0 +1,15 @@
+Name:		TimeLib
+Version:	0.1
+Stability:	Alpha
+-- unsure of best license
+License:	AllRightsReserved
+Author:		Ashley Yakeley
+Maintainer:	<ashley@semantic.org>
+Homepage:
+Category:
+Build-Depends:	base
+Synopsis:	a new time library
+Exposed-modules:	Data.Fixed, System.Time.Clock, System.Time.TAI, System.Time.Calendar
+Extensions:	ForeignFunctionInterface
+C-Sources:	timestuff.c
+
