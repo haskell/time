@@ -44,6 +44,10 @@ minutesToTimezone = MkTimeZone
 hoursToTimezone :: Int -> TimeZone
 hoursToTimezone i = minutesToTimezone (60 * i)
 
+instance Show TimeZone where
+	show (MkTimeZone t) | t < 0 = '-':(show (MkTimeZone (negate t)))
+	show (MkTimeZone t) = (show2 (div t 60)) ++ (show2 (mod t 60))
+
 -- | The UTC time zone
 utc :: TimeZone
 utc = minutesToTimezone 0
