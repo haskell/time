@@ -10,5 +10,5 @@ main = do
 	putStrLn (show (utctDay now) ++ "," ++ show (utctDayTime now))
 	putStrLn (show (utcToCalendar utc now))
 	myzone <- getCurrentTimezone
-	putStrLn ("timezone minutes: " ++ show (timezoneToMinutes myzone))
+	putStrLn ("timezone: " ++ show myzone)
 	putStrLn (show (utcToCalendar myzone now))

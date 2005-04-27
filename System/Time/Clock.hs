@@ -13,7 +13,10 @@ module System.Time.Clock
 	addUTCTime,diffUTCTime,
 
 	-- getting the current UTC time
-	getCurrentTime
+	getCurrentTime,
+	
+	-- needed by System.Time.Calendar to talk to the Unix API
+	POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds
 ) where
 
 import Data.Fixed
@@ -107,36 +110,46 @@ instance Fractional UTCDiffTime where
 	recip (MkUTCDiffTime a) = MkUTCDiffTime (recip a)
 	fromRational r = MkUTCDiffTime (fromRational r)
 
-posixDaySeconds :: Pico
-posixDaySeconds = 86400
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance RealFrac UTCDiffTime where
+	properFraction (MkUTCDiffTime a) = (i,MkUTCDiffTime f) where
+		(i,f) = properFraction a
+	truncate (MkUTCDiffTime a) = truncate a
+	round (MkUTCDiffTime a) = round a
+	ceiling (MkUTCDiffTime a) = ceiling a
+	floor (MkUTCDiffTime a) = floor a
+
+posixDay :: UTCDiffTime
+posixDay = 86400
 
 unixEpochMJD :: ModJulianDay
 unixEpochMJD = 40587
 
+type POSIXTime = UTCDiffTime
 
-posixSecondsToUTCTime :: Pico -> UTCTime
+posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
-	(d,t) = divMod' i posixDaySeconds
+	(d,t) = divMod' i posixDay
  in UTCTime (d + unixEpochMJD) (realToFrac t)
 
-utcTimeToPOSIXSeconds :: UTCTime -> Pico
+utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
- (fromInteger (d - unixEpochMJD) * posixDaySeconds) + min posixDaySeconds (realToFrac t)
+ (fromInteger (d - unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
 
 
 addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime
-addUTCTime x t = posixSecondsToUTCTime ((realToFrac x) + (utcTimeToPOSIXSeconds t))
+addUTCTime x t = posixSecondsToUTCTime (x + (utcTimeToPOSIXSeconds t))
 
 diffUTCTime :: UTCTime -> UTCTime -> UTCDiffTime
-diffUTCTime a b = realToFrac ((utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b))
+diffUTCTime a b = (utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b)
 
 
 -- Get current time
 
 data CTimeval = MkCTimeval CLong CLong
 
-ctimevalToPosixSeconds :: CTimeval -> Pico
-ctimevalToPosixSeconds (MkCTimeval s mus) = ((fromIntegral s) + (fromIntegral mus) / 1000000)
+ctimevalToPosixSeconds :: CTimeval -> POSIXTime
+ctimevalToPosixSeconds (MkCTimeval s mus) = (fromIntegral s) + (fromIntegral mus) / 1000000
 
 instance Storable CTimeval where
 	sizeOf _ = (sizeOf (undefined :: CLong)) * 2

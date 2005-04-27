@@ -12,4 +12,3 @@ Synopsis:	a new time library
 Exposed-modules:	Data.Fixed, System.Time.Clock, System.Time.TAI, System.Time.Calendar
 Extensions:	ForeignFunctionInterface
 C-Sources:	timestuff.c
-

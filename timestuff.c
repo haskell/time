@@ -1,8 +1,7 @@
-#include <time.h>
+#include "timestuff.h"
 
-long int get_current_timezone_seconds ()
+long int get_current_timezone_seconds (time_t t)
 {
-	time_t t = 0;
 	struct tm tmd;
 	struct tm* ptm = localtime_r(&t,&tmd);
 	if (ptm)

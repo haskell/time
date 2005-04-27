@@ -52,15 +52,22 @@ instance Show TimeZone where
 utc :: TimeZone
 utc = minutesToTimezone 0
 
-foreign import ccall unsafe "timestuff.h get_current_timezone_seconds" get_current_timezone_seconds :: IO CLong
+foreign import ccall unsafe "timestuff.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> IO CLong
 
--- | Get the current time-zone
-getCurrentTimezone :: IO TimeZone
-getCurrentTimezone = do
-	secs <- get_current_timezone_seconds
+posixToCTime :: POSIXTime -> CTime
+posixToCTime  = floor
+
+-- | Get the local time-zone for a given time (varying as per summertime adjustments)
+getTimezone :: UTCTime -> IO TimeZone
+getTimezone time = do
+	secs <- get_current_timezone_seconds (posixToCTime (utcTimeToPOSIXSeconds time))
 	case secs of
 		0x80000000 -> fail "localtime_r failed"
 		_ -> return (minutesToTimezone (div (fromIntegral secs) 60))
+
+-- | Get the current time-zone
+getCurrentTimezone :: IO TimeZone
+getCurrentTimezone = getCurrentTime >>= getTimezone
 
 -- | time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day
 data TimeOfDay = TimeOfDay {
