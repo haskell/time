@@ -6,7 +6,7 @@ module System.Time.Calendar
 	TimeZone,timezoneToMinutes,minutesToTimezone,hoursToTimezone,utc,
 
 	-- getting the locale time zone
-	getCurrentTimezone,
+	getTimezone,getCurrentTimezone,
 
 	-- Gregorian "calendrical" format
 	TimeOfDay(..),CalendarDay(..),CalendarTime(..),
