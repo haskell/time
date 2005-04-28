@@ -55,7 +55,7 @@ utc = minutesToTimezone 0
 foreign import ccall unsafe "timestuff.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> IO CLong
 
 posixToCTime :: POSIXTime -> CTime
-posixToCTime  = floor
+posixToCTime  = fromInteger . floor
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
 getTimezone :: UTCTime -> IO TimeZone
