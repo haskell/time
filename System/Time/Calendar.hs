@@ -8,8 +8,11 @@ module System.Time.Calendar
 	-- getting the locale time zone
 	getTimezone,getCurrentTimezone,
 
+	-- TimeOfDay
+	TimeOfDay(..),midnight,midday,
+
 	-- Gregorian "calendrical" format
-	TimeOfDay(..),CalendarDay(..),CalendarTime(..),
+	CalendarDay(..),CalendarTime(..),
 	dayToCalendar,calendarToDay,
 
 	-- converting UTC times to Gregorian "calendrical" format
@@ -75,6 +78,12 @@ data TimeOfDay = TimeOfDay {
 	todMin     :: Int,
 	todSec     :: Pico
 } deriving (Eq,Ord)
+
+midnight :: TimeOfDay
+midnight = TimeOfDay 0 0 0
+
+midday :: TimeOfDay
+midday = TimeOfDay 12 0 0
 
 show2 :: Int -> String
 show2 i = let
