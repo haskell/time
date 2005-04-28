@@ -1,4 +1,4 @@
-default: TestFixed.diff CurrentTime.run TestTime.diff TimeZone.diff doc
+default: test doc CurrentTime.run ShowDST.run
 
 SRCS = Data/Fixed.hs System/Time/Clock.hs System/Time/TAI.hs System/Time/Calendar.hs
 
@@ -9,6 +9,9 @@ TestTime: TestTime.o libTimeLib.a
 	ghc $^ -o $@
 
 CurrentTime: CurrentTime.o libTimeLib.a
+	ghc $^ -o $@
+
+ShowDST: ShowDST.o libTimeLib.a
 	ghc $^ -o $@
 
 TimeZone: TimeZone.o libTimeLib.a
@@ -24,6 +27,8 @@ libTimeLib.a: $(patsubst %.hs,%.o,$(SRCS)) timestuff.o
 	rm -f $@
 	ar cru $@ $^
 	ranlib $@
+
+test: TestFixed.diff TestTime.diff TimeZone.diff
 
 clean:
 	rm -rf TimeZone TimeZone.ref CurrentTime TestTime TestFixed doc haddock *.out *.a *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
