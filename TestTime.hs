@@ -41,7 +41,7 @@ for :: (Monad m) => (a -> m ()) -> [a] -> m ()
 for _ [] = return ()
 for f (x:xs) = f x >> for f xs
 
-myzone :: TimeZone
+myzone :: Timezone
 myzone = hoursToTimezone (- 8)
 
 leapSec1998Cal :: CalendarTime
