@@ -74,6 +74,14 @@ data UTCTime = UTCTime {
 	utctDayTime :: DiffTime
 }
 
+instance Eq UTCTime where
+	(UTCTime da ta) == (UTCTime db tb) = (da == db) && (ta == tb)
+
+instance Ord UTCTime where
+	compare (UTCTime da ta) (UTCTime db tb) = case (compare da db) of
+		EQ -> compare ta tb
+		cmp -> cmp
+
 -- | a length of time for UTC, ignoring leap-seconds
 newtype UTCDiffTime = MkUTCDiffTime Pico deriving (Eq,Ord)
 
