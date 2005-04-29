@@ -8,7 +8,7 @@ main :: IO ()
 main = do
 	now <- getCurrentTime
 	putStrLn (show (utctDay now) ++ "," ++ show (utctDayTime now))
-	putStrLn (show (utcToCalendar utc now))
+	putStrLn (show (utcToCalendar utc now :: GregorianTime))
 	myzone <- getCurrentTimezone
 	putStrLn ("timezone: " ++ show myzone)
-	putStrLn (show (utcToCalendar myzone now))
+	putStrLn (show (utcToCalendar myzone now :: GregorianTime))

@@ -1,6 +1,14 @@
 default: test doc CurrentTime.run ShowDST.run
 
-SRCS = Data/Fixed.hs System/Time/Clock.hs System/Time/TAI.hs System/Time/Calendar.hs
+SRCS = Data/Fixed.hs \
+	System/Time/Clock.hs \
+	System/Time/TAI.hs \
+	System/Time/Calendar/Private.hs \
+	System/Time/Calendar/Timezone.hs \
+	System/Time/Calendar/TimeOfDay.hs \
+	System/Time/Calendar/Calendar.hs \
+	System/Time/Calendar/Gregorian.hs \
+	System/Time/Calendar.hs
 
 TestFixed: TestFixed.o Data/Fixed.o
 	ghc $^ -o $@
@@ -76,9 +84,26 @@ Data/Fixed.o : Data/Fixed.hs
 System/Time/Clock.o : System/Time/Clock.hs
 System/Time/Clock.o : Data/Fixed.hi
 System/Time/TAI.o : System/Time/TAI.hs
-System/Time/TAI.o : Data/Fixed.hi
 System/Time/TAI.o : System/Time/Clock.hi
+System/Time/Calendar/Private.o : System/Time/Calendar/Private.hs
+System/Time/Calendar/Timezone.o : System/Time/Calendar/Timezone.hs
+System/Time/Calendar/Timezone.o : System/Time/Clock.hi
+System/Time/Calendar/Timezone.o : System/Time/Calendar/Private.hi
+System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/TimeOfDay.hs
+System/Time/Calendar/TimeOfDay.o : Data/Fixed.hi
+System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/Timezone.hi
+System/Time/Calendar/TimeOfDay.o : System/Time/Clock.hi
+System/Time/Calendar/Calendar.o : System/Time/Calendar/Calendar.hs
+System/Time/Calendar/Calendar.o : System/Time/Calendar/TimeOfDay.hi
+System/Time/Calendar/Calendar.o : System/Time/Calendar/Timezone.hi
+System/Time/Calendar/Calendar.o : System/Time/Clock.hi
+System/Time/Calendar/Gregorian.o : System/Time/Calendar/Gregorian.hs
+System/Time/Calendar/Gregorian.o : System/Time/Clock.hi
+System/Time/Calendar/Gregorian.o : System/Time/Calendar/Private.hi
+System/Time/Calendar/Gregorian.o : System/Time/Calendar/Calendar.hi
 System/Time/Calendar.o : System/Time/Calendar.hs
-System/Time/Calendar.o : Data/Fixed.hi
-System/Time/Calendar.o : System/Time/Clock.hi
+System/Time/Calendar.o : System/Time/Calendar/Gregorian.hi
+System/Time/Calendar.o : System/Time/Calendar/Calendar.hi
+System/Time/Calendar.o : System/Time/Calendar/TimeOfDay.hi
+System/Time/Calendar.o : System/Time/Calendar/Timezone.hi
 # DO NOT DELETE: End of Haskell dependencies

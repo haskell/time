@@ -5,7 +5,7 @@ import System.Time.Calendar
 
 monthBeginning :: Timezone -> Integer -> Int -> UTCTime
 monthBeginning zone year month = calendarToUTC zone
-	(CalendarTime (CalendarDay year month 1) midnight)
+	(CalendarTime (GregorianDay year month 1) midnight)
 
 findTransition :: UTCTime -> UTCTime -> IO [(UTCTime,Timezone,Timezone)]
 findTransition a b = do
@@ -19,7 +19,7 @@ findTransition a b = do
 			return (tp ++ tq)
 
 showZoneTime :: Timezone -> UTCTime -> String
-showZoneTime zone time = (show (utcToCalendar zone time)) ++ " " ++ (show zone)
+showZoneTime zone time = (show (utcToCalendar zone time :: GregorianTime)) ++ " " ++ (show zone)
 
 showTransition :: (UTCTime,Timezone,Timezone) -> String
 showTransition (time,zone1,zone2) = (showZoneTime zone1 time) ++ " => " ++ (showZoneTime zone2 time)
