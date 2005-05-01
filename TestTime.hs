@@ -1,7 +1,8 @@
+{-# OPTIONS -Wall -Werror #-}
+
 module Main where
 
 import System.Time.Clock
-import System.Time.TAI
 import System.Time.Calendar
 
 showCal :: ModJulianDay -> IO ()
@@ -10,7 +11,6 @@ showCal d = do
 	let d' = calendarToDay cal
 	putStr ((show d) ++ "=" ++ show (dayToCalendar d :: GregorianDay))
 	putStrLn (if d == d' then "" else "=" ++ (show d') ++ "!")
-
 
 testCal :: IO ()
 testCal = do
@@ -32,14 +32,10 @@ testCal = do
 	showCal 51603
 	showCal 51604
 	-- years 2000 and 2001, plus some slop
-	for showCal [51540..52280]	
+	mapM_ showCal [51540..52280]	
 
 showUTCTime :: UTCTime -> String
 showUTCTime (UTCTime d t) =  show d ++ "," ++ show t
-
-for :: (Monad m) => (a -> m ()) -> [a] -> m ()
-for _ [] = return ()
-for f (x:xs) = f x >> for f xs
 
 myzone :: Timezone
 myzone = hoursToTimezone (- 8)

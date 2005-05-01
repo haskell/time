@@ -4,6 +4,7 @@ SRCS = Data/Fixed.hs \
 	System/Time/Clock.hs \
 	System/Time/TAI.hs \
 	System/Time/Calendar/Private.hs \
+	System/Time/Calendar/Format.hs \
 	System/Time/Calendar/Timezone.hs \
 	System/Time/Calendar/TimeOfDay.hs \
 	System/Time/Calendar/Calendar.hs \
@@ -15,6 +16,15 @@ TestFixed: TestFixed.o Data/Fixed.o
 
 TestTime: TestTime.o libTimeLib.a
 	ghc $^ -o $@
+
+TestFormat: TestFormat.o TestFormatStuff.o libTimeLib.a
+	ghc $^ -o $@
+
+TestFormatStuff.o: TestFormatStuff.c TestFormatStuff.h
+	gcc -o $@ -c $<
+
+TestFormat.ref:
+	echo -n > $@
 
 CurrentTime: CurrentTime.o libTimeLib.a
 	ghc $^ -o $@
@@ -36,7 +46,7 @@ libTimeLib.a: $(patsubst %.hs,%.o,$(SRCS)) timestuff.o
 	ar cru $@ $^
 	ranlib $@
 
-test: TestFixed.diff TestTime.diff TimeZone.diff
+test: TestFixed.diff TestTime.diff TimeZone.diff TestFormat.diff
 
 clean:
 	rm -rf TimeZone TimeZone.ref CurrentTime TestTime TestFixed doc haddock *.out *.a *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
@@ -66,44 +76,44 @@ FORCE:
 
 .SECONDARY:
 
-depend: TestFixed.hs CurrentTime.hs TestTime.hs $(SRCS)
+depend: $(SRCS)
 	ghc -M $^
 
+TestTime.o TestFormat.o CurrentTime.o ShowDST.o TimeZone.o: $(patsubst %.hs,%.hi,$(SRCS))
+
 # DO NOT DELETE: Beginning of Haskell dependencies
-TestFixed.o : TestFixed.hs
-TestFixed.o : ./Data/Fixed.hi
-CurrentTime.o : CurrentTime.hs
-CurrentTime.o : ./System/Time/Calendar.hi
-CurrentTime.o : ./System/Time/TAI.hi
-CurrentTime.o : ./System/Time/Clock.hi
-TestTime.o : TestTime.hs
-TestTime.o : ./System/Time/Calendar.hi
-TestTime.o : ./System/Time/TAI.hi
-TestTime.o : ./System/Time/Clock.hi
+System/Time/Calendar/Format.o : System/Time/Calendar/Format.hs
 Data/Fixed.o : Data/Fixed.hs
 System/Time/Clock.o : System/Time/Clock.hs
 System/Time/Clock.o : Data/Fixed.hi
 System/Time/TAI.o : System/Time/TAI.hs
 System/Time/TAI.o : System/Time/Clock.hi
 System/Time/Calendar/Private.o : System/Time/Calendar/Private.hs
+System/Time/Calendar/Private.o : Data/Fixed.hi
 System/Time/Calendar/Timezone.o : System/Time/Calendar/Timezone.hs
 System/Time/Calendar/Timezone.o : System/Time/Clock.hi
 System/Time/Calendar/Timezone.o : System/Time/Calendar/Private.hi
+System/Time/Calendar/Timezone.o : System/Time/Calendar/Format.hi
 System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/TimeOfDay.hs
 System/Time/Calendar/TimeOfDay.o : Data/Fixed.hi
-System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/Timezone.hi
 System/Time/Calendar/TimeOfDay.o : System/Time/Clock.hi
+System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/Private.hi
+System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/Format.hi
+System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/Timezone.hi
 System/Time/Calendar/Calendar.o : System/Time/Calendar/Calendar.hs
-System/Time/Calendar/Calendar.o : System/Time/Calendar/TimeOfDay.hi
-System/Time/Calendar/Calendar.o : System/Time/Calendar/Timezone.hi
 System/Time/Calendar/Calendar.o : System/Time/Clock.hi
+System/Time/Calendar/Calendar.o : System/Time/Calendar/Format.hi
+System/Time/Calendar/Calendar.o : System/Time/Calendar/Timezone.hi
+System/Time/Calendar/Calendar.o : System/Time/Calendar/TimeOfDay.hi
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/Gregorian.hs
 System/Time/Calendar/Gregorian.o : System/Time/Clock.hi
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/Private.hi
+System/Time/Calendar/Gregorian.o : System/Time/Calendar/Format.hi
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/Calendar.hi
 System/Time/Calendar.o : System/Time/Calendar.hs
 System/Time/Calendar.o : System/Time/Calendar/Gregorian.hi
 System/Time/Calendar.o : System/Time/Calendar/Calendar.hi
 System/Time/Calendar.o : System/Time/Calendar/TimeOfDay.hi
 System/Time/Calendar.o : System/Time/Calendar/Timezone.hi
+System/Time/Calendar.o : System/Time/Calendar/Format.hi
 # DO NOT DELETE: End of Haskell dependencies

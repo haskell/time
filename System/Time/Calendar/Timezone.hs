@@ -6,11 +6,10 @@ module System.Time.Calendar.Timezone
 	Timezone,timezoneToMinutes,minutesToTimezone,hoursToTimezone,utc,
 
 	-- getting the locale time zone
-	getTimezone,getCurrentTimezone,
-	
-	show2
+	getTimezone,getCurrentTimezone
 ) where
 
+import System.Time.Calendar.Format
 import System.Time.Calendar.Private
 import System.Time.Clock
 
@@ -28,9 +27,16 @@ minutesToTimezone = MkTimezone
 hoursToTimezone :: Int -> Timezone
 hoursToTimezone i = minutesToTimezone (60 * i)
 
+showT :: Int -> String
+showT t = (show2 (div t 60)) ++ (show2 (mod t 60))
+
 instance Show Timezone where
-	show (MkTimezone t) | t < 0 = '-':(show (MkTimezone (negate t)))
-	show (MkTimezone t) = (show2 (div t 60)) ++ (show2 (mod t 60))
+	show (MkTimezone t) | t < 0 = '-':(showT (negate t))
+	show (MkTimezone t) = '+':(showT t)
+
+instance FormatTime Timezone where
+	formatCharacter _ 'z' zone = Just (show zone)
+	formatCharacter _ _ _ = Nothing
 
 -- | The UTC time zone
 utc :: Timezone

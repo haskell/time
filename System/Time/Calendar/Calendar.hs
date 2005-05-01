@@ -2,7 +2,6 @@
 
 module System.Time.Calendar.Calendar
 (
-
 	-- "Calendrical" format
 	CalendarTime(..),Calendar(..),
 
@@ -18,9 +17,11 @@ module System.Time.Calendar.Calendar
 	-- parsing and showing dates and times
 ) where
 
-import System.Time.Clock
-import System.Time.Calendar.Timezone
 import System.Time.Calendar.TimeOfDay
+import System.Time.Calendar.Timezone
+import System.Time.Calendar.Format
+import System.Time.Clock
+import System.Locale
 import Data.Maybe
 
 class (Show d) => Calendar d where
@@ -28,7 +29,6 @@ class (Show d) => Calendar d where
 	dayToCalendar :: ModJulianDay -> d
 	-- | find out which day a given calendar day is
 	calendarToMaybeDay :: d -> Maybe ModJulianDay
-	formatCharacter :: d -> Char -> Maybe String
 	calendarToDay :: d -> ModJulianDay
 	calendarToDay day = fromMaybe (error "invalid day") (calendarToMaybeDay day)
 
@@ -40,6 +40,15 @@ data CalendarTime calendarday = CalendarTime {
 
 instance (Show calendarday) => Show (CalendarTime calendarday) where
 	show (CalendarTime d t) = (show d) ++ " " ++ (show t)
+
+melse :: Maybe a -> Maybe a -> Maybe a
+melse ma@(Just _) _ = ma
+melse _ mb = mb
+
+instance (FormatTime d) => FormatTime (CalendarTime d) where
+	formatCharacter locale 'c' dt = Just (formatTime locale (dateTimeFmt locale) dt)
+	formatCharacter locale c (CalendarTime d t) =
+		melse (formatCharacter locale c d) (formatCharacter locale c t)
 
 -- | show a UTC time in a given time zone as a CalendarTime
 utcToCalendar :: (Calendar d) => Timezone -> UTCTime -> CalendarTime d
