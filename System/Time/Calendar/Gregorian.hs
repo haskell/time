@@ -39,8 +39,11 @@ weekNumber day = (div (dayOfYear day) 7) + 1
 weekNumber' :: ModJulianDay -> Int
 weekNumber' day = (div (dayOfYear day) 7) + 1
 
-weekNumber'' :: ModJulianDay -> Int
-weekNumber'' day = (div (dayOfYear day) 7) + 1
+isoWeekFormat :: ModJulianDay -> (Integer,Int,Int)
+isoWeekFormat day = (y,div k 7,fromInteger (mod day 7) + 1) where
+	(year,yd,_) = dayToYearDay day
+	k = yd -- WRONG
+	y = year -- WRONG
 
 instance FormatTime GregorianDay where
 	formatCharacter locale 'a' day = Just (snd ((wDays locale) !! (weekDay (calendarToDay day))))
@@ -51,12 +54,15 @@ instance FormatTime GregorianDay where
 	formatCharacter _ 'd' (GregorianDay _ _ d) = Just (show2 d)
 	formatCharacter locale 'D' day = Just (formatTime locale "%m/%d/%y" day)
 	formatCharacter _ 'e' (GregorianDay _ _ d) = Just (show2Space d)
+	formatCharacter locale 'F' day = Just (formatTime locale "%Y-%m-%d" day)
+	formatCharacter _ 'g' day = let (y,_,_) = isoWeekFormat (calendarToDay day) in Just (show2 (fromInteger (mod y 100)))
+	formatCharacter _ 'G' day = let (y,_,_) = isoWeekFormat (calendarToDay day) in Just (show y)
 	formatCharacter locale 'h' (GregorianDay _ m _) = Just (snd ((months locale) !! (m - 1)))
 	formatCharacter _ 'j' day = Just (show3 (dayOfYear (calendarToDay day)))
 	formatCharacter _ 'm' (GregorianDay _ m _) = Just (show2 m)
 	formatCharacter _ 'u' day = Just (show (weekDay' (calendarToDay day)))
 	formatCharacter _ 'U' day = Just (show2 (weekNumber (calendarToDay day)))
-	formatCharacter _ 'V' day = Just (show2 (weekNumber'' (calendarToDay day)))
+	formatCharacter _ 'V' day = let (_,n,_) = isoWeekFormat (calendarToDay day) in Just (show2 n)
 	formatCharacter _ 'w' day = Just (show (weekDay (calendarToDay day)))
 	formatCharacter _ 'W' day = Just (show2 (weekNumber' (calendarToDay day)))
 	formatCharacter locale 'x' day = Just (formatTime locale (dateFmt locale) day)

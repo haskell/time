@@ -12,8 +12,10 @@ import System.Time.Calendar.Timezone
 import System.Time.Calendar.Format
 import System.Time.Calendar.Private
 import System.Time.Clock
-import System.Locale
 import Data.Fixed
+
+import System.Locale
+import Data.Char
 
 -- | time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day
 data TimeOfDay = TimeOfDay {
@@ -34,8 +36,11 @@ instance Show TimeOfDay where
 instance FormatTime TimeOfDay where
 	formatCharacter _ 'H' (TimeOfDay h _ _) = Just (show2 h)
 	formatCharacter _ 'I' (TimeOfDay h _ _) = Just (show2 ((mod (h - 1) 12) + 1))
+	formatCharacter _ 'k' (TimeOfDay h _ _) = Just (show2Space h)
+	formatCharacter _ 'l' (TimeOfDay h _ _) = Just (show2Space ((mod (h - 1) 12) + 1))
 	formatCharacter _ 'M' (TimeOfDay _ m _) = Just (show2 m)
 	formatCharacter locale 'p' (TimeOfDay h _ _) = Just ((if h < 12 then fst else snd) (amPm locale))
+	formatCharacter locale 'P' (TimeOfDay h _ _) = Just (map toLower ((if h < 12 then fst else snd) (amPm locale)))
 	formatCharacter locale 'r' time = Just (formatTime locale (time12Fmt locale) time)
 	formatCharacter locale 'R' time = Just (formatTime locale "%H:%M" time)
 	formatCharacter _ 'S' (TimeOfDay _ _ s) = Just (show2Fixed s)

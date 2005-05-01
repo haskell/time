@@ -45,8 +45,9 @@ times :: [UTCTime]
 times = [baseTime1,addUTCTime posixDay baseTime1,addUTCTime (2 * posixDay) baseTime1]
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
+-- plus FgGklPsz
 chars :: [Char]
-chars = "aAbBcCdDehHIjmMnprRStTuUVwWxXyYzZ%"
+chars = "aAbBcCdDeFgGhHIjklmMnpPrRsStTuUVwWxXyYzZ%"
 
 main :: IO ()
 main = mapM_ (\char -> let fmt = '%':char:[] in mapM_ (\time -> mapM_ (\zone -> let
