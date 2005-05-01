@@ -26,11 +26,11 @@ withBuffer n f = withArray (replicate n 0) (\buffer -> do
 
 unixFormatTime :: String -> Timezone -> UTCTime -> IO String
 unixFormatTime fmt zone time = withCString fmt (\pfmt ->
-		withBuffer 100 (\buffer -> format_time buffer 100 pfmt 0 (fromIntegral (timezoneToMinutes zone * 60)) (fromInteger (truncate (utcTimeToPOSIXSeconds time))))
+		withBuffer 100 (\buffer -> format_time buffer 100 pfmt (if timezoneDST zone then 1 else 0) (fromIntegral (timezoneMinutes zone * 60)) (fromInteger (truncate (utcTimeToPOSIXSeconds time))))
 		)
 
 locale :: TimeLocale
-locale = defaultTimeLocale
+locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
 zones :: [Timezone]
 zones = [utc,hoursToTimezone (- 7)]
@@ -46,7 +46,7 @@ times = [baseTime1,addUTCTime posixDay baseTime1,addUTCTime (2 * posixDay) baseT
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 chars :: [Char]
-chars = "aAbBcCdDehHIjmMnprRStTuUVwWxXyYZ%"
+chars = "aAbBcCdDehHIjmMnprRStTuUVwWxXyYzZ%"
 
 main :: IO ()
 main = mapM_ (\char -> let fmt = '%':char:[] in mapM_ (\time -> mapM_ (\zone -> let

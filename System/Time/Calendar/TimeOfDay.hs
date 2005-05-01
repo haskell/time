@@ -46,12 +46,12 @@ instance FormatTime TimeOfDay where
 -- | convert a ToD in UTC to a ToD in some timezone, together with a day adjustment
 utcToLocalTimeOfDay :: Timezone -> TimeOfDay -> (Integer,TimeOfDay)
 utcToLocalTimeOfDay zone (TimeOfDay h m s) = (fromIntegral (div h' 24),TimeOfDay (mod h' 24) (mod m' 60) s) where
-	m' = m + timezoneToMinutes zone
+	m' = m + timezoneMinutes zone
 	h' = h + (div m' 60)
 
 -- | convert a ToD in some timezone to a ToD in UTC, together with a day adjustment
 localToUTCTimeOfDay :: Timezone -> TimeOfDay -> (Integer,TimeOfDay)
-localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimezone (negate (timezoneToMinutes zone)))
+localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimezone (negate (timezoneMinutes zone)))
 
 posixDay :: DiffTime
 posixDay = fromInteger 86400
