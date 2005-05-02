@@ -81,6 +81,8 @@ depend: $(SRCS)
 
 TestTime.o TestFormat.o CurrentTime.o ShowDST.o TimeZone.o: $(patsubst %.hs,%.hi,$(SRCS))
 
+TestFixed.o: Data/Fixed.hi
+
 # DO NOT DELETE: Beginning of Haskell dependencies
 System/Time/Calendar/Format.o : System/Time/Calendar/Format.hs
 Data/Fixed.o : Data/Fixed.hs
