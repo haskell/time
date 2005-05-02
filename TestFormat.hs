@@ -39,7 +39,7 @@ posixDay :: UTCDiffTime
 posixDay = 86400
 
 baseTime1 :: UTCTime
-baseTime1 = calendarToUTC utc (CalendarTime (GregorianDay 2005 05 01) midnight)
+baseTime1 = decodeLocalUTC utc (CalendarTime (GregorianDay 2005 05 01) midnight)
 
 times :: [UTCTime]
 times = [baseTime1,addUTCTime posixDay baseTime1,addUTCTime (2 * posixDay) baseTime1]
@@ -51,7 +51,7 @@ chars = "aAbBcCdDeFgGhHIjklmMnpPrRsStTuUVwWxXyYzZ%"
 
 main :: IO ()
 main = mapM_ (\char -> let fmt = '%':char:[] in mapM_ (\time -> mapM_ (\zone -> let
-		ctime = utcToCalendar zone time :: GregorianTime
+		ctime = encodeUTC zone time :: ZonedGregorianTime
 		haskellText = formatTime locale fmt ctime
 	in do
 		unixText <- unixFormatTime fmt zone time

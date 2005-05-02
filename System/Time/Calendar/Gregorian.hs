@@ -2,7 +2,10 @@
 
 module System.Time.Calendar.Gregorian
 (
-	GregorianDay(..),GregorianTime
+	GregorianDay(..),GregorianTime,ZonedGregorianTime
+
+	-- calendrical arithmetic
+    -- e.g. "one month after March 31st"
 ) where
 
 import System.Time.Calendar.Calendar
@@ -19,6 +22,8 @@ data GregorianDay = GregorianDay {
 } deriving (Eq,Ord)
 
 type GregorianTime = CalendarTime GregorianDay
+
+type ZonedGregorianTime = ZonedTime (CalendarTime GregorianDay)
 
 instance Show GregorianDay where
 	show (GregorianDay y m d) = (if y > 0 then show y else (show (1 - y) ++ "BCE")) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
@@ -46,8 +51,8 @@ isoWeekFormat day = (y,div k 7,fromInteger (mod day 7) + 1) where
 	y = year -- WRONG
 
 instance FormatTime GregorianDay where
-	formatCharacter locale 'a' day = Just (snd ((wDays locale) !! (weekDay (calendarToDay day))))
-	formatCharacter locale 'A' day = Just (fst ((wDays locale) !! (weekDay (calendarToDay day))))
+	formatCharacter locale 'a' day = Just (snd ((wDays locale) !! (weekDay (decodeDay day))))
+	formatCharacter locale 'A' day = Just (fst ((wDays locale) !! (weekDay (decodeDay day))))
 	formatCharacter locale 'b' (GregorianDay _ m _) = Just (snd ((months locale) !! (m - 1)))
 	formatCharacter locale 'B' (GregorianDay _ m _) = Just (fst ((months locale) !! (m - 1)))
 	formatCharacter _ 'C' (GregorianDay y _ _) = Just (show2 (fromInteger (div y 100)))
@@ -55,16 +60,16 @@ instance FormatTime GregorianDay where
 	formatCharacter locale 'D' day = Just (formatTime locale "%m/%d/%y" day)
 	formatCharacter _ 'e' (GregorianDay _ _ d) = Just (show2Space d)
 	formatCharacter locale 'F' day = Just (formatTime locale "%Y-%m-%d" day)
-	formatCharacter _ 'g' day = let (y,_,_) = isoWeekFormat (calendarToDay day) in Just (show2 (fromInteger (mod y 100)))
-	formatCharacter _ 'G' day = let (y,_,_) = isoWeekFormat (calendarToDay day) in Just (show y)
+	formatCharacter _ 'g' day = let (y,_,_) = isoWeekFormat (decodeDay day) in Just (show2 (fromInteger (mod y 100)))
+	formatCharacter _ 'G' day = let (y,_,_) = isoWeekFormat (decodeDay day) in Just (show y)
 	formatCharacter locale 'h' (GregorianDay _ m _) = Just (snd ((months locale) !! (m - 1)))
-	formatCharacter _ 'j' day = Just (show3 (dayOfYear (calendarToDay day)))
+	formatCharacter _ 'j' day = Just (show3 (dayOfYear (decodeDay day)))
 	formatCharacter _ 'm' (GregorianDay _ m _) = Just (show2 m)
-	formatCharacter _ 'u' day = Just (show (weekDay' (calendarToDay day)))
-	formatCharacter _ 'U' day = Just (show2 (weekNumber (calendarToDay day)))
-	formatCharacter _ 'V' day = let (_,n,_) = isoWeekFormat (calendarToDay day) in Just (show2 n)
-	formatCharacter _ 'w' day = Just (show (weekDay (calendarToDay day)))
-	formatCharacter _ 'W' day = Just (show2 (weekNumber' (calendarToDay day)))
+	formatCharacter _ 'u' day = Just (show (weekDay' (decodeDay day)))
+	formatCharacter _ 'U' day = Just (show2 (weekNumber (decodeDay day)))
+	formatCharacter _ 'V' day = let (_,n,_) = isoWeekFormat (decodeDay day) in Just (show2 n)
+	formatCharacter _ 'w' day = Just (show (weekDay (decodeDay day)))
+	formatCharacter _ 'W' day = Just (show2 (weekNumber' (decodeDay day)))
 	formatCharacter locale 'x' day = Just (formatTime locale (dateFmt locale) day)
 	formatCharacter _ 'y' (GregorianDay y _ _) = Just (show2 (fromInteger (mod y 100)))
 	formatCharacter _ 'Y' (GregorianDay y _ _) = Just (show y)
@@ -95,15 +100,15 @@ monthLengths isleap =
 	[31,if isleap then 29 else 28,31,30,31,30,31,31,30,31,30,31]
 	--J        F                   M  A  M  J  J  A  S  O  N  D
 
-instance Calendar GregorianDay where
-	dayToCalendar mjd = GregorianDay year month day where
+instance DayEncoding GregorianDay where
+	encodeDay mjd = GregorianDay year month day where
 		(year,yd,isleap) = dayToYearDay mjd
 		(month,day) = findMonthDay (monthLengths isleap) yd
 	-- formula from <http://en.wikipedia.org/wiki/Julian_Day>
-	calendarToDay (GregorianDay year month day) =
+	decodeDay (GregorianDay year month day) =
 		(fromIntegral day) + (div (153 * m + 2) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882 where
 		month' = fromIntegral month
 		a = div (14 - month') 12
 		y = year - a
 		m = month' + (12 * a) - 3
-	calendarToMaybeDay = Just . calendarToDay -- WRONG
+	maybeDecodeDay = Just . decodeDay -- WRONG
