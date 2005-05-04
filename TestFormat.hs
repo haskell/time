@@ -38,11 +38,14 @@ zones = [utc,hoursToTimezone (- 7)]
 posixDay :: UTCDiffTime
 posixDay = 86400
 
+baseTime0 :: UTCTime
+baseTime0 = decodeLocalUTC utc (CalendarTime (GregorianDay 1970 01 01) midnight)
+
 baseTime1 :: UTCTime
 baseTime1 = decodeLocalUTC utc (CalendarTime (GregorianDay 2005 05 01) midnight)
 
 times :: [UTCTime]
-times = [baseTime1,addUTCTime posixDay baseTime1,addUTCTime (2 * posixDay) baseTime1]
+times = [baseTime0,baseTime1,addUTCTime posixDay baseTime1,addUTCTime (2 * posixDay) baseTime1]
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklPsz
@@ -56,5 +59,5 @@ main = mapM_ (\char -> let fmt = '%':char:[] in mapM_ (\time -> mapM_ (\zone -> 
 	in do
 		unixText <- unixFormatTime fmt zone time
 		if haskellText == unixText then return () else
-			putStrLn ("Mismatch with " ++ fmt ++ " for " ++ (show ctime) ++ " " ++ (show zone) ++ ": UNIX says \"" ++ unixText ++ "\", TimeLib says \"" ++ haskellText ++ "\".")
+			putStrLn ("Mismatch with " ++ fmt ++ " for " ++ (show ctime) ++ ": UNIX says \"" ++ unixText ++ "\", TimeLib says \"" ++ haskellText ++ "\".")
 	) zones) times) chars

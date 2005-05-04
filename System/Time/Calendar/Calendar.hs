@@ -85,6 +85,7 @@ decodeUTC (ZonedTime t zone) = decodeLocalUTC zone t
 instance (Show t) => Show (ZonedTime t) where
 	show (ZonedTime t zone) = show t ++ " " ++ show zone
 
-instance (FormatTime t) => FormatTime (ZonedTime t) where
+instance (FormatTime t,LocalTimeEncoding t) => FormatTime (ZonedTime t) where
+	formatCharacter _ 's' zt = Just (show (truncate (utcTimeToPOSIXSeconds (decodeUTC zt)) :: Integer))
 	formatCharacter locale c (ZonedTime t zone) = 
 		melse (formatCharacter locale c t) (formatCharacter locale c zone)
