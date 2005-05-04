@@ -16,7 +16,7 @@ import Foreign.C
 	int isdst,int gmtoff,time_t t);
 -}
 
-foreign import ccall unsafe "TestFormatStuff.h format_time" format_time :: CString -> CSize -> CString -> CInt -> CInt -> CTime -> IO CSize
+foreign import ccall unsafe "TestFormatStuff.h format_time" format_time :: CString -> CSize -> CString -> CInt -> CInt -> CString -> CTime -> IO CSize
 
 withBuffer :: Int -> (CString -> IO CSize) -> IO String
 withBuffer n f = withArray (replicate n 0) (\buffer -> do
@@ -25,9 +25,14 @@ withBuffer n f = withArray (replicate n 0) (\buffer -> do
 		)
 
 unixFormatTime :: String -> Timezone -> UTCTime -> IO String
-unixFormatTime fmt zone time = withCString fmt (\pfmt ->
-		withBuffer 100 (\buffer -> format_time buffer 100 pfmt (if timezoneDST zone then 1 else 0) (fromIntegral (timezoneMinutes zone * 60)) (fromInteger (truncate (utcTimeToPOSIXSeconds time))))
-		)
+unixFormatTime fmt zone time = withCString fmt (\pfmt -> withCString (timezoneName zone) (\pzonename ->
+		withBuffer 100 (\buffer -> format_time buffer 100 pfmt
+				(if timezoneDST zone then 1 else 0)
+				(fromIntegral (timezoneMinutes zone * 60))
+				pzonename
+				(fromInteger (truncate (utcTimeToPOSIXSeconds time)))
+			)
+		))
 
 locale :: TimeLocale
 locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}

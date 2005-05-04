@@ -18,12 +18,13 @@ import Foreign.C
 
 -- | count of minutes
 data Timezone = MkTimezone {
+	timezoneMinutes :: Int,
 	timezoneDST :: Bool,
-	timezoneMinutes :: Int
+	timezoneName :: String
 } deriving (Eq,Ord)
 
 minutesToTimezone :: Int -> Timezone
-minutesToTimezone = MkTimezone False
+minutesToTimezone m = MkTimezone m False ""
 
 hoursToTimezone :: Int -> Timezone
 hoursToTimezone i = minutesToTimezone (60 * i)
@@ -32,32 +33,35 @@ showT :: Int -> String
 showT t = (show2 (div t 60)) ++ (show2 (mod t 60))
 
 instance Show Timezone where
-	show (MkTimezone _ t) | t < 0 = '-':(showT (negate t))
-	show (MkTimezone _ t) = '+':(showT t)
+	show (MkTimezone t _ _) | t < 0 = '-':(showT (negate t))
+	show (MkTimezone t _ _) = '+':(showT t)
 
 instance FormatTime Timezone where
 	formatCharacter _ 'z' zone = Just (show zone)
+	formatCharacter _ 'Z' (MkTimezone _ _ name) = Just name
 	formatCharacter _ _ _ = Nothing
 
 -- | The UTC time zone
 utc :: Timezone
-utc = minutesToTimezone 0
+utc = MkTimezone 0 False "UTC"
 
-foreign import ccall unsafe "timestuff.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> Ptr CInt -> IO CLong
+foreign import ccall unsafe "timestuff.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> Ptr CInt -> Ptr CString -> IO CLong
 
 posixToCTime :: POSIXTime -> CTime
 posixToCTime  = fromInteger . floor
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
 getTimezone :: UTCTime -> IO Timezone
-getTimezone time = with 0 (\pdst -> do
-	secs <- get_current_timezone_seconds (posixToCTime (utcTimeToPOSIXSeconds time)) pdst
+getTimezone time = with 0 (\pdst -> with nullPtr (\pcname -> do
+	secs <- get_current_timezone_seconds (posixToCTime (utcTimeToPOSIXSeconds time)) pdst pcname
 	case secs of
 		0x80000000 -> fail "localtime_r failed"
 		_ -> do
 			dst <- peek pdst
-			return (MkTimezone (dst == 1) (div (fromIntegral secs) 60))
-	)
+			cname <- peek pcname
+			name <- peekCString cname
+			return (MkTimezone (div (fromIntegral secs) 60) (dst == 1) name)
+	))
 
 -- | Get the current time-zone
 getCurrentTimezone :: IO Timezone
