@@ -34,19 +34,19 @@ instance Show TimeOfDay where
 	show (TimeOfDay h m s) = (show2 h) ++ ":" ++ (show2 m) ++ ":" ++ (show2Fixed s)
 
 instance FormatTime TimeOfDay where
-	formatCharacter _ 'H' (TimeOfDay h _ _) = Just (show2 h)
-	formatCharacter _ 'I' (TimeOfDay h _ _) = Just (show2 ((mod (h - 1) 12) + 1))
-	formatCharacter _ 'k' (TimeOfDay h _ _) = Just (show2Space h)
-	formatCharacter _ 'l' (TimeOfDay h _ _) = Just (show2Space ((mod (h - 1) 12) + 1))
-	formatCharacter _ 'M' (TimeOfDay _ m _) = Just (show2 m)
-	formatCharacter locale 'p' (TimeOfDay h _ _) = Just ((if h < 12 then fst else snd) (amPm locale))
-	formatCharacter locale 'P' (TimeOfDay h _ _) = Just (map toLower ((if h < 12 then fst else snd) (amPm locale)))
-	formatCharacter locale 'r' time = Just (formatTime locale (time12Fmt locale) time)
-	formatCharacter locale 'R' time = Just (formatTime locale "%H:%M" time)
-	formatCharacter _ 'S' (TimeOfDay _ _ s) = Just (show2Fixed s)
-	formatCharacter locale 'T' time = Just (formatTime locale "%H:%M:%S" time)
-	formatCharacter locale 'X' time = Just (formatTime locale (timeFmt locale) time)
-	formatCharacter _ _ _ = Nothing
+	formatCharacter 'H' = Just (\_ (TimeOfDay h _ _) -> show2 h)
+	formatCharacter 'I' = Just (\_ (TimeOfDay h _ _) -> show2 ((mod (h - 1) 12) + 1))
+	formatCharacter 'k' = Just (\_ (TimeOfDay h _ _) -> show2Space h)
+	formatCharacter 'l' = Just (\_ (TimeOfDay h _ _) -> show2Space ((mod (h - 1) 12) + 1))
+	formatCharacter 'M' = Just (\_ (TimeOfDay _ m _) -> show2 m)
+	formatCharacter 'p' = Just (\locale (TimeOfDay h _ _) -> (if h < 12 then fst else snd) (amPm locale))
+	formatCharacter 'P' = Just (\locale (TimeOfDay h _ _) -> map toLower ((if h < 12 then fst else snd) (amPm locale)))
+	formatCharacter 'r' = Just (\locale time -> formatTime locale (time12Fmt locale) time)
+	formatCharacter 'R' = Just (\locale time -> formatTime locale "%H:%M" time)
+	formatCharacter 'S' = Just (\_ (TimeOfDay _ _ s) -> show2Fixed s)
+	formatCharacter 'T' = Just (\locale time -> formatTime locale "%H:%M:%S" time)
+	formatCharacter 'X' = Just (\locale time -> formatTime locale (timeFmt locale) time)
+	formatCharacter _   = Nothing
 
 -- | convert a ToD in UTC to a ToD in some timezone, together with a day adjustment
 utcToLocalTimeOfDay :: Timezone -> TimeOfDay -> (Integer,TimeOfDay)

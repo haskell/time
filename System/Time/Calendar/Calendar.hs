@@ -50,14 +50,13 @@ data CalendarTime d = CalendarTime {
 instance (Show d) => Show (CalendarTime d) where
 	show (CalendarTime d t) = (show d) ++ " " ++ (show t)
 
-melse :: Maybe a -> Maybe a -> Maybe a
-melse ma@(Just _) _ = ma
-melse _ mb = mb
-
 instance (FormatTime d) => FormatTime (CalendarTime d) where
-	formatCharacter locale 'c' dt = Just (formatTime locale (dateTimeFmt locale) dt)
-	formatCharacter locale c (CalendarTime d t) =
-		melse (formatCharacter locale c d) (formatCharacter locale c t)
+	formatCharacter 'c' = Just (\locale -> formatTime locale (dateTimeFmt locale))
+	formatCharacter c = case (formatCharacter c) of
+		Just f -> Just (\locale dt -> f locale (ctDay dt))
+		Nothing -> case (formatCharacter c) of
+			Just f -> Just (\locale dt -> f locale (ctTime dt))
+			Nothing -> Nothing
 
 instance (DayEncoding d) => LocalTimeEncoding (CalendarTime d) where
 	encodeLocalUTC tz (UTCTime day dt) = CalendarTime (encodeDay (day + i)) tod where
@@ -86,6 +85,9 @@ instance (Show t) => Show (ZonedTime t) where
 	show (ZonedTime t zone) = show t ++ " " ++ show zone
 
 instance (FormatTime t,LocalTimeEncoding t) => FormatTime (ZonedTime t) where
-	formatCharacter _ 's' zt = Just (show (truncate (utcTimeToPOSIXSeconds (decodeUTC zt)) :: Integer))
-	formatCharacter locale c (ZonedTime t zone) = 
-		melse (formatCharacter locale c t) (formatCharacter locale c zone)
+	formatCharacter 's' = Just (\_ zt -> show (truncate (utcTimeToPOSIXSeconds (decodeUTC zt)) :: Integer))
+	formatCharacter c = case (formatCharacter c) of
+		Just f -> Just (\locale dt -> f locale (ztTime dt))
+		Nothing -> case (formatCharacter c) of
+			Just f -> Just (\locale dt -> f locale (ztZone dt))
+			Nothing -> Nothing

@@ -3,7 +3,7 @@
 module System.Time.Calendar.Timezone
 (
 	-- time zones
-	Timezone(..),minutesToTimezone,hoursToTimezone,utc,
+	Timezone(..),timezoneOffsetString,minutesToTimezone,hoursToTimezone,utc,
 
 	-- getting the locale time zone
 	getTimezone,getCurrentTimezone
@@ -32,14 +32,18 @@ hoursToTimezone i = minutesToTimezone (60 * i)
 showT :: Int -> String
 showT t = (show2 (div t 60)) ++ (show2 (mod t 60))
 
+timezoneOffsetString :: Timezone -> String
+timezoneOffsetString (MkTimezone t _ _) | t < 0 = '-':(showT (negate t))
+timezoneOffsetString (MkTimezone t _ _) = '+':(showT t)
+
 instance Show Timezone where
-	show (MkTimezone t _ _) | t < 0 = '-':(showT (negate t))
-	show (MkTimezone t _ _) = '+':(showT t)
+	show zone@(MkTimezone _ _ "") = timezoneOffsetString zone
+	show (MkTimezone _ _ name) = name
 
 instance FormatTime Timezone where
-	formatCharacter _ 'z' zone = Just (show zone)
-	formatCharacter _ 'Z' (MkTimezone _ _ name) = Just name
-	formatCharacter _ _ _ = Nothing
+	formatCharacter 'z' = Just (\_ -> timezoneOffsetString)
+	formatCharacter 'Z' = Just (\_ -> timezoneName)
+	formatCharacter _ = Nothing
 
 -- | The UTC time zone
 utc :: Timezone
