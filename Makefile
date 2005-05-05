@@ -1,4 +1,6 @@
-default: test doc CurrentTime.run ShowDST.run
+default: build doc CurrentTime.run ShowDST.run test
+
+build: $(patsubst %.hs,%.hi,$(SRCS)) libTimeLib.a
 
 SRCS = Data/Fixed.hs \
 	System/Time/Clock.hs \
