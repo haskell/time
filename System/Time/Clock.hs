@@ -1,21 +1,29 @@
 {-# OPTIONS -ffi -Wall -Werror #-}
 
+-- | Types and functions for UTC and UT1
 module System.Time.Clock
 (
-	-- Modified Julian days and dates (for UT1)
+	-- * Universal Time
+	-- | Time as measured by the earth.
 	ModJulianDay,ModJulianDate,
 
-	-- absolute time intervals
+	-- * Absolute intervals
 	DiffTime,
 
-	-- UTC arithmetic
+	-- * UTC
+	-- | UTC is time as measured by a clock, corrected to keep pace with the earth by adding or removing
+	-- occasional seconds, known as \"leap seconds\".
+	-- These corrections are not predictable and are announced with six month's notice.
+	-- No table of these corrections is provided, as any program compiled with it would become
+	-- out of date in six months.
 	UTCTime(..),UTCDiffTime,
 	addUTCTime,diffUTCTime,
 
-	-- getting the current UTC time
+	-- * Current time
 	getCurrentTime,
 	
-	-- needed by System.Time.Calendar to talk to the Unix API
+	-- * POSIX time
+	-- | This is needed by System.Time.Calendar to talk to the Unix API.
 	POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds
 ) where
 
@@ -24,13 +32,14 @@ import Data.Fixed
 import Foreign
 import Foreign.C
 
--- | standard Modified Julian Day, a count of Earth days
+-- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
 type ModJulianDay = Integer
 
--- | standard Modified Julian Date to represent UT1, 1 = 1 day
+-- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
+-- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.
 type ModJulianDate = Rational
 
--- | a length of time
+-- | This is a length of time, as measured by a clock.
 newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord)
 
 instance Enum DiffTime where
@@ -66,11 +75,13 @@ instance Fractional DiffTime where
 	recip (MkDiffTime a) = MkDiffTime (recip a)
 	fromRational r = MkDiffTime (fromRational r)
 
--- | time in UTC
+-- | This is the simplest representation of UTC.
+-- It consists of the day number, and a time offset from midnight.
+-- Note that if a day has a leap second added to it, it will have 86401 seconds.
 data UTCTime = UTCTime {
 	-- | the day
 	utctDay :: ModJulianDay,
-	-- | the time from midnight, 0 <= t < 61s (because of leap-seconds)
+	-- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
 	utctDayTime :: DiffTime
 }
 
@@ -82,7 +93,10 @@ instance Ord UTCTime where
 		EQ -> compare ta tb
 		cmp -> cmp
 
--- | a length of time for UTC, ignoring leap-seconds
+-- | This is a length of time, as measured by UTC.
+-- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
+-- For instance, 23:00 UTC + 2 hours of UTCDiffTime = 01:00 UTC (+ 1 day),
+-- regardless of whether a leap-second intervened.
 newtype UTCDiffTime = MkUTCDiffTime Pico deriving (Eq,Ord)
 
 instance Enum UTCDiffTime where
@@ -144,10 +158,11 @@ utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
  (fromInteger (d - unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
 
-
+-- | addUTCTime a b = a + b
 addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime
 addUTCTime x t = posixSecondsToUTCTime (x + (utcTimeToPOSIXSeconds t))
 
+-- | diffUTCTime a b = a - b
 diffUTCTime :: UTCTime -> UTCTime -> UTCDiffTime
 diffUTCTime a b = (utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b)
 
@@ -172,7 +187,7 @@ instance Storable CTimeval where
 
 foreign import ccall unsafe "time.h gettimeofday" gettimeofday :: Ptr CTimeval -> Ptr () -> IO CInt
 
--- | get the current time
+-- | Get the current UTC time from the system clock.
 getCurrentTime :: IO UTCTime
 getCurrentTime = with (MkCTimeval 0 0) (\ptval -> do
 	result <- gettimeofday ptval nullPtr
