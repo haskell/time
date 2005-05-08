@@ -9,7 +9,7 @@ Homepage:
 Category:
 Build-Depends:	base
 Synopsis:	a new time library
-Exposed-modules:	Data.Fixed, System.Time.Clock, System.Time.TAI, System.Time.Calendar.Format, System.Time.Calendar.Timezone, System.Time.Calendar.TimeOfDay, System.Time.Calendar.Calendar, System.Time.Calendar.Gregorian, System.Time.Calendar
+Exposed-modules:	Data.Fixed, System.Time.Clock, System.Time.TAI, System.Time.Calendar.Timezone, System.Time.Calendar.TimeOfDay, System.Time.Calendar.Calendar, System.Time.Calendar.Gregorian, System.Time.Calendar.ISOWeek, System.Time.Calendar.Format, System.Time.Calendar
 Extensions:	ForeignFunctionInterface
 C-Sources:	timestuff.c
 Other-modules:	System.Time.Calendar.Private

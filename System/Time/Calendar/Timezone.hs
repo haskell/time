@@ -9,7 +9,7 @@ module System.Time.Calendar.Timezone
 	getTimezone,getCurrentTimezone
 ) where
 
-import System.Time.Calendar.Format
+--import System.Time.Calendar.Format
 import System.Time.Calendar.Private
 import System.Time.Clock
 
@@ -39,11 +39,6 @@ timezoneOffsetString (MkTimezone t _ _) = '+':(showT t)
 instance Show Timezone where
 	show zone@(MkTimezone _ _ "") = timezoneOffsetString zone
 	show (MkTimezone _ _ name) = name
-
-instance FormatTime Timezone where
-	formatCharacter 'z' = Just (\_ -> timezoneOffsetString)
-	formatCharacter 'Z' = Just (\_ -> timezoneName)
-	formatCharacter _ = Nothing
 
 -- | The UTC time zone
 utc :: Timezone

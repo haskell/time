@@ -28,3 +28,9 @@ show3 i = let
   case s of
 	[_,_] -> '0':s
 	_ -> s
+
+mod100 :: (Integral i) => i -> i
+mod100 x = mod x 100
+
+div100 :: (Integral i) => i -> i
+div100 x = div x 100

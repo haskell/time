@@ -9,13 +9,9 @@ module System.Time.Calendar.TimeOfDay
 ) where
 
 import System.Time.Calendar.Timezone
-import System.Time.Calendar.Format
 import System.Time.Calendar.Private
 import System.Time.Clock
 import Data.Fixed
-
-import System.Locale
-import Data.Char
 
 -- | time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day
 data TimeOfDay = TimeOfDay {
@@ -32,21 +28,6 @@ midday = TimeOfDay 12 0 0
 
 instance Show TimeOfDay where
 	show (TimeOfDay h m s) = (show2 h) ++ ":" ++ (show2 m) ++ ":" ++ (show2Fixed s)
-
-instance FormatTime TimeOfDay where
-	formatCharacter 'H' = Just (\_ (TimeOfDay h _ _) -> show2 h)
-	formatCharacter 'I' = Just (\_ (TimeOfDay h _ _) -> show2 ((mod (h - 1) 12) + 1))
-	formatCharacter 'k' = Just (\_ (TimeOfDay h _ _) -> show2Space h)
-	formatCharacter 'l' = Just (\_ (TimeOfDay h _ _) -> show2Space ((mod (h - 1) 12) + 1))
-	formatCharacter 'M' = Just (\_ (TimeOfDay _ m _) -> show2 m)
-	formatCharacter 'p' = Just (\locale (TimeOfDay h _ _) -> (if h < 12 then fst else snd) (amPm locale))
-	formatCharacter 'P' = Just (\locale (TimeOfDay h _ _) -> map toLower ((if h < 12 then fst else snd) (amPm locale)))
-	formatCharacter 'r' = Just (\locale time -> formatTime locale (time12Fmt locale) time)
-	formatCharacter 'R' = Just (\locale time -> formatTime locale "%H:%M" time)
-	formatCharacter 'S' = Just (\_ (TimeOfDay _ _ s) -> show2Fixed s)
-	formatCharacter 'T' = Just (\locale time -> formatTime locale "%H:%M:%S" time)
-	formatCharacter 'X' = Just (\locale time -> formatTime locale (timeFmt locale) time)
-	formatCharacter _   = Nothing
 
 -- | convert a ToD in UTC to a ToD in some timezone, together with a day adjustment
 utcToLocalTimeOfDay :: Timezone -> TimeOfDay -> (Integer,TimeOfDay)
