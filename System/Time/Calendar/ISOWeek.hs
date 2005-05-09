@@ -21,7 +21,7 @@ instance DayEncoding ISOWeek where
 		(YearDay y0 yd) = encodeDay mjd
 		d = mjd + 2
 		foo :: Integer -> Integer
-		foo y = bar (decodeDay (YearDay y 4) + 2)
+		foo y = bar (decodeDay (YearDay y 6))
 		bar k = (div d 7) - (div k 7)
 		w0 = bar (d - (toInteger yd) + 4)
 		(y1,w1) = if w0 == -1
@@ -32,5 +32,6 @@ instance DayEncoding ISOWeek where
 				else (y0,w0)
 			else (y0,w0)
 
-	decodeDay (ISOWeek _ _ _) = undefined -- WRONG
+	decodeDay (ISOWeek y w d) = k - (mod k 7) + (toInteger ((w * 7) + d)) - 10 where
+		k = decodeDay (YearDay y 6)
 	maybeDecodeDay = Just . decodeDay -- WRONG
