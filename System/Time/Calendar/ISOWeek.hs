@@ -34,4 +34,3 @@ instance DayEncoding ISOWeek where
 
 	decodeDay (ISOWeek y w d) = k - (mod k 7) + (toInteger ((w * 7) + d)) - 10 where
 		k = decodeDay (YearDay y 6)
-	maybeDecodeDay = Just . decodeDay -- WRONG

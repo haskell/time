@@ -29,8 +29,6 @@ instance DayEncoding YearDay where
 	decodeDay (YearDay year day) =
 		(fromIntegral day) + (div (1532) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882 where
 		y = year - 1
-	maybeDecodeDay t@(YearDay year day) | (day >= 1) && (day <= if isLeapYear year then 366 else 365) = Just (decodeDay t)
-	maybeDecodeDay _ = Nothing
 
 isLeapYear :: Integer -> Bool
 isLeapYear year = (mod year 4 == 0) && ((mod year 400 == 0) || not (mod year 100 == 0))

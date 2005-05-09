@@ -14,19 +14,15 @@ module System.Time.Calendar.Calendar
 import System.Time.Calendar.TimeOfDay
 import System.Time.Calendar.Timezone
 import System.Time.Clock
-import Data.Maybe
 
 class (Eq d) => DayEncoding d where
 	-- | name the given day according to the calendar
 	encodeDay :: ModJulianDay -> d
 	-- | find out which day a given calendar day is
-	maybeDecodeDay :: d -> Maybe ModJulianDay
 	decodeDay :: d -> ModJulianDay
-	decodeDay day = fromMaybe (error "invalid day") (maybeDecodeDay day)
 
 instance DayEncoding ModJulianDay where
 	encodeDay = id
-	maybeDecodeDay = Just
 	decodeDay = id
 
 class (Eq t) => LocalTimeEncoding t where

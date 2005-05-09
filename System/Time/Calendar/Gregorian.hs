@@ -47,4 +47,3 @@ instance DayEncoding GregorianDay where
 		a = div (14 - month') 12
 		y = year - a
 		m = month' + (12 * a) - 3
-	maybeDecodeDay = Just . decodeDay -- WRONG
