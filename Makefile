@@ -2,6 +2,9 @@ default: build doc
 
 build: $(patsubst %.hs,%.hi,$(SRCS)) libTimeLib.a
 
+test: build
+	cd test && make
+
 SRCS = Data/Fixed.hs \
 	System/Time/Clock.hs \
 	System/Time/TAI.hs \
