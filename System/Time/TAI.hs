@@ -1,10 +1,10 @@
 {-# OPTIONS -Wall -Werror #-}
 
--- | most people won't need this module
+-- | TAI and leap-second tables for converting to UTC: most people won't need this module.
 module System.Time.TAI
 (
 	-- TAI arithmetic
-	AbsoluteTime,addAbsoluteTime,diffAbsoluteTime,
+	AbsoluteTime,taiEpoch,addAbsoluteTime,diffAbsoluteTime,
 
 	-- leap-second table type
 	LeapSecondTable,
@@ -15,16 +15,24 @@ module System.Time.TAI
 
 import System.Time.Clock
 
--- | TAI as DiffTime from epoch
+-- | AbsoluteTime is TAI, time as measured by a clock.
 newtype AbsoluteTime = MkAbsoluteTime DiffTime deriving (Eq,Ord)
 
+-- | The epoch of TAI, which is 
+taiEpoch :: AbsoluteTime
+taiEpoch = MkAbsoluteTime 0
+
+-- | addAbsoluteTime a b = a + b
 addAbsoluteTime :: DiffTime -> AbsoluteTime -> AbsoluteTime
 addAbsoluteTime t (MkAbsoluteTime a) = MkAbsoluteTime (t + a)
 
+-- | diffAbsoluteTime a b = a - b
 diffAbsoluteTime :: AbsoluteTime -> AbsoluteTime -> DiffTime
 diffAbsoluteTime (MkAbsoluteTime a) (MkAbsoluteTime b) = a - b
 
--- | TAI - UTC during this day
+-- | TAI - UTC during this day.
+-- No table is provided, as any program compiled with it would become
+-- out of date in six months.
 type LeapSecondTable = ModJulianDay -> Integer
 
 utcDayLength :: LeapSecondTable -> ModJulianDay -> DiffTime
@@ -35,4 +43,4 @@ utcToTAITime table (UTCTime day dtime) = MkAbsoluteTime
 	((realToFrac (day * 86400 + (table day))) + dtime)
 
 taiToUTCTime :: LeapSecondTable -> AbsoluteTime -> UTCTime
-taiToUTCTime table (MkAbsoluteTime t) = undefined table t
+taiToUTCTime table (MkAbsoluteTime t) = undefined table t -- WRONG
