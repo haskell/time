@@ -4,6 +4,7 @@ module System.Time.Calendar.YearDay where
 
 import System.Time.Calendar.Calendar
 import System.Time.Calendar.Private
+import System.Time.Clock
 
 -- | ISO 8601 Ordinal Date
 data YearDay = YearDay {
@@ -32,3 +33,21 @@ instance DayEncoding YearDay where
 
 isLeapYear :: Integer -> Bool
 isLeapYear year = (mod year 4 == 0) && ((mod year 400 == 0) || not (mod year 100 == 0))
+
+-- | Get the number of the Monday-starting week in the year and the day of the week.
+-- The first Monday is the first day of week 1, any earlier days in the year are week 0 (as \"%W\" in formatTime).
+-- Monday is 1, Sunday is 7 (as \"%u\" in formatTime).
+mondayStartWeek :: ModJulianDay -> (Int,Int)
+mondayStartWeek mjd =(fromInteger ((div d 7) - (div k 7)),fromInteger (mod d 7) + 1) where
+	yd = ydDay (encodeDay mjd)
+	d = mjd + 2
+	k = d - (toInteger yd)
+
+-- | Get the number of the Sunday-starting week in the year and the day of the week.
+-- The first Sunday is the first day of week 1, any earlier days in the year are week 0 (as \"%U\" in formatTime).
+-- Sunday is 0, Saturday is 6 (as \"%w\" in formatTime).
+sundayStartWeek :: ModJulianDay -> (Int,Int)
+sundayStartWeek mjd =(fromInteger ((div d 7) - (div k 7)),fromInteger (mod d 7)) where
+	yd = ydDay (encodeDay mjd)
+	d = mjd + 3
+	k = d - (toInteger yd)

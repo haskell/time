@@ -73,24 +73,6 @@ instance FormatTime Timezone where
 	formatCharacter 'Z' = Just (\_ -> timezoneName)
 	formatCharacter _ = Nothing
 
-weekDay :: ModJulianDay -> Int
-weekDay day = fromInteger (mod (day + 3) 7)
-
-weekDay' :: ModJulianDay -> Int
-weekDay' day = weekDay (day - 1) + 1
-
-weekNumber :: ModJulianDay -> Int
-weekNumber mjd = fromInteger ((div d 7) - (div k 7)) where
-	yd = ydDay (encodeDay mjd)
-	d = mjd + 3
-	k = d - (toInteger yd)
-
-weekNumber' :: ModJulianDay -> Int
-weekNumber' mjd = fromInteger ((div d 7) - (div k 7)) where
-	yd = ydDay (encodeDay mjd)
-	d = mjd + 2
-	k = d - (toInteger yd)
-
 instance FormatTime ModJulianDay where
 	-- Aggregate
 	formatCharacter 'D' = Just (\locale -> formatTime locale "%m/%d/%y")
@@ -119,11 +101,11 @@ instance FormatTime ModJulianDay where
 	formatCharacter 'u' = Just (\_ -> show . isowDay . encodeDay)
 
 	-- Day of week
-	formatCharacter 'a' = Just (\locale -> snd . ((wDays locale) !!) . weekDay)
-	formatCharacter 'A' = Just (\locale -> fst . ((wDays locale) !!) . weekDay)
-	formatCharacter 'U' = Just (\_ -> show2 . weekNumber)
-	formatCharacter 'w' = Just (\_ -> show . weekDay)
-	formatCharacter 'W' = Just (\_ -> show2 . weekNumber')
+	formatCharacter 'a' = Just (\locale -> snd . ((wDays locale) !!) . snd . sundayStartWeek)
+	formatCharacter 'A' = Just (\locale -> fst . ((wDays locale) !!) . snd . sundayStartWeek)
+	formatCharacter 'U' = Just (\_ -> show2 . fst . sundayStartWeek)
+	formatCharacter 'w' = Just (\_ -> show . snd . sundayStartWeek)
+	formatCharacter 'W' = Just (\_ -> show2 . fst . mondayStartWeek)
 	
 	-- Default
 	formatCharacter _   = Nothing

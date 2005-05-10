@@ -82,6 +82,7 @@ System/Time/Calendar/Calendar.o : System/Time/Clock.hi
 System/Time/Calendar/Calendar.o : System/Time/Calendar/Timezone.hi
 System/Time/Calendar/Calendar.o : System/Time/Calendar/TimeOfDay.hi
 System/Time/Calendar/YearDay.o : System/Time/Calendar/YearDay.hs
+System/Time/Calendar/YearDay.o : System/Time/Clock.hi
 System/Time/Calendar/YearDay.o : System/Time/Calendar/Private.hi
 System/Time/Calendar/YearDay.o : System/Time/Calendar/Calendar.hi
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/Gregorian.hs
