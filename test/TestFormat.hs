@@ -65,7 +65,8 @@ getYearP4 :: Integer -> UTCTime
 getYearP4 year = decodeLocalUTC utc (CalendarTime (GregorianDay year 12 31) midnight)
 
 times :: [UTCTime]
-times = [baseTime0] ++ (fmap getDay [0..23])
+times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
+	(fmap getYearP1 [1980..2000]) ++ (fmap getYearP2 [1980..2000]) ++ (fmap getYearP3 [1980..2000]) ++ (fmap getYearP4 [1980..2000])
 
 compareFormat :: String -> Timezone -> UTCTime -> IO ()
 compareFormat fmt zone time = let
@@ -83,11 +84,8 @@ compareFormat fmt zone time = let
 chars :: [Char]
 chars = "aAbBcCdDeFgGhHIjklmMnprRStTuUVwWxXyYzZ%"
 
+formats :: [String]
+formats =  ["%G-W%V-%u","%U-%w","%W-%u"] ++ (fmap (\char -> '%':char:[]) chars)
+
 main :: IO ()
-main = do
-	mapM_ (\day -> compareFormat "%G-W%V-%u" utc (getDay day)) [0..100]
-	mapM_ (\year -> compareFormat "%G-W%V-%u" utc (getYearP1 year)) [1980..2000]
-	mapM_ (\year -> compareFormat "%G-W%V-%u" utc (getYearP2 year)) [1980..2000]
-	mapM_ (\year -> compareFormat "%G-W%V-%u" utc (getYearP3 year)) [1980..2000]
-	mapM_ (\year -> compareFormat "%G-W%V-%u" utc (getYearP4 year)) [1980..2000]
-	mapM_ (\char -> let fmt = '%':char:[] in mapM_ (\time -> mapM_ (\zone -> compareFormat fmt zone time) zones) times) chars
+main = mapM_ (\fmt -> mapM_ (\time -> mapM_ (\zone -> compareFormat fmt zone time) zones) times) formats

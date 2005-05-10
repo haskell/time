@@ -79,14 +79,17 @@ weekDay day = fromInteger (mod (day + 3) 7)
 weekDay' :: ModJulianDay -> Int
 weekDay' day = weekDay (day - 1) + 1
 
-dayOfYear :: ModJulianDay -> Int
-dayOfYear = ydDay . encodeDay
-
 weekNumber :: ModJulianDay -> Int
-weekNumber day = (div (dayOfYear day) 7) + 1
+weekNumber mjd = fromInteger ((div d 7) - (div k 7)) where
+	yd = ydDay (encodeDay mjd)
+	d = mjd + 3
+	k = d - (toInteger yd)
 
 weekNumber' :: ModJulianDay -> Int
-weekNumber' day = (div (dayOfYear day) 7) + 1
+weekNumber' mjd = fromInteger ((div d 7) - (div k 7)) where
+	yd = ydDay (encodeDay mjd)
+	d = mjd + 2
+	k = d - (toInteger yd)
 
 instance FormatTime ModJulianDay where
 	-- Aggregate
