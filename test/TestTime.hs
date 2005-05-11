@@ -41,7 +41,7 @@ myzone :: Timezone
 myzone = hoursToTimezone (- 8)
 
 leapSec1998Cal :: GregorianTime
-leapSec1998Cal = CalendarTime (GregorianDay 1998 12 31) (TimeOfDay 23 59 60.5)
+leapSec1998Cal = DayAndTime (GregorianDay 1998 12 31) (TimeOfDay 23 59 60.5)
 
 leapSec1998 :: UTCTime
 leapSec1998 = decodeLocalUTC utc leapSec1998Cal

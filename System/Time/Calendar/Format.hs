@@ -30,12 +30,12 @@ formatTime locale ('%':c:cs) t = (formatChar c) ++ (formatTime locale cs t) wher
 		_ -> ""
 formatTime locale (c:cs) t = c:(formatTime locale cs t)
 
-instance (FormatTime d) => FormatTime (CalendarTime d) where
+instance (FormatTime d) => FormatTime (DayAndTime d) where
 	formatCharacter 'c' = Just (\locale -> formatTime locale (dateTimeFmt locale))
 	formatCharacter c = case (formatCharacter c) of
-		Just f -> Just (\locale dt -> f locale (ctDay dt))
+		Just f -> Just (\locale dt -> f locale (dtDay dt))
 		Nothing -> case (formatCharacter c) of
-			Just f -> Just (\locale dt -> f locale (ctTime dt))
+			Just f -> Just (\locale dt -> f locale (dtTime dt))
 			Nothing -> Nothing
 
 instance FormatTime TimeOfDay where
@@ -80,17 +80,17 @@ instance FormatTime ModJulianDay where
 	formatCharacter 'x' = Just (\locale -> formatTime locale (dateFmt locale))
 
 	-- Year Count
-	formatCharacter 'Y' = Just (\_ -> show . cdYear . encodeDay)
-	formatCharacter 'y' = Just (\_ -> show2 . fromInteger . mod100 . cdYear . encodeDay)
-	formatCharacter 'C' = Just (\_ -> show2 . fromInteger . div100 . cdYear . encodeDay)
+	formatCharacter 'Y' = Just (\_ -> show . gregYear . encodeDay)
+	formatCharacter 'y' = Just (\_ -> show2 . fromInteger . mod100 . gregYear . encodeDay)
+	formatCharacter 'C' = Just (\_ -> show2 . fromInteger . div100 . gregYear . encodeDay)
 	-- Month of Year
-	formatCharacter 'B' = Just (\locale -> fst . (\m -> (months locale) !! (m - 1)) . cdMonth . encodeDay)
-	formatCharacter 'b' = Just (\locale -> snd . (\m -> (months locale) !! (m - 1)) . cdMonth . encodeDay)
-	formatCharacter 'h' = Just (\locale -> snd . (\m -> (months locale) !! (m - 1)) . cdMonth . encodeDay)
-	formatCharacter 'm' = Just (\_ -> show2 . cdMonth . encodeDay)
+	formatCharacter 'B' = Just (\locale -> fst . (\m -> (months locale) !! (m - 1)) . gregMonth . encodeDay)
+	formatCharacter 'b' = Just (\locale -> snd . (\m -> (months locale) !! (m - 1)) . gregMonth . encodeDay)
+	formatCharacter 'h' = Just (\locale -> snd . (\m -> (months locale) !! (m - 1)) . gregMonth . encodeDay)
+	formatCharacter 'm' = Just (\_ -> show2 . gregMonth . encodeDay)
 	-- Day of Month
-	formatCharacter 'd' = Just (\_ -> show2 . cdDay . encodeDay)
-	formatCharacter 'e' = Just (\_ -> show2Space . cdDay . encodeDay)
+	formatCharacter 'd' = Just (\_ -> show2 . gregDay . encodeDay)
+	formatCharacter 'e' = Just (\_ -> show2Space . gregDay . encodeDay)
 	-- Day of Year
 	formatCharacter 'j' = Just (\_ -> show3 . ydDay . encodeDay)
 

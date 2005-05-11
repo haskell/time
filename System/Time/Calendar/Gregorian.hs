@@ -14,14 +14,14 @@ import System.Time.Calendar.Private
 
 -- | a year, month and day aggregate, suitable for the Gregorian calendar
 data GregorianDay = GregorianDay {
-	cdYear    :: Integer,
-	cdMonth   :: Int,
-	cdDay     :: Int
+	gregYear    :: Integer,
+	gregMonth   :: Int,
+	gregDay     :: Int
 } deriving (Eq,Ord)
 
-type GregorianTime = CalendarTime GregorianDay
+type GregorianTime = DayAndTime GregorianDay
 
-type ZonedGregorianTime = ZonedTime (CalendarTime GregorianDay)
+type ZonedGregorianTime = ZonedTime (DayAndTime GregorianDay)
 
 instance Show GregorianDay where
 	show (GregorianDay y m d) = (if y > 0 then show y else (show (1 - y) ++ "BCE")) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)

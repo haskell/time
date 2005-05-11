@@ -44,25 +44,25 @@ posixDay :: UTCDiffTime
 posixDay = 86400
 
 baseTime0 :: UTCTime
-baseTime0 = decodeLocalUTC utc (CalendarTime (GregorianDay 1970 01 01) midnight)
+baseTime0 = decodeLocalUTC utc (DayAndTime (GregorianDay 1970 01 01) midnight)
 
 baseTime1 :: UTCTime
-baseTime1 = decodeLocalUTC utc (CalendarTime (GregorianDay 2000 01 01) midnight)
+baseTime1 = decodeLocalUTC utc (DayAndTime (GregorianDay 2000 01 01) midnight)
 
 getDay :: Integer -> UTCTime
 getDay day = addUTCTime ((fromInteger day) * posixDay) baseTime1
 
 getYearP1 :: Integer -> UTCTime
-getYearP1 year = decodeLocalUTC utc (CalendarTime (GregorianDay year 01 01) midnight)
+getYearP1 year = decodeLocalUTC utc (DayAndTime (GregorianDay year 01 01) midnight)
 
 getYearP2 :: Integer -> UTCTime
-getYearP2 year = decodeLocalUTC utc (CalendarTime (GregorianDay year 02 04) midnight)
+getYearP2 year = decodeLocalUTC utc (DayAndTime (GregorianDay year 02 04) midnight)
 
 getYearP3 :: Integer -> UTCTime
-getYearP3 year = decodeLocalUTC utc (CalendarTime (GregorianDay year 03 04) midnight)
+getYearP3 year = decodeLocalUTC utc (DayAndTime (GregorianDay year 03 04) midnight)
 
 getYearP4 :: Integer -> UTCTime
-getYearP4 year = decodeLocalUTC utc (CalendarTime (GregorianDay year 12 31) midnight)
+getYearP4 year = decodeLocalUTC utc (DayAndTime (GregorianDay year 12 31) midnight)
 
 times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
