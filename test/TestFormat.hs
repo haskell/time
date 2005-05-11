@@ -70,7 +70,7 @@ times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 
 compareFormat :: String -> Timezone -> UTCTime -> IO ()
 compareFormat fmt zone time = let
-		ctime = encodeUTC zone time :: ZonedGregorianTime
+		ctime = encodeUTC zone time :: CalendarTime
 		haskellText = formatTime locale fmt ctime
 	in do
 		unixText <- unixFormatTime fmt zone time

@@ -2,7 +2,7 @@
 
 module System.Time.Calendar.Gregorian
 (
-	GregorianDay(..),GregorianTime,ZonedGregorianTime
+	GregorianDay(..)
 
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
@@ -19,17 +19,12 @@ data GregorianDay = GregorianDay {
 	gregDay     :: Int
 } deriving (Eq,Ord)
 
-type GregorianTime = DayAndTime GregorianDay
-
-type ZonedGregorianTime = ZonedTime (DayAndTime GregorianDay)
-
 instance Show GregorianDay where
 	show (GregorianDay y m d) = (if y > 0 then show y else (show (1 - y) ++ "BCE")) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
 
 findMonthDay :: [Int] -> Int -> (Int,Int)
 findMonthDay (n:ns) yd | yd > n = (\(m,d) -> (m + 1,d)) (findMonthDay ns (yd - n))
 findMonthDay _ yd = (1,yd)
-
 
 monthLengths :: Bool -> [Int]
 monthLengths isleap = 

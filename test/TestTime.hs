@@ -40,7 +40,7 @@ showUTCTime (UTCTime d t) =  show d ++ "," ++ show t
 myzone :: Timezone
 myzone = hoursToTimezone (- 8)
 
-leapSec1998Cal :: GregorianTime
+leapSec1998Cal :: DayAndTime GregorianDay
 leapSec1998Cal = DayAndTime (GregorianDay 1998 12 31) (TimeOfDay 23 59 60.5)
 
 leapSec1998 :: UTCTime
@@ -52,7 +52,7 @@ testUTC = do
 	showCal 51178
 	putStrLn (show leapSec1998Cal)
 	putStrLn (showUTCTime leapSec1998)
-	let lsMineCal = encodeLocalUTC myzone leapSec1998 :: GregorianTime
+	let lsMineCal = encodeLocalUTC myzone leapSec1998 :: DayAndTime GregorianDay
 	putStrLn (show lsMineCal)
 	let lsMine = decodeLocalUTC myzone lsMineCal
 	putStrLn (showUTCTime lsMine)
@@ -66,12 +66,12 @@ poslong = 120
 testUT1 :: IO ()
 testUT1 = do
 	putStrLn ""
-	putStrLn (show (encodeLocalUT1 0 51604.0 :: GregorianTime))
-	putStrLn (show (encodeLocalUT1 0 51604.5 :: GregorianTime))
-	putStrLn (show (encodeLocalUT1 neglong 51604.0 :: GregorianTime))
-	putStrLn (show (encodeLocalUT1 neglong 51604.5 :: GregorianTime))
-	putStrLn (show (encodeLocalUT1 poslong 51604.0 :: GregorianTime))
-	putStrLn (show (encodeLocalUT1 poslong 51604.5 :: GregorianTime))
+	putStrLn (show (encodeLocalUT1 0 51604.0 :: DayAndTime GregorianDay))
+	putStrLn (show (encodeLocalUT1 0 51604.5 :: DayAndTime GregorianDay))
+	putStrLn (show (encodeLocalUT1 neglong 51604.0 :: DayAndTime GregorianDay))
+	putStrLn (show (encodeLocalUT1 neglong 51604.5 :: DayAndTime GregorianDay))
+	putStrLn (show (encodeLocalUT1 poslong 51604.0 :: DayAndTime GregorianDay))
+	putStrLn (show (encodeLocalUT1 poslong 51604.5 :: DayAndTime GregorianDay))
 
 main :: IO ()
 main = do
