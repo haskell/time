@@ -38,7 +38,7 @@ locale :: TimeLocale
 locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
 zones :: [Timezone]
-zones = [utc,hoursToTimezone (- 7)]
+zones = [utc,MkTimezone 87 True "Fenwickian Daylight Time"]
 
 posixDay :: UTCDiffTime
 posixDay = 86400
