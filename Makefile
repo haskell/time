@@ -1,9 +1,12 @@
-default: build doc
+default: build
 
 build: $(patsubst %.hs,%.hi,$(SRCS)) libTimeLib.a
 
 test: build
 	cd test && make
+
+cleantest: build
+	cd test && make clean
 
 SRCS = Data/Fixed.hs \
 	System/Time/Clock.hs \
@@ -53,6 +56,8 @@ haddock/index.html: $(SRCS)
 FORCE:
 
 .SECONDARY:
+
+.PHONY: default build test doc clean
 
 depend: $(SRCS)
 	ghc -M $^
