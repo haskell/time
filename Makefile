@@ -1,11 +1,11 @@
-default: build
+default: build test doc
 
 build: $(patsubst %.hs,%.hi,$(SRCS)) libTimeLib.a
 
 test: build
 	cd test && make
 
-cleantest: build
+cleantest:
 	cd test && make clean
 
 SRCS = Data/Fixed.hs \
@@ -29,8 +29,13 @@ libTimeLib.a: $(patsubst %.hs,%.o,$(SRCS)) timestuff.o
 	ar cru $@ $^
 	ranlib $@
 
-clean:
-	rm -rf doc haddock *.a *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
+cleanbuild:
+	rm -rf *.a *.o *.hi $(patsubst %.hs,%.o,$(SRCS)) $(patsubst %.hs,%.hi,$(SRCS)) Makefile.bak
+
+cleandoc:
+	rm -rf doc haddock
+
+clean: cleandoc cleantest cleanbuild
 
 doc: haddock/index.html
 

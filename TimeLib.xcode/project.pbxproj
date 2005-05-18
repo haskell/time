@@ -10,8 +10,10 @@
 				AB01DCF508374807003C9EF7,
 				AB01DCF908374808003C9EF7,
 				AB01DCF808374808003C9EF7,
+				ABFA25DC0839F8C90096540C,
 				AB01DD0008374848003C9EF7,
 				AB35747F08386FCD00B5F897,
+				ABFA25EC0839F9FD0096540C,
 			);
 			isa = PBXGroup;
 			refType = 4;
@@ -45,6 +47,8 @@
 			targets = (
 				AB01DD2108374A56003C9EF7,
 				AB3571F5083759B20059BD19,
+				ABFA25E20839F9310096540C,
+				ABFA25E50839F99F0096540C,
 			);
 		};
 		AB01DCF508374807003C9EF7 = {
@@ -205,7 +209,7 @@
 			sourceTree = "<group>";
 		};
 		AB01DD2108374A56003C9EF7 = {
-			buildArgumentsString = "$(ACTION)";
+			buildArgumentsString = "$(ACTION)build";
 			buildPhases = (
 			);
 			buildSettings = {
@@ -251,6 +255,217 @@
 			);
 			isa = PBXGroup;
 			name = Cabal;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA25DC0839F8C90096540C = {
+			children = (
+				ABFA25DF0839F8F70096540C,
+			);
+			isa = PBXGroup;
+			path = Data;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA25DF0839F8F70096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = Fixed.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA25E20839F9310096540C = {
+			buildArgumentsString = "$(ACTION)doc";
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			isa = PBXLegacyTarget;
+			name = Documentation;
+			passBuildSettingsInEnvironment = 1;
+			productName = Untitled;
+		};
+		ABFA25E50839F99F0096540C = {
+			buildPhases = (
+			);
+			buildSettings = {
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Everything;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				ABFA25E90839F9AF0096540C,
+				ABFA25EB0839F9B10096540C,
+				ABFA25E70839F9AD0096540C,
+			);
+			isa = PBXAggregateTarget;
+			name = Everything;
+			productName = Everything;
+		};
+		ABFA25E60839F9AD0096540C = {
+			containerPortal = AB01DCEE083747B1003C9EF7;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = ABFA25E20839F9310096540C;
+			remoteInfo = Documentation;
+		};
+		ABFA25E70839F9AD0096540C = {
+			isa = PBXTargetDependency;
+			target = ABFA25E20839F9310096540C;
+			targetProxy = ABFA25E60839F9AD0096540C;
+		};
+		ABFA25E80839F9AF0096540C = {
+			containerPortal = AB01DCEE083747B1003C9EF7;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = AB01DD2108374A56003C9EF7;
+			remoteInfo = Build;
+		};
+		ABFA25E90839F9AF0096540C = {
+			isa = PBXTargetDependency;
+			target = AB01DD2108374A56003C9EF7;
+			targetProxy = ABFA25E80839F9AF0096540C;
+		};
+		ABFA25EA0839F9B10096540C = {
+			containerPortal = AB01DCEE083747B1003C9EF7;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = AB3571F5083759B20059BD19;
+			remoteInfo = Test;
+		};
+		ABFA25EB0839F9B10096540C = {
+			isa = PBXTargetDependency;
+			target = AB3571F5083759B20059BD19;
+			targetProxy = ABFA25EA0839F9B10096540C;
+		};
+		ABFA25EC0839F9FD0096540C = {
+			children = (
+				ABFA2623083B28C00096540C,
+				ABFA2624083B28C00096540C,
+				ABFA2625083B28C00096540C,
+				ABFA2626083B28C00096540C,
+				ABFA2627083B28C00096540C,
+				ABFA2628083B28C00096540C,
+				ABFA2629083B28C00096540C,
+				ABFA262A083B28C00096540C,
+				ABFA262B083B28C00096540C,
+				ABFA262C083B28C00096540C,
+				ABFA262D083B28C00096540C,
+				ABFA262E083B28C00096540C,
+			);
+			isa = PBXGroup;
+			name = Test;
+			path = test;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2623083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = ConvertBack.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2624083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = CurrentTime.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2625083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.make;
+			path = Makefile;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2626083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = ShowDST.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2627083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = TestFixed.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2628083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = TestFixed.ref;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2629083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = TestFormat.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA262A083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			path = TestFormatStuff.c;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA262B083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = TestFormatStuff.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA262C083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = TestTime.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA262D083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = TestTime.ref;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA262E083B28C00096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = TimeZone.hs;
 			refType = 4;
 			sourceTree = "<group>";
 		};
