@@ -9,6 +9,7 @@ module System.Time.Calendar
 	module System.Time.Calendar.Gregorian,
 	module System.Time.Calendar.ISOWeek,
 	module System.Time.Calendar.Format,
+	-- * CalendarTime
 	module System.Time.Calendar
 ) where
 

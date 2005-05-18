@@ -1,7 +1,9 @@
 {-# OPTIONS -Wall -Werror #-}
 
+-- #hide
 module System.Time.Calendar.Calendar
 (
+	-- * Classes
 	-- "Calendrical" format
 	DayAndTime(..),DayEncoding(..),
 

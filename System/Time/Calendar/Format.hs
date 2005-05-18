@@ -1,6 +1,12 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module System.Time.Calendar.Format where
+
+-- #hide
+module System.Time.Calendar.Format
+	(
+	-- * UNIX-style formatting
+	module System.Time.Calendar.Format
+	) where
 
 import System.Time.Calendar.ISOWeek
 import System.Time.Calendar.Gregorian

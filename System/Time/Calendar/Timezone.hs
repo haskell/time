@@ -1,8 +1,9 @@
 {-# OPTIONS -ffi -Wall -Werror #-}
 
+-- #hide
 module System.Time.Calendar.Timezone
 (
-	-- time zones
+	-- * Time zones
 	Timezone(..),timezoneOffsetString,minutesToTimezone,hoursToTimezone,utc,
 
 	-- getting the locale time zone

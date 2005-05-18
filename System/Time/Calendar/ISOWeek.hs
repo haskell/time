@@ -1,6 +1,11 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module System.Time.Calendar.ISOWeek where
+-- #hide
+module System.Time.Calendar.ISOWeek
+	(
+	-- * ISO Week calendar
+	module System.Time.Calendar.ISOWeek
+	) where
 
 import System.Time.Calendar.YearDay
 import System.Time.Calendar.Calendar

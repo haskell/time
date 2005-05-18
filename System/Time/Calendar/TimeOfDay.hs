@@ -1,7 +1,9 @@
 {-# OPTIONS -Wall -Werror #-}
 
+-- #hide
 module System.Time.Calendar.TimeOfDay
 (
+	-- * Time of day
 	TimeOfDay(..),midnight,midday,
 	utcToLocalTimeOfDay,localToUTCTimeOfDay,
 	timeToTimeOfDay,timeOfDayToTime,

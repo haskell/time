@@ -1,7 +1,9 @@
 {-# OPTIONS -Wall -Werror #-}
 
+-- #hide
 module System.Time.Calendar.Gregorian
 (
+	-- * Gregorian calendar
 	GregorianDay(..)
 
 	-- calendrical arithmetic

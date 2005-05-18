@@ -1,6 +1,11 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module System.Time.Calendar.YearDay where
+-- #hide
+module System.Time.Calendar.YearDay
+	(
+	-- * Year and day format
+	module System.Time.Calendar.YearDay
+	) where
 
 import System.Time.Calendar.Calendar
 import System.Time.Calendar.Private
