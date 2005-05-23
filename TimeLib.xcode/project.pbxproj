@@ -14,6 +14,7 @@
 				AB01DD0008374848003C9EF7,
 				AB35747F08386FCD00B5F897,
 				ABFA25EC0839F9FD0096540C,
+				ABFA264B083C8AA40096540C,
 			);
 			isa = PBXGroup;
 			refType = 4;
@@ -299,7 +300,6 @@
 			buildPhases = (
 			);
 			buildSettings = {
-				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -354,18 +354,18 @@
 		};
 		ABFA25EC0839F9FD0096540C = {
 			children = (
-				ABFA2623083B28C00096540C,
-				ABFA2624083B28C00096540C,
 				ABFA2625083B28C00096540C,
-				ABFA2626083B28C00096540C,
 				ABFA2627083B28C00096540C,
 				ABFA2628083B28C00096540C,
-				ABFA2629083B28C00096540C,
-				ABFA262A083B28C00096540C,
-				ABFA262B083B28C00096540C,
+				ABFA2624083B28C00096540C,
+				ABFA2626083B28C00096540C,
+				ABFA2623083B28C00096540C,
 				ABFA262C083B28C00096540C,
 				ABFA262D083B28C00096540C,
 				ABFA262E083B28C00096540C,
+				ABFA262B083B28C00096540C,
+				ABFA262A083B28C00096540C,
+				ABFA2629083B28C00096540C,
 			);
 			isa = PBXGroup;
 			name = Test;
@@ -466,6 +466,24 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.haskell;
 			path = TimeZone.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA2649083BF6210096540C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text.html;
+			path = index.html;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABFA264B083C8AA40096540C = {
+			children = (
+				ABFA2649083BF6210096540C,
+			);
+			isa = PBXGroup;
+			name = "Target Doc";
+			path = haddock;
 			refType = 4;
 			sourceTree = "<group>";
 		};
