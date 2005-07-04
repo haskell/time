@@ -1,8 +1,8 @@
 Name:		time
 Version:	0.1
 Stability:	Alpha
--- unsure of best license
-License:	AllRightsReserved
+License:	BSD3
+License-File:	LICENSE
 Author:		Ashley Yakeley
 Maintainer:	<ashley@semantic.org>
 Homepage:
