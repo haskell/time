@@ -1,0 +1,709 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		ABFA25E50839F99F0096540C /* Everything */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = ABD26A530878B4D200AD8A23 /* Build configuration list for PBXAggregateTarget "Everything" */;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Everything;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+				ABD678610841714900CF37C0 /* PBXTargetDependency */,
+				ABFA25E90839F9AF0096540C /* PBXTargetDependency */,
+				ABFA25EB0839F9B10096540C /* PBXTargetDependency */,
+				ABFA25E70839F9AD0096540C /* PBXTargetDependency */,
+			);
+			name = Everything;
+			productName = Everything;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildStyle section */
+		AB01DCEC083747B1003C9EF7 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		AB01DCED083747B1003C9EF7 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		ABD678600841714900CF37C0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AB01DCEE083747B1003C9EF7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ABD6785F0841710C00CF37C0;
+			remoteInfo = Dependencies;
+		};
+		ABFA25E60839F9AD0096540C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AB01DCEE083747B1003C9EF7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ABFA25E20839F9310096540C;
+			remoteInfo = Documentation;
+		};
+		ABFA25E80839F9AF0096540C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AB01DCEE083747B1003C9EF7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AB01DD2108374A56003C9EF7;
+			remoteInfo = Build;
+		};
+		ABFA25EA0839F9B10096540C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AB01DCEE083747B1003C9EF7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AB3571F5083759B20059BD19;
+			remoteInfo = Test;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AB01DCF508374807003C9EF7 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		AB01DCF608374808003C9EF7 /* Setup.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Setup.hs; sourceTree = "<group>"; };
+		AB01DCF708374808003C9EF7 /* TimeLib.cabal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TimeLib.cabal; sourceTree = "<group>"; };
+		AB01DCF808374808003C9EF7 /* timestuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = timestuff.c; sourceTree = "<group>"; };
+		AB01DCF908374808003C9EF7 /* timestuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestuff.h; sourceTree = "<group>"; };
+		AB01DCFC08374838003C9EF7 /* Calendar.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Calendar.hs; sourceTree = "<group>"; };
+		AB01DCFD08374838003C9EF7 /* Clock.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Clock.hs; sourceTree = "<group>"; };
+		AB01DCFE08374838003C9EF7 /* TAI.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TAI.hs; sourceTree = "<group>"; };
+		AB01DD12083748EC003C9EF7 /* Calendar.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Calendar.hs; sourceTree = "<group>"; };
+		AB01DD13083748EC003C9EF7 /* Format.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Format.hs; sourceTree = "<group>"; };
+		AB01DD14083748EC003C9EF7 /* Gregorian.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Gregorian.hs; sourceTree = "<group>"; };
+		AB01DD15083748EC003C9EF7 /* ISOWeek.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ISOWeek.hs; sourceTree = "<group>"; };
+		AB01DD16083748EC003C9EF7 /* Private.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Private.hs; sourceTree = "<group>"; };
+		AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TimeOfDay.hs; sourceTree = "<group>"; };
+		AB01DD18083748EC003C9EF7 /* Timezone.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Timezone.hs; sourceTree = "<group>"; };
+		AB01DD19083748EC003C9EF7 /* YearDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = YearDay.hs; sourceTree = "<group>"; };
+		ABD6783F084167B900CF37C0 /* POSIX.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = POSIX.hs; sourceTree = "<group>"; };
+		ABD67840084167D100CF37C0 /* Current.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Current.hs; sourceTree = "<group>"; };
+		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
+		ABD67842084168CB00CF37C0 /* Scale.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Scale.hs; sourceTree = "<group>"; };
+		ABFA25DF0839F8F70096540C /* Fixed.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Fixed.hs; sourceTree = "<group>"; };
+		ABFA2623083B28C00096540C /* ConvertBack.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ConvertBack.hs; sourceTree = "<group>"; };
+		ABFA2624083B28C00096540C /* CurrentTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = CurrentTime.hs; sourceTree = "<group>"; };
+		ABFA2625083B28C00096540C /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		ABFA2626083B28C00096540C /* ShowDST.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ShowDST.hs; sourceTree = "<group>"; };
+		ABFA2627083B28C00096540C /* TestFixed.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestFixed.hs; sourceTree = "<group>"; };
+		ABFA2628083B28C00096540C /* TestFixed.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestFixed.ref; sourceTree = "<group>"; };
+		ABFA2629083B28C00096540C /* TestFormat.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestFormat.hs; sourceTree = "<group>"; };
+		ABFA262A083B28C00096540C /* TestFormatStuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TestFormatStuff.c; sourceTree = "<group>"; };
+		ABFA262B083B28C00096540C /* TestFormatStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFormatStuff.h; sourceTree = "<group>"; };
+		ABFA262C083B28C00096540C /* TestTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestTime.hs; sourceTree = "<group>"; };
+		ABFA262D083B28C00096540C /* TestTime.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestTime.ref; sourceTree = "<group>"; };
+		ABFA262E083B28C00096540C /* TimeZone.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TimeZone.hs; sourceTree = "<group>"; };
+		ABFA2649083BF6210096540C /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		AB01DCEA083747B1003C9EF7 = {
+			isa = PBXGroup;
+			children = (
+				AB01DCF508374807003C9EF7 /* Makefile */,
+				AB01DCF908374808003C9EF7 /* timestuff.h */,
+				AB01DCF808374808003C9EF7 /* timestuff.c */,
+				ABFA25DC0839F8C90096540C /* Data */,
+				AB01DD0008374848003C9EF7 /* Time */,
+				AB35747F08386FCD00B5F897 /* Cabal */,
+				ABFA25EC0839F9FD0096540C /* Test */,
+				ABFA264B083C8AA40096540C /* Target Doc */,
+			);
+			sourceTree = "<group>";
+		};
+		AB01DD0008374848003C9EF7 /* Time */ = {
+			isa = PBXGroup;
+			children = (
+				ABD6783C0841677900CF37C0 /* Clock */,
+				AB01DCFD08374838003C9EF7 /* Clock.hs */,
+				AB01DCFE08374838003C9EF7 /* TAI.hs */,
+				AB01DD0D083748C0003C9EF7 /* Calendar */,
+				AB01DCFC08374838003C9EF7 /* Calendar.hs */,
+			);
+			name = Time;
+			path = System/Time;
+			sourceTree = "<group>";
+		};
+		AB01DD0D083748C0003C9EF7 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				AB01DD16083748EC003C9EF7 /* Private.hs */,
+				AB01DD18083748EC003C9EF7 /* Timezone.hs */,
+				AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */,
+				AB01DD12083748EC003C9EF7 /* Calendar.hs */,
+				AB01DD19083748EC003C9EF7 /* YearDay.hs */,
+				AB01DD14083748EC003C9EF7 /* Gregorian.hs */,
+				AB01DD15083748EC003C9EF7 /* ISOWeek.hs */,
+				AB01DD13083748EC003C9EF7 /* Format.hs */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		AB35747F08386FCD00B5F897 /* Cabal */ = {
+			isa = PBXGroup;
+			children = (
+				AB01DCF708374808003C9EF7 /* TimeLib.cabal */,
+				AB01DCF608374808003C9EF7 /* Setup.hs */,
+			);
+			name = Cabal;
+			sourceTree = "<group>";
+		};
+		ABD6783C0841677900CF37C0 /* Clock */ = {
+			isa = PBXGroup;
+			children = (
+				ABD67842084168CB00CF37C0 /* Scale.hs */,
+				ABD67841084168B700CF37C0 /* UTC.hs */,
+				ABD6783F084167B900CF37C0 /* POSIX.hs */,
+				ABD67840084167D100CF37C0 /* Current.hs */,
+			);
+			path = Clock;
+			sourceTree = "<group>";
+		};
+		ABFA25DC0839F8C90096540C /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				ABFA25DF0839F8F70096540C /* Fixed.hs */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		ABFA25EC0839F9FD0096540C /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				ABFA2625083B28C00096540C /* Makefile */,
+				ABFA2627083B28C00096540C /* TestFixed.hs */,
+				ABFA2628083B28C00096540C /* TestFixed.ref */,
+				ABFA2624083B28C00096540C /* CurrentTime.hs */,
+				ABFA2626083B28C00096540C /* ShowDST.hs */,
+				ABFA2623083B28C00096540C /* ConvertBack.hs */,
+				ABFA262C083B28C00096540C /* TestTime.hs */,
+				ABFA262D083B28C00096540C /* TestTime.ref */,
+				ABFA262E083B28C00096540C /* TimeZone.hs */,
+				ABFA262B083B28C00096540C /* TestFormatStuff.h */,
+				ABFA262A083B28C00096540C /* TestFormatStuff.c */,
+				ABFA2629083B28C00096540C /* TestFormat.hs */,
+			);
+			name = Test;
+			path = test;
+			sourceTree = "<group>";
+		};
+		ABFA264B083C8AA40096540C /* Target Doc */ = {
+			isa = PBXGroup;
+			children = (
+				ABFA2649083BF6210096540C /* index.html */,
+			);
+			name = "Target Doc";
+			path = haddock;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		AB01DD2108374A56003C9EF7 /* Build */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)build";
+			buildConfigurationList = ABD26A470878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Build" */;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = Build;
+			passBuildSettingsInEnvironment = 1;
+			productName = Untitled;
+		};
+		AB3571F5083759B20059BD19 /* Test */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)test";
+			buildConfigurationList = ABD26A4B0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Test" */;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Test;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = Test;
+			passBuildSettingsInEnvironment = 1;
+			productName = Test;
+		};
+		ABD6785F0841710C00CF37C0 /* Dependencies */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = depend;
+			buildConfigurationList = ABD26A430878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Dependencies" */;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = Dependencies;
+			passBuildSettingsInEnvironment = 1;
+			productName = Untitled;
+		};
+		ABFA25E20839F9310096540C /* Documentation */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)doc";
+			buildConfigurationList = ABD26A4F0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Documentation" */;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = Documentation;
+			passBuildSettingsInEnvironment = 1;
+			productName = Untitled;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		AB01DCEE083747B1003C9EF7 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "TimeLib" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				AB01DCEC083747B1003C9EF7 /* Development */,
+				AB01DCED083747B1003C9EF7 /* Deployment */,
+			);
+			hasScannedForEncodings = 0;
+			mainGroup = AB01DCEA083747B1003C9EF7;
+			projectDirPath = "";
+			targets = (
+				ABD6785F0841710C00CF37C0 /* Dependencies */,
+				AB01DD2108374A56003C9EF7 /* Build */,
+				AB3571F5083759B20059BD19 /* Test */,
+				ABFA25E20839F9310096540C /* Documentation */,
+				ABFA25E50839F99F0096540C /* Everything */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXTargetDependency section */
+		ABD678610841714900CF37C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ABD6785F0841710C00CF37C0 /* Dependencies */;
+			targetProxy = ABD678600841714900CF37C0 /* PBXContainerItemProxy */;
+		};
+		ABFA25E70839F9AD0096540C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ABFA25E20839F9310096540C /* Documentation */;
+			targetProxy = ABFA25E60839F9AD0096540C /* PBXContainerItemProxy */;
+		};
+		ABFA25E90839F9AF0096540C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AB01DD2108374A56003C9EF7 /* Build */;
+			targetProxy = ABFA25E80839F9AF0096540C /* PBXContainerItemProxy */;
+		};
+		ABFA25EB0839F9B10096540C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AB3571F5083759B20059BD19 /* Test */;
+			targetProxy = ABFA25EA0839F9B10096540C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		ABD26A440878B4D200AD8A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
+		ABD26A450878B4D200AD8A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Deployment;
+		};
+		ABD26A460878B4D200AD8A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		ABD26A480878B4D200AD8A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
+		ABD26A490878B4D200AD8A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Deployment;
+		};
+		ABD26A4A0878B4D200AD8A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		ABD26A4C0878B4D200AD8A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Test;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
+		ABD26A4D0878B4D200AD8A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Test;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Deployment;
+		};
+		ABD26A4E0878B4D200AD8A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Test;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		ABD26A500878B4D200AD8A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
+		ABD26A510878B4D200AD8A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Deployment;
+		};
+		ABD26A520878B4D200AD8A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		ABD26A540878B4D200AD8A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Everything;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
+		ABD26A550878B4D200AD8A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Everything;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Deployment;
+		};
+		ABD26A560878B4D200AD8A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Everything;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		ABD26A580878B4D200AD8A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		ABD26A590878B4D200AD8A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		ABD26A5A0878B4D200AD8A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ABD26A430878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Dependencies" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABD26A440878B4D200AD8A23 /* Development */,
+				ABD26A450878B4D200AD8A23 /* Deployment */,
+				ABD26A460878B4D200AD8A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		ABD26A470878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABD26A480878B4D200AD8A23 /* Development */,
+				ABD26A490878B4D200AD8A23 /* Deployment */,
+				ABD26A4A0878B4D200AD8A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		ABD26A4B0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABD26A4C0878B4D200AD8A23 /* Development */,
+				ABD26A4D0878B4D200AD8A23 /* Deployment */,
+				ABD26A4E0878B4D200AD8A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		ABD26A4F0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Documentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABD26A500878B4D200AD8A23 /* Development */,
+				ABD26A510878B4D200AD8A23 /* Deployment */,
+				ABD26A520878B4D200AD8A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		ABD26A530878B4D200AD8A23 /* Build configuration list for PBXAggregateTarget "Everything" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABD26A540878B4D200AD8A23 /* Development */,
+				ABD26A550878B4D200AD8A23 /* Deployment */,
+				ABD26A560878B4D200AD8A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "TimeLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABD26A580878B4D200AD8A23 /* Development */,
+				ABD26A590878B4D200AD8A23 /* Deployment */,
+				ABD26A5A0878B4D200AD8A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AB01DCEE083747B1003C9EF7 /* Project object */;
+}
