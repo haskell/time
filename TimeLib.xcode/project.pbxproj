@@ -46,6 +46,7 @@
 			mainGroup = AB01DCEA083747B1003C9EF7;
 			projectDirPath = "";
 			targets = (
+				ABD6785F0841710C00CF37C0,
 				AB01DD2108374A56003C9EF7,
 				AB3571F5083759B20059BD19,
 				ABFA25E20839F9310096540C,
@@ -118,6 +119,7 @@
 		};
 		AB01DD0008374848003C9EF7 = {
 			children = (
+				ABD6783C0841677900CF37C0,
 				AB01DCFD08374838003C9EF7,
 				AB01DCFE08374838003C9EF7,
 				AB01DD0D083748C0003C9EF7,
@@ -259,6 +261,82 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
+		ABD6783C0841677900CF37C0 = {
+			children = (
+				ABD67842084168CB00CF37C0,
+				ABD67841084168B700CF37C0,
+				ABD6783F084167B900CF37C0,
+				ABD67840084167D100CF37C0,
+			);
+			isa = PBXGroup;
+			path = Clock;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABD6783F084167B900CF37C0 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = POSIX.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABD67840084167D100CF37C0 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = Current.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABD67841084168B700CF37C0 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = UTC.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABD67842084168CB00CF37C0 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.haskell;
+			path = Scale.hs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		ABD6785F0841710C00CF37C0 = {
+			buildArgumentsString = depend;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Untitled;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			isa = PBXLegacyTarget;
+			name = Dependencies;
+			passBuildSettingsInEnvironment = 1;
+			productName = Untitled;
+		};
+		ABD678600841714900CF37C0 = {
+			containerPortal = AB01DCEE083747B1003C9EF7;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = ABD6785F0841710C00CF37C0;
+			remoteInfo = Dependencies;
+		};
+		ABD678610841714900CF37C0 = {
+			isa = PBXTargetDependency;
+			target = ABD6785F0841710C00CF37C0;
+			targetProxy = ABD678600841714900CF37C0;
+		};
 		ABFA25DC0839F8C90096540C = {
 			children = (
 				ABFA25DF0839F8F70096540C,
@@ -308,6 +386,7 @@
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
 			dependencies = (
+				ABD678610841714900CF37C0,
 				ABFA25E90839F9AF0096540C,
 				ABFA25EB0839F9B10096540C,
 				ABFA25E70839F9AD0096540C,

@@ -4,6 +4,7 @@ module Main where
 
 import System.Time.Calendar
 import System.Time.Clock
+import System.Time.Clock.POSIX
 
 import System.Locale
 import Foreign
@@ -39,9 +40,6 @@ locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
 zones :: [Timezone]
 zones = [utc,MkTimezone 87 True "Fenwickian Daylight Time"]
-
-posixDay :: UTCDiffTime
-posixDay = 86400
 
 baseTime0 :: UTCTime
 baseTime0 = decodeLocalUTC utc (DayAndTime (GregorianDay 1970 01 01) midnight)

@@ -13,6 +13,7 @@ module System.Time.Calendar.Timezone
 --import System.Time.Calendar.Format
 import System.Time.Calendar.Private
 import System.Time.Clock
+import System.Time.Clock.POSIX
 
 import Foreign
 import Foreign.C

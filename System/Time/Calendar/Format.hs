@@ -16,6 +16,7 @@ import System.Time.Calendar.TimeOfDay
 import System.Time.Calendar.Timezone
 import System.Time.Calendar.Private
 import System.Time.Clock
+import System.Time.Clock.POSIX
 
 import System.Locale
 import Data.Maybe
