@@ -19,7 +19,7 @@ checkDay t day = do
 checkers :: [ModJulianDay -> IO ()]
 checkers = [
 	checkDay (undefined :: YearDay),
-	checkDay (undefined :: ISOWeek),
+	checkDay (undefined :: ISOWeekDay),
 	checkDay (undefined :: GregorianDay)
 	]
 

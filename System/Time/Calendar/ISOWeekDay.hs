@@ -1,10 +1,10 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.ISOWeek
+module System.Time.Calendar.ISOWeekDay
 	(
 	-- * ISO Week calendar
-	module System.Time.Calendar.ISOWeek
+	module System.Time.Calendar.ISOWeekDay
 	) where
 
 import System.Time.Calendar.YearDay
@@ -12,17 +12,17 @@ import System.Time.Calendar.Calendar
 import System.Time.Calendar.Private
 
 -- | Year, week and day aggregate for ISO week count
-data ISOWeek = ISOWeek {
+data ISOWeekDay = ISOWeekDay {
 	isowYear  :: Integer,
 	isowWeek  :: Int,
 	isowDay   :: Int
 } deriving (Eq,Ord)
 
-instance Show ISOWeek where
-	show (ISOWeek y w d) = (show y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d)
+instance Show ISOWeekDay where
+	show (ISOWeekDay y w d) = (show y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d)
 
-instance DayEncoding ISOWeek where
-	encodeDay mjd = ISOWeek y1 (fromInteger (w1 + 1)) (fromInteger (mod d 7) + 1) where
+instance DayEncoding ISOWeekDay where
+	encodeDay mjd = ISOWeekDay y1 (fromInteger (w1 + 1)) (fromInteger (mod d 7) + 1) where
 		(YearDay y0 yd) = encodeDay mjd
 		d = mjd + 2
 		foo :: Integer -> Integer
@@ -37,5 +37,5 @@ instance DayEncoding ISOWeek where
 				else (y0,w0)
 			else (y0,w0)
 
-	decodeDay (ISOWeek y w d) = k - (mod k 7) + (toInteger ((w * 7) + d)) - 10 where
+	decodeDay (ISOWeekDay y w d) = k - (mod k 7) + (toInteger ((w * 7) + d)) - 10 where
 		k = decodeDay (YearDay y 6)

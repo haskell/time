@@ -8,7 +8,7 @@ module System.Time.Calendar.Format
 	module System.Time.Calendar.Format
 	) where
 
-import System.Time.Calendar.ISOWeek
+import System.Time.Calendar.ISOWeekDay
 import System.Time.Calendar.Gregorian
 import System.Time.Calendar.YearDay
 import System.Time.Calendar.Calendar
@@ -101,7 +101,7 @@ instance FormatTime ModJulianDay where
 	-- Day of Year
 	formatCharacter 'j' = Just (\_ -> show3 . ydDay . encodeDay)
 
-	-- ISOWeek
+	-- ISOWeekDay
 	formatCharacter 'G' = Just (\_ -> show . isowYear . encodeDay)
 	formatCharacter 'g' = Just (\_ -> show2 . fromInteger . mod100 . isowYear . encodeDay)
 	formatCharacter 'V' = Just (\_ -> show2 . isowWeek . encodeDay)
@@ -128,5 +128,5 @@ instance FormatTime YearDay where
 instance FormatTime GregorianDay where
 	formatCharacter = formatDayCharacter
 
-instance FormatTime ISOWeek where
+instance FormatTime ISOWeekDay where
 	formatCharacter = formatDayCharacter

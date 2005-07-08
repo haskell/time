@@ -21,7 +21,7 @@ SRCS = Data/Fixed.hs \
 	System/Time/Calendar/Calendar.hs \
 	System/Time/Calendar/YearDay.hs \
 	System/Time/Calendar/Gregorian.hs \
-	System/Time/Calendar/ISOWeek.hs \
+	System/Time/Calendar/ISOWeekDay.hs \
 	System/Time/Calendar/Format.hs \
 	System/Time/Calendar.hs
 
@@ -115,10 +115,10 @@ System/Time/Calendar/Gregorian.o : System/Time/Calendar/Gregorian.hs
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/Private.hi
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/Calendar.hi
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/YearDay.hi
-System/Time/Calendar/ISOWeek.o : System/Time/Calendar/ISOWeek.hs
-System/Time/Calendar/ISOWeek.o : System/Time/Calendar/Private.hi
-System/Time/Calendar/ISOWeek.o : System/Time/Calendar/Calendar.hi
-System/Time/Calendar/ISOWeek.o : System/Time/Calendar/YearDay.hi
+System/Time/Calendar/ISOWeekDay.o : System/Time/Calendar/ISOWeekDay.hs
+System/Time/Calendar/ISOWeekDay.o : System/Time/Calendar/Private.hi
+System/Time/Calendar/ISOWeekDay.o : System/Time/Calendar/Calendar.hi
+System/Time/Calendar/ISOWeekDay.o : System/Time/Calendar/YearDay.hi
 System/Time/Calendar/Format.o : System/Time/Calendar/Format.hs
 System/Time/Calendar/Format.o : System/Time/Clock/POSIX.hi
 System/Time/Calendar/Format.o : System/Time/Clock.hi
@@ -128,10 +128,10 @@ System/Time/Calendar/Format.o : System/Time/Calendar/TimeOfDay.hi
 System/Time/Calendar/Format.o : System/Time/Calendar/Calendar.hi
 System/Time/Calendar/Format.o : System/Time/Calendar/YearDay.hi
 System/Time/Calendar/Format.o : System/Time/Calendar/Gregorian.hi
-System/Time/Calendar/Format.o : System/Time/Calendar/ISOWeek.hi
+System/Time/Calendar/Format.o : System/Time/Calendar/ISOWeekDay.hi
 System/Time/Calendar.o : System/Time/Calendar.hs
 System/Time/Calendar.o : System/Time/Calendar/Format.hi
-System/Time/Calendar.o : System/Time/Calendar/ISOWeek.hi
+System/Time/Calendar.o : System/Time/Calendar/ISOWeekDay.hi
 System/Time/Calendar.o : System/Time/Calendar/Gregorian.hi
 System/Time/Calendar.o : System/Time/Calendar/YearDay.hi
 System/Time/Calendar.o : System/Time/Calendar/Calendar.hi
