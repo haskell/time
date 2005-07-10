@@ -5,7 +5,7 @@ module System.Time.Calendar.Calendar
 (
 	-- * Classes
 	-- "Calendrical" format
-	DayAndTime(..),DayEncoding(..),
+	DayAndTime(..),
 
 	-- converting UTC and UT1 times to "calendrical" format
 	LocalTimeEncoding(..),
@@ -15,19 +15,8 @@ module System.Time.Calendar.Calendar
 
 import System.Time.Calendar.TimeOfDay
 import System.Time.Calendar.Timezone
+import System.Time.Calendar.Days
 import System.Time.Clock
-
--- | A type that encodes a day number.
-class (Eq d) => DayEncoding d where
-	-- | Name the given day according to the calendar.
-	encodeDay :: ModJulianDay -> d
-	-- | Find out which day a given calendar day is.
-	-- Behaviour for invalid representations is not defined.
-	decodeDay :: d -> ModJulianDay
-
-instance DayEncoding ModJulianDay where
-	encodeDay = id
-	decodeDay = id
 
 -- | A type that encodes a local representation of a time, either local civil time or local mean time.
 -- Conversion of this (as local civil time) to UTC depends on the time zone.

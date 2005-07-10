@@ -11,7 +11,7 @@ module System.Time.Calendar.Gregorian
 ) where
 
 import System.Time.Calendar.YearDay
-import System.Time.Calendar.Calendar
+import System.Time.Calendar.Days
 import System.Time.Calendar.Private
 
 -- | a year, month and day aggregate, suitable for the Gregorian calendar

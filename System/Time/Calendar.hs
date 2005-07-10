@@ -2,12 +2,13 @@
 
 module System.Time.Calendar
 (
-	module System.Time.Calendar.Timezone,
-	module System.Time.Calendar.TimeOfDay,
-	module System.Time.Calendar.Calendar,
+	module System.Time.Calendar.Days,
 	module System.Time.Calendar.YearDay,
 	module System.Time.Calendar.Gregorian,
 	module System.Time.Calendar.ISOWeekDay,
+	module System.Time.Calendar.Timezone,
+	module System.Time.Calendar.TimeOfDay,
+	module System.Time.Calendar.Calendar,
 	module System.Time.Calendar.Format,
 	-- * CalendarTime
 	module System.Time.Calendar
@@ -16,12 +17,13 @@ module System.Time.Calendar
 import Data.Fixed
 import System.Time.Clock
 
-import System.Time.Calendar.Timezone
-import System.Time.Calendar.TimeOfDay
-import System.Time.Calendar.Calendar
+import System.Time.Calendar.Days
 import System.Time.Calendar.YearDay
 import System.Time.Calendar.Gregorian
 import System.Time.Calendar.ISOWeekDay
+import System.Time.Calendar.Timezone
+import System.Time.Calendar.TimeOfDay
+import System.Time.Calendar.Calendar
 import System.Time.Calendar.Format
 
 type CalendarTime = ZonedTime (DayAndTime GregorianDay)

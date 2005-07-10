@@ -8,7 +8,7 @@ module System.Time.Calendar.ISOWeekDay
 	) where
 
 import System.Time.Calendar.YearDay
-import System.Time.Calendar.Calendar
+import System.Time.Calendar.Days
 import System.Time.Calendar.Private
 
 -- | Year, week and day aggregate for ISO week count

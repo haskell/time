@@ -7,7 +7,7 @@ module System.Time.Calendar.YearDay
 	module System.Time.Calendar.YearDay
 	) where
 
-import System.Time.Calendar.Calendar
+import System.Time.Calendar.Days
 import System.Time.Calendar.Private
 import System.Time.Clock
 

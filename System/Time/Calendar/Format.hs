@@ -11,6 +11,7 @@ module System.Time.Calendar.Format
 import System.Time.Calendar.ISOWeekDay
 import System.Time.Calendar.Gregorian
 import System.Time.Calendar.YearDay
+import System.Time.Calendar.Days
 import System.Time.Calendar.Calendar
 import System.Time.Calendar.TimeOfDay
 import System.Time.Calendar.Timezone

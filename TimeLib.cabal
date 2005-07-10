@@ -5,11 +5,28 @@ License:	BSD3
 License-File:	LICENSE
 Author:		Ashley Yakeley
 Maintainer:	<ashley@semantic.org>
-Homepage:
+Homepage:	http://semantic.org/TimeLib/
 Category:
 Build-Depends:	base
 Synopsis:	a new time library
-Exposed-modules:	Data.Fixed, System.Time.Clock, System.Time.TAI,  System.Time.Calendar
+Exposed-modules:
+	Data.Fixed,
+	System.Time.Clock,
+	System.Time.TAI,
+	System.Time.Calendar
 Extensions:	ForeignFunctionInterface
 C-Sources:	timestuff.c
-Other-modules:	System.Time.Clock.Scale, System.Time.Clock.UTC, System.Time.Clock.POSIX, System.Time.Clock.Current, System.Time.Calendar.Private, System.Time.Calendar.Timezone, System.Time.Calendar.TimeOfDay, System.Time.Calendar.Calendar, System.Time.Calendar.Gregorian, System.Time.Calendar.ISOWeekDay, System.Time.Calendar.Format, System.Time.Calendar.YearDay
+Other-modules:
+	System.Time.Clock.Scale,
+	System.Time.Clock.UTC,
+	System.Time.Clock.POSIX,
+	System.Time.Clock.Current,
+	System.Time.Calendar.Private,
+	System.Time.Calendar.Days,
+	System.Time.Calendar.Calendar,
+	System.Time.Calendar.Gregorian,
+	System.Time.Calendar.ISOWeekDay,
+	System.Time.Calendar.Format,
+	System.Time.Calendar.YearDay,
+	System.Time.Calendar.Timezone,
+	System.Time.Calendar.TimeOfDay
