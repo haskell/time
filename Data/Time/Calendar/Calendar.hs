@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.Calendar
+module Data.Time.Calendar.Calendar
 (
 	-- * Classes
 	-- "Calendrical" format
@@ -13,11 +13,11 @@ module System.Time.Calendar.Calendar
 	ZonedTime(..),encodeUTC,decodeUTC,getZonedTime
 ) where
 
-import System.Time.Calendar.TimeOfDay
-import System.Time.Calendar.Timezone
-import System.Time.Calendar.Gregorian
-import System.Time.Calendar.Days
-import System.Time.Clock
+import Data.Time.Calendar.TimeOfDay
+import Data.Time.Calendar.Timezone
+import Data.Time.Calendar.Gregorian
+import Data.Time.Calendar.Days
+import Data.Time.Clock
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.

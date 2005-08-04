@@ -1,8 +1,8 @@
 module Main where
 
-import System.Time.Clock
-import System.Time.TAI
-import System.Time.Calendar
+import Data.Time.Clock
+import Data.Time.TAI
+import Data.Time.Calendar
 
 main :: IO ()
 main = do

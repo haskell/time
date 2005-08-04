@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.Private where
+module Data.Time.Calendar.Private where
 
 import Data.Fixed
 

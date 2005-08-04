@@ -130,7 +130,6 @@
 				AB01DCF908374808003C9EF7 /* timestuff.h */,
 				AB01DCF808374808003C9EF7 /* timestuff.c */,
 				ABFA25DC0839F8C90096540C /* Data */,
-				AB01DD0008374848003C9EF7 /* Time */,
 				ABFA25EC0839F9FD0096540C /* Test */,
 				ABFA264B083C8AA40096540C /* Target Doc */,
 			);
@@ -145,8 +144,7 @@
 				AB01DCFD08374838003C9EF7 /* Clock.hs */,
 				AB01DCFE08374838003C9EF7 /* TAI.hs */,
 			);
-			name = Time;
-			path = System/Time;
+			path = Time;
 			sourceTree = "<group>";
 		};
 		AB01DD0D083748C0003C9EF7 /* Calendar */ = {
@@ -189,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				ABFA25DF0839F8F70096540C /* Fixed.hs */,
+				AB01DD0008374848003C9EF7 /* Time */,
 			);
 			path = Data;
 			sourceTree = "<group>";

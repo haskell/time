@@ -2,9 +2,9 @@
 
 module Main where
 
-import System.Time.Calendar
-import System.Time.Clock
-import System.Time.Clock.POSIX
+import Data.Time.Calendar
+import Data.Time.Clock
+import Data.Time.Clock.POSIX
 
 import System.Locale
 import Foreign

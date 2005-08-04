@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Clock.UTC
+module Data.Time.Clock.UTC
 (
 	-- * UTC
 	-- | UTC is time as measured by a clock, corrected to keep pace with the earth by adding or removing
@@ -17,8 +17,8 @@ module System.Time.Clock.UTC
 	posixDay,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds
 ) where
 
-import System.Time.Calendar.Days
-import System.Time.Clock.Scale
+import Data.Time.Calendar.Days
+import Data.Time.Clock.Scale
 import Data.Fixed
 
 -- | This is the simplest representation of UTC.

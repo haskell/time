@@ -2,22 +2,22 @@
 
 
 -- #hide
-module System.Time.Calendar.Format
+module Data.Time.Calendar.Format
 	(
 	-- * UNIX-style formatting
-	module System.Time.Calendar.Format
+	module Data.Time.Calendar.Format
 	) where
 
-import System.Time.Calendar.ISOWeekDay
-import System.Time.Calendar.Gregorian
-import System.Time.Calendar.YearDay
-import System.Time.Calendar.Days
-import System.Time.Calendar.Calendar
-import System.Time.Calendar.TimeOfDay
-import System.Time.Calendar.Timezone
-import System.Time.Calendar.Private
-import System.Time.Clock
-import System.Time.Clock.POSIX
+import Data.Time.Calendar.ISOWeekDay
+import Data.Time.Calendar.Gregorian
+import Data.Time.Calendar.YearDay
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Calendar
+import Data.Time.Calendar.TimeOfDay
+import Data.Time.Calendar.Timezone
+import Data.Time.Calendar.Private
+import Data.Time.Clock
+import Data.Time.Clock.POSIX
 
 import System.Locale
 import Data.Maybe

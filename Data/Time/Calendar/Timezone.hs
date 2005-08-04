@@ -1,7 +1,7 @@
 {-# OPTIONS -ffi -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.Timezone
+module Data.Time.Calendar.Timezone
 (
 	-- * Time zones
 	Timezone(..),timezoneOffsetString,minutesToTimezone,hoursToTimezone,utc,
@@ -11,9 +11,9 @@ module System.Time.Calendar.Timezone
 ) where
 
 --import System.Time.Calendar.Format
-import System.Time.Calendar.Private
-import System.Time.Clock
-import System.Time.Clock.POSIX
+import Data.Time.Calendar.Private
+import Data.Time.Clock
+import Data.Time.Clock.POSIX
 
 import Foreign
 import Foreign.C

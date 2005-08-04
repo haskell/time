@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.Days
+module Data.Time.Calendar.Days
 (
 	-- * Days
 	Date(..),addDate,diffDate

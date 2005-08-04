@@ -1,14 +1,14 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.YearDay
+module Data.Time.Calendar.YearDay
 	(
 	-- * Year and day format
-	module System.Time.Calendar.YearDay
+	module Data.Time.Calendar.YearDay
 	) where
 
-import System.Time.Calendar.Days
-import System.Time.Calendar.Private
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Private
 
 yearAndDay :: Date -> (Integer,Int)
 yearAndDay (ModJulianDay mjd) = (year,yd) where

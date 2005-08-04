@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- | TAI and leap-second tables for converting to UTC: most people won't need this module.
-module System.Time.TAI
+module Data.Time.TAI
 (
 	-- TAI arithmetic
 	AbsoluteTime,taiEpoch,addAbsoluteTime,diffAbsoluteTime,
@@ -13,8 +13,8 @@ module System.Time.TAI
 	utcDayLength,utcToTAITime,taiToUTCTime
 ) where
 
-import System.Time.Calendar.Days
-import System.Time.Clock
+import Data.Time.Calendar.Days
+import Data.Time.Clock
 
 -- | AbsoluteTime is TAI, time as measured by a clock.
 newtype AbsoluteTime = MkAbsoluteTime DiffTime deriving (Eq,Ord)

@@ -2,7 +2,7 @@
 
 module Main where
 
-import System.Time.Calendar
+import Data.Time.Calendar
 
 checkDay :: (Show t) => (Date -> t) -> (t -> Date) -> Date -> IO ()
 checkDay encodeDay decodeDay day = do

@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.TimeOfDay
+module Data.Time.Calendar.TimeOfDay
 (
 	-- * Time of day
 	TimeOfDay(..),midnight,midday,
@@ -10,9 +10,9 @@ module System.Time.Calendar.TimeOfDay
 	dayFractionToTimeOfDay,timeOfDayToDayFraction
 ) where
 
-import System.Time.Calendar.Timezone
-import System.Time.Calendar.Private
-import System.Time.Clock
+import Data.Time.Calendar.Timezone
+import Data.Time.Calendar.Private
+import Data.Time.Clock
 import Data.Fixed
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.

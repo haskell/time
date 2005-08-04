@@ -1,13 +1,13 @@
 {-# OPTIONS -ffi -Wall -Werror #-}
 
 -- #hide
-module System.Time.Clock.Current
+module Data.Time.Clock.Current
 (
 	-- * Current time
 	getCurrentTime,
 ) where
 
-import System.Time.Clock.UTC
+import Data.Time.Clock.UTC
 
 import Foreign
 import Foreign.C

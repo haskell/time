@@ -1,30 +1,30 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module System.Time.Calendar
+module Data.Time.Calendar
 (
-	module System.Time.Calendar.Days,
-	module System.Time.Calendar.YearDay,
-	module System.Time.Calendar.Gregorian,
-	module System.Time.Calendar.ISOWeekDay,
-	module System.Time.Calendar.Timezone,
-	module System.Time.Calendar.TimeOfDay,
-	module System.Time.Calendar.Calendar,
-	module System.Time.Calendar.Format,
+	module Data.Time.Calendar.Days,
+	module Data.Time.Calendar.YearDay,
+	module Data.Time.Calendar.Gregorian,
+	module Data.Time.Calendar.ISOWeekDay,
+	module Data.Time.Calendar.Timezone,
+	module Data.Time.Calendar.TimeOfDay,
+	module Data.Time.Calendar.Calendar,
+	module Data.Time.Calendar.Format,
 	-- * CalendarTime
-	module System.Time.Calendar
+	module Data.Time.Calendar
 ) where
 
 --import Data.Fixed
---import System.Time.Clock
+--import Data.Time.Clock
 
-import System.Time.Calendar.Days
-import System.Time.Calendar.YearDay
-import System.Time.Calendar.Gregorian
-import System.Time.Calendar.ISOWeekDay
-import System.Time.Calendar.Timezone
-import System.Time.Calendar.TimeOfDay
-import System.Time.Calendar.Calendar
-import System.Time.Calendar.Format
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.YearDay
+import Data.Time.Calendar.Gregorian
+import Data.Time.Calendar.ISOWeekDay
+import Data.Time.Calendar.Timezone
+import Data.Time.Calendar.TimeOfDay
+import Data.Time.Calendar.Calendar
+import Data.Time.Calendar.Format
 
 {-
 type CalendarTime = ZonedTime (DayAndTime GregorianDay)

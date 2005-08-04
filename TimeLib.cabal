@@ -11,22 +11,22 @@ Build-Depends:	base
 Synopsis:	a new time library
 Exposed-modules:
 	Data.Fixed,
-	System.Time.Clock,
-	System.Time.TAI,
-	System.Time.Calendar
+	Data.Time.Clock,
+	Data.Time.TAI,
+	Data.Time.Calendar
 Extensions:	ForeignFunctionInterface
 C-Sources:	timestuff.c
 Other-modules:
-	System.Time.Clock.Scale,
-	System.Time.Clock.UTC,
-	System.Time.Clock.POSIX,
-	System.Time.Clock.Current,
-	System.Time.Calendar.Private,
-	System.Time.Calendar.Days,
-	System.Time.Calendar.Calendar,
-	System.Time.Calendar.Gregorian,
-	System.Time.Calendar.ISOWeekDay,
-	System.Time.Calendar.Format,
-	System.Time.Calendar.YearDay,
-	System.Time.Calendar.Timezone,
-	System.Time.Calendar.TimeOfDay
+	Data.Time.Clock.Scale,
+	Data.Time.Clock.UTC,
+	Data.Time.Clock.POSIX,
+	Data.Time.Clock.Current,
+	Data.Time.Calendar.Private,
+	Data.Time.Calendar.Days,
+	Data.Time.Calendar.Calendar,
+	Data.Time.Calendar.Gregorian,
+	Data.Time.Calendar.ISOWeekDay,
+	Data.Time.Calendar.Format,
+	Data.Time.Calendar.YearDay,
+	Data.Time.Calendar.Timezone,
+	Data.Time.Calendar.TimeOfDay

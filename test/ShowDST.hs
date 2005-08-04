@@ -1,7 +1,7 @@
 module Main where
 
-import System.Time.Clock
-import System.Time.Calendar
+import Data.Time.Clock
+import Data.Time.Calendar
 
 monthBeginning :: Timezone -> Integer -> Int -> UTCTime
 monthBeginning zone year month = decodeLocalUTC zone

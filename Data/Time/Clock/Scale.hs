@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Clock.Scale
+module Data.Time.Clock.Scale
 (
 	-- * Universal Time
 	-- | Time as measured by the earth.

@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.Gregorian
+module Data.Time.Calendar.Gregorian
 (
 	-- * Gregorian calendar
 	gregorian,fromGregorian,showGregorian
@@ -10,9 +10,9 @@ module System.Time.Calendar.Gregorian
     -- e.g. "one month after March 31st"
 ) where
 
-import System.Time.Calendar.YearDay
-import System.Time.Calendar.Days
-import System.Time.Calendar.Private
+import Data.Time.Calendar.YearDay
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Private
 
 gregorian :: Date -> (Integer,Int,Int)
 gregorian date = (year,month,day) where

@@ -1,15 +1,15 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module System.Time.Calendar.ISOWeekDay
+module Data.Time.Calendar.ISOWeekDay
 	(
 	-- * ISO Week calendar
-	module System.Time.Calendar.ISOWeekDay
+	module Data.Time.Calendar.ISOWeekDay
 	) where
 
-import System.Time.Calendar.YearDay
-import System.Time.Calendar.Days
-import System.Time.Calendar.Private
+import Data.Time.Calendar.YearDay
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Private
 
 showISOWeekDay :: Date -> String
 showISOWeekDay date = (show y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where
