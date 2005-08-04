@@ -12,7 +12,7 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
 showISOWeekDay :: Date -> String
-showISOWeekDay date = (show y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where
+showISOWeekDay date = (show4 y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where
 	(y,w,d) = isoWeekDay date
 
 isoWeekDay :: Date -> (Integer,Int,Int)

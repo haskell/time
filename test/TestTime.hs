@@ -10,12 +10,17 @@ showCal mjd = do
 	let date = ModJulianDay mjd
 	let (y,m,d) = gregorian date
 	let date' = fromGregorian y m d
-	putStr ((show mjd) ++ "=" ++ (showGregorian date))
+	putStr ((show mjd) ++ "=" ++ (showGregorian date) ++ "=" ++ (showYearAndDay date) ++ "=" ++ (showISOWeekDay date))
 	putStrLn (if date == date' then "" else "=" ++ (show (getModJulianDay date')) ++ "!")
 
 testCal :: IO ()
 testCal = do
-	showCal 0	
+	-- days around 1 BCE/1 CE
+	mapM_ showCal [-678950 .. -678930]	
+	-- days around 1000 CE
+	mapM_ showCal [-313710 .. -313690]	
+	-- days around MJD zero
+	mapM_ showCal [-30..30]	
 	showCal 40000
 	showCal 50000
 	-- 1900 not a leap year

@@ -29,7 +29,7 @@ fromGregorian year month day = ModJulianDay
 	m = month' + (12 * a) - 3
 
 showGregorian :: Date -> String
-showGregorian date = (if y > 0 then show y else (show (1 - y) ++ "BCE")) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d) where
+showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d) where
 	(y,m,d) = gregorian date
 
 findMonthDay :: [Int] -> Int -> (Int,Int)

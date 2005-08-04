@@ -89,8 +89,8 @@ instance FormatTime Date where
 
 	-- Year Count
 	formatCharacter 'Y' = Just (\_ -> show . fst . yearAndDay)
-	formatCharacter 'y' = Just (\_ -> show2 . fromInteger . mod100 . fst . yearAndDay)
-	formatCharacter 'C' = Just (\_ -> show2 . fromInteger . div100 . fst . yearAndDay)
+	formatCharacter 'y' = Just (\_ -> show2 . mod100 . fst . yearAndDay)
+	formatCharacter 'C' = Just (\_ -> show2 . div100 . fst . yearAndDay)
 	-- Month of Year
 	formatCharacter 'B' = Just (\locale -> fst . (\(_,m,_) -> (months locale) !! (m - 1)) . gregorian)
 	formatCharacter 'b' = Just (\locale -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . gregorian)
@@ -104,7 +104,7 @@ instance FormatTime Date where
 
 	-- ISOWeekDay
 	formatCharacter 'G' = Just (\_ -> show . (\(y,_,_) -> y) . isoWeekDay)
-	formatCharacter 'g' = Just (\_ -> show2 . fromInteger . mod100 . (\(y,_,_) -> y) . isoWeekDay)
+	formatCharacter 'g' = Just (\_ -> show2 . mod100 . (\(y,_,_) -> y) . isoWeekDay)
 	formatCharacter 'V' = Just (\_ -> show2 . (\(_,w,_) -> w) . isoWeekDay)
 	formatCharacter 'u' = Just (\_ -> show . (\(_,_,d) -> d) . isoWeekDay)
 

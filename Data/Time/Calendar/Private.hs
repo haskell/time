@@ -5,14 +5,16 @@ module Data.Time.Calendar.Private where
 
 import Data.Fixed
 
-show2 :: Int -> String
+show2 :: (Num t,Ord t,Show t) => t -> String
+show2 i | i < 0 = '-':(show2 (negate i))
 show2 i = let
 	s = show i in
   case s of
 	[_] -> '0':s
 	_ -> s
 
-show2Space :: Int -> String
+show2Space :: (Num t,Ord t,Show t) => t -> String
+show2Space i | i < 0 = '-':(show2Space (negate i))
 show2Space i = let
 	s = show i in
   case s of
@@ -23,11 +25,20 @@ show2Fixed :: Pico -> String
 show2Fixed x | x < 10 = '0':(showFixed True x)
 show2Fixed x = showFixed True x
 
-show3 :: Int -> String
+show3 :: (Num t,Ord t,Show t) => t -> String
+show3 i | i < 0 = '-':(show3 (negate i))
 show3 i = let
 	s = show2 i in
   case s of
 	[_,_] -> '0':s
+	_ -> s
+
+show4 :: (Num t,Ord t,Show t) => t -> String
+show4 i | i < 0 = '-':(show4 (negate i))
+show4 i = let
+	s = show3 i in
+  case s of
+	[_,_,_] -> '0':s
 	_ -> s
 
 mod100 :: (Integral i) => i -> i

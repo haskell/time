@@ -30,7 +30,7 @@ fromYearAndDay year day = ModJulianDay mjd where
 
 -- | ISO 8601 Ordinal Date
 showYearAndDay :: Date -> String
-showYearAndDay date = (show y) ++ "-" ++ (show3 d) where
+showYearAndDay date = (show4 y) ++ "-" ++ (show3 d) where
 	(y,d) = yearAndDay date
 
 isLeapYear :: Integer -> Bool
