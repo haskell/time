@@ -14,8 +14,8 @@ module System.Time.Calendar
 	module System.Time.Calendar
 ) where
 
-import Data.Fixed
-import System.Time.Clock
+--import Data.Fixed
+--import System.Time.Clock
 
 import System.Time.Calendar.Days
 import System.Time.Calendar.YearDay
@@ -26,6 +26,7 @@ import System.Time.Calendar.TimeOfDay
 import System.Time.Calendar.Calendar
 import System.Time.Calendar.Format
 
+{-
 type CalendarTime = ZonedTime (DayAndTime GregorianDay)
 
 calendarTime :: Timezone -> Integer -> Int -> Int -> Int -> Int -> Pico -> CalendarTime
@@ -52,9 +53,4 @@ ctMin = todMin . dtTime . ztTime
 
 ctSec :: CalendarTime -> Pico
 ctSec = todSec . dtTime . ztTime
-
-getCalendarTime :: IO CalendarTime
-getCalendarTime = do
-	t <- getCurrentTime
-	zone <- getTimezone t
-	return (encodeUTC zone t)
+-}

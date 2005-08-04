@@ -3,29 +3,25 @@
 module Main where
 
 import System.Time.Calendar
-import System.Time.Clock
 
-checkDay :: (DayEncoding t,Show t) => t -> ModJulianDay -> IO ()
-checkDay t day = do
-	let st = encodeDay' t day
+checkDay :: (Show t) => (Date -> t) -> (t -> Date) -> Date -> IO ()
+checkDay encodeDay decodeDay day = do
+	let st = encodeDay day
 	let day' = decodeDay st
 	if day /= day'
-	 then putStrLn ((show day) ++ " -> " ++ (show st) ++ " -> " ++ (show day') ++ " (diff " ++ (show (day' - day)) ++ ")")
+	 then putStrLn ((show day) ++ " -> " ++ (show st) ++ " -> " ++ (show day') ++ " (diff " ++ (show (diffDate day' day)) ++ ")")
 	 else return ()
-	where
-		encodeDay' :: (DayEncoding t,Show t) => t -> ModJulianDay -> t
-		encodeDay' _ = encodeDay
 
-checkers :: [ModJulianDay -> IO ()]
+checkers :: [Date -> IO ()]
 checkers = [
-	checkDay (undefined :: YearDay),
-	checkDay (undefined :: ISOWeekDay),
-	checkDay (undefined :: GregorianDay)
+	checkDay yearAndDay (\(y,d) -> fromYearAndDay y d),
+	checkDay isoWeekDay (\(y,w,d) -> fromISOWeekDay y w d),
+	checkDay gregorian (\(y,m,d) -> fromGregorian y m d)
 	]
 
-days :: [ModJulianDay]
-days = [50000..50200] ++
-	(fmap (\year -> (decodeDay (GregorianDay year 1 4))) [1980..2000])
+days :: [Date]
+days = [ModJulianDay 50000 .. ModJulianDay 50200] ++
+	(fmap (\year -> (fromGregorian year 1 4)) [1980..2000])
 
 main :: IO ()
 main = mapM_ (\ch -> mapM_ ch days) checkers

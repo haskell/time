@@ -5,7 +5,7 @@ import System.Time.Calendar
 
 monthBeginning :: Timezone -> Integer -> Int -> UTCTime
 monthBeginning zone year month = decodeLocalUTC zone
-	(DayAndTime (GregorianDay year month 1) midnight)
+	(DayAndTime (fromGregorian year month 1) midnight)
 
 findTransition :: UTCTime -> UTCTime -> IO [(UTCTime,Timezone,Timezone)]
 findTransition a b = do
@@ -19,7 +19,7 @@ findTransition a b = do
 			return (tp ++ tq)
 
 showZoneTime :: Timezone -> UTCTime -> String
-showZoneTime zone time = show (encodeUTC zone time :: CalendarTime)
+showZoneTime zone time = show (encodeUTC zone time)
 
 showTransition :: (UTCTime,Timezone,Timezone) -> String
 showTransition (time,zone1,zone2) = (showZoneTime zone1 time) ++ " => " ++ (showZoneTime zone2 time)
@@ -28,7 +28,7 @@ main :: IO ()
 main = do
 	now <- getCurrentTime
 	zone <- getTimezone now
-	let year = gregYear (dtDay (encodeLocalUTC zone now))
+	let (year,_,_) = gregorian (dtDay (encodeLocalUTC zone now))
 	putStrLn ("DST adjustments for " ++ show year ++ ":")
 	let t0 = monthBeginning zone year 1
 	let t1 = monthBeginning zone year 4

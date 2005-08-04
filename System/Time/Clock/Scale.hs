@@ -5,7 +5,7 @@ module System.Time.Clock.Scale
 (
 	-- * Universal Time
 	-- | Time as measured by the earth.
-	ModJulianDay,ModJulianDate,
+	UniversalTime(..),
 
 	-- * Absolute intervals
 	DiffTime
@@ -13,18 +13,16 @@ module System.Time.Clock.Scale
 
 import Data.Fixed
 
--- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
-type ModJulianDay = Integer
-
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
 -- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.
-type ModJulianDate = Rational
+newtype UniversalTime = ModJulianDate {getModJulianDate :: Rational} deriving (Eq,Ord)
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions will treat it as seconds.
 -- It has an accuracy of 10^-12 s.
 newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord)
 
+-- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum DiffTime where
 	succ (MkDiffTime a) = MkDiffTime (succ a)
 	pred (MkDiffTime a) = MkDiffTime (pred a)

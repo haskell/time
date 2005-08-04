@@ -17,6 +17,7 @@ module System.Time.Clock.UTC
 	posixDay,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds
 ) where
 
+import System.Time.Calendar.Days
 import System.Time.Clock.Scale
 import Data.Fixed
 
@@ -25,7 +26,7 @@ import Data.Fixed
 -- Note that if a day has a leap second added to it, it will have 86401 seconds.
 data UTCTime = UTCTime {
 	-- | the day
-	utctDay :: ModJulianDay,
+	utctDay :: Date,
 	-- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
 	utctDayTime :: DiffTime
 }
@@ -91,19 +92,19 @@ instance RealFrac UTCDiffTime where
 posixDay :: UTCDiffTime
 posixDay = 86400
 
-unixEpochMJD :: ModJulianDay
-unixEpochMJD = 40587
+unixEpochMJD :: Date
+unixEpochMJD = ModJulianDay 40587
 
 type POSIXTime = UTCDiffTime
 
 posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
 	(d,t) = divMod' i posixDay
- in UTCTime (d + unixEpochMJD) (realToFrac t)
+ in UTCTime (addDate unixEpochMJD d) (realToFrac t)
 
 utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
- (fromInteger (d - unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
+ (fromInteger (diffDate d unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
 
 -- | addUTCTime a b = a + b
 addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime

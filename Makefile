@@ -77,12 +77,14 @@ depend: $(SRCS)
 TestFixed.o: Data/Fixed.hi
 
 # DO NOT DELETE: Beginning of Haskell dependencies
+System/Time/Calendar/Days.o : System/Time/Calendar/Days.hs
 Data/Fixed.o : Data/Fixed.hs
 System/Time/Clock/Scale.o : System/Time/Clock/Scale.hs
 System/Time/Clock/Scale.o : Data/Fixed.hi
 System/Time/Clock/UTC.o : System/Time/Clock/UTC.hs
 System/Time/Clock/UTC.o : Data/Fixed.hi
 System/Time/Clock/UTC.o : System/Time/Clock/Scale.hi
+System/Time/Clock/UTC.o : System/Time/Calendar/Days.hi
 System/Time/Clock/POSIX.o : System/Time/Clock/POSIX.hs
 System/Time/Clock/POSIX.o : System/Time/Clock/UTC.hi
 System/Time/Clock/Current.o : System/Time/Clock/Current.hs
@@ -93,12 +95,10 @@ System/Time/Clock.o : System/Time/Clock/UTC.hi
 System/Time/Clock.o : System/Time/Clock/Scale.hi
 System/Time/TAI.o : System/Time/TAI.hs
 System/Time/TAI.o : System/Time/Clock.hi
-System/Time/Calendar/Days.o : System/Time/Calendar/Days.hs
-System/Time/Calendar/Days.o : System/Time/Clock.hi
+System/Time/TAI.o : System/Time/Calendar/Days.hi
 System/Time/Calendar/Private.o : System/Time/Calendar/Private.hs
 System/Time/Calendar/Private.o : Data/Fixed.hi
 System/Time/Calendar/YearDay.o : System/Time/Calendar/YearDay.hs
-System/Time/Calendar/YearDay.o : System/Time/Clock.hi
 System/Time/Calendar/YearDay.o : System/Time/Calendar/Private.hi
 System/Time/Calendar/YearDay.o : System/Time/Calendar/Days.hi
 System/Time/Calendar/Gregorian.o : System/Time/Calendar/Gregorian.hs
@@ -121,6 +121,7 @@ System/Time/Calendar/TimeOfDay.o : System/Time/Calendar/Timezone.hi
 System/Time/Calendar/Calendar.o : System/Time/Calendar/Calendar.hs
 System/Time/Calendar/Calendar.o : System/Time/Clock.hi
 System/Time/Calendar/Calendar.o : System/Time/Calendar/Days.hi
+System/Time/Calendar/Calendar.o : System/Time/Calendar/Gregorian.hi
 System/Time/Calendar/Calendar.o : System/Time/Calendar/Timezone.hi
 System/Time/Calendar/Calendar.o : System/Time/Calendar/TimeOfDay.hi
 System/Time/Calendar/Format.o : System/Time/Calendar/Format.hs
@@ -143,6 +144,4 @@ System/Time/Calendar.o : System/Time/Calendar/ISOWeekDay.hi
 System/Time/Calendar.o : System/Time/Calendar/Gregorian.hi
 System/Time/Calendar.o : System/Time/Calendar/YearDay.hi
 System/Time/Calendar.o : System/Time/Calendar/Days.hi
-System/Time/Calendar.o : System/Time/Clock.hi
-System/Time/Calendar.o : Data/Fixed.hi
 # DO NOT DELETE: End of Haskell dependencies

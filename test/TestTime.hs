@@ -5,12 +5,13 @@ module Main where
 import System.Time.Clock
 import System.Time.Calendar
 
-showCal :: ModJulianDay -> IO ()
-showCal d = do
-	let cal = encodeDay d :: GregorianDay
-	let d' = decodeDay cal
-	putStr ((show d) ++ "=" ++ show (encodeDay d :: GregorianDay))
-	putStrLn (if d == d' then "" else "=" ++ (show d') ++ "!")
+showCal :: Integer -> IO ()
+showCal mjd = do
+	let date = ModJulianDay mjd
+	let (y,m,d) = gregorian date
+	let date' = fromGregorian y m d
+	putStr ((show mjd) ++ "=" ++ (showGregorian date))
+	putStrLn (if date == date' then "" else "=" ++ (show (getModJulianDay date')) ++ "!")
 
 testCal :: IO ()
 testCal = do
@@ -35,13 +36,13 @@ testCal = do
 	mapM_ showCal [51540..52280]	
 
 showUTCTime :: UTCTime -> String
-showUTCTime (UTCTime d t) =  show d ++ "," ++ show t
+showUTCTime (UTCTime d t) =  show (getModJulianDay d) ++ "," ++ show t
 
 myzone :: Timezone
 myzone = hoursToTimezone (- 8)
 
-leapSec1998Cal :: DayAndTime GregorianDay
-leapSec1998Cal = DayAndTime (GregorianDay 1998 12 31) (TimeOfDay 23 59 60.5)
+leapSec1998Cal :: DayAndTime
+leapSec1998Cal = DayAndTime (fromGregorian 1998 12 31) (TimeOfDay 23 59 60.5)
 
 leapSec1998 :: UTCTime
 leapSec1998 = decodeLocalUTC utc leapSec1998Cal
@@ -52,7 +53,7 @@ testUTC = do
 	showCal 51178
 	putStrLn (show leapSec1998Cal)
 	putStrLn (showUTCTime leapSec1998)
-	let lsMineCal = encodeLocalUTC myzone leapSec1998 :: DayAndTime GregorianDay
+	let lsMineCal = encodeLocalUTC myzone leapSec1998
 	putStrLn (show lsMineCal)
 	let lsMine = decodeLocalUTC myzone lsMineCal
 	putStrLn (showUTCTime lsMine)
@@ -66,12 +67,12 @@ poslong = 120
 testUT1 :: IO ()
 testUT1 = do
 	putStrLn ""
-	putStrLn (show (encodeLocalUT1 0 51604.0 :: DayAndTime GregorianDay))
-	putStrLn (show (encodeLocalUT1 0 51604.5 :: DayAndTime GregorianDay))
-	putStrLn (show (encodeLocalUT1 neglong 51604.0 :: DayAndTime GregorianDay))
-	putStrLn (show (encodeLocalUT1 neglong 51604.5 :: DayAndTime GregorianDay))
-	putStrLn (show (encodeLocalUT1 poslong 51604.0 :: DayAndTime GregorianDay))
-	putStrLn (show (encodeLocalUT1 poslong 51604.5 :: DayAndTime GregorianDay))
+	putStrLn (show (encodeLocalUT1 0 (ModJulianDate 51604.0)))
+	putStrLn (show (encodeLocalUT1 0 (ModJulianDate 51604.5)))
+	putStrLn (show (encodeLocalUT1 neglong (ModJulianDate 51604.0)))
+	putStrLn (show (encodeLocalUT1 neglong (ModJulianDate 51604.5)))
+	putStrLn (show (encodeLocalUT1 poslong (ModJulianDate 51604.0)))
+	putStrLn (show (encodeLocalUT1 poslong (ModJulianDate 51604.5)))
 
 main :: IO ()
 main = do

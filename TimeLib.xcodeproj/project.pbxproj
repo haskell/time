@@ -139,11 +139,11 @@
 		AB01DD0008374848003C9EF7 /* Time */ = {
 			isa = PBXGroup;
 			children = (
+				AB01DD0D083748C0003C9EF7 /* Calendar */,
+				AB01DCFC08374838003C9EF7 /* Calendar.hs */,
 				ABD6783C0841677900CF37C0 /* Clock */,
 				AB01DCFD08374838003C9EF7 /* Clock.hs */,
 				AB01DCFE08374838003C9EF7 /* TAI.hs */,
-				AB01DD0D083748C0003C9EF7 /* Calendar */,
-				AB01DCFC08374838003C9EF7 /* Calendar.hs */,
 			);
 			name = Time;
 			path = System/Time;
