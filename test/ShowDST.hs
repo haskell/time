@@ -1,7 +1,8 @@
+{-# OPTIONS -Wall -Werror #-}
+
 module Main where
 
-import Data.Time.Clock
-import Data.Time.Calendar
+import Data.Time
 
 monthBeginning :: Timezone -> Integer -> Int -> UTCTime
 monthBeginning zone year month = localTimeToUTC zone

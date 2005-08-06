@@ -2,19 +2,19 @@
 
 
 -- #hide
-module Data.Time.Calendar.Format
+module Data.Time.LocalTime.Format
 	(
 	-- * UNIX-style formatting
-	module Data.Time.Calendar.Format
+	module Data.Time.LocalTime.Format
 	) where
 
+import Data.Time.LocalTime.LocalTime
+import Data.Time.LocalTime.TimeOfDay
+import Data.Time.LocalTime.Timezone
 import Data.Time.Calendar.ISOWeekDay
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.YearDay
 import Data.Time.Calendar.Days
-import Data.Time.Calendar.Calendar
-import Data.Time.Calendar.TimeOfDay
-import Data.Time.Calendar.Timezone
 import Data.Time.Calendar.Private
 import Data.Time.Clock
 import Data.Time.Clock.POSIX

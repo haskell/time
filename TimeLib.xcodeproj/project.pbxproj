@@ -92,7 +92,7 @@
 		AB01DCFC08374838003C9EF7 /* Calendar.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Calendar.hs; sourceTree = "<group>"; };
 		AB01DCFD08374838003C9EF7 /* Clock.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Clock.hs; sourceTree = "<group>"; };
 		AB01DCFE08374838003C9EF7 /* TAI.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TAI.hs; sourceTree = "<group>"; };
-		AB01DD12083748EC003C9EF7 /* Calendar.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Calendar.hs; sourceTree = "<group>"; };
+		AB01DD12083748EC003C9EF7 /* LocalTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = LocalTime.hs; sourceTree = "<group>"; };
 		AB01DD13083748EC003C9EF7 /* Format.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Format.hs; sourceTree = "<group>"; };
 		AB01DD14083748EC003C9EF7 /* Gregorian.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Gregorian.hs; sourceTree = "<group>"; };
 		AB01DD15083748EC003C9EF7 /* ISOWeekDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ISOWeekDay.hs; sourceTree = "<group>"; };
@@ -104,6 +104,8 @@
 		AB2665B108A1F65B0059DEC0 /* ClipDates.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ClipDates.ref; sourceTree = "<group>"; };
 		AB2665E708A215AA0059DEC0 /* LongWeekYears.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = LongWeekYears.hs; sourceTree = "<group>"; };
 		AB2665E808A215AA0059DEC0 /* LongWeekYears.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LongWeekYears.ref; sourceTree = "<group>"; };
+		AB2666E808A571460059DEC0 /* LocalTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = LocalTime.hs; sourceTree = "<group>"; };
+		AB2666F108A572520059DEC0 /* Time.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Time.hs; sourceTree = "<group>"; };
 		ABD6783F084167B900CF37C0 /* POSIX.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = POSIX.hs; sourceTree = "<group>"; };
 		ABD67840084167D100CF37C0 /* Current.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Current.hs; sourceTree = "<group>"; };
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
@@ -147,6 +149,8 @@
 				ABD6783C0841677900CF37C0 /* Clock */,
 				AB01DCFD08374838003C9EF7 /* Clock.hs */,
 				AB01DCFE08374838003C9EF7 /* TAI.hs */,
+				AB2666A808A56FE30059DEC0 /* LocalTime */,
+				AB2666E808A571460059DEC0 /* LocalTime.hs */,
 			);
 			path = Time;
 			sourceTree = "<group>";
@@ -159,12 +163,19 @@
 				AB01DD19083748EC003C9EF7 /* YearDay.hs */,
 				AB01DD14083748EC003C9EF7 /* Gregorian.hs */,
 				AB01DD15083748EC003C9EF7 /* ISOWeekDay.hs */,
-				AB01DD18083748EC003C9EF7 /* Timezone.hs */,
-				AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */,
-				AB01DD12083748EC003C9EF7 /* Calendar.hs */,
-				AB01DD13083748EC003C9EF7 /* Format.hs */,
 			);
 			path = Calendar;
+			sourceTree = "<group>";
+		};
+		AB2666A808A56FE30059DEC0 /* LocalTime */ = {
+			isa = PBXGroup;
+			children = (
+				AB01DD18083748EC003C9EF7 /* Timezone.hs */,
+				AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */,
+				AB01DD12083748EC003C9EF7 /* LocalTime.hs */,
+				AB01DD13083748EC003C9EF7 /* Format.hs */,
+			);
+			path = LocalTime;
 			sourceTree = "<group>";
 		};
 		AB35747F08386FCD00B5F897 /* Cabal */ = {
@@ -192,6 +203,7 @@
 			children = (
 				ABFA25DF0839F8F70096540C /* Fixed.hs */,
 				AB01DD0008374848003C9EF7 /* Time */,
+				AB2666F108A572520059DEC0 /* Time.hs */,
 			);
 			path = Data;
 			sourceTree = "<group>";

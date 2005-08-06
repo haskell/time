@@ -1,7 +1,7 @@
 {-# OPTIONS -ffi -Wall -Werror #-}
 
 -- #hide
-module Data.Time.Calendar.Timezone
+module Data.Time.LocalTime.Timezone
 (
 	-- * Time zones
 	Timezone(..),timezoneOffsetString,minutesToTimezone,hoursToTimezone,utc,

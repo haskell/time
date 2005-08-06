@@ -1,7 +1,8 @@
+{-# OPTIONS -Wall -Werror #-}
+
 module Main where
 
-import Data.Time.Clock
-import Data.Time.Calendar
+import Data.Time
 
 main :: IO ()
 main = do

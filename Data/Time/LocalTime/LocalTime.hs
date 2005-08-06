@@ -1,20 +1,19 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module Data.Time.Calendar.Calendar
+module Data.Time.LocalTime.LocalTime
 (
-	-- * Classes
-	-- "Calendrical" format
+	-- * Local Time
 	LocalTime(..),
 
-	-- converting UTC and UT1 times to "calendrical" format
+	-- converting UTC and UT1 times to LocalTime
 	utcToLocalTime,localTimeToUTC,ut1ToLocalTime,localTimeToUT1,
 	
 	ZonedTime(..),zonedTimeFromUTC,ztUTC,getZonedTime
 ) where
 
-import Data.Time.Calendar.TimeOfDay
-import Data.Time.Calendar.Timezone
+import Data.Time.LocalTime.TimeOfDay
+import Data.Time.LocalTime.Timezone
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Days
 import Data.Time.Clock

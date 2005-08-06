@@ -2,8 +2,7 @@
 
 module Main where
 
-import Data.Time.Clock
-import Data.Time.Calendar
+import Data.Time
 
 showCal :: Integer -> IO ()
 showCal mjd = do

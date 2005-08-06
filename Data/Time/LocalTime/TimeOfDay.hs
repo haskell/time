@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module Data.Time.Calendar.TimeOfDay
+module Data.Time.LocalTime.TimeOfDay
 (
 	-- * Time of day
 	TimeOfDay(..),midnight,midday,
@@ -10,7 +10,7 @@ module Data.Time.Calendar.TimeOfDay
 	dayFractionToTimeOfDay,timeOfDayToDayFraction
 ) where
 
-import Data.Time.Calendar.Timezone
+import Data.Time.LocalTime.Timezone
 import Data.Time.Calendar.Private
 import Data.Time.Clock
 import Data.Fixed

@@ -1,3 +1,5 @@
+{-# OPTIONS -Wall -Werror #-}
+
 module Main where
 
 import Data.Fixed

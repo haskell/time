@@ -2,8 +2,7 @@
 
 module Main where
 
-import Data.Time.Calendar
-import Data.Time.Clock
+import Data.Time
 import Data.Time.Clock.POSIX
 
 import System.Locale
