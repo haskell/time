@@ -42,8 +42,8 @@ testCal = do
 showUTCTime :: UTCTime -> String
 showUTCTime (UTCTime d t) =  show (getModJulianDay d) ++ "," ++ show t
 
-myzone :: Timezone
-myzone = hoursToTimezone (- 8)
+myzone :: TimeZone
+myzone = hoursToTimeZone (- 8)
 
 leapSec1998Cal :: LocalTime
 leapSec1998Cal = LocalTime (fromGregorian 1998 12 31) (TimeOfDay 23 59 60.5)

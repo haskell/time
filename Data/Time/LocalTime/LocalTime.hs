@@ -13,7 +13,7 @@ module Data.Time.LocalTime.LocalTime
 ) where
 
 import Data.Time.LocalTime.TimeOfDay
-import Data.Time.LocalTime.Timezone
+import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Days
 import Data.Time.Clock
@@ -31,12 +31,12 @@ instance Show LocalTime where
 	show (LocalTime d t) = (showGregorian d) ++ " " ++ (show t)
 
 -- | show a UTC time in a given time zone as a LocalTime
-utcToLocalTime :: Timezone -> UTCTime -> LocalTime
+utcToLocalTime :: TimeZone -> UTCTime -> LocalTime
 utcToLocalTime tz (UTCTime day dt) = LocalTime (addDate day i) tod where
 	(i,tod) = utcToLocalTimeOfDay tz (timeToTimeOfDay dt)
 
 -- | find out what UTC time a given LocalTime in a given time zone is
-localTimeToUTC :: Timezone -> LocalTime -> UTCTime
+localTimeToUTC :: TimeZone -> LocalTime -> UTCTime
 localTimeToUTC tz (LocalTime day tod) = UTCTime (addDate day i) (timeOfDayToTime todUTC) where
 	(i,todUTC) = localToUTCTimeOfDay tz tod
 
@@ -51,13 +51,13 @@ ut1ToLocalTime long (ModJulianDate date) = LocalTime (ModJulianDay localMJD) (da
 localTimeToUT1 :: Rational -> LocalTime -> UniversalTime
 localTimeToUT1 long (LocalTime (ModJulianDay localMJD) tod) = ModJulianDate ((fromIntegral localMJD) + (timeOfDayToDayFraction tod) - (long / 360))
 
--- | A local time together with a Timezone.
+-- | A local time together with a TimeZone.
 data ZonedTime = ZonedTime {
 	ztLocalTime :: LocalTime,
-	ztZone :: Timezone
+	ztZone :: TimeZone
 }
 
-zonedTimeFromUTC :: Timezone -> UTCTime -> ZonedTime
+zonedTimeFromUTC :: TimeZone -> UTCTime -> ZonedTime
 zonedTimeFromUTC zone time = ZonedTime (utcToLocalTime zone time) zone
 
 ztUTC :: ZonedTime -> UTCTime
@@ -69,5 +69,5 @@ instance Show ZonedTime where
 getZonedTime :: IO ZonedTime
 getZonedTime = do
 	t <- getCurrentTime
-	zone <- getTimezone t
+	zone <- getTimeZone t
 	return (zonedTimeFromUTC zone t)

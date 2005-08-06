@@ -21,7 +21,7 @@ SRCS = Data/Fixed.hs \
 	Data/Time/Calendar/Gregorian.hs \
 	Data/Time/Calendar/ISOWeekDay.hs \
 	Data/Time/Calendar.hs \
-	Data/Time/LocalTime/Timezone.hs \
+	Data/Time/LocalTime/TimeZone.hs \
 	Data/Time/LocalTime/TimeOfDay.hs \
 	Data/Time/LocalTime/LocalTime.hs \
 	Data/Time/LocalTime/Format.hs \
@@ -116,20 +116,20 @@ Data/Time/Calendar.o : Data/Time/Calendar/ISOWeekDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
 Data/Time/Calendar.o : Data/Time/Calendar/YearDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
-Data/Time/LocalTime/Timezone.o : Data/Time/LocalTime/Timezone.hs
-Data/Time/LocalTime/Timezone.o : Data/Time/Clock/POSIX.hi
-Data/Time/LocalTime/Timezone.o : Data/Time/Clock.hi
-Data/Time/LocalTime/Timezone.o : Data/Time/Calendar/Private.hi
+Data/Time/LocalTime/TimeZone.o : Data/Time/LocalTime/TimeZone.hs
+Data/Time/LocalTime/TimeZone.o : Data/Time/Clock/POSIX.hi
+Data/Time/LocalTime/TimeZone.o : Data/Time/Clock.hi
+Data/Time/LocalTime/TimeZone.o : Data/Time/Calendar/Private.hi
 Data/Time/LocalTime/TimeOfDay.o : Data/Time/LocalTime/TimeOfDay.hs
 Data/Time/LocalTime/TimeOfDay.o : Data/Fixed.hi
 Data/Time/LocalTime/TimeOfDay.o : Data/Time/Clock.hi
 Data/Time/LocalTime/TimeOfDay.o : Data/Time/Calendar/Private.hi
-Data/Time/LocalTime/TimeOfDay.o : Data/Time/LocalTime/Timezone.hi
+Data/Time/LocalTime/TimeOfDay.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/LocalTime/LocalTime.hs
 Data/Time/LocalTime/LocalTime.o : Data/Time/Clock.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/Calendar/Days.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/Calendar/Gregorian.hi
-Data/Time/LocalTime/LocalTime.o : Data/Time/LocalTime/Timezone.hi
+Data/Time/LocalTime/LocalTime.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/LocalTime/TimeOfDay.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/Format.hs
 Data/Time/LocalTime/Format.o : Data/Time/Clock/POSIX.hi
@@ -139,14 +139,14 @@ Data/Time/LocalTime/Format.o : Data/Time/Calendar/Days.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar/YearDay.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar/Gregorian.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar/ISOWeekDay.hi
-Data/Time/LocalTime/Format.o : Data/Time/LocalTime/Timezone.hi
+Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeOfDay.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/LocalTime.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime.hs
 Data/Time/LocalTime.o : Data/Time/LocalTime/Format.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/LocalTime.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/TimeOfDay.hi
-Data/Time/LocalTime.o : Data/Time/LocalTime/Timezone.hi
+Data/Time/LocalTime.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time.o : Data/Time.hs
 Data/Time.o : Data/Time/LocalTime.hi
 Data/Time.o : Data/Time/Clock.hi

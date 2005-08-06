@@ -10,7 +10,7 @@ module Data.Time.LocalTime.Format
 
 import Data.Time.LocalTime.LocalTime
 import Data.Time.LocalTime.TimeOfDay
-import Data.Time.LocalTime.Timezone
+import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.ISOWeekDay
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.YearDay
@@ -76,9 +76,9 @@ instance FormatTime ZonedTime where
 			Just f -> Just (\locale dt -> f locale (ztZone dt))
 			Nothing -> Nothing
 
-instance FormatTime Timezone where
-	formatCharacter 'z' = Just (\_ -> timezoneOffsetString)
-	formatCharacter 'Z' = Just (\_ -> timezoneName)
+instance FormatTime TimeZone where
+	formatCharacter 'z' = Just (\_ -> timeZoneOffsetString)
+	formatCharacter 'Z' = Just (\_ -> timeZoneName)
 	formatCharacter _ = Nothing
 
 instance FormatTime Date where

@@ -10,7 +10,7 @@ module Data.Time.LocalTime.TimeOfDay
 	dayFractionToTimeOfDay,timeOfDayToDayFraction
 ) where
 
-import Data.Time.LocalTime.Timezone
+import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
 import Data.Time.Clock
 import Data.Fixed
@@ -38,14 +38,14 @@ instance Show TimeOfDay where
 	show (TimeOfDay h m s) = (show2 h) ++ ":" ++ (show2 m) ++ ":" ++ (show2Fixed s)
 
 -- | Convert a ToD in UTC to a ToD in some timezone, together with a day adjustment.
-utcToLocalTimeOfDay :: Timezone -> TimeOfDay -> (Integer,TimeOfDay)
+utcToLocalTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
 utcToLocalTimeOfDay zone (TimeOfDay h m s) = (fromIntegral (div h' 24),TimeOfDay (mod h' 24) (mod m' 60) s) where
-	m' = m + timezoneMinutes zone
+	m' = m + timeZoneMinutes zone
 	h' = h + (div m' 60)
 
 -- | Convert a ToD in some timezone to a ToD in UTC, together with a day adjustment.
-localToUTCTimeOfDay :: Timezone -> TimeOfDay -> (Integer,TimeOfDay)
-localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimezone (negate (timezoneMinutes zone)))
+localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
+localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimeZone (negate (timeZoneMinutes zone)))
 
 posixDay :: DiffTime
 posixDay = fromInteger 86400

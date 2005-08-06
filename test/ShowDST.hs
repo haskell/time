@@ -4,14 +4,14 @@ module Main where
 
 import Data.Time
 
-monthBeginning :: Timezone -> Integer -> Int -> UTCTime
+monthBeginning :: TimeZone -> Integer -> Int -> UTCTime
 monthBeginning zone year month = localTimeToUTC zone
 	(LocalTime (fromGregorian year month 1) midnight)
 
-findTransition :: UTCTime -> UTCTime -> IO [(UTCTime,Timezone,Timezone)]
+findTransition :: UTCTime -> UTCTime -> IO [(UTCTime,TimeZone,TimeZone)]
 findTransition a b = do
-	za <- getTimezone a
-	zb <- getTimezone b
+	za <- getTimeZone a
+	zb <- getTimeZone b
 	if za == zb then return [] else do
 		let c = addUTCTime ((diffUTCTime b a) / 2) a
 		if a == c then return [(b,za,zb)] else do
@@ -19,16 +19,16 @@ findTransition a b = do
 			tq <- findTransition c b
 			return (tp ++ tq)
 
-showZoneTime :: Timezone -> UTCTime -> String
+showZoneTime :: TimeZone -> UTCTime -> String
 showZoneTime zone time = show (zonedTimeFromUTC zone time)
 
-showTransition :: (UTCTime,Timezone,Timezone) -> String
+showTransition :: (UTCTime,TimeZone,TimeZone) -> String
 showTransition (time,zone1,zone2) = (showZoneTime zone1 time) ++ " => " ++ (showZoneTime zone2 time)
 
 main :: IO ()
 main = do
 	now <- getCurrentTime
-	zone <- getTimezone now
+	zone <- getTimeZone now
 	let (year,_,_) = gregorian (localDay (utcToLocalTime zone now))
 	putStrLn ("DST adjustments for " ++ show year ++ ":")
 	let t0 = monthBeginning zone year 1

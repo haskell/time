@@ -9,5 +9,5 @@ main = do
 	now <- getCurrentTime
 	putStrLn (show (utctDay now) ++ "," ++ show (utctDayTime now))
 	putStrLn (show (zonedTimeFromUTC utc now :: ZonedTime))
-	myzone <- getCurrentTimezone
+	myzone <- getCurrentTimeZone
 	putStrLn (show (zonedTimeFromUTC myzone now :: ZonedTime))

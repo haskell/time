@@ -24,11 +24,11 @@ withBuffer n f = withArray (replicate n 0) (\buffer -> do
 			peekCStringLen (buffer,fromIntegral len)
 		)
 
-unixFormatTime :: String -> Timezone -> UTCTime -> IO String
-unixFormatTime fmt zone time = withCString fmt (\pfmt -> withCString (timezoneName zone) (\pzonename ->
+unixFormatTime :: String -> TimeZone -> UTCTime -> IO String
+unixFormatTime fmt zone time = withCString fmt (\pfmt -> withCString (timeZoneName zone) (\pzonename ->
 		withBuffer 100 (\buffer -> format_time buffer 100 pfmt
-				(if timezoneDST zone then 1 else 0)
-				(fromIntegral (timezoneMinutes zone * 60))
+				(if timeZoneSummerOnly zone then 1 else 0)
+				(fromIntegral (timeZoneMinutes zone * 60))
 				pzonename
 				(fromInteger (truncate (utcTimeToPOSIXSeconds time)))
 			)
@@ -37,8 +37,8 @@ unixFormatTime fmt zone time = withCString fmt (\pfmt -> withCString (timezoneNa
 locale :: TimeLocale
 locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
-zones :: [Timezone]
-zones = [utc,MkTimezone 87 True "Fenwickian Daylight Time"]
+zones :: [TimeZone]
+zones = [utc,TimeZone 87 True "Fenwickian Daylight Time"]
 
 baseTime0 :: UTCTime
 baseTime0 = localTimeToUTC utc (LocalTime (fromGregorian 1970 01 01) midnight)
@@ -65,7 +65,7 @@ times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 	(fmap getYearP1 [1980..2000]) ++ (fmap getYearP2 [1980..2000]) ++ (fmap getYearP3 [1980..2000]) ++ (fmap getYearP4 [1980..2000])
 
-compareFormat :: String -> Timezone -> UTCTime -> IO ()
+compareFormat :: String -> TimeZone -> UTCTime -> IO ()
 compareFormat fmt zone time = let
 		ctime = zonedTimeFromUTC zone time
 		haskellText = formatTime locale fmt ctime
