@@ -38,12 +38,12 @@ formatTime locale ('%':c:cs) t = (formatChar c) ++ (formatTime locale cs t) wher
 		_ -> ""
 formatTime locale (c:cs) t = c:(formatTime locale cs t)
 
-instance FormatTime DayAndTime where
+instance FormatTime LocalTime where
 	formatCharacter 'c' = Just (\locale -> formatTime locale (dateTimeFmt locale))
 	formatCharacter c = case (formatCharacter c) of
-		Just f -> Just (\locale dt -> f locale (dtDay dt))
+		Just f -> Just (\locale dt -> f locale (localDay dt))
 		Nothing -> case (formatCharacter c) of
-			Just f -> Just (\locale dt -> f locale (dtTime dt))
+			Just f -> Just (\locale dt -> f locale (localTimeOfDay dt))
 			Nothing -> Nothing
 
 instance FormatTime TimeOfDay where
@@ -69,9 +69,9 @@ instance FormatTime TimeOfDay where
 	formatCharacter _   = Nothing
 
 instance FormatTime ZonedTime where
-	formatCharacter 's' = Just (\_ zt -> show (truncate (utcTimeToPOSIXSeconds (decodeUTC zt)) :: Integer))
+	formatCharacter 's' = Just (\_ zt -> show (truncate (utcTimeToPOSIXSeconds (ztUTC zt)) :: Integer))
 	formatCharacter c = case (formatCharacter c) of
-		Just f -> Just (\locale dt -> f locale (ztTime dt))
+		Just f -> Just (\locale dt -> f locale (ztLocalTime dt))
 		Nothing -> case (formatCharacter c) of
 			Just f -> Just (\locale dt -> f locale (ztZone dt))
 			Nothing -> Nothing
@@ -119,4 +119,4 @@ instance FormatTime Date where
 	formatCharacter _   = Nothing
 
 instance FormatTime UTCTime where
-	formatCharacter c = fmap (\f locale t -> f locale (encodeUTC utc t)) (formatCharacter c)
+	formatCharacter c = fmap (\f locale t -> f locale (zonedTimeFromUTC utc t)) (formatCharacter c)

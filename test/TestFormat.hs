@@ -42,25 +42,25 @@ zones :: [Timezone]
 zones = [utc,MkTimezone 87 True "Fenwickian Daylight Time"]
 
 baseTime0 :: UTCTime
-baseTime0 = decodeLocalUTC utc (DayAndTime (fromGregorian 1970 01 01) midnight)
+baseTime0 = localTimeToUTC utc (LocalTime (fromGregorian 1970 01 01) midnight)
 
 baseTime1 :: UTCTime
-baseTime1 = decodeLocalUTC utc (DayAndTime (fromGregorian 2000 01 01) midnight)
+baseTime1 = localTimeToUTC utc (LocalTime (fromGregorian 2000 01 01) midnight)
 
 getDay :: Integer -> UTCTime
 getDay day = addUTCTime ((fromInteger day) * posixDay) baseTime1
 
 getYearP1 :: Integer -> UTCTime
-getYearP1 year = decodeLocalUTC utc (DayAndTime (fromGregorian year 01 01) midnight)
+getYearP1 year = localTimeToUTC utc (LocalTime (fromGregorian year 01 01) midnight)
 
 getYearP2 :: Integer -> UTCTime
-getYearP2 year = decodeLocalUTC utc (DayAndTime (fromGregorian year 02 04) midnight)
+getYearP2 year = localTimeToUTC utc (LocalTime (fromGregorian year 02 04) midnight)
 
 getYearP3 :: Integer -> UTCTime
-getYearP3 year = decodeLocalUTC utc (DayAndTime (fromGregorian year 03 04) midnight)
+getYearP3 year = localTimeToUTC utc (LocalTime (fromGregorian year 03 04) midnight)
 
 getYearP4 :: Integer -> UTCTime
-getYearP4 year = decodeLocalUTC utc (DayAndTime (fromGregorian year 12 31) midnight)
+getYearP4 year = localTimeToUTC utc (LocalTime (fromGregorian year 12 31) midnight)
 
 times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
@@ -68,7 +68,7 @@ times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 
 compareFormat :: String -> Timezone -> UTCTime -> IO ()
 compareFormat fmt zone time = let
-		ctime = encodeUTC zone time
+		ctime = zonedTimeFromUTC zone time
 		haskellText = formatTime locale fmt ctime
 	in do
 		unixText <- unixFormatTime fmt zone time

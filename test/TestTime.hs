@@ -46,11 +46,11 @@ showUTCTime (UTCTime d t) =  show (getModJulianDay d) ++ "," ++ show t
 myzone :: Timezone
 myzone = hoursToTimezone (- 8)
 
-leapSec1998Cal :: DayAndTime
-leapSec1998Cal = DayAndTime (fromGregorian 1998 12 31) (TimeOfDay 23 59 60.5)
+leapSec1998Cal :: LocalTime
+leapSec1998Cal = LocalTime (fromGregorian 1998 12 31) (TimeOfDay 23 59 60.5)
 
 leapSec1998 :: UTCTime
-leapSec1998 = decodeLocalUTC utc leapSec1998Cal
+leapSec1998 = localTimeToUTC utc leapSec1998Cal
 
 testUTC :: IO ()
 testUTC = do
@@ -58,9 +58,9 @@ testUTC = do
 	showCal 51178
 	putStrLn (show leapSec1998Cal)
 	putStrLn (showUTCTime leapSec1998)
-	let lsMineCal = encodeLocalUTC myzone leapSec1998
+	let lsMineCal = utcToLocalTime myzone leapSec1998
 	putStrLn (show lsMineCal)
-	let lsMine = decodeLocalUTC myzone lsMineCal
+	let lsMine = localTimeToUTC myzone lsMineCal
 	putStrLn (showUTCTime lsMine)
 
 neglong :: Rational
@@ -72,12 +72,12 @@ poslong = 120
 testUT1 :: IO ()
 testUT1 = do
 	putStrLn ""
-	putStrLn (show (encodeLocalUT1 0 (ModJulianDate 51604.0)))
-	putStrLn (show (encodeLocalUT1 0 (ModJulianDate 51604.5)))
-	putStrLn (show (encodeLocalUT1 neglong (ModJulianDate 51604.0)))
-	putStrLn (show (encodeLocalUT1 neglong (ModJulianDate 51604.5)))
-	putStrLn (show (encodeLocalUT1 poslong (ModJulianDate 51604.0)))
-	putStrLn (show (encodeLocalUT1 poslong (ModJulianDate 51604.5)))
+	putStrLn (show (ut1ToLocalTime 0 (ModJulianDate 51604.0)))
+	putStrLn (show (ut1ToLocalTime 0 (ModJulianDate 51604.5)))
+	putStrLn (show (ut1ToLocalTime neglong (ModJulianDate 51604.0)))
+	putStrLn (show (ut1ToLocalTime neglong (ModJulianDate 51604.5)))
+	putStrLn (show (ut1ToLocalTime poslong (ModJulianDate 51604.0)))
+	putStrLn (show (ut1ToLocalTime poslong (ModJulianDate 51604.5)))
 
 main :: IO ()
 main = do

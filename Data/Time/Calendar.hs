@@ -37,20 +37,20 @@ ctZone :: CalendarTime -> Timezone
 ctZone = ztZone
 
 ctYear :: CalendarTime -> Integer
-ctYear = gregYear . dtDay . ztTime
+ctYear = gregYear . dtDay . ztLocalTime
 
 ctMonth :: CalendarTime -> Int
-ctMonth = gregMonth . dtDay . ztTime
+ctMonth = gregMonth . dtDay . ztLocalTime
 
 ctDay :: CalendarTime -> Int
-ctDay = gregDay . dtDay . ztTime
+ctDay = gregDay . dtDay . ztLocalTime
 
 ctHour :: CalendarTime -> Int
-ctHour = todHour . dtTime . ztTime
+ctHour = todHour . dtTime . ztLocalTime
 
 ctMin :: CalendarTime -> Int
-ctMin = todMin . dtTime . ztTime
+ctMin = todMin . dtTime . ztLocalTime
 
 ctSec :: CalendarTime -> Pico
-ctSec = todSec . dtTime . ztTime
+ctSec = todSec . dtTime . ztLocalTime
 -}
