@@ -26,7 +26,7 @@ yearAndDay (ModJulianDay mjd) = (year,yd) where
 fromYearAndDay :: Integer -> Int -> Date
 fromYearAndDay year day = ModJulianDay mjd where
 	y = year - 1
-	mjd = (fromIntegral day) + (div (1532) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882
+	mjd = (fromIntegral (clip 1 (if isLeapYear year then 366 else 365) day)) + (div (1532) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882
 
 -- | ISO 8601 Ordinal Date
 showYearAndDay :: Date -> String

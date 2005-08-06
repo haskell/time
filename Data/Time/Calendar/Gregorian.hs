@@ -22,11 +22,13 @@ gregorian date = (year,month,day) where
 fromGregorian :: Integer -> Int -> Int -> Date
 -- formula from <http://en.wikipedia.org/wiki/Julian_Day>
 fromGregorian year month day = ModJulianDay
-	((fromIntegral day) + (div (153 * m + 2) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882) where
-	month' = fromIntegral month
-	a = div (14 - month') 12
+	((fromIntegral (clip 1 monthLength day)) + (div (153 * m + 2) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882) where
+	month' = clip 1 12 month
+	month'' = fromIntegral month'
+	a = div (14 - month'') 12
 	y = year - a
-	m = month' + (12 * a) - 3
+	m = month'' + (12 * a) - 3
+	monthLength = (monthLengths (isLeapYear year)) !! (month' - 1)
 
 showGregorian :: Date -> String
 showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d) where

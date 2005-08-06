@@ -100,6 +100,10 @@
 		AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TimeOfDay.hs; sourceTree = "<group>"; };
 		AB01DD18083748EC003C9EF7 /* Timezone.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Timezone.hs; sourceTree = "<group>"; };
 		AB01DD19083748EC003C9EF7 /* YearDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = YearDay.hs; sourceTree = "<group>"; };
+		AB2665B008A1F65B0059DEC0 /* ClipDates.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ClipDates.hs; sourceTree = "<group>"; };
+		AB2665B108A1F65B0059DEC0 /* ClipDates.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ClipDates.ref; sourceTree = "<group>"; };
+		AB2665E708A215AA0059DEC0 /* LongWeekYears.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = LongWeekYears.hs; sourceTree = "<group>"; };
+		AB2665E808A215AA0059DEC0 /* LongWeekYears.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LongWeekYears.ref; sourceTree = "<group>"; };
 		ABD6783F084167B900CF37C0 /* POSIX.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = POSIX.hs; sourceTree = "<group>"; };
 		ABD67840084167D100CF37C0 /* Current.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Current.hs; sourceTree = "<group>"; };
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
@@ -203,6 +207,10 @@
 				ABFA2623083B28C00096540C /* ConvertBack.hs */,
 				ABFA262C083B28C00096540C /* TestTime.hs */,
 				ABFA262D083B28C00096540C /* TestTime.ref */,
+				AB2665E708A215AA0059DEC0 /* LongWeekYears.hs */,
+				AB2665E808A215AA0059DEC0 /* LongWeekYears.ref */,
+				AB2665B008A1F65B0059DEC0 /* ClipDates.hs */,
+				AB2665B108A1F65B0059DEC0 /* ClipDates.ref */,
 				ABFA262E083B28C00096540C /* TimeZone.hs */,
 				ABFA262B083B28C00096540C /* TestFormatStuff.h */,
 				ABFA262A083B28C00096540C /* TestFormatStuff.c */,

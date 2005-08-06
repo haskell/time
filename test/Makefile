@@ -9,6 +9,12 @@ ConvertBack: ConvertBack.o ../libTimeLib.a
 TestTime: TestTime.o ../libTimeLib.a
 	ghc $^ -o $@
 
+LongWeekYears: LongWeekYears.o ../libTimeLib.a
+	ghc $^ -o $@
+
+ClipDates: ClipDates.o ../libTimeLib.a
+	ghc $^ -o $@
+
 TestFormat: TestFormat.o TestFormatStuff.o ../libTimeLib.a
 	ghc $^ -o $@
 
@@ -27,7 +33,7 @@ TimeZone: TimeZone.o ../libTimeLib.a
 TimeZone.ref: FORCE
 	date +%z > $@
 
-test: TestFixed.diff ConvertBack.diff0 TestTime.diff TimeZone.diff TestFormat.diff0
+test: TestFixed.diff ConvertBack.diff0 TestTime.diff LongWeekYears.diff ClipDates.diff TimeZone.diff TestFormat.diff0
 
 clean:
 	rm -rf ConvertBack TimeZone TimeZone.ref CurrentTime TestTime TestFixed ShowDST TestFormat *.out *.o *.hi Makefile.bak

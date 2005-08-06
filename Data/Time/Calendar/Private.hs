@@ -46,3 +46,8 @@ mod100 x = mod x 100
 
 div100 :: (Integral i) => i -> i
 div100 x = div x 100
+
+clip :: (Ord t) => t -> t -> t -> t
+clip a _ x | x < a = a
+clip _ b x | x > b = b
+clip _ _ x = x

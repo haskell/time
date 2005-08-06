@@ -11,10 +11,6 @@ import Data.Time.Calendar.YearDay
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
-showISOWeekDay :: Date -> String
-showISOWeekDay date = (show4 y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where
-	(y,w,d) = isoWeekDay date
-
 isoWeekDay :: Date -> (Integer,Int,Int)
 isoWeekDay date@(ModJulianDay mjd) = (y1,fromInteger (w1 + 1),fromInteger (mod d 7) + 1) where
 	(y0,yd) = yearAndDay date
@@ -32,5 +28,12 @@ isoWeekDay date@(ModJulianDay mjd) = (y1,fromInteger (w1 + 1),fromInteger (mod d
 		else (y0,w0)
 
 fromISOWeekDay :: Integer -> Int -> Int -> Date
-fromISOWeekDay y w d = ModJulianDay (k - (mod k 7) + (toInteger ((w * 7) + d)) - 10) where
+fromISOWeekDay y w d = ModJulianDay (k - (mod k 7) + (toInteger (((clip 1 (if longYear then 53 else 52) w) * 7) + (clip 1 7 d))) - 10) where
 		k = getModJulianDay (fromYearAndDay y 6)
+		longYear = case isoWeekDay (fromYearAndDay y 365) of
+			(_,53,_) -> True
+			_ -> False
+
+showISOWeekDay :: Date -> String
+showISOWeekDay date = (show4 y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where
+	(y,w,d) = isoWeekDay date
