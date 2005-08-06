@@ -10,6 +10,8 @@ module Data.Time.Calendar.YearDay
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
+-- | convert to ISO 8601 Ordinal Date format. First element of result is year (proleptic Gregoran calendar),
+-- second is the day of the year, with 1 for Jan 1, and 365 (or 366 in leap years) for Dec 31.
 yearAndDay :: Date -> (Integer,Int)
 yearAndDay (ModJulianDay mjd) = (year,yd) where
 	a = mjd + 678575
@@ -23,16 +25,19 @@ yearAndDay (ModJulianDay mjd) = (year,yd) where
 	yd = fromInteger (d - (y * 365) + 1)
 	year = quadcent * 400 + cent * 100 + quad * 4 + y + 1
 
+-- | convert from ISO 8601 Ordinal Date format.
+-- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
 fromYearAndDay :: Integer -> Int -> Date
 fromYearAndDay year day = ModJulianDay mjd where
 	y = year - 1
 	mjd = (fromIntegral (clip 1 (if isLeapYear year then 366 else 365) day)) + (div (1532) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882
 
--- | ISO 8601 Ordinal Date
+-- | show in ISO 8601 Ordinal Date format (yyyy-ddd)
 showYearAndDay :: Date -> String
 showYearAndDay date = (show4 y) ++ "-" ++ (show3 d) where
 	(y,d) = yearAndDay date
 
+-- | Is this year a leap year according to the propleptic Gregorian calendar?
 isLeapYear :: Integer -> Bool
 isLeapYear year = (mod year 4 == 0) && ((mod year 400 == 0) || not (mod year 100 == 0))
 

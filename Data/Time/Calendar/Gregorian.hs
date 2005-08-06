@@ -14,11 +14,14 @@ import Data.Time.Calendar.YearDay
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
+-- | convert to proleptic Gregorian calendar. First element of result is year, second month number (1-12), third day (1-31).
 gregorian :: Date -> (Integer,Int,Int)
 gregorian date = (year,month,day) where
 	(year,yd) = yearAndDay date
 	(month,day) = findMonthDay (monthLengths (isLeapYear year)) yd
 
+-- | convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- Invalid values will be clipped to the correct range, month first, then day.
 fromGregorian :: Integer -> Int -> Int -> Date
 -- formula from <http://en.wikipedia.org/wiki/Julian_Day>
 fromGregorian year month day = ModJulianDay
@@ -30,6 +33,7 @@ fromGregorian year month day = ModJulianDay
 	m = month'' + (12 * a) - 3
 	day' = fromIntegral (clip 1 (gregorianMonthLength' year month') day)
 
+-- | show in ISO 8601 format (yyyy-mm-dd)
 showGregorian :: Date -> String
 showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d) where
 	(y,m,d) = gregorian date
