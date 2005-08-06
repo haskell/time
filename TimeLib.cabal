@@ -11,22 +11,24 @@ Build-Depends:	base
 Synopsis:	a new time library
 Exposed-modules:
 	Data.Fixed,
+	Data.Time.Calendar,
 	Data.Time.Clock,
 	Data.Time.TAI,
-	Data.Time.Calendar
+	Data.Time.LocalTime,
+	Data.Time
 Extensions:	ForeignFunctionInterface
 C-Sources:	timestuff.c
 Other-modules:
+	Data.Time.Calendar.Private,
+	Data.Time.Calendar.Days,
+	Data.Time.Calendar.YearDay,
+	Data.Time.Calendar.Gregorian,
+	Data.Time.Calendar.ISOWeekDay,
 	Data.Time.Clock.Scale,
 	Data.Time.Clock.UTC,
 	Data.Time.Clock.POSIX,
 	Data.Time.Clock.Current,
-	Data.Time.Calendar.Private,
-	Data.Time.Calendar.Days,
-	Data.Time.Calendar.Calendar,
-	Data.Time.Calendar.Gregorian,
-	Data.Time.Calendar.ISOWeekDay,
-	Data.Time.Calendar.Format,
-	Data.Time.Calendar.YearDay,
-	Data.Time.Calendar.Timezone,
-	Data.Time.Calendar.TimeOfDay
+	Data.Time.LocalTime.TimeZone,
+	Data.Time.LocalTime.TimeOfDay,
+	Data.Time.LocalTime.LocalTime,
+	Data.Time.LocalTime.Format
