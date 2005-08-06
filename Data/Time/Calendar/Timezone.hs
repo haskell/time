@@ -18,22 +18,28 @@ import Data.Time.Clock.POSIX
 import Foreign
 import Foreign.C
 
--- | count of minutes
+-- | A Timezone is a whole number of minutes offset from UTC, together with a name and a "just for summer" flag.
 data Timezone = MkTimezone {
+	-- | The number of minutes offset from UTC. Positive means local time will be later in the day than UTC.
 	timezoneMinutes :: Int,
+	-- | Is this time zone just persisting for the summer?
 	timezoneDST :: Bool,
+	-- | The name of the zone, typically a three- or four-letter acronym.
 	timezoneName :: String
 } deriving (Eq,Ord)
 
+-- | Create a nameless non-summer timezone for this number of minutes
 minutesToTimezone :: Int -> Timezone
 minutesToTimezone m = MkTimezone m False ""
 
+-- | Create a nameless non-summer timezone for this number of hours
 hoursToTimezone :: Int -> Timezone
 hoursToTimezone i = minutesToTimezone (60 * i)
 
 showT :: Int -> String
 showT t = (show2 (div t 60)) ++ (show2 (mod t 60))
 
+-- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like %z in formatTime)
 timezoneOffsetString :: Timezone -> String
 timezoneOffsetString (MkTimezone t _ _) | t < 0 = '-':(showT (negate t))
 timezoneOffsetString (MkTimezone t _ _) = '+':(showT t)

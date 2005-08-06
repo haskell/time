@@ -17,14 +17,20 @@ import Data.Fixed
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay {
+	-- | range 0 - 23
 	todHour    :: Int,
+	-- | range 0 - 59
 	todMin     :: Int,
+	-- | Note that 0 <= todSec < 61, accomodating leap seconds.
+	-- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
 	todSec     :: Pico
 } deriving (Eq,Ord)
 
+-- | Hour zero
 midnight :: TimeOfDay
 midnight = TimeOfDay 0 0 0
 
+-- | Hour twelve
 midday :: TimeOfDay
 midday = TimeOfDay 12 0 0
 

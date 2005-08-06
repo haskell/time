@@ -30,7 +30,8 @@ isoWeekDay date@(ModJulianDay mjd) = (y1,fromInteger (w1 + 1),fromInteger (mod d
 			else (y0,w0)
 		else (y0,w0)
 
--- | convert from ISO 8601 Week format. First argument is year, second week number (1-53), third day of week (1 for Monday to 7 for Sunday).
+-- | convert from ISO 8601 Week format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
+-- Invalid week and day values will be clipped to the correct range.
 fromISOWeekDay :: Integer -> Int -> Int -> Date
 fromISOWeekDay y w d = ModJulianDay (k - (mod k 7) + (toInteger (((clip 1 (if longYear then 53 else 52) w) * 7) + (clip 1 7 d))) - 10) where
 		k = getModJulianDay (fromYearAndDay y 6)
