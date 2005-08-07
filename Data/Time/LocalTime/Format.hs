@@ -100,10 +100,10 @@ instance FormatTime Day where
 	formatCharacter 'j' = Just (\_ -> show3 . snd . toYearAndDay)
 
 	-- ISOWeekDay
-	formatCharacter 'G' = Just (\_ -> show . (\(y,_,_) -> y) . toISOWeekDay)
-	formatCharacter 'g' = Just (\_ -> show2 . mod100 . (\(y,_,_) -> y) . toISOWeekDay)
-	formatCharacter 'V' = Just (\_ -> show2 . (\(_,w,_) -> w) . toISOWeekDay)
-	formatCharacter 'u' = Just (\_ -> show . (\(_,_,d) -> d) . toISOWeekDay)
+	formatCharacter 'G' = Just (\_ -> show . (\(y,_,_) -> y) . toISO8601Week)
+	formatCharacter 'g' = Just (\_ -> show2 . mod100 . (\(y,_,_) -> y) . toISO8601Week)
+	formatCharacter 'V' = Just (\_ -> show2 . (\(_,w,_) -> w) . toISO8601Week)
+	formatCharacter 'u' = Just (\_ -> show . (\(_,_,d) -> d) . toISO8601Week)
 
 	-- Day of week
 	formatCharacter 'a' = Just (\locale -> snd . ((wDays locale) !!) . snd . sundayStartWeek)

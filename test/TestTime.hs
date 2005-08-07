@@ -9,7 +9,7 @@ showCal mjd = do
 	let date = ModifiedJulianDay mjd
 	let (y,m,d) = toGregorian date
 	let date' = fromGregorian y m d
-	putStr ((show mjd) ++ "=" ++ (showGregorian date) ++ "=" ++ (showYearAndDay date) ++ "=" ++ (showISOWeekDay date))
+	putStr ((show mjd) ++ "=" ++ (showGregorian date) ++ "=" ++ (showYearAndDay date) ++ "=" ++ (showISO8601Week date))
 	putStrLn (if date == date' then "" else "=" ++ (show (toModifiedJulianDay date')) ++ "!")
 
 testCal :: IO ()

@@ -5,7 +5,7 @@ module Main where
 import Data.Time.Calendar
 
 longYear :: Integer -> Bool
-longYear year = case toISOWeekDay (fromGregorian year 12 31) of
+longYear year = case toISO8601Week (fromGregorian year 12 31) of
 	(_,53,_) -> True
 	_ -> False
 

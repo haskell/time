@@ -12,7 +12,7 @@ checkGregorian :: (Integer,Int,Int) -> IO ()
 checkGregorian (y,m,d) = putStrLn ((show y) ++ "-" ++ (show m) ++ "-" ++ (show d) ++ " = " ++ (showGregorian (fromGregorian y m d)))
 
 checkISOWeekDay :: (Integer,Int,Int) -> IO ()
-checkISOWeekDay (y,w,d) = putStrLn ((show y) ++ "-W" ++ (show w) ++ "-" ++ (show d) ++ " = " ++ (showISOWeekDay (fromISOWeekDay y w d)))
+checkISOWeekDay (y,w,d) = putStrLn ((show y) ++ "-W" ++ (show w) ++ "-" ++ (show d) ++ " = " ++ (showISO8601Week (fromISO8601Week y w d)))
 
 main :: IO ()
 main = do
