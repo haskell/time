@@ -14,8 +14,7 @@ module Data.Time.LocalTime.LocalTime
 
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
-import Data.Time.Calendar.Gregorian
-import Data.Time.Calendar.Days
+import Data.Time.Calendar
 import Data.Time.Clock
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
