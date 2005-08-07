@@ -9,7 +9,7 @@ module Data.Time.LocalTime.LocalTime
 	-- converting UTC and UT1 times to LocalTime
 	utcToLocalTime,localTimeToUTC,ut1ToLocalTime,localTimeToUT1,
 	
-	ZonedTime(..),zonedTimeFromUTC,ztUTC,getZonedTime
+	ZonedTime(..),zonedTimeFromUTC,ztUTC,getZonedTime,utcToLocalZonedTime
 ) where
 
 import Data.Time.LocalTime.TimeOfDay
@@ -68,5 +68,11 @@ instance Show ZonedTime where
 getZonedTime :: IO ZonedTime
 getZonedTime = do
 	t <- getCurrentTime
+	zone <- getTimeZone t
+	return (zonedTimeFromUTC zone t)
+
+-- |
+utcToLocalZonedTime :: UTCTime -> IO ZonedTime
+utcToLocalZonedTime t = do
 	zone <- getTimeZone t
 	return (zonedTimeFromUTC zone t)
