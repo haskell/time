@@ -18,7 +18,7 @@ import Data.Time.Clock.POSIX
 import Foreign
 import Foreign.C
 
--- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a "just for summer" flag.
+-- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone {
 	-- | The number of minutes offset from UTC. Positive means local time will be later in the day than UTC.
 	timeZoneMinutes :: Int,
