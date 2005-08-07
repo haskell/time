@@ -9,18 +9,18 @@ cleantest:
 	cd test && make clean
 
 SRCS = Data/Fixed.hs \
-	Data/Time/Clock/Scale.hs \
-	Data/Time/Clock/UTC.hs \
-	Data/Time/Clock/POSIX.hs \
-	Data/Time/Clock/Current.hs \
-	Data/Time/Clock.hs \
-	Data/Time/TAI.hs \
 	Data/Time/Calendar/Private.hs \
 	Data/Time/Calendar/Days.hs \
 	Data/Time/Calendar/YearDay.hs \
 	Data/Time/Calendar/Gregorian.hs \
 	Data/Time/Calendar/ISOWeekDay.hs \
 	Data/Time/Calendar.hs \
+	Data/Time/Clock/Scale.hs \
+	Data/Time/Clock/UTC.hs \
+	Data/Time/Clock/POSIX.hs \
+	Data/Time/Clock/Current.hs \
+	Data/Time/Clock.hs \
+	Data/Time/TAI.hs \
 	Data/Time/LocalTime/TimeZone.hs \
 	Data/Time/LocalTime/TimeOfDay.hs \
 	Data/Time/LocalTime/LocalTime.hs \
@@ -81,23 +81,6 @@ TestFixed.o: Data/Fixed.hi
 # DO NOT DELETE: Beginning of Haskell dependencies
 Data/Time/Calendar/Days.o : Data/Time/Calendar/Days.hs
 Data/Fixed.o : Data/Fixed.hs
-Data/Time/Clock/Scale.o : Data/Time/Clock/Scale.hs
-Data/Time/Clock/Scale.o : Data/Fixed.hi
-Data/Time/Clock/UTC.o : Data/Time/Clock/UTC.hs
-Data/Time/Clock/UTC.o : Data/Fixed.hi
-Data/Time/Clock/UTC.o : Data/Time/Clock/Scale.hi
-Data/Time/Clock/UTC.o : Data/Time/Calendar/Days.hi
-Data/Time/Clock/POSIX.o : Data/Time/Clock/POSIX.hs
-Data/Time/Clock/POSIX.o : Data/Time/Clock/UTC.hi
-Data/Time/Clock/Current.o : Data/Time/Clock/Current.hs
-Data/Time/Clock/Current.o : Data/Time/Clock/UTC.hi
-Data/Time/Clock.o : Data/Time/Clock.hs
-Data/Time/Clock.o : Data/Time/Clock/Current.hi
-Data/Time/Clock.o : Data/Time/Clock/UTC.hi
-Data/Time/Clock.o : Data/Time/Clock/Scale.hi
-Data/Time/TAI.o : Data/Time/TAI.hs
-Data/Time/TAI.o : Data/Time/Clock.hi
-Data/Time/TAI.o : Data/Time/Calendar/Days.hi
 Data/Time/Calendar/Private.o : Data/Time/Calendar/Private.hs
 Data/Time/Calendar/Private.o : Data/Fixed.hi
 Data/Time/Calendar/YearDay.o : Data/Time/Calendar/YearDay.hs
@@ -116,6 +99,23 @@ Data/Time/Calendar.o : Data/Time/Calendar/ISOWeekDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
 Data/Time/Calendar.o : Data/Time/Calendar/YearDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
+Data/Time/Clock/Scale.o : Data/Time/Clock/Scale.hs
+Data/Time/Clock/Scale.o : Data/Fixed.hi
+Data/Time/Clock/UTC.o : Data/Time/Clock/UTC.hs
+Data/Time/Clock/UTC.o : Data/Fixed.hi
+Data/Time/Clock/UTC.o : Data/Time/Clock/Scale.hi
+Data/Time/Clock/UTC.o : Data/Time/Calendar/Days.hi
+Data/Time/Clock/POSIX.o : Data/Time/Clock/POSIX.hs
+Data/Time/Clock/POSIX.o : Data/Time/Clock/UTC.hi
+Data/Time/Clock/Current.o : Data/Time/Clock/Current.hs
+Data/Time/Clock/Current.o : Data/Time/Clock/UTC.hi
+Data/Time/Clock.o : Data/Time/Clock.hs
+Data/Time/Clock.o : Data/Time/Clock/Current.hi
+Data/Time/Clock.o : Data/Time/Clock/UTC.hi
+Data/Time/Clock.o : Data/Time/Clock/Scale.hi
+Data/Time/TAI.o : Data/Time/TAI.hs
+Data/Time/TAI.o : Data/Time/Clock.hi
+Data/Time/TAI.o : Data/Time/Calendar/Days.hi
 Data/Time/LocalTime/TimeZone.o : Data/Time/LocalTime/TimeZone.hs
 Data/Time/LocalTime/TimeZone.o : Data/Time/Clock/POSIX.hi
 Data/Time/LocalTime/TimeZone.o : Data/Time/Clock.hi

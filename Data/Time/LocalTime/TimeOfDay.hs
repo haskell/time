@@ -51,7 +51,7 @@ posixDay :: DiffTime
 posixDay = fromInteger 86400
 
 -- | Get a TimeOfDay given a time since midnight.
--- | Time more than 24h will be converted to leap-seconds.
+-- Time more than 24h will be converted to leap-seconds.
 timeToTimeOfDay :: DiffTime -> TimeOfDay
 timeToTimeOfDay dt | dt >= posixDay = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDay)))
 timeToTimeOfDay dt = TimeOfDay (fromInteger h) (fromInteger m) s where
