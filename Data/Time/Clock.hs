@@ -9,5 +9,5 @@ module Data.Time.Clock
 ) where
 
 import Data.Time.Clock.Scale
-import Data.Time.Clock.UTC(UTCTime(..),UTCDiffTime,addUTCTime,diffUTCTime)
+import Data.Time.Clock.UTC(UTCTime(..),NominalDiffTime,addUTCTime,diffUTCTime)
 import Data.Time.Clock.Current

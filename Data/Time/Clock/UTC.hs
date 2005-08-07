@@ -9,7 +9,7 @@ module Data.Time.Clock.UTC
 	-- These corrections are not predictable and are announced with six month's notice.
 	-- No table of these corrections is provided, as any program compiled with it would become
 	-- out of date in six months.
-	UTCTime(..),UTCDiffTime,
+	UTCTime(..),NominalDiffTime,
 	addUTCTime,diffUTCTime,
 	
 	-- * POSIX time
@@ -43,59 +43,59 @@ instance Ord UTCTime where
 -- Conversion functions will treat it as seconds.
 -- It has an accuracy of 10^-12 s.
 -- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
--- For instance, 23:00 UTC + 2 hours of UTCDiffTime = 01:00 UTC (+ 1 day),
+-- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
-newtype UTCDiffTime = MkUTCDiffTime Pico deriving (Eq,Ord)
+newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord)
 
-instance Enum UTCDiffTime where
-	succ (MkUTCDiffTime a) = MkUTCDiffTime (succ a)
-	pred (MkUTCDiffTime a) = MkUTCDiffTime (pred a)
-	toEnum = MkUTCDiffTime . toEnum
-	fromEnum (MkUTCDiffTime a) = fromEnum a
-	enumFrom (MkUTCDiffTime a) = fmap MkUTCDiffTime (enumFrom a)
-	enumFromThen (MkUTCDiffTime a) (MkUTCDiffTime b) = fmap MkUTCDiffTime (enumFromThen a b)
-	enumFromTo (MkUTCDiffTime a) (MkUTCDiffTime b) = fmap MkUTCDiffTime (enumFromTo a b)
-	enumFromThenTo (MkUTCDiffTime a) (MkUTCDiffTime b) (MkUTCDiffTime c) = fmap MkUTCDiffTime (enumFromThenTo a b c)
+instance Enum NominalDiffTime where
+	succ (MkNominalDiffTime a) = MkNominalDiffTime (succ a)
+	pred (MkNominalDiffTime a) = MkNominalDiffTime (pred a)
+	toEnum = MkNominalDiffTime . toEnum
+	fromEnum (MkNominalDiffTime a) = fromEnum a
+	enumFrom (MkNominalDiffTime a) = fmap MkNominalDiffTime (enumFrom a)
+	enumFromThen (MkNominalDiffTime a) (MkNominalDiffTime b) = fmap MkNominalDiffTime (enumFromThen a b)
+	enumFromTo (MkNominalDiffTime a) (MkNominalDiffTime b) = fmap MkNominalDiffTime (enumFromTo a b)
+	enumFromThenTo (MkNominalDiffTime a) (MkNominalDiffTime b) (MkNominalDiffTime c) = fmap MkNominalDiffTime (enumFromThenTo a b c)
 
-instance Show UTCDiffTime where
-	show (MkUTCDiffTime t) = (showFixed True t) ++ "s"
-
--- necessary because H98 doesn't have "cunning newtype" derivation
-instance Num UTCDiffTime where
-	(MkUTCDiffTime a) + (MkUTCDiffTime b) = MkUTCDiffTime (a + b)
-	(MkUTCDiffTime a) - (MkUTCDiffTime b) = MkUTCDiffTime (a - b)
-	(MkUTCDiffTime a) * (MkUTCDiffTime b) = MkUTCDiffTime (a * b)
-	negate (MkUTCDiffTime a) = MkUTCDiffTime (negate a)
-	abs (MkUTCDiffTime a) = MkUTCDiffTime (abs a)
-	signum (MkUTCDiffTime a) = MkUTCDiffTime (signum a)
-	fromInteger i = MkUTCDiffTime (fromInteger i)
+instance Show NominalDiffTime where
+	show (MkNominalDiffTime t) = (showFixed True t) ++ "s"
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
-instance Real UTCDiffTime where
-	toRational (MkUTCDiffTime a) = toRational a
+instance Num NominalDiffTime where
+	(MkNominalDiffTime a) + (MkNominalDiffTime b) = MkNominalDiffTime (a + b)
+	(MkNominalDiffTime a) - (MkNominalDiffTime b) = MkNominalDiffTime (a - b)
+	(MkNominalDiffTime a) * (MkNominalDiffTime b) = MkNominalDiffTime (a * b)
+	negate (MkNominalDiffTime a) = MkNominalDiffTime (negate a)
+	abs (MkNominalDiffTime a) = MkNominalDiffTime (abs a)
+	signum (MkNominalDiffTime a) = MkNominalDiffTime (signum a)
+	fromInteger i = MkNominalDiffTime (fromInteger i)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
-instance Fractional UTCDiffTime where
-	(MkUTCDiffTime a) / (MkUTCDiffTime b) = MkUTCDiffTime (a / b)
-	recip (MkUTCDiffTime a) = MkUTCDiffTime (recip a)
-	fromRational r = MkUTCDiffTime (fromRational r)
+instance Real NominalDiffTime where
+	toRational (MkNominalDiffTime a) = toRational a
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
-instance RealFrac UTCDiffTime where
-	properFraction (MkUTCDiffTime a) = (i,MkUTCDiffTime f) where
+instance Fractional NominalDiffTime where
+	(MkNominalDiffTime a) / (MkNominalDiffTime b) = MkNominalDiffTime (a / b)
+	recip (MkNominalDiffTime a) = MkNominalDiffTime (recip a)
+	fromRational r = MkNominalDiffTime (fromRational r)
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance RealFrac NominalDiffTime where
+	properFraction (MkNominalDiffTime a) = (i,MkNominalDiffTime f) where
 		(i,f) = properFraction a
-	truncate (MkUTCDiffTime a) = truncate a
-	round (MkUTCDiffTime a) = round a
-	ceiling (MkUTCDiffTime a) = ceiling a
-	floor (MkUTCDiffTime a) = floor a
+	truncate (MkNominalDiffTime a) = truncate a
+	round (MkNominalDiffTime a) = round a
+	ceiling (MkNominalDiffTime a) = ceiling a
+	floor (MkNominalDiffTime a) = floor a
 
-posixDay :: UTCDiffTime
+posixDay :: NominalDiffTime
 posixDay = 86400
 
 unixEpochMJD :: Day
 unixEpochMJD = ModifiedJulianDay 40587
 
-type POSIXTime = UTCDiffTime
+type POSIXTime = NominalDiffTime
 
 posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
@@ -107,9 +107,9 @@ utcTimeToPOSIXSeconds (UTCTime d t) =
  (fromInteger (diffDays d unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
 
 -- | addUTCTime a b = a + b
-addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime
+addUTCTime :: NominalDiffTime -> UTCTime -> UTCTime
 addUTCTime x t = posixSecondsToUTCTime (x + (utcTimeToPOSIXSeconds t))
 
 -- | diffUTCTime a b = a - b
-diffUTCTime :: UTCTime -> UTCTime -> UTCDiffTime
+diffUTCTime :: UTCTime -> UTCTime -> NominalDiffTime
 diffUTCTime a b = (utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b)
