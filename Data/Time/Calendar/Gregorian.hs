@@ -4,7 +4,7 @@
 module Data.Time.Calendar.Gregorian
 (
 	-- * Gregorian calendar
-	gregorian,fromGregorian,showGregorian,gregorianMonthLength
+	toGregorian,fromGregorian,showGregorian,gregorianMonthLength
 
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
@@ -15,9 +15,9 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
 -- | convert to proleptic Gregorian calendar. First element of result is year, second month number (1-12), third day (1-31).
-gregorian :: Date -> (Integer,Int,Int)
-gregorian date = (year,month,day) where
-	(year,yd) = yearAndDay date
+toGregorian :: Date -> (Integer,Int,Int)
+toGregorian date = (year,month,day) where
+	(year,yd) = toYearAndDay date
 	(month,day) = findMonthDay (monthLengths (isLeapYear year)) yd
 
 -- | convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
@@ -36,7 +36,7 @@ fromGregorian year month day = ModJulianDay
 -- | show in ISO 8601 format (yyyy-mm-dd)
 showGregorian :: Date -> String
 showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d) where
-	(y,m,d) = gregorian date
+	(y,m,d) = toGregorian date
 
 findMonthDay :: [Int] -> Int -> (Int,Int)
 findMonthDay (n:ns) yd | yd > n = (\(m,d) -> (m + 1,d)) (findMonthDay ns (yd - n))

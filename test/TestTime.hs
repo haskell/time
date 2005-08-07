@@ -7,7 +7,7 @@ import Data.Time
 showCal :: Integer -> IO ()
 showCal mjd = do
 	let date = ModJulianDay mjd
-	let (y,m,d) = gregorian date
+	let (y,m,d) = toGregorian date
 	let date' = fromGregorian y m d
 	putStr ((show mjd) ++ "=" ++ (showGregorian date) ++ "=" ++ (showYearAndDay date) ++ "=" ++ (showISOWeekDay date))
 	putStrLn (if date == date' then "" else "=" ++ (show (getModJulianDay date')) ++ "!")

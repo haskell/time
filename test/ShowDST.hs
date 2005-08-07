@@ -29,7 +29,7 @@ main :: IO ()
 main = do
 	now <- getCurrentTime
 	zone <- getTimeZone now
-	let (year,_,_) = gregorian (localDay (utcToLocalTime zone now))
+	let (year,_,_) = toGregorian (localDay (utcToLocalTime zone now))
 	putStrLn ("DST adjustments for " ++ show year ++ ":")
 	let t0 = monthBeginning zone year 1
 	let t1 = monthBeginning zone year 4

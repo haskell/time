@@ -88,25 +88,25 @@ instance FormatTime Date where
 	formatCharacter 'x' = Just (\locale -> formatTime locale (dateFmt locale))
 
 	-- Year Count
-	formatCharacter 'Y' = Just (\_ -> show . fst . yearAndDay)
-	formatCharacter 'y' = Just (\_ -> show2 . mod100 . fst . yearAndDay)
-	formatCharacter 'C' = Just (\_ -> show2 . div100 . fst . yearAndDay)
+	formatCharacter 'Y' = Just (\_ -> show . fst . toYearAndDay)
+	formatCharacter 'y' = Just (\_ -> show2 . mod100 . fst . toYearAndDay)
+	formatCharacter 'C' = Just (\_ -> show2 . div100 . fst . toYearAndDay)
 	-- Month of Year
-	formatCharacter 'B' = Just (\locale -> fst . (\(_,m,_) -> (months locale) !! (m - 1)) . gregorian)
-	formatCharacter 'b' = Just (\locale -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . gregorian)
-	formatCharacter 'h' = Just (\locale -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . gregorian)
-	formatCharacter 'm' = Just (\_ -> show2 . (\(_,m,_) -> m) . gregorian)
+	formatCharacter 'B' = Just (\locale -> fst . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
+	formatCharacter 'b' = Just (\locale -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
+	formatCharacter 'h' = Just (\locale -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
+	formatCharacter 'm' = Just (\_ -> show2 . (\(_,m,_) -> m) . toGregorian)
 	-- Day of Month
-	formatCharacter 'd' = Just (\_ -> show2 . (\(_,_,d) -> d) . gregorian)
-	formatCharacter 'e' = Just (\_ -> show2Space . (\(_,_,d) -> d) . gregorian)
+	formatCharacter 'd' = Just (\_ -> show2 . (\(_,_,d) -> d) . toGregorian)
+	formatCharacter 'e' = Just (\_ -> show2Space . (\(_,_,d) -> d) . toGregorian)
 	-- Day of Year
-	formatCharacter 'j' = Just (\_ -> show3 . snd . yearAndDay)
+	formatCharacter 'j' = Just (\_ -> show3 . snd . toYearAndDay)
 
 	-- ISOWeekDay
-	formatCharacter 'G' = Just (\_ -> show . (\(y,_,_) -> y) . isoWeekDay)
-	formatCharacter 'g' = Just (\_ -> show2 . mod100 . (\(y,_,_) -> y) . isoWeekDay)
-	formatCharacter 'V' = Just (\_ -> show2 . (\(_,w,_) -> w) . isoWeekDay)
-	formatCharacter 'u' = Just (\_ -> show . (\(_,_,d) -> d) . isoWeekDay)
+	formatCharacter 'G' = Just (\_ -> show . (\(y,_,_) -> y) . toISOWeekDay)
+	formatCharacter 'g' = Just (\_ -> show2 . mod100 . (\(y,_,_) -> y) . toISOWeekDay)
+	formatCharacter 'V' = Just (\_ -> show2 . (\(_,w,_) -> w) . toISOWeekDay)
+	formatCharacter 'u' = Just (\_ -> show . (\(_,_,d) -> d) . toISOWeekDay)
 
 	-- Day of week
 	formatCharacter 'a' = Just (\locale -> snd . ((wDays locale) !!) . snd . sundayStartWeek)

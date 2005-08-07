@@ -14,9 +14,9 @@ checkDay encodeDay decodeDay day = do
 
 checkers :: [Date -> IO ()]
 checkers = [
-	checkDay yearAndDay (\(y,d) -> fromYearAndDay y d),
-	checkDay isoWeekDay (\(y,w,d) -> fromISOWeekDay y w d),
-	checkDay gregorian (\(y,m,d) -> fromGregorian y m d)
+	checkDay toYearAndDay (\(y,d) -> fromYearAndDay y d),
+	checkDay toISOWeekDay (\(y,w,d) -> fromISOWeekDay y w d),
+	checkDay toGregorian (\(y,m,d) -> fromGregorian y m d)
 	]
 
 days :: [Date]
