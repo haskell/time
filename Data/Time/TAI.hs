@@ -25,7 +25,7 @@ taiEpoch = MkAbsoluteTime 0
 
 -- | addAbsoluteTime a b = a + b
 addAbsoluteTime :: DiffTime -> AbsoluteTime -> AbsoluteTime
-addAbsoluteTime t (MkAbsoluteTime a) = MkAbsoluteTime (t + a)
+addAbsoluteTime t (MkAbsoluteTime a) = MkAbsoluteTime (a + t)
 
 -- | diffAbsoluteTime a b = a - b
 diffAbsoluteTime :: AbsoluteTime -> AbsoluteTime -> DiffTime
@@ -37,7 +37,7 @@ diffAbsoluteTime (MkAbsoluteTime a) (MkAbsoluteTime b) = a - b
 type LeapSecondTable = Day -> Integer
 
 utcDayLength :: LeapSecondTable -> Day -> DiffTime
-utcDayLength table day = realToFrac (86400 + (table (addDays day 1)) - (table day))
+utcDayLength table day = realToFrac (86400 + (table (addDays 1 day)) - (table day))
 
 utcToTAITime :: LeapSecondTable -> UTCTime -> AbsoluteTime
 utcToTAITime table (UTCTime day dtime) = MkAbsoluteTime

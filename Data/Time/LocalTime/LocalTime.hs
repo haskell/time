@@ -32,12 +32,12 @@ instance Show LocalTime where
 
 -- | show a UTC time in a given time zone as a LocalTime
 utcToLocalTime :: TimeZone -> UTCTime -> LocalTime
-utcToLocalTime tz (UTCTime day dt) = LocalTime (addDays day i) tod where
+utcToLocalTime tz (UTCTime day dt) = LocalTime (addDays i day) tod where
 	(i,tod) = utcToLocalTimeOfDay tz (timeToTimeOfDay dt)
 
 -- | find out what UTC time a given LocalTime in a given time zone is
 localTimeToUTC :: TimeZone -> LocalTime -> UTCTime
-localTimeToUTC tz (LocalTime day tod) = UTCTime (addDays day i) (timeOfDayToTime todUTC) where
+localTimeToUTC tz (LocalTime day tod) = UTCTime (addDays i day) (timeOfDayToTime todUTC) where
 	(i,todUTC) = localToUTCTimeOfDay tz tod
 
 -- | 1st arg is observation meridian in degrees, positive is East

@@ -106,6 +106,8 @@
 		AB2665E808A215AA0059DEC0 /* LongWeekYears.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LongWeekYears.ref; sourceTree = "<group>"; };
 		AB2666E808A571460059DEC0 /* LocalTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = LocalTime.hs; sourceTree = "<group>"; };
 		AB2666F108A572520059DEC0 /* Time.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Time.hs; sourceTree = "<group>"; };
+		AB26682008A5FF0D0059DEC0 /* AddDays.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = AddDays.hs; sourceTree = "<group>"; };
+		AB26682108A5FF0D0059DEC0 /* AddDays.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AddDays.ref; sourceTree = "<group>"; };
 		ABD6783F084167B900CF37C0 /* POSIX.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = POSIX.hs; sourceTree = "<group>"; };
 		ABD67840084167D100CF37C0 /* Current.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Current.hs; sourceTree = "<group>"; };
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
@@ -223,6 +225,8 @@
 				AB2665E808A215AA0059DEC0 /* LongWeekYears.ref */,
 				AB2665B008A1F65B0059DEC0 /* ClipDates.hs */,
 				AB2665B108A1F65B0059DEC0 /* ClipDates.ref */,
+				AB26682008A5FF0D0059DEC0 /* AddDays.hs */,
+				AB26682108A5FF0D0059DEC0 /* AddDays.ref */,
 				ABFA262E083B28C00096540C /* TimeZone.hs */,
 				ABFA262B083B28C00096540C /* TestFormatStuff.h */,
 				ABFA262A083B28C00096540C /* TestFormatStuff.c */,

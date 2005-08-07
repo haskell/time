@@ -21,8 +21,8 @@ instance Enum Day where
 	enumFromTo (ModifiedJulianDay a) (ModifiedJulianDay b) = fmap ModifiedJulianDay (enumFromTo a b)
 	enumFromThenTo (ModifiedJulianDay a) (ModifiedJulianDay b) (ModifiedJulianDay c) = fmap ModifiedJulianDay (enumFromThenTo a b c)
 
-addDays :: Day -> Integer -> Day
-addDays (ModifiedJulianDay a) b = ModifiedJulianDay (a + b)
+addDays :: Integer -> Day -> Day
+addDays n (ModifiedJulianDay a) = ModifiedJulianDay (a + n)
 
 diffDays :: Day -> Day -> Integer
 diffDays (ModifiedJulianDay a) (ModifiedJulianDay b) = a - b

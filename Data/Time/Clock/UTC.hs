@@ -100,7 +100,7 @@ type POSIXTime = UTCDiffTime
 posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
 	(d,t) = divMod' i posixDay
- in UTCTime (addDays unixEpochMJD d) (realToFrac t)
+ in UTCTime (addDays d unixEpochMJD) (realToFrac t)
 
 utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
