@@ -81,7 +81,7 @@ instance FormatTime TimeZone where
 	formatCharacter 'Z' = Just (\_ -> timeZoneName)
 	formatCharacter _ = Nothing
 
-instance FormatTime Date where
+instance FormatTime Day where
 	-- Aggregate
 	formatCharacter 'D' = Just (\locale -> formatTime locale "%m/%d/%y")
 	formatCharacter 'F' = Just (\locale -> formatTime locale "%Y-%m-%d")

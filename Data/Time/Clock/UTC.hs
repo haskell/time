@@ -26,7 +26,7 @@ import Data.Fixed
 -- Note that if a day has a leap second added to it, it will have 86401 seconds.
 data UTCTime = UTCTime {
 	-- | the day
-	utctDay :: Date,
+	utctDay :: Day,
 	-- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
 	utctDayTime :: DiffTime
 }
@@ -92,19 +92,19 @@ instance RealFrac UTCDiffTime where
 posixDay :: UTCDiffTime
 posixDay = 86400
 
-unixEpochMJD :: Date
-unixEpochMJD = ModJulianDay 40587
+unixEpochMJD :: Day
+unixEpochMJD = ModifiedJulianDay 40587
 
 type POSIXTime = UTCDiffTime
 
 posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
 	(d,t) = divMod' i posixDay
- in UTCTime (addDate unixEpochMJD d) (realToFrac t)
+ in UTCTime (addDays unixEpochMJD d) (realToFrac t)
 
 utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
- (fromInteger (diffDate d unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
+ (fromInteger (diffDays d unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
 
 -- | addUTCTime a b = a + b
 addUTCTime :: UTCDiffTime -> UTCTime -> UTCTime

@@ -6,11 +6,11 @@ import Data.Time
 
 showCal :: Integer -> IO ()
 showCal mjd = do
-	let date = ModJulianDay mjd
+	let date = ModifiedJulianDay mjd
 	let (y,m,d) = toGregorian date
 	let date' = fromGregorian y m d
 	putStr ((show mjd) ++ "=" ++ (showGregorian date) ++ "=" ++ (showYearAndDay date) ++ "=" ++ (showISOWeekDay date))
-	putStrLn (if date == date' then "" else "=" ++ (show (getModJulianDay date')) ++ "!")
+	putStrLn (if date == date' then "" else "=" ++ (show (toModifiedJulianDay date')) ++ "!")
 
 testCal :: IO ()
 testCal = do
@@ -40,7 +40,7 @@ testCal = do
 	mapM_ showCal [51540..52280]	
 
 showUTCTime :: UTCTime -> String
-showUTCTime (UTCTime d t) =  show (getModJulianDay d) ++ "," ++ show t
+showUTCTime (UTCTime d t) =  show (toModifiedJulianDay d) ++ "," ++ show t
 
 myzone :: TimeZone
 myzone = hoursToTimeZone (- 8)

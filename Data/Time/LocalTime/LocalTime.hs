@@ -23,7 +23,7 @@ import Data.Time.Clock
 -- Conversion of this (as local civil time) to UTC depends on the time zone.
 -- Conversion of this (as local mean time) to UT1 depends on the longitude.
 data LocalTime = LocalTime {
-	localDay    :: Date,
+	localDay    :: Day,
 	localTimeOfDay   :: TimeOfDay
 } deriving (Eq,Ord)
 
@@ -32,24 +32,24 @@ instance Show LocalTime where
 
 -- | show a UTC time in a given time zone as a LocalTime
 utcToLocalTime :: TimeZone -> UTCTime -> LocalTime
-utcToLocalTime tz (UTCTime day dt) = LocalTime (addDate day i) tod where
+utcToLocalTime tz (UTCTime day dt) = LocalTime (addDays day i) tod where
 	(i,tod) = utcToLocalTimeOfDay tz (timeToTimeOfDay dt)
 
 -- | find out what UTC time a given LocalTime in a given time zone is
 localTimeToUTC :: TimeZone -> LocalTime -> UTCTime
-localTimeToUTC tz (LocalTime day tod) = UTCTime (addDate day i) (timeOfDayToTime todUTC) where
+localTimeToUTC tz (LocalTime day tod) = UTCTime (addDays day i) (timeOfDayToTime todUTC) where
 	(i,todUTC) = localToUTCTimeOfDay tz tod
 
 -- | 1st arg is observation meridian in degrees, positive is East
 ut1ToLocalTime :: Rational -> UniversalTime -> LocalTime
-ut1ToLocalTime long (ModJulianDate date) = LocalTime (ModJulianDay localMJD) (dayFractionToTimeOfDay localToDOffset) where
+ut1ToLocalTime long (ModJulianDate date) = LocalTime (ModifiedJulianDay localMJD) (dayFractionToTimeOfDay localToDOffset) where
 	localTime = date + long / 360 :: Rational
 	localMJD = floor localTime
 	localToDOffset = localTime - (fromIntegral localMJD)	
 
 -- | 1st arg is observation meridian in degrees, positive is East
 localTimeToUT1 :: Rational -> LocalTime -> UniversalTime
-localTimeToUT1 long (LocalTime (ModJulianDay localMJD) tod) = ModJulianDate ((fromIntegral localMJD) + (timeOfDayToDayFraction tod) - (long / 360))
+localTimeToUT1 long (LocalTime (ModifiedJulianDay localMJD) tod) = ModJulianDate ((fromIntegral localMJD) + (timeOfDayToDayFraction tod) - (long / 360))
 
 -- | A local time together with a TimeZone.
 data ZonedTime = ZonedTime {

@@ -34,14 +34,14 @@ diffAbsoluteTime (MkAbsoluteTime a) (MkAbsoluteTime b) = a - b
 -- | TAI - UTC during this day.
 -- No table is provided, as any program compiled with it would become
 -- out of date in six months.
-type LeapSecondTable = Date -> Integer
+type LeapSecondTable = Day -> Integer
 
-utcDayLength :: LeapSecondTable -> Date -> DiffTime
-utcDayLength table day = realToFrac (86400 + (table (addDate day 1)) - (table day))
+utcDayLength :: LeapSecondTable -> Day -> DiffTime
+utcDayLength table day = realToFrac (86400 + (table (addDays day 1)) - (table day))
 
 utcToTAITime :: LeapSecondTable -> UTCTime -> AbsoluteTime
 utcToTAITime table (UTCTime day dtime) = MkAbsoluteTime
-	((realToFrac ((getModJulianDay day) * 86400 + (table day))) + dtime)
+	((realToFrac ((toModifiedJulianDay day) * 86400 + (table day))) + dtime)
 
 taiToUTCTime :: LeapSecondTable -> AbsoluteTime -> UTCTime
 taiToUTCTime table (MkAbsoluteTime t) = undefined table t -- WRONG
