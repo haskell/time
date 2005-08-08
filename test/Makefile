@@ -36,7 +36,7 @@ TimeZone: TimeZone.o ../libTimeLib.a
 TimeZone.ref: FORCE
 	date +%z > $@
 
-test: TestFixed.diff ConvertBack.diff0 TestTime.diff LongWeekYears.diff ClipDates.diff AddDays.diff TimeZone.diff TestFormat.diff0
+test: TestFixed.diff ConvertBack.diff0 TestTime.diff LongWeekYears.diff ClipDates.diff AddDays.diff TimeZone.diff TestFormat.diff0 UseCases.o
 
 clean:
 	rm -rf ConvertBack TimeZone TimeZone.ref CurrentTime TestTime TestFixed ShowDST TestFormat *.out *.o *.hi Makefile.bak
@@ -57,6 +57,9 @@ clean:
 	@:
 
 %.o: %.hs
+	ghc -i.. -c $< -o $@
+
+%.o: %.lhs
 	ghc -i.. -c $< -o $@
 
 FORCE:
