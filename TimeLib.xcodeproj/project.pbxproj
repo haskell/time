@@ -109,6 +109,9 @@
 		AB26682008A5FF0D0059DEC0 /* AddDays.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = AddDays.hs; sourceTree = "<group>"; };
 		AB26682108A5FF0D0059DEC0 /* AddDays.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AddDays.ref; sourceTree = "<group>"; };
 		AB26689F08A6D7290059DEC0 /* UseCases.lhs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell.literate; path = UseCases.lhs; sourceTree = "<group>"; };
+		ABC0F98D090C7A6000DEF265 /* tai-utc.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "tai-utc.dat"; sourceTree = "<group>"; };
+		ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseDAT.hs; sourceTree = "<group>"; };
+		ABC0F9910913518A00DEF265 /* TestParseDAT.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestParseDAT.ref; sourceTree = "<group>"; };
 		ABD6783F084167B900CF37C0 /* POSIX.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = POSIX.hs; sourceTree = "<group>"; };
 		ABD67840084167D100CF37C0 /* Current.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Current.hs; sourceTree = "<group>"; };
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
@@ -151,9 +154,9 @@
 				AB01DCFC08374838003C9EF7 /* Calendar.hs */,
 				ABD6783C0841677900CF37C0 /* Clock */,
 				AB01DCFD08374838003C9EF7 /* Clock.hs */,
-				AB01DCFE08374838003C9EF7 /* TAI.hs */,
 				AB2666A808A56FE30059DEC0 /* LocalTime */,
 				AB2666E808A571460059DEC0 /* LocalTime.hs */,
+				AB01DCFE08374838003C9EF7 /* TAI.hs */,
 			);
 			path = Time;
 			sourceTree = "<group>";
@@ -232,6 +235,9 @@
 				ABFA262B083B28C00096540C /* TestFormatStuff.h */,
 				ABFA262A083B28C00096540C /* TestFormatStuff.c */,
 				ABFA2629083B28C00096540C /* TestFormat.hs */,
+				ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */,
+				ABC0F9910913518A00DEF265 /* TestParseDAT.ref */,
+				ABC0F98D090C7A6000DEF265 /* tai-utc.dat */,
 				AB26689F08A6D7290059DEC0 /* UseCases.lhs */,
 			);
 			name = Test;

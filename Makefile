@@ -113,9 +113,6 @@ Data/Time/Clock.o : Data/Time/Clock.hs
 Data/Time/Clock.o : Data/Time/Clock/Current.hi
 Data/Time/Clock.o : Data/Time/Clock/UTC.hi
 Data/Time/Clock.o : Data/Time/Clock/Scale.hi
-Data/Time/TAI.o : Data/Time/TAI.hs
-Data/Time/TAI.o : Data/Time/Clock.hi
-Data/Time/TAI.o : Data/Time/Calendar/Days.hi
 Data/Time/LocalTime/TimeZone.o : Data/Time/LocalTime/TimeZone.hs
 Data/Time/LocalTime/TimeZone.o : Data/Time/Clock/POSIX.hi
 Data/Time/LocalTime/TimeZone.o : Data/Time/Clock.hi
@@ -143,6 +140,11 @@ Data/Time/LocalTime.o : Data/Time/LocalTime/Format.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/LocalTime.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/TimeOfDay.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/TimeZone.hi
+Data/Time/TAI.o : Data/Time/TAI.hs
+Data/Time/TAI.o : Data/Fixed.hi
+Data/Time/TAI.o : Data/Time/Clock.hi
+Data/Time/TAI.o : Data/Time/Calendar/Days.hi
+Data/Time/TAI.o : Data/Time/LocalTime.hi
 Data/Time.o : Data/Time.hs
 Data/Time.o : Data/Time/LocalTime.hi
 Data/Time.o : Data/Time/Clock.hi

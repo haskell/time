@@ -24,6 +24,9 @@ TestFormat: TestFormat.o TestFormatStuff.o ../libTimeLib.a
 TestFormatStuff.o: TestFormatStuff.c TestFormatStuff.h
 	gcc -o $@ -c $<
 
+TestParseDAT: TestParseDAT.o ../libTimeLib.a
+	ghc $^ -o $@
+
 CurrentTime: CurrentTime.o ../libTimeLib.a
 	ghc $^ -o $@
 
@@ -36,7 +39,7 @@ TimeZone: TimeZone.o ../libTimeLib.a
 TimeZone.ref: FORCE
 	date +%z > $@
 
-test: TestFixed.diff ConvertBack.diff0 TestTime.diff LongWeekYears.diff ClipDates.diff AddDays.diff TimeZone.diff TestFormat.diff0 UseCases.o
+test: TestFixed.diff ConvertBack.diff0 TestTime.diff LongWeekYears.diff ClipDates.diff AddDays.diff TimeZone.diff TestFormat.diff0 TestParseDAT.diff UseCases.o
 
 clean:
 	rm -rf ConvertBack TimeZone TimeZone.ref CurrentTime TestTime TestFixed ShowDST TestFormat *.out *.o *.hi Makefile.bak
