@@ -9,6 +9,9 @@ module Data.Time.Clock.UTC
 	-- These corrections are not predictable and are announced with six month's notice.
 	-- No table of these corrections is provided, as any program compiled with it would become
 	-- out of date in six months.
+	-- 
+	-- If you don't care about leap seconds, use UTCTime and NominalDiffTime for your clock calculations,
+	-- and you'll be fine.
 	UTCTime(..),NominalDiffTime,
 	addUTCTime,diffUTCTime,
 	
