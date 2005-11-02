@@ -46,9 +46,6 @@ times =
 	fmap (LocalTime (fromGregorian 1999 01 01)) tods ++
 	fmap (LocalTime (fromGregorian 1999 01 02)) tods
 
-showUTC :: UTCTime -> String
-showUTC t = show (zonedTimeFromUTC utc t)
-
 main :: IO ()
 main = do
 	h <- openFile "tai-utc.dat" ReadMode
@@ -60,6 +57,6 @@ main = do
 		let taiTime = utcToTAITime lst utcTime
 		let utcTime' = taiToUTCTime lst taiTime
 		if utcTime == utcTime'
-		 then putStrLn ((showUTC utcTime) ++ " == " ++ (show taiTime))
-		 else putStrLn ("correction: " ++ (showUTC utcTime) ++ " -> " ++ (show taiTime) ++ " -> " ++ (showUTC utcTime'))
+		 then putStrLn ((show utcTime) ++ " == " ++ (show taiTime))
+		 else putStrLn ("correction: " ++ (show utcTime) ++ " -> " ++ (show taiTime) ++ " -> " ++ (show utcTime'))
 		) times

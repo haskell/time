@@ -65,6 +65,9 @@ ztUTC (ZonedTime t zone) = localTimeToUTC zone t
 instance Show ZonedTime where
 	show (ZonedTime t zone) = show t ++ " " ++ show zone
 
+instance Show UTCTime where
+	show t = show (zonedTimeFromUTC utc t)
+
 getZonedTime :: IO ZonedTime
 getZonedTime = do
 	t <- getCurrentTime
