@@ -67,7 +67,7 @@ times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 
 compareFormat :: String -> TimeZone -> UTCTime -> IO ()
 compareFormat fmt zone time = let
-		ctime = zonedTimeFromUTC zone time
+		ctime = utcToZonedTime zone time
 		haskellText = formatTime locale fmt ctime
 	in do
 		unixText <- unixFormatTime fmt zone time

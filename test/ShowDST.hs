@@ -20,7 +20,7 @@ findTransition a b = do
 			return (tp ++ tq)
 
 showZoneTime :: TimeZone -> UTCTime -> String
-showZoneTime zone time = show (zonedTimeFromUTC zone time)
+showZoneTime zone time = show (utcToZonedTime zone time)
 
 showTransition :: (UTCTime,TimeZone,TimeZone) -> String
 showTransition (time,zone1,zone2) = (showZoneTime zone1 time) ++ " => " ++ (showZoneTime zone2 time)

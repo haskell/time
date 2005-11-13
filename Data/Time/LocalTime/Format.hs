@@ -66,7 +66,7 @@ instance FormatTime TimeOfDay where
 	formatCharacter _   = Nothing
 
 instance FormatTime ZonedTime where
-	formatCharacter 's' = Just (\_ zt -> show (truncate (utcTimeToPOSIXSeconds (ztUTC zt)) :: Integer))
+	formatCharacter 's' = Just (\_ zt -> show (truncate (utcTimeToPOSIXSeconds (zonedTimeToUTC zt)) :: Integer))
 	formatCharacter c = case (formatCharacter c) of
 		Just f -> Just (\locale dt -> f locale (ztLocalTime dt))
 		Nothing -> case (formatCharacter c) of
@@ -116,4 +116,4 @@ instance FormatTime Day where
 	formatCharacter _   = Nothing
 
 instance FormatTime UTCTime where
-	formatCharacter c = fmap (\f locale t -> f locale (zonedTimeFromUTC utc t)) (formatCharacter c)
+	formatCharacter c = fmap (\f locale t -> f locale (utcToZonedTime utc t)) (formatCharacter c)
