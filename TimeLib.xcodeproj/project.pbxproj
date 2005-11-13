@@ -100,6 +100,9 @@
 		AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TimeOfDay.hs; sourceTree = "<group>"; };
 		AB01DD18083748EC003C9EF7 /* TimeZone.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TimeZone.hs; sourceTree = "<group>"; };
 		AB01DD19083748EC003C9EF7 /* YearDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = YearDay.hs; sourceTree = "<group>"; };
+		AB20A933092741BA001A7C3C /* MonthDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = MonthDay.hs; sourceTree = "<group>"; };
+		AB20A93E09274282001A7C3C /* TestMonthDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestMonthDay.hs; sourceTree = "<group>"; };
+		AB20A93F09274299001A7C3C /* TestMonthDay.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestMonthDay.ref; sourceTree = "<group>"; };
 		AB2665B008A1F65B0059DEC0 /* ClipDates.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ClipDates.hs; sourceTree = "<group>"; };
 		AB2665B108A1F65B0059DEC0 /* ClipDates.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ClipDates.ref; sourceTree = "<group>"; };
 		AB2665E708A215AA0059DEC0 /* LongWeekYears.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = LongWeekYears.hs; sourceTree = "<group>"; };
@@ -167,6 +170,7 @@
 				AB01DD16083748EC003C9EF7 /* Private.hs */,
 				ABF3FF8B0880D284006724E1 /* Days.hs */,
 				AB01DD19083748EC003C9EF7 /* YearDay.hs */,
+				AB20A933092741BA001A7C3C /* MonthDay.hs */,
 				AB01DD14083748EC003C9EF7 /* Gregorian.hs */,
 				AB01DD15083748EC003C9EF7 /* ISO8601Week.hs */,
 			);
@@ -220,6 +224,8 @@
 				ABFA2625083B28C00096540C /* Makefile */,
 				ABFA2627083B28C00096540C /* TestFixed.hs */,
 				ABFA2628083B28C00096540C /* TestFixed.ref */,
+				AB20A93E09274282001A7C3C /* TestMonthDay.hs */,
+				AB20A93F09274299001A7C3C /* TestMonthDay.ref */,
 				ABFA2624083B28C00096540C /* CurrentTime.hs */,
 				ABFA2626083B28C00096540C /* ShowDST.hs */,
 				ABFA2623083B28C00096540C /* ConvertBack.hs */,

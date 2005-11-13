@@ -12,6 +12,7 @@ SRCS = Data/Fixed.hs \
 	Data/Time/Calendar/Private.hs \
 	Data/Time/Calendar/Days.hs \
 	Data/Time/Calendar/YearDay.hs \
+	Data/Time/Calendar/MonthDay.hs \
 	Data/Time/Calendar/Gregorian.hs \
 	Data/Time/Calendar/ISO8601Week.hs \
 	Data/Time/Calendar.hs \
@@ -86,10 +87,13 @@ Data/Time/Calendar/Private.o : Data/Fixed.hi
 Data/Time/Calendar/YearDay.o : Data/Time/Calendar/YearDay.hs
 Data/Time/Calendar/YearDay.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/YearDay.o : Data/Time/Calendar/Days.hi
+Data/Time/Calendar/MonthDay.o : Data/Time/Calendar/MonthDay.hs
+Data/Time/Calendar/MonthDay.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/Gregorian.hs
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/Days.hi
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/YearDay.hi
+Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/MonthDay.hi
 Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/ISO8601Week.hs
 Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/Days.hi
@@ -97,6 +101,7 @@ Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/YearDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar.hs
 Data/Time/Calendar.o : Data/Time/Calendar/ISO8601Week.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
+Data/Time/Calendar.o : Data/Time/Calendar/MonthDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/YearDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
 Data/Time/Clock/Scale.o : Data/Time/Clock/Scale.hs

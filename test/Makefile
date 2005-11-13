@@ -3,6 +3,9 @@ default: CurrentTime.run ShowDST.run test
 TestFixed: TestFixed.o ../Data/Fixed.o
 	ghc $^ -o $@
 
+TestMonthDay: TestMonthDay.o ../libTimeLib.a
+	ghc $^ -o $@
+
 ConvertBack: ConvertBack.o ../libTimeLib.a
 	ghc $^ -o $@
 
@@ -39,7 +42,18 @@ TimeZone: TimeZone.o ../libTimeLib.a
 TimeZone.ref: FORCE
 	date +%z > $@
 
-test: TestFixed.diff ConvertBack.diff0 TestTime.diff LongWeekYears.diff ClipDates.diff AddDays.diff TimeZone.diff TestFormat.diff0 TestParseDAT.diff UseCases.o
+test:	\
+	TestFixed.diff	\
+	TestMonthDay.diff	\
+	ConvertBack.diff0	\
+	TestTime.diff	\
+	LongWeekYears.diff	\
+	ClipDates.diff	\
+	AddDays.diff	\
+	TimeZone.diff	\
+	TestFormat.diff0	\
+	TestParseDAT.diff	\
+	UseCases.o
 
 clean:
 	rm -rf ConvertBack TimeZone TimeZone.ref CurrentTime TestTime TestFixed ShowDST TestFormat *.out *.o *.hi Makefile.bak

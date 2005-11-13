@@ -22,6 +22,7 @@ Other-modules:
 	Data.Time.Calendar.Private,
 	Data.Time.Calendar.Days,
 	Data.Time.Calendar.YearDay,
+	Data.Time.Calendar.MonthDay,
 	Data.Time.Calendar.Gregorian,
 	Data.Time.Calendar.ISO8601Week,
 	Data.Time.Clock.Scale,
