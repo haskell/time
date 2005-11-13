@@ -52,8 +52,8 @@ localTimeToUT1 long (LocalTime (ModifiedJulianDay localMJD) tod) = ModJulianDate
 
 -- | A local time together with a TimeZone.
 data ZonedTime = ZonedTime {
-	ztLocalTime :: LocalTime,
-	ztZone :: TimeZone
+	zonedTimeToLocalTime :: LocalTime,
+	zonedTimeZone :: TimeZone
 }
 
 utcToZonedTime :: TimeZone -> UTCTime -> ZonedTime
