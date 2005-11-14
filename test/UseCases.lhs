@@ -26,7 +26,7 @@ format?
 
 > july1st = do
 >    now <- getZonedTime
->    let (thisYear,_,_) = toGregorian (localDay (ztLocalTime now))
+>    let (thisYear,_,_) = toGregorian (localDay (zonedTimeToLocalTime now))
 >    let day = fromGregorian thisYear 7 1
 >    return (formatTime defaultTimeLocale "%m/%d/%Y" day)
 
