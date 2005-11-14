@@ -12,6 +12,7 @@ Synopsis:	a new time library
 Exposed-modules:
 	Data.Fixed,
 	Data.Time.Calendar,
+	Data.Time.Calendar.ISO8601Week,
 	Data.Time.Calendar.Julian,
 	Data.Time.Calendar.Easter,
 	Data.Time.Clock,
@@ -26,7 +27,6 @@ Other-modules:
 	Data.Time.Calendar.YearDay,
 	Data.Time.Calendar.MonthDay,
 	Data.Time.Calendar.Gregorian,
-	Data.Time.Calendar.ISO8601Week,
 	Data.Time.Calendar.JulianYearDay,
 	Data.Time.Clock.Scale,
 	Data.Time.Clock.UTC,

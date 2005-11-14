@@ -2,6 +2,7 @@
 
 module Main where
 
+import Data.Time.Calendar.ISO8601Week
 import Data.Time
 
 showCal :: Integer -> IO ()

@@ -1,11 +1,6 @@
 {-# OPTIONS -Wall -Werror #-}
 
--- #hide
-module Data.Time.Calendar.ISO8601Week
-	(
-	-- * ISO 8601 Week calendar
-	module Data.Time.Calendar.ISO8601Week
-	) where
+module Data.Time.Calendar.ISO8601Week where
 
 import Data.Time.Calendar.YearDay
 import Data.Time.Calendar.Days
