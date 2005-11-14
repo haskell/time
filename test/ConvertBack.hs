@@ -2,6 +2,7 @@
 
 module Main where
 
+import Data.Time.Calendar.Julian
 import Data.Time.Calendar
 
 checkDay :: (Show t) => (Day -> t) -> (t -> Day) -> Day -> IO ()
@@ -16,7 +17,8 @@ checkers :: [Day -> IO ()]
 checkers = [
 	checkDay toYearAndDay (\(y,d) -> fromYearAndDay y d),
 	checkDay toISO8601Week (\(y,w,d) -> fromISO8601Week y w d),
-	checkDay toGregorian (\(y,m,d) -> fromGregorian y m d)
+	checkDay toGregorian (\(y,m,d) -> fromGregorian y m d),
+	checkDay toJulian (\(y,m,d) -> fromJulian y m d)
 	]
 
 days :: [Day]

@@ -103,6 +103,13 @@
 		AB20A933092741BA001A7C3C /* MonthDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = MonthDay.hs; sourceTree = "<group>"; };
 		AB20A93E09274282001A7C3C /* TestMonthDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestMonthDay.hs; sourceTree = "<group>"; };
 		AB20A93F09274299001A7C3C /* TestMonthDay.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestMonthDay.ref; sourceTree = "<group>"; };
+		AB20A9E309275771001A7C3C /* Easter.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Easter.hs; sourceTree = "<group>"; };
+		AB20A9E409275795001A7C3C /* TestEaster.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestEaster.hs; sourceTree = "<group>"; };
+		AB20A9E509275795001A7C3C /* TestEaster.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestEaster.ref; sourceTree = "<group>"; };
+		AB20A9FC092758C3001A7C3C /* Julian.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Julian.hs; sourceTree = "<group>"; };
+		AB20AA1109275961001A7C3C /* JulianYearDay.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = JulianYearDay.hs; sourceTree = "<group>"; };
+		AB20AA62092872B9001A7C3C /* TestCalendars.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestCalendars.hs; sourceTree = "<group>"; };
+		AB20AA63092872C8001A7C3C /* TestCalendars.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestCalendars.ref; sourceTree = "<group>"; };
 		AB2665B008A1F65B0059DEC0 /* ClipDates.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ClipDates.hs; sourceTree = "<group>"; };
 		AB2665B108A1F65B0059DEC0 /* ClipDates.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ClipDates.ref; sourceTree = "<group>"; };
 		AB2665E708A215AA0059DEC0 /* LongWeekYears.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = LongWeekYears.hs; sourceTree = "<group>"; };
@@ -172,7 +179,10 @@
 				AB01DD19083748EC003C9EF7 /* YearDay.hs */,
 				AB20A933092741BA001A7C3C /* MonthDay.hs */,
 				AB01DD14083748EC003C9EF7 /* Gregorian.hs */,
+				AB20AA1109275961001A7C3C /* JulianYearDay.hs */,
+				AB20A9FC092758C3001A7C3C /* Julian.hs */,
 				AB01DD15083748EC003C9EF7 /* ISO8601Week.hs */,
+				AB20A9E309275771001A7C3C /* Easter.hs */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -229,6 +239,8 @@
 				ABFA2624083B28C00096540C /* CurrentTime.hs */,
 				ABFA2626083B28C00096540C /* ShowDST.hs */,
 				ABFA2623083B28C00096540C /* ConvertBack.hs */,
+				AB20AA62092872B9001A7C3C /* TestCalendars.hs */,
+				AB20AA63092872C8001A7C3C /* TestCalendars.ref */,
 				ABFA262C083B28C00096540C /* TestTime.hs */,
 				ABFA262D083B28C00096540C /* TestTime.ref */,
 				AB2665E708A215AA0059DEC0 /* LongWeekYears.hs */,
@@ -243,6 +255,8 @@
 				ABFA2629083B28C00096540C /* TestFormat.hs */,
 				ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */,
 				ABC0F9910913518A00DEF265 /* TestParseDAT.ref */,
+				AB20A9E409275795001A7C3C /* TestEaster.hs */,
+				AB20A9E509275795001A7C3C /* TestEaster.ref */,
 				ABC0F98D090C7A6000DEF265 /* tai-utc.dat */,
 				AB26689F08A6D7290059DEC0 /* UseCases.lhs */,
 			);

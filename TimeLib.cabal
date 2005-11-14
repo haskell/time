@@ -12,6 +12,8 @@ Synopsis:	a new time library
 Exposed-modules:
 	Data.Fixed,
 	Data.Time.Calendar,
+	Data.Time.Calendar.Julian,
+	Data.Time.Calendar.Easter,
 	Data.Time.Clock,
 	Data.Time.TAI,
 	Data.Time.LocalTime,
@@ -25,6 +27,7 @@ Other-modules:
 	Data.Time.Calendar.MonthDay,
 	Data.Time.Calendar.Gregorian,
 	Data.Time.Calendar.ISO8601Week,
+	Data.Time.Calendar.JulianYearDay,
 	Data.Time.Clock.Scale,
 	Data.Time.Clock.UTC,
 	Data.Time.Clock.POSIX,

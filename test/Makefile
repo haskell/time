@@ -9,6 +9,9 @@ TestMonthDay: TestMonthDay.o ../libTimeLib.a
 ConvertBack: ConvertBack.o ../libTimeLib.a
 	ghc $^ -o $@
 
+TestCalendars: TestCalendars.o ../libTimeLib.a
+	ghc $^ -o $@
+
 TestTime: TestTime.o ../libTimeLib.a
 	ghc $^ -o $@
 
@@ -30,6 +33,9 @@ TestFormatStuff.o: TestFormatStuff.c TestFormatStuff.h
 TestParseDAT: TestParseDAT.o ../libTimeLib.a
 	ghc $^ -o $@
 
+TestEaster: TestEaster.o ../libTimeLib.a
+	ghc $^ -o $@
+
 CurrentTime: CurrentTime.o ../libTimeLib.a
 	ghc $^ -o $@
 
@@ -46,6 +52,7 @@ test:	\
 	TestFixed.diff	\
 	TestMonthDay.diff	\
 	ConvertBack.diff0	\
+	TestCalendars.diff	\
 	TestTime.diff	\
 	LongWeekYears.diff	\
 	ClipDates.diff	\
@@ -53,6 +60,7 @@ test:	\
 	TimeZone.diff	\
 	TestFormat.diff0	\
 	TestParseDAT.diff	\
+	TestEaster.diff	\
 	UseCases.o
 
 clean:

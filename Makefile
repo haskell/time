@@ -15,6 +15,9 @@ SRCS = Data/Fixed.hs \
 	Data/Time/Calendar/MonthDay.hs \
 	Data/Time/Calendar/Gregorian.hs \
 	Data/Time/Calendar/ISO8601Week.hs \
+	Data/Time/Calendar/JulianYearDay.hs \
+	Data/Time/Calendar/Julian.hs \
+	Data/Time/Calendar/Easter.hs \
 	Data/Time/Calendar.hs \
 	Data/Time/Clock/Scale.hs \
 	Data/Time/Clock/UTC.hs \
@@ -104,6 +107,17 @@ Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
 Data/Time/Calendar.o : Data/Time/Calendar/MonthDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/YearDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
+Data/Time/Calendar/JulianYearDay.o : Data/Time/Calendar/JulianYearDay.hs
+Data/Time/Calendar/JulianYearDay.o : Data/Time/Calendar/Private.hi
+Data/Time/Calendar/JulianYearDay.o : Data/Time/Calendar/Days.hi
+Data/Time/Calendar/Julian.o : Data/Time/Calendar/Julian.hs
+Data/Time/Calendar/Julian.o : Data/Time/Calendar/Private.hi
+Data/Time/Calendar/Julian.o : Data/Time/Calendar/Days.hi
+Data/Time/Calendar/Julian.o : Data/Time/Calendar/JulianYearDay.hi
+Data/Time/Calendar/Julian.o : Data/Time/Calendar/MonthDay.hi
+Data/Time/Calendar/Easter.o : Data/Time/Calendar/Easter.hs
+Data/Time/Calendar/Easter.o : Data/Time/Calendar/Julian.hi
+Data/Time/Calendar/Easter.o : Data/Time/Calendar.hi
 Data/Time/Clock/Scale.o : Data/Time/Clock/Scale.hs
 Data/Time/Clock/Scale.o : Data/Fixed.hi
 Data/Time/Clock/UTC.o : Data/Time/Clock/UTC.hs

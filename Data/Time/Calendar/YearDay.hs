@@ -30,7 +30,7 @@ toYearAndDay (ModifiedJulianDay mjd) = (year,yd) where
 fromYearAndDay :: Integer -> Int -> Day
 fromYearAndDay year day = ModifiedJulianDay mjd where
 	y = year - 1
-	mjd = (fromIntegral (clip 1 (if isLeapYear year then 366 else 365) day)) + (div (1532) 5) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678882
+	mjd = (fromIntegral (clip 1 (if isLeapYear year then 366 else 365) day)) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678576
 
 -- | show in ISO 8601 Ordinal Day format (yyyy-ddd)
 showYearAndDay :: Day -> String
