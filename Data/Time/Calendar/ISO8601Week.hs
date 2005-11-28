@@ -7,7 +7,7 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
 -- | convert to ISO 8601 Week format. First element of result is year, second week number (1-53), third day of week (1 for Monday to 7 for Sunday).
--- Note that "Week" years are not quite the same as Gregorian years, as the first day of the year is always a Monday.
+-- Note that \"Week\" years are not quite the same as Gregorian years, as the first day of the year is always a Monday.
 -- The first week of a year is the first week to contain at least four days in the corresponding Gregorian year.
 toISO8601Week :: Day -> (Integer,Int,Int)
 toISO8601Week date@(ModifiedJulianDay mjd) = (y1,fromInteger (w1 + 1),fromInteger (mod d 7) + 1) where

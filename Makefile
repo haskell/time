@@ -99,8 +99,6 @@ Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/YearDay.hi
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/MonthDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar.hs
 Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
-Data/Time/Calendar.o : Data/Time/Calendar/MonthDay.hi
-Data/Time/Calendar.o : Data/Time/Calendar/YearDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
 Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/ISO8601Week.hs
 Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/Private.hi
@@ -150,6 +148,7 @@ Data/Time/LocalTime/Format.o : Data/Time/Clock/POSIX.hi
 Data/Time/LocalTime/Format.o : Data/Time/Clock.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar/Private.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar.hi
+Data/Time/LocalTime/Format.o : Data/Time/Calendar/YearDay.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar/ISO8601Week.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeOfDay.hi

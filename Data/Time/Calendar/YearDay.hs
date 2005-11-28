@@ -1,11 +1,6 @@
 {-# OPTIONS -Wall -Werror #-}
 
--- #hide
-module Data.Time.Calendar.YearDay
-	(
-	-- * Year and day format
-	module Data.Time.Calendar.YearDay
-	) where
+module Data.Time.Calendar.YearDay where
 
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private

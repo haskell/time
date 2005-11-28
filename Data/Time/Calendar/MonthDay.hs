@@ -1,9 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
--- #hide
 module Data.Time.Calendar.MonthDay
 	(
-	-- * Month and day format
 	monthAndDayToDayOfYear,dayOfYearToMonthAndDay,monthLength
 	) where
 
