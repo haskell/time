@@ -64,7 +64,8 @@ test:	\
 	UseCases.o
 
 clean:
-	rm -rf ConvertBack TimeZone TimeZone.ref CurrentTime TestTime TestFixed ShowDST TestFormat *.out *.o *.hi Makefile.bak
+	rm -rf TestFixed TestMonthDay ConvertBack TestCalendars TestTime LongWeekYears ClipDates	\
+	AddDays TestFormat TestParseDAT TestEaster CurrentTime ShowDST TimeZone TimeZone.ref *.out *.o *.hi Makefile.bak
 
 %.diff: %.ref %.out
 	diff -u $^

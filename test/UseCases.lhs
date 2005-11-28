@@ -44,8 +44,8 @@ first day of the year it occurred in?
 > truncateToFirstOfMonth day = fromGregorian y m 1 where
 >    (y,m,_) = toGregorian day
 
-> truncateToJan1st day = fromYearAndDay y 1 where
->    (y,_) = toYearAndDay day
+> truncateToJan1st day = fromOrdinalDate y 1 where
+>    (y,_) = toOrdinalDate day
 
 * Given a date X, how do I find the last day of the month that X occurs in. 
 For example, If X is July 4th, 2005, then I want the result to be July 31st, 

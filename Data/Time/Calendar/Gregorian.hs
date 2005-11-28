@@ -20,13 +20,13 @@ import Data.Time.Calendar.Private
 -- | convert to proleptic Gregorian calendar. First element of result is year, second month number (1-12), third day (1-31).
 toGregorian :: Day -> (Integer,Int,Int)
 toGregorian date = (year,month,day) where
-	(year,yd) = toYearAndDay date
+	(year,yd) = toOrdinalDate date
 	(month,day) = dayOfYearToMonthAndDay (isLeapYear year) yd
 
 -- | convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
 -- Invalid values will be clipped to the correct range, month first, then day.
 fromGregorian :: Integer -> Int -> Int -> Day
-fromGregorian year month day = fromYearAndDay year (monthAndDayToDayOfYear (isLeapYear year) month day)
+fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isLeapYear year) month day)
 
 -- | show in ISO 8601 format (yyyy-mm-dd)
 showGregorian :: Day -> String

@@ -8,13 +8,13 @@ import Data.Time.Calendar
 import Control.Monad
 
 checkYearAndDay :: (Integer,Int) -> IO ()
-checkYearAndDay (y,d) = putStrLn ((show y) ++ "-" ++ (show d) ++ " = " ++ (showYearAndDay (fromYearAndDay y d)))
+checkYearAndDay (y,d) = putStrLn ((show y) ++ "-" ++ (show d) ++ " = " ++ (showOrdinalDate (fromOrdinalDate y d)))
 
 checkGregorian :: (Integer,Int,Int) -> IO ()
 checkGregorian (y,m,d) = putStrLn ((show y) ++ "-" ++ (show m) ++ "-" ++ (show d) ++ " = " ++ (showGregorian (fromGregorian y m d)))
 
 checkISOWeekDay :: (Integer,Int,Int) -> IO ()
-checkISOWeekDay (y,w,d) = putStrLn ((show y) ++ "-W" ++ (show w) ++ "-" ++ (show d) ++ " = " ++ (showISO8601Week (fromISO8601Week y w d)))
+checkISOWeekDay (y,w,d) = putStrLn ((show y) ++ "-W" ++ (show w) ++ "-" ++ (show d) ++ " = " ++ (showWeekDate (fromWeekDate y w d)))
 
 main :: IO ()
 main = do

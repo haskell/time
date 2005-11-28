@@ -11,7 +11,7 @@ showers = [
 	("MJD",show . toModifiedJulianDay),
 	("Gregorian",showGregorian),
 	("Julian",showJulian),
-	("ISO 8601",showISO8601Week)
+	("ISO 8601",showWeekDate)
 	]
 
 days :: [Day]

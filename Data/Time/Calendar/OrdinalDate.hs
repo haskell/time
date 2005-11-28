@@ -7,8 +7,8 @@ import Data.Time.Calendar.Private
 
 -- | convert to ISO 8601 Ordinal Day format. First element of result is year (proleptic Gregoran calendar),
 -- second is the day of the year, with 1 for Jan 1, and 365 (or 366 in leap years) for Dec 31.
-toYearAndDay :: Day -> (Integer,Int)
-toYearAndDay (ModifiedJulianDay mjd) = (year,yd) where
+toOrdinalDate :: Day -> (Integer,Int)
+toOrdinalDate (ModifiedJulianDay mjd) = (year,yd) where
 	a = mjd + 678575
 	quadcent = div a 146097
 	b = mod a 146097
@@ -22,15 +22,15 @@ toYearAndDay (ModifiedJulianDay mjd) = (year,yd) where
 
 -- | convert from ISO 8601 Ordinal Day format.
 -- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
-fromYearAndDay :: Integer -> Int -> Day
-fromYearAndDay year day = ModifiedJulianDay mjd where
+fromOrdinalDate :: Integer -> Int -> Day
+fromOrdinalDate year day = ModifiedJulianDay mjd where
 	y = year - 1
 	mjd = (fromIntegral (clip 1 (if isLeapYear year then 366 else 365) day)) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678576
 
 -- | show in ISO 8601 Ordinal Day format (yyyy-ddd)
-showYearAndDay :: Day -> String
-showYearAndDay date = (show4 y) ++ "-" ++ (show3 d) where
-	(y,d) = toYearAndDay date
+showOrdinalDate :: Day -> String
+showOrdinalDate date = (show4 y) ++ "-" ++ (show3 d) where
+	(y,d) = toOrdinalDate date
 
 -- | Is this year a leap year according to the propleptic Gregorian calendar?
 isLeapYear :: Integer -> Bool
@@ -41,7 +41,7 @@ isLeapYear year = (mod year 4 == 0) && ((mod year 400 == 0) || not (mod year 100
 -- Monday is 1, Sunday is 7 (as \"%u\" in formatTime).
 mondayStartWeek :: Day -> (Int,Int)
 mondayStartWeek date = (fromInteger ((div d 7) - (div k 7)),fromInteger (mod d 7) + 1) where
-	yd = snd (toYearAndDay date)
+	yd = snd (toOrdinalDate date)
 	d = (toModifiedJulianDay date) + 2
 	k = d - (toInteger yd)
 
@@ -50,6 +50,6 @@ mondayStartWeek date = (fromInteger ((div d 7) - (div k 7)),fromInteger (mod d 7
 -- Sunday is 0, Saturday is 6 (as \"%w\" in formatTime).
 sundayStartWeek :: Day -> (Int,Int)
 sundayStartWeek date =(fromInteger ((div d 7) - (div k 7)),fromInteger (mod d 7)) where
-	yd = snd (toYearAndDay date)
+	yd = snd (toOrdinalDate date)
 	d = (toModifiedJulianDay date) + 3
 	k = d - (toInteger yd)
