@@ -2,8 +2,9 @@
 
 module Main where
 
+import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Julian
-import Data.Time.Calendar.ISO8601Week
+import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
 
 checkDay :: (Show t) => (Day -> t) -> (t -> Day) -> Day -> IO ()

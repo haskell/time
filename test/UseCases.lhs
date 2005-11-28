@@ -1,4 +1,5 @@
 > module UseCases where
+> import Data.Time.Calendar.OrdinalDate
 > import Data.Time
 > import System.Locale
 

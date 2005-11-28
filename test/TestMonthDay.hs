@@ -2,7 +2,7 @@
 
 module Main where
 
-import Data.Time.Calendar
+import Data.Time.Calendar.MonthDay
 
 showCompare :: (Eq a,Show a) => a -> String -> a -> String
 showCompare a1 b a2 | a1 == a2 = (show a1) ++ " == " ++ b

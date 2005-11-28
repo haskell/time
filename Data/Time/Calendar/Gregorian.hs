@@ -13,7 +13,7 @@ module Data.Time.Calendar.Gregorian
 ) where
 
 import Data.Time.Calendar.MonthDay
-import Data.Time.Calendar.YearDay
+import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 

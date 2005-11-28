@@ -1,8 +1,8 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module Data.Time.Calendar.ISO8601Week where
+module Data.Time.Calendar.WeekDate where
 
-import Data.Time.Calendar.YearDay
+import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 

@@ -3,7 +3,7 @@
 module Main where
 
 import Data.Time.Calendar.Julian
-import Data.Time.Calendar.ISO8601Week
+import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
 
 showers :: [(String,Day -> String)]

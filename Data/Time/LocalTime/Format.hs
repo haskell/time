@@ -10,8 +10,8 @@ module Data.Time.LocalTime.Format
 import Data.Time.LocalTime.LocalTime
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
-import Data.Time.Calendar.ISO8601Week
-import Data.Time.Calendar.YearDay
+import Data.Time.Calendar.WeekDate
+import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar
 import Data.Time.Calendar.Private
 import Data.Time.Clock

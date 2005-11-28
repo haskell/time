@@ -11,10 +11,10 @@ cleantest:
 SRCS = Data/Fixed.hs \
 	Data/Time/Calendar/Private.hs \
 	Data/Time/Calendar/Days.hs \
-	Data/Time/Calendar/YearDay.hs \
+	Data/Time/Calendar/OrdinalDate.hs \
 	Data/Time/Calendar/MonthDay.hs \
 	Data/Time/Calendar/Gregorian.hs \
-	Data/Time/Calendar/ISO8601Week.hs \
+	Data/Time/Calendar/WeekDate.hs \
 	Data/Time/Calendar/JulianYearDay.hs \
 	Data/Time/Calendar/Julian.hs \
 	Data/Time/Calendar/Easter.hs \
@@ -87,23 +87,23 @@ Data/Time/Calendar/Days.o : Data/Time/Calendar/Days.hs
 Data/Fixed.o : Data/Fixed.hs
 Data/Time/Calendar/Private.o : Data/Time/Calendar/Private.hs
 Data/Time/Calendar/Private.o : Data/Fixed.hi
-Data/Time/Calendar/YearDay.o : Data/Time/Calendar/YearDay.hs
-Data/Time/Calendar/YearDay.o : Data/Time/Calendar/Private.hi
-Data/Time/Calendar/YearDay.o : Data/Time/Calendar/Days.hi
+Data/Time/Calendar/OrdinalDate.o : Data/Time/Calendar/OrdinalDate.hs
+Data/Time/Calendar/OrdinalDate.o : Data/Time/Calendar/Private.hi
+Data/Time/Calendar/OrdinalDate.o : Data/Time/Calendar/Days.hi
 Data/Time/Calendar/MonthDay.o : Data/Time/Calendar/MonthDay.hs
 Data/Time/Calendar/MonthDay.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/Gregorian.hs
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/Days.hi
-Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/YearDay.hi
+Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/OrdinalDate.hi
 Data/Time/Calendar/Gregorian.o : Data/Time/Calendar/MonthDay.hi
 Data/Time/Calendar.o : Data/Time/Calendar.hs
 Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
 Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
-Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/ISO8601Week.hs
-Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/Private.hi
-Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/Days.hi
-Data/Time/Calendar/ISO8601Week.o : Data/Time/Calendar/YearDay.hi
+Data/Time/Calendar/WeekDate.o : Data/Time/Calendar/WeekDate.hs
+Data/Time/Calendar/WeekDate.o : Data/Time/Calendar/Private.hi
+Data/Time/Calendar/WeekDate.o : Data/Time/Calendar/Days.hi
+Data/Time/Calendar/WeekDate.o : Data/Time/Calendar/OrdinalDate.hi
 Data/Time/Calendar/JulianYearDay.o : Data/Time/Calendar/JulianYearDay.hs
 Data/Time/Calendar/JulianYearDay.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/JulianYearDay.o : Data/Time/Calendar/Days.hi
@@ -148,8 +148,8 @@ Data/Time/LocalTime/Format.o : Data/Time/Clock/POSIX.hi
 Data/Time/LocalTime/Format.o : Data/Time/Clock.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar/Private.hi
 Data/Time/LocalTime/Format.o : Data/Time/Calendar.hi
-Data/Time/LocalTime/Format.o : Data/Time/Calendar/YearDay.hi
-Data/Time/LocalTime/Format.o : Data/Time/Calendar/ISO8601Week.hi
+Data/Time/LocalTime/Format.o : Data/Time/Calendar/OrdinalDate.hi
+Data/Time/LocalTime/Format.o : Data/Time/Calendar/WeekDate.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeOfDay.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/LocalTime.hi

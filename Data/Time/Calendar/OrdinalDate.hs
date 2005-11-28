@@ -1,6 +1,6 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module Data.Time.Calendar.YearDay where
+module Data.Time.Calendar.OrdinalDate where
 
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
