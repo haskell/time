@@ -23,8 +23,8 @@ SRCS = Data/Fixed.hs \
 	Data/Time/Clock/UTC.hs \
 	Data/Time/Clock/POSIX.hs \
 	Data/Time/Clock/Current.hs \
+	Data/Time/Clock/TAI.hs \
 	Data/Time/Clock.hs \
-	Data/Time/TAI.hs \
 	Data/Time/LocalTime/TimeZone.hs \
 	Data/Time/LocalTime/TimeOfDay.hs \
 	Data/Time/LocalTime/LocalTime.hs \
@@ -158,11 +158,11 @@ Data/Time/LocalTime.o : Data/Time/LocalTime/Format.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/LocalTime.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/TimeOfDay.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/TimeZone.hi
-Data/Time/TAI.o : Data/Time/TAI.hs
-Data/Time/TAI.o : Data/Fixed.hi
-Data/Time/TAI.o : Data/Time/Clock.hi
-Data/Time/TAI.o : Data/Time/Calendar/Days.hi
-Data/Time/TAI.o : Data/Time/LocalTime.hi
+Data/Time/Clock/TAI.o : Data/Time/Clock/TAI.hs
+Data/Time/Clock/TAI.o : Data/Fixed.hi
+Data/Time/Clock/TAI.o : Data/Time/Clock.hi
+Data/Time/Clock/TAI.o : Data/Time/Calendar/Days.hi
+Data/Time/Clock/TAI.o : Data/Time/LocalTime.hi
 Data/Time.o : Data/Time.hs
 Data/Time.o : Data/Time/LocalTime.hi
 Data/Time.o : Data/Time/Clock.hi

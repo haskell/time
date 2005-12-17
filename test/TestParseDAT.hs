@@ -3,7 +3,7 @@
 module Main where
 
 import Data.Time
-import Data.Time.TAI
+import Data.Time.Clock.TAI
 import System.IO
 
 hSafeGetContents :: Handle -> IO String

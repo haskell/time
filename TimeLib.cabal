@@ -18,7 +18,7 @@ Exposed-modules:
 	Data.Time.Calendar.Julian,
 	Data.Time.Calendar.Easter,
 	Data.Time.Clock,
-	Data.Time.TAI,
+	Data.Time.Clock.TAI,
 	Data.Time.LocalTime,
 	Data.Time
 Extensions:	ForeignFunctionInterface

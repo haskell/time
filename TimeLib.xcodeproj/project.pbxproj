@@ -166,7 +166,6 @@
 				AB01DCFD08374838003C9EF7 /* Clock.hs */,
 				AB2666A808A56FE30059DEC0 /* LocalTime */,
 				AB2666E808A571460059DEC0 /* LocalTime.hs */,
-				AB01DCFE08374838003C9EF7 /* TAI.hs */,
 			);
 			path = Time;
 			sourceTree = "<group>";
@@ -214,6 +213,7 @@
 				ABD67841084168B700CF37C0 /* UTC.hs */,
 				ABD6783F084167B900CF37C0 /* POSIX.hs */,
 				ABD67840084167D100CF37C0 /* Current.hs */,
+				AB01DCFE08374838003C9EF7 /* TAI.hs */,
 			);
 			path = Clock;
 			sourceTree = "<group>";
