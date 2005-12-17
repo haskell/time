@@ -119,11 +119,12 @@
 		AB26682008A5FF0D0059DEC0 /* AddDays.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = AddDays.hs; sourceTree = "<group>"; };
 		AB26682108A5FF0D0059DEC0 /* AddDays.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AddDays.ref; sourceTree = "<group>"; };
 		AB26689F08A6D7290059DEC0 /* UseCases.lhs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell.literate; path = UseCases.lhs; sourceTree = "<group>"; };
+		AB7FC7490954C86800796113 /* UTCDiff.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTCDiff.hs; sourceTree = "<group>"; };
 		ABC0F98D090C7A6000DEF265 /* tai-utc.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "tai-utc.dat"; sourceTree = "<group>"; };
 		ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseDAT.hs; sourceTree = "<group>"; };
 		ABC0F9910913518A00DEF265 /* TestParseDAT.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestParseDAT.ref; sourceTree = "<group>"; };
 		ABD6783F084167B900CF37C0 /* POSIX.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = POSIX.hs; sourceTree = "<group>"; };
-		ABD67840084167D100CF37C0 /* Current.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Current.hs; sourceTree = "<group>"; };
+		ABD67840084167D100CF37C0 /* CTimeval.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = CTimeval.hs; sourceTree = "<group>"; };
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
 		ABD67842084168CB00CF37C0 /* Scale.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Scale.hs; sourceTree = "<group>"; };
 		ABF3FF8B0880D284006724E1 /* Days.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Days.hs; sourceTree = "<group>"; };
@@ -211,8 +212,9 @@
 			children = (
 				ABD67842084168CB00CF37C0 /* Scale.hs */,
 				ABD67841084168B700CF37C0 /* UTC.hs */,
+				ABD67840084167D100CF37C0 /* CTimeval.hs */,
 				ABD6783F084167B900CF37C0 /* POSIX.hs */,
-				ABD67840084167D100CF37C0 /* Current.hs */,
+				AB7FC7490954C86800796113 /* UTCDiff.hs */,
 				AB01DCFE08374838003C9EF7 /* TAI.hs */,
 			);
 			path = Clock;

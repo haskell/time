@@ -47,13 +47,13 @@ utcToLocalTimeOfDay zone (TimeOfDay h m s) = (fromIntegral (div h' 24),TimeOfDay
 localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
 localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimeZone (negate (timeZoneMinutes zone)))
 
-posixDay :: DiffTime
-posixDay = fromInteger 86400
+posixDayLength :: DiffTime
+posixDayLength = fromInteger 86400
 
 -- | Get a TimeOfDay given a time since midnight.
 -- Time more than 24h will be converted to leap-seconds.
 timeToTimeOfDay :: DiffTime -> TimeOfDay
-timeToTimeOfDay dt | dt >= posixDay = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDay)))
+timeToTimeOfDay dt | dt >= posixDayLength = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDayLength)))
 timeToTimeOfDay dt = TimeOfDay (fromInteger h) (fromInteger m) s where
 	s' = realToFrac dt
 	s = mod' s' 60
@@ -71,4 +71,4 @@ dayFractionToTimeOfDay df = timeToTimeOfDay (realToFrac (df * 86400))
 
 -- | Get the fraction of a day since midnight given a TimeOfDay.
 timeOfDayToDayFraction :: TimeOfDay -> Rational
-timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod / posixDay)
+timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod / posixDayLength)

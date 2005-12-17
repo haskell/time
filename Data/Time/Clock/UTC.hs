@@ -12,12 +12,7 @@ module Data.Time.Clock.UTC
 	-- 
 	-- If you don't care about leap seconds, use UTCTime and NominalDiffTime for your clock calculations,
 	-- and you'll be fine.
-	UTCTime(..),NominalDiffTime,
-	addUTCTime,diffUTCTime,
-	
-	-- * POSIX time
-	-- | This is needed by System.Time.Calendar to talk to the Unix API.
-	posixDay,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds
+	UTCTime(..),NominalDiffTime
 ) where
 
 import Data.Time.Calendar.Days
@@ -91,28 +86,3 @@ instance RealFrac NominalDiffTime where
 	round (MkNominalDiffTime a) = round a
 	ceiling (MkNominalDiffTime a) = ceiling a
 	floor (MkNominalDiffTime a) = floor a
-
-posixDay :: NominalDiffTime
-posixDay = 86400
-
-unixEpochMJD :: Day
-unixEpochMJD = ModifiedJulianDay 40587
-
-type POSIXTime = NominalDiffTime
-
-posixSecondsToUTCTime :: POSIXTime -> UTCTime
-posixSecondsToUTCTime i = let
-	(d,t) = divMod' i posixDay
- in UTCTime (addDays d unixEpochMJD) (realToFrac t)
-
-utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
-utcTimeToPOSIXSeconds (UTCTime d t) =
- (fromInteger (diffDays d unixEpochMJD) * posixDay) + min posixDay (realToFrac t)
-
--- | addUTCTime a b = a + b
-addUTCTime :: NominalDiffTime -> UTCTime -> UTCTime
-addUTCTime x t = posixSecondsToUTCTime (x + (utcTimeToPOSIXSeconds t))
-
--- | diffUTCTime a b = a - b
-diffUTCTime :: UTCTime -> UTCTime -> NominalDiffTime
-diffUTCTime a b = (utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b)

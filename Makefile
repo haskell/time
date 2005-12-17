@@ -21,8 +21,9 @@ SRCS = Data/Fixed.hs \
 	Data/Time/Calendar.hs \
 	Data/Time/Clock/Scale.hs \
 	Data/Time/Clock/UTC.hs \
+	Data/Time/Clock/CTimeval.hs \
 	Data/Time/Clock/POSIX.hs \
-	Data/Time/Clock/Current.hs \
+	Data/Time/Clock/UTCDiff.hs \
 	Data/Time/Clock/TAI.hs \
 	Data/Time/Clock.hs \
 	Data/Time/LocalTime/TimeZone.hs \
@@ -83,6 +84,7 @@ depend: $(SRCS)
 TestFixed.o: Data/Fixed.hi
 
 # DO NOT DELETE: Beginning of Haskell dependencies
+Data/Time/Clock/CTimeval.o : Data/Time/Clock/CTimeval.hs
 Data/Time/Calendar/Days.o : Data/Time/Calendar/Days.hs
 Data/Fixed.o : Data/Fixed.hs
 Data/Time/Calendar/Private.o : Data/Time/Calendar/Private.hs
@@ -122,12 +124,17 @@ Data/Time/Clock/UTC.o : Data/Fixed.hi
 Data/Time/Clock/UTC.o : Data/Time/Clock/Scale.hi
 Data/Time/Clock/UTC.o : Data/Time/Calendar/Days.hi
 Data/Time/Clock/POSIX.o : Data/Time/Clock/POSIX.hs
+Data/Time/Clock/POSIX.o : Data/Fixed.hi
+Data/Time/Clock/POSIX.o : Data/Time/Calendar/Days.hi
 Data/Time/Clock/POSIX.o : Data/Time/Clock/UTC.hi
-Data/Time/Clock/Current.o : Data/Time/Clock/Current.hs
-Data/Time/Clock/Current.o : Data/Time/Clock/UTC.hi
+Data/Time/Clock/POSIX.o : Data/Time/Clock/CTimeval.hi
+Data/Time/Clock/UTCDiff.o : Data/Time/Clock/UTCDiff.hs
+Data/Time/Clock/UTCDiff.o : Data/Time/Clock/UTC.hi
+Data/Time/Clock/UTCDiff.o : Data/Time/Clock/POSIX.hi
 Data/Time/Clock.o : Data/Time/Clock.hs
-Data/Time/Clock.o : Data/Time/Clock/Current.hi
+Data/Time/Clock.o : Data/Time/Clock/POSIX.hi
 Data/Time/Clock.o : Data/Time/Clock/UTC.hi
+Data/Time/Clock.o : Data/Time/Clock/UTCDiff.hi
 Data/Time/Clock.o : Data/Time/Clock/Scale.hi
 Data/Time/LocalTime/TimeZone.o : Data/Time/LocalTime/TimeZone.hs
 Data/Time/LocalTime/TimeZone.o : Data/Time/Clock/POSIX.hi
