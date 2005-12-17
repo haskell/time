@@ -1,11 +1,12 @@
 {-# OPTIONS -Wall -Werror #-}
 
+-- | ISO 8601 Ordinal Date format
 module Data.Time.Calendar.OrdinalDate where
 
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
--- | convert to ISO 8601 Ordinal Day format. First element of result is year (proleptic Gregoran calendar),
+-- | convert to ISO 8601 Ordinal Date format. First element of result is year (proleptic Gregoran calendar),
 -- second is the day of the year, with 1 for Jan 1, and 365 (or 366 in leap years) for Dec 31.
 toOrdinalDate :: Day -> (Integer,Int)
 toOrdinalDate (ModifiedJulianDay mjd) = (year,yd) where
@@ -20,14 +21,14 @@ toOrdinalDate (ModifiedJulianDay mjd) = (year,yd) where
 	yd = fromInteger (d - (y * 365) + 1)
 	year = quadcent * 400 + cent * 100 + quad * 4 + y + 1
 
--- | convert from ISO 8601 Ordinal Day format.
+-- | convert from ISO 8601 Ordinal Date format.
 -- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
 fromOrdinalDate :: Integer -> Int -> Day
 fromOrdinalDate year day = ModifiedJulianDay mjd where
 	y = year - 1
 	mjd = (fromIntegral (clip 1 (if isLeapYear year then 366 else 365) day)) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678576
 
--- | show in ISO 8601 Ordinal Day format (yyyy-ddd)
+-- | show in ISO 8601 Ordinal Date format (yyyy-ddd)
 showOrdinalDate :: Day -> String
 showOrdinalDate date = (show4 y) ++ "-" ++ (show3 d) where
 	(y,d) = toOrdinalDate date

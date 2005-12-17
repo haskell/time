@@ -25,6 +25,99 @@ import Data.Char
 class FormatTime t where
 	formatCharacter :: Char -> Maybe (TimeLocale -> t -> String)
 
+-- | Substitute various time-related information for each %-code in the string, as per 'formatCharacter'.
+--
+-- For all types (note these three are done here, not by 'formatCharacter'):
+--
+-- [@%%@] @%@
+--
+-- [@%t@] tab
+--
+-- [@%n@] newline
+--
+-- For TimeZone (and ZonedTime and UTCTime):
+--
+-- [@%z@] timezone offset
+--
+-- [@%Z@] timezone name
+--
+-- For LocalTime (and ZonedTime and UTCTime):
+--
+-- [@%c@] as 'dateTimeFmt' @locale@ (e.g. @%a %b %e %H:%M:%S %Z %Y@)
+--
+-- For TimeOfDay (and LocalTime and ZonedTime and UTCTime):
+--
+-- [@%R@] same as @%H:%M@
+--
+-- [@%T@] same as @%H:%M:%S@
+--
+-- [@%X@] as 'timeFmt' @locale@ (e.g. @%H:%M:%S@)
+--
+-- [@%r@] as 'time12Fmt' @locale@ (e.g. @%I:%M:%S %p@)
+--
+-- [@%P@] day half from ('amPm' @locale@), converted to lowercase, @am@, @pm@
+--
+-- [@%p@] day half from ('amPm' @locale@), @AM@, @PM@
+--
+-- [@%H@] hour, 24-hour, leading 0 as needed, @00@ - @23@
+--
+-- [@%I@] hour, 12-hour, leading 0 as needed, @01@ - @12@
+--
+-- [@%k@] hour, 24-hour, leading space as needed, @ 0@ - @23@
+--
+-- [@%l@] hour, 12-hour, leading space as needed, @ 1@ - @12@
+--
+-- [@%M@] minute, @00@ - @59@
+--
+-- [@%S@] second with decimal part if not an integer, @00@ - @60.999999999999@
+--
+-- For UTCTime and ZonedTime:
+--
+-- [@%s@] number of seconds since the Unix epoch
+--
+-- For Day (and LocalTime and ZonedTime and UTCTime):
+--
+-- [@%D@] same as @%m\/%d\/%y@
+--
+-- [@%F@] same as @%Y-%m-%d@
+--
+-- [@%x@] as 'dateFmt' @locale@ (e.g. @%m\/%d\/%y@)
+--
+-- [@%Y@] year
+--
+-- [@%y@] last two digits of year, @00@ - @99@
+--
+-- [@%C@] century (being the first two digits of the year), @00@ - @99@
+--
+-- [@%B@] month name, long form ('fst' from 'months' @locale@), @January@ - @December@
+--
+-- [@%b@, @%h@] month name, short form ('snd' from 'months' @locale@), @Jan@ - @Dec@
+--
+-- [@%m@] month of year, leading 0 as needed, @01@ - @12@
+--
+-- [@%d@] day of month, leading 0 as needed, @01@ - @31@
+--
+-- [@%e@] day of month, leading space as needed,  @ 1@ - @31@
+--
+-- [@%j@] day of year for Ordinal Date format, @001@ - @366@
+--
+-- [@%G@] year for Week Date format
+--
+-- [@%g@] last two digits of year for Week Date format, @00@ - @99@
+--
+-- [@%V@] week for Week Date format, @01@ - @53@
+--
+-- [@%u@] day for Week Date format, @1@ - @7@
+--
+-- [@%a@] day of week, short form ('snd' from 'wDays' @locale@), @Sun@ - @Sat@
+--
+-- [@%A@] day of week, long form ('fst' from 'wDays' @locale@), @Sunday@ - @Saturday@
+--
+-- [@%U@] week number of year, where weeks start on Sunday (as 'sundayStartWeek'), @01@ - @53@
+--
+-- [@%w@] day of week number, @0@ (= Sunday) - @6@ (= Saturday)
+--
+-- [@%W@] week number of year, where weeks start on Monday (as 'mondayStartWeek'), @01@ - @53@
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
 formatTime _ [] _ = ""
 formatTime locale ('%':c:cs) t = (formatChar c) ++ (formatTime locale cs t) where
@@ -100,7 +193,7 @@ instance FormatTime Day where
 	-- Day of Year
 	formatCharacter 'j' = Just (\_ -> show3 . snd . toOrdinalDate)
 
-	-- ISOWeekDay
+	-- ISO 8601 Week Date
 	formatCharacter 'G' = Just (\_ -> show . (\(y,_,_) -> y) . toWeekDate)
 	formatCharacter 'g' = Just (\_ -> show2 . mod100 . (\(y,_,_) -> y) . toWeekDate)
 	formatCharacter 'V' = Just (\_ -> show2 . (\(_,w,_) -> w) . toWeekDate)
