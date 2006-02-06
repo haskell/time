@@ -19,6 +19,6 @@ doc: sources
 	haddock -h -o haddock `cat sources`
 
 clean:
-	rm -f sources
+	rm -f sources haddock
 	cd time && make clean
 	cd fixed && make clean
