@@ -86,7 +86,7 @@
 /* Begin PBXFileReference section */
 		AB01DCF508374807003C9EF7 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		AB01DCF608374808003C9EF7 /* Setup.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Setup.hs; sourceTree = "<group>"; };
-		AB01DCF708374808003C9EF7 /* TimeLib.cabal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TimeLib.cabal; sourceTree = "<group>"; };
+		AB01DCF708374808003C9EF7 /* time.cabal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.cabal; sourceTree = "<group>"; };
 		AB01DCF808374808003C9EF7 /* timestuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = timestuff.c; sourceTree = "<group>"; };
 		AB01DCF908374808003C9EF7 /* timestuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestuff.h; sourceTree = "<group>"; };
 		AB01DCFC08374838003C9EF7 /* Calendar.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Calendar.hs; sourceTree = "<group>"; };
@@ -120,6 +120,13 @@
 		AB26682108A5FF0D0059DEC0 /* AddDays.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AddDays.ref; sourceTree = "<group>"; };
 		AB26689F08A6D7290059DEC0 /* UseCases.lhs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell.literate; path = UseCases.lhs; sourceTree = "<group>"; };
 		AB7FC7490954C86800796113 /* UTCDiff.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTCDiff.hs; sourceTree = "<group>"; };
+		AB7FC7A00954D54C00796113 /* fixed.cabal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fixed.cabal; sourceTree = "<group>"; };
+		AB7FC8340954E15700796113 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		AB7FC8350954E15700796113 /* Setup.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Setup.hs; sourceTree = "<group>"; };
+		AB7FC8360954E17000796113 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		AB7FC8370954E1A500796113 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		AB7FC8540954F4E200796113 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		AB7FC8710954F5C200796113 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		ABC0F98D090C7A6000DEF265 /* tai-utc.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "tai-utc.dat"; sourceTree = "<group>"; };
 		ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseDAT.hs; sourceTree = "<group>"; };
 		ABC0F9910913518A00DEF265 /* TestParseDAT.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestParseDAT.ref; sourceTree = "<group>"; };
@@ -148,12 +155,10 @@
 		AB01DCEA083747B1003C9EF7 = {
 			isa = PBXGroup;
 			children = (
-				AB01DCF508374807003C9EF7 /* Makefile */,
+				AB7FC8710954F5C200796113 /* Makefile */,
+				AB7FC81F0954E01C00796113 /* fixed */,
+				AB7FC82B0954E09800796113 /* time */,
 				AB35747F08386FCD00B5F897 /* Cabal */,
-				AB01DCF908374808003C9EF7 /* timestuff.h */,
-				AB01DCF808374808003C9EF7 /* timestuff.c */,
-				ABFA25DC0839F8C90096540C /* Data */,
-				ABFA25EC0839F9FD0096540C /* Test */,
 				ABFA264B083C8AA40096540C /* Target Doc */,
 			);
 			sourceTree = "<group>";
@@ -201,10 +206,54 @@
 		AB35747F08386FCD00B5F897 /* Cabal */ = {
 			isa = PBXGroup;
 			children = (
-				AB01DCF708374808003C9EF7 /* TimeLib.cabal */,
-				AB01DCF608374808003C9EF7 /* Setup.hs */,
 			);
 			name = Cabal;
+			sourceTree = "<group>";
+		};
+		AB7FC81F0954E01C00796113 /* fixed */ = {
+			isa = PBXGroup;
+			children = (
+				AB7FC8350954E15700796113 /* Setup.hs */,
+				AB7FC7A00954D54C00796113 /* fixed.cabal */,
+				AB7FC8340954E15700796113 /* LICENSE */,
+				AB7FC8370954E1A500796113 /* Makefile */,
+				AB7FC8200954E03C00796113 /* Data */,
+				AB7FC84D0954F4A700796113 /* test */,
+			);
+			path = fixed;
+			sourceTree = "<group>";
+		};
+		AB7FC8200954E03C00796113 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				ABFA25DF0839F8F70096540C /* Fixed.hs */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		AB7FC82B0954E09800796113 /* time */ = {
+			isa = PBXGroup;
+			children = (
+				AB01DCF608374808003C9EF7 /* Setup.hs */,
+				AB01DCF708374808003C9EF7 /* time.cabal */,
+				AB7FC8360954E17000796113 /* LICENSE */,
+				AB01DCF508374807003C9EF7 /* Makefile */,
+				ABFA25DC0839F8C90096540C /* Data */,
+				AB01DCF908374808003C9EF7 /* timestuff.h */,
+				AB01DCF808374808003C9EF7 /* timestuff.c */,
+				ABFA25EC0839F9FD0096540C /* Test */,
+			);
+			path = time;
+			sourceTree = "<group>";
+		};
+		AB7FC84D0954F4A700796113 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				AB7FC8540954F4E200796113 /* Makefile */,
+				ABFA2627083B28C00096540C /* TestFixed.hs */,
+				ABFA2628083B28C00096540C /* TestFixed.ref */,
+			);
+			path = test;
 			sourceTree = "<group>";
 		};
 		ABD6783C0841677900CF37C0 /* Clock */ = {
@@ -223,7 +272,6 @@
 		ABFA25DC0839F8C90096540C /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				ABFA25DF0839F8F70096540C /* Fixed.hs */,
 				AB01DD0008374848003C9EF7 /* Time */,
 				AB2666F108A572520059DEC0 /* Time.hs */,
 			);
@@ -234,8 +282,6 @@
 			isa = PBXGroup;
 			children = (
 				ABFA2625083B28C00096540C /* Makefile */,
-				ABFA2627083B28C00096540C /* TestFixed.hs */,
-				ABFA2628083B28C00096540C /* TestFixed.ref */,
 				AB20A93E09274282001A7C3C /* TestMonthDay.hs */,
 				AB20A93F09274299001A7C3C /* TestMonthDay.ref */,
 				ABFA2624083B28C00096540C /* CurrentTime.hs */,
