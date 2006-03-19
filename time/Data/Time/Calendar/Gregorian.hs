@@ -9,7 +9,10 @@ module Data.Time.Calendar.Gregorian
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
 	addGregorianMonthsClip,addGregorianMonthsRollOver,
-	addGregorianYearsClip,addGregorianYearsRollOver
+	addGregorianYearsClip,addGregorianYearsRollOver,
+
+	-- re-exported from OrdinalDate
+	isLeapYear
 ) where
 
 import Data.Time.Calendar.MonthDay
