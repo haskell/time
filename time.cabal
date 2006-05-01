@@ -7,8 +7,8 @@ Author:		Ashley Yakeley
 Maintainer:	<ashley@semantic.org>
 Homepage:	http://semantic.org/TimeLib/
 Category:
-Build-Depends:	base, fixed
-Synopsis:	a new time library
+Build-Depends:	base
+Synopsis:	time library
 Exposed-modules:
 	Data.Time.Calendar,
 	Data.Time.Calendar.MonthDay,
