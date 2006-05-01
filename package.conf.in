@@ -1,0 +1,41 @@
+Name:		PACKAGE
+Version:	VERSION
+Stability:	Beta
+License:	BSD3
+License-File:	LICENSE
+Author:		Ashley Yakeley
+Maintainer:	<ashley@semantic.org>
+Homepage:	http://semantic.org/TimeLib/
+exposed:	True
+Category:
+Build-Depends:	base
+Synopsis:	time library
+Exposed-modules:
+	Data.Time.Calendar,
+	Data.Time.Calendar.MonthDay,
+	Data.Time.Calendar.OrdinalDate,
+	Data.Time.Calendar.WeekDate,
+	Data.Time.Calendar.Julian,
+	Data.Time.Calendar.Easter,
+	Data.Time.Clock,
+	Data.Time.Clock.POSIX,
+	Data.Time.Clock.TAI,
+	Data.Time.LocalTime,
+	Data.Time
+Extensions:	ForeignFunctionInterface
+C-Sources:	timestuff.c
+Other-modules:
+	Data.Time.Calendar.Private,
+	Data.Time.Calendar.Days,
+	Data.Time.Calendar.Gregorian,
+	Data.Time.Calendar.JulianYearDay,
+	Data.Time.Clock.Scale,
+	Data.Time.Clock.UTC,
+	Data.Time.Clock.CTimeval,
+	Data.Time.Clock.UTCDiff,
+	Data.Time.LocalTime.TimeZone,
+	Data.Time.LocalTime.TimeOfDay,
+	Data.Time.LocalTime.LocalTime,
+	Data.Time.LocalTime.Format
+include-dirs:		INCLUDE_DIR
+includes:		"timestuff.h"

@@ -1,0 +1,23 @@
+TOP=..
+include $(TOP)/mk/boilerplate.mk
+
+SUBDIRS = 
+
+ALL_DIRS = \
+	Data \
+	Data/Time \
+	Data/Time/Calendar \
+	Data/Time/Clock \
+	Data/Time/LocalTime
+
+PACKAGE = time
+VERSION = 0.3.1
+PACKAGE_DEPS = base
+
+SRC_HC_OPTS += -Wall -Werror -fffi -Iinclude
+
+SRC_CC_OPTS += -Wall -Werror -Iinclude
+
+SRC_HADDOCK_OPTS += -t "Haskell Hierarchical Libraries ($(PACKAGE) package)"
+
+include $(TOP)/mk/target.mk
