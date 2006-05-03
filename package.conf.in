@@ -39,3 +39,5 @@ Other-modules:
 	Data.Time.LocalTime.Format
 include-dirs:		INCLUDE_DIR
 includes:		"timestuff.h"
+haddock-interfaces:	HADDOCK_IFACE
+haddock-html:		HTML_DIR
