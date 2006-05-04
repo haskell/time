@@ -12,6 +12,9 @@ _split$
 (^|/)\.depend$
 (^|/)\.setup-config$
 \.haddock$
+^build$
+\.xcodeproj/.*\.pbxuser$
+\.xcodeproj/.*\.mode1$
 \.o\.cmd$
 \.ko$
 \.ko\.cmd$
