@@ -6,7 +6,7 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
 	struct tm* ptm;
 	long gmtoff;
 	int dst;
-	char *name;
+	const char *name;
 
 #if HAVE_LOCALTIME_R
 	struct tm tmd;
