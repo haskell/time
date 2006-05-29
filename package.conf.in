@@ -1,3 +1,5 @@
+#include "ghcconfig.h"
+
 Name:		PACKAGE
 Version:	VERSION
 Stability:	Beta
@@ -8,7 +10,13 @@ Maintainer:	<ashley@semantic.org>
 Homepage:	http://semantic.org/TimeLib/
 exposed:	True
 Category:
-Build-Depends:	base
+
+#if mingw32_HOST_OS
+depends:	Win32, base
+#else
+depends:	base
+#endif
+
 Synopsis:	time library
 Exposed-modules:
 	Data.Time.Calendar,
@@ -23,8 +31,8 @@ Exposed-modules:
 	Data.Time.LocalTime,
 	Data.Time
 Extensions:	ForeignFunctionInterface
-C-Sources:	timestuff.c
-Other-modules:
+C-Sources:	HsTime.c
+Hidden-modules:
 	Data.Time.Calendar.Private,
 	Data.Time.Calendar.Days,
 	Data.Time.Calendar.Gregorian,
@@ -37,7 +45,10 @@ Other-modules:
 	Data.Time.LocalTime.TimeOfDay,
 	Data.Time.LocalTime.LocalTime,
 	Data.Time.LocalTime.Format
+import-dirs:		IMPORT_DIR
+library-dirs:		LIB_DIR
+hs-libraries:		"HSTime"
 include-dirs:		INCLUDE_DIR
-includes:		"timestuff.h"
+includes:		"HsTime.h"
 haddock-interfaces:	HADDOCK_IFACE
 haddock-html:		HTML_DIR

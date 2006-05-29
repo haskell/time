@@ -1,7 +1,10 @@
-{-# OPTIONS -ffi -Wall -Werror #-}
+{-# OPTIONS -ffi -Wall -Werror -cpp #-}
 
 -- #hide
 module Data.Time.Clock.CTimeval where
+
+#ifndef mingw32_HOST_OS
+-- All Unix-specific, this
 
 import Foreign
 import Foreign.C
@@ -29,3 +32,5 @@ getCTimeval = with (MkCTimeval 0 0) (\ptval -> do
 	 then peek ptval
 	 else fail ("error in gettimeofday: " ++ (show result))
 	)
+
+#endif

@@ -4,6 +4,7 @@ include $(TOP)/mk/boilerplate.mk
 SUBDIRS = 
 
 ALL_DIRS = \
+	cbits \
 	Data \
 	Data/Time \
 	Data/Time/Calendar \
@@ -19,5 +20,7 @@ SRC_HC_OPTS += -Wall -Werror -fffi -Iinclude
 SRC_CC_OPTS += -Wall -Werror -Iinclude
 
 SRC_HADDOCK_OPTS += -t "Haskell Hierarchical Libraries ($(PACKAGE) package)"
+
+UseGhcForCc = YES
 
 include $(TOP)/mk/target.mk

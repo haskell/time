@@ -52,7 +52,7 @@ instance Show TimeZone where
 utc :: TimeZone
 utc = TimeZone 0 False "UTC"
 
-foreign import ccall unsafe "timestuff.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> Ptr CInt -> Ptr CString -> IO CLong
+foreign import ccall unsafe "HsTime.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> Ptr CInt -> Ptr CString -> IO CLong
 
 posixToCTime :: POSIXTime -> CTime
 posixToCTime  = fromInteger . floor

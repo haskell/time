@@ -22,7 +22,7 @@ Exposed-modules:
 	Data.Time.LocalTime,
 	Data.Time
 Extensions:	ForeignFunctionInterface
-C-Sources:	timestuff.c
+C-Sources:	HsTime.c
 Other-modules:
 	Data.Time.Calendar.Private,
 	Data.Time.Calendar.Days,
@@ -36,3 +36,5 @@ Other-modules:
 	Data.Time.LocalTime.TimeOfDay,
 	Data.Time.LocalTime.LocalTime,
 	Data.Time.LocalTime.Format
+include-dirs:		include
+includes:		"HsTime.h"
