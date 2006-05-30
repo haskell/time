@@ -52,6 +52,7 @@ instance Show TimeZone where
 utc :: TimeZone
 utc = TimeZone 0 False "UTC"
 
+{-# CFILES cbits/HsTime.c #-}
 foreign import ccall unsafe "HsTime.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> Ptr CInt -> Ptr CString -> IO CLong
 
 posixToCTime :: POSIXTime -> CTime
