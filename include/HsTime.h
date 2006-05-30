@@ -1,7 +1,6 @@
 #ifndef __HSTIME_H__
 #define __HSTIME_H__
 
-#include "ghcconfig.h"
 #include "HsTimeConfig.h"
 
 #if HAVE_TIME_H

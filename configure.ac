@@ -5,6 +5,7 @@ AC_CONFIG_SRCDIR([include/HsTime.h])
 
 AC_CONFIG_HEADERS([include/HsTimeConfig.h])
 
+AC_CHECK_HEADERS([time.h])
 AC_CHECK_FUNCS([gmtime_r localtime_r])
 
 AC_STRUCT_TM
