@@ -1,6 +1,6 @@
 Name:		time
 Version:	0.3.1
-Stability:	Beta
+Stability:	beta
 License:	BSD3
 License-File:	LICENSE
 Author:		Ashley Yakeley
@@ -9,7 +9,7 @@ Homepage:	http://semantic.org/TimeLib/
 Category:
 Build-Depends:	base
 Synopsis:	time library
-Exposed-modules:
+Exposed-Modules:
 	Data.Time.Calendar,
 	Data.Time.Calendar.MonthDay,
 	Data.Time.Calendar.OrdinalDate,
@@ -23,7 +23,7 @@ Exposed-modules:
 	Data.Time
 Extensions:	ForeignFunctionInterface
 C-Sources:	HsTime.c
-Other-modules:
+Other-Modules:
 	Data.Time.Calendar.Private,
 	Data.Time.Calendar.Days,
 	Data.Time.Calendar.Gregorian,
@@ -36,5 +36,11 @@ Other-modules:
 	Data.Time.LocalTime.TimeOfDay,
 	Data.Time.LocalTime.LocalTime,
 	Data.Time.LocalTime.Format
-include-dirs:		include
-includes:		"HsTime.h"
+Extra-Source-Files:
+	configure.ac configure
+	include/HsTime.h include/HsTimeConfig.h.in
+Extra-Tmp-Files:
+	config.log config.status autom4te.cache
+	include/HsTimeConfig.h
+Include-Dirs:	include
+Includes:	"HsTime.h"
