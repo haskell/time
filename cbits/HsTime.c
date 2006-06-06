@@ -29,7 +29,6 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
 
 # if mingw32_HOST_OS
 		name = dst ? _tzname[1] : _tzname[0];
-		printf("dst: %d, tzname0: %s, tzname1: %s\n", dst, _tzname[0], _tzname[1]);
 # elif HAVE_TZNAME
 		name = *tzname;
 # else
