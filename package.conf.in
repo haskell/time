@@ -47,7 +47,7 @@ Hidden-modules:
 	Data.Time.LocalTime.Format
 import-dirs:		IMPORT_DIR
 library-dirs:		LIB_DIR
-hs-libraries:		"HSTime"
+hs-libraries:		"HStime"
 include-dirs:		INCLUDE_DIR
 includes:		"HsTime.h"
 haddock-interfaces:	HADDOCK_IFACE
