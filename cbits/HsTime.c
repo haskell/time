@@ -25,18 +25,18 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
 #if HAVE_TM_ZONE
 		name = ptm -> tm_zone;
 		gmtoff = ptm -> tm_gmtoff;
-#else
-# if defined(_MSC_VER) || defined(__MINGW32__) || defined(_WIN32)
+#elif defined(_MSC_VER) || defined(__MINGW32__) || defined(_WIN32)
 		name = dst ? _tzname[1] : _tzname[0];
-# elif HAVE_TZNAME
+		gmtoff = dst ? _timezone - 3600 : _timezone;
+#else
+
+# if HAVE_TZNAME
 		name = *tzname;
 # else
 #  error "Don't know how to get at timezone name on your OS"
 # endif
 
-# if mingw32_HOST_OS
-		gmtoff = dst ? _timezone - 3600 : _timezone;
-# elif HAVE_DECL_ALTZONE
+# if HAVE_DECL_ALTZONE
 		gmtoff = dst ? altzone : timezone;
 # else
 		gmtoff = dst ? timezone - 3600 : timezone;
