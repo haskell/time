@@ -12,7 +12,7 @@ ALL_DIRS = \
 	Data/Time/LocalTime
 
 PACKAGE = time
-VERSION = 0.3.1
+VERSION = 1.0
 PACKAGE_DEPS = base
 
 SRC_HC_OPTS += -Wall -Werror -fffi -Iinclude
