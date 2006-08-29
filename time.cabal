@@ -43,4 +43,5 @@ Extra-Tmp-Files:
 	config.log config.status autom4te.cache
 	include/HsTimeConfig.h
 Include-Dirs:	include
-Includes:	"HsTime.h"
+Install-Includes:
+	HsTime.h HsTimeConfig.h
