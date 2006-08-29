@@ -37,7 +37,7 @@ Other-Modules:
 	Data.Time.LocalTime.LocalTime,
 	Data.Time.LocalTime.Format
 Extra-Source-Files:
-	configure.ac configure
+	aclocal.m4 configure.ac configure
 	include/HsTime.h include/HsTimeConfig.h.in
 Extra-Tmp-Files:
 	config.log config.status autom4te.cache
