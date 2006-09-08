@@ -21,7 +21,7 @@ Exposed-Modules:
 	Data.Time.Clock.TAI,
 	Data.Time.LocalTime,
 	Data.Time
-Extensions:	ForeignFunctionInterface
+Extensions:	ForeignFunctionInterface, CPP
 C-Sources:	cbits/HsTime.c
 Other-Modules:
 	Data.Time.Calendar.Private,
