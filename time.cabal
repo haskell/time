@@ -22,7 +22,7 @@ Exposed-Modules:
 	Data.Time.LocalTime,
 	Data.Time
 Extensions:	ForeignFunctionInterface
-C-Sources:	HsTime.c
+C-Sources:	cbits/HsTime.c
 Other-Modules:
 	Data.Time.Calendar.Private,
 	Data.Time.Calendar.Days,
