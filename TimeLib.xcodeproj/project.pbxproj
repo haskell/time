@@ -12,18 +12,6 @@
 			buildConfigurationList = ABD26A530878B4D200AD8A23 /* Build configuration list for PBXAggregateTarget "Everything" */;
 			buildPhases = (
 			);
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Everything;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			dependencies = (
 				ABD678610841714900CF37C0 /* PBXTargetDependency */,
 				ABFA25E90839F9AF0096540C /* PBXTargetDependency */,
@@ -34,23 +22,6 @@
 			productName = Everything;
 		};
 /* End PBXAggregateTarget section */
-
-/* Begin PBXBuildStyle section */
-		AB01DCEC083747B1003C9EF7 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		AB01DCED083747B1003C9EF7 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
 		ABD678600841714900CF37C0 /* PBXContainerItemProxy */ = {
@@ -85,10 +56,9 @@
 
 /* Begin PBXFileReference section */
 		AB01DCF508374807003C9EF7 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		AB01DCF608374808003C9EF7 /* Setup.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Setup.hs; sourceTree = "<group>"; };
 		AB01DCF708374808003C9EF7 /* time.cabal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.cabal; sourceTree = "<group>"; };
-		AB01DCF808374808003C9EF7 /* timestuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = timestuff.c; sourceTree = "<group>"; };
-		AB01DCF908374808003C9EF7 /* timestuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestuff.h; sourceTree = "<group>"; };
+		AB01DCF808374808003C9EF7 /* HsTime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HsTime.c; path = cbits/HsTime.c; sourceTree = "<group>"; };
+		AB01DCF908374808003C9EF7 /* HsTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HsTime.h; path = include/HsTime.h; sourceTree = "<group>"; };
 		AB01DCFC08374838003C9EF7 /* Calendar.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Calendar.hs; sourceTree = "<group>"; };
 		AB01DCFD08374838003C9EF7 /* Clock.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Clock.hs; sourceTree = "<group>"; };
 		AB01DCFE08374838003C9EF7 /* TAI.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TAI.hs; sourceTree = "<group>"; };
@@ -119,13 +89,12 @@
 		AB26682008A5FF0D0059DEC0 /* AddDays.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = AddDays.hs; sourceTree = "<group>"; };
 		AB26682108A5FF0D0059DEC0 /* AddDays.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AddDays.ref; sourceTree = "<group>"; };
 		AB26689F08A6D7290059DEC0 /* UseCases.lhs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell.literate; path = UseCases.lhs; sourceTree = "<group>"; };
+		AB6859EB0AC73993004B83FC /* aclocal.m4 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.m4; path = aclocal.m4; sourceTree = "<group>"; };
+		AB6859EC0AC73993004B83FC /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = configure.ac; sourceTree = "<group>"; };
+		AB6859ED0AC73993004B83FC /* package.conf.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = package.conf.in; sourceTree = "<group>"; };
+		AB6859EE0AC73993004B83FC /* prologue.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = prologue.txt; sourceTree = "<group>"; };
 		AB7FC7490954C86800796113 /* UTCDiff.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTCDiff.hs; sourceTree = "<group>"; };
-		AB7FC7A00954D54C00796113 /* fixed.cabal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fixed.cabal; sourceTree = "<group>"; };
-		AB7FC8340954E15700796113 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		AB7FC8350954E15700796113 /* Setup.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Setup.hs; sourceTree = "<group>"; };
 		AB7FC8360954E17000796113 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		AB7FC8370954E1A500796113 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		AB7FC8540954F4E200796113 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		AB7FC8710954F5C200796113 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		ABC0F98D090C7A6000DEF265 /* tai-utc.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "tai-utc.dat"; sourceTree = "<group>"; };
 		ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseDAT.hs; sourceTree = "<group>"; };
@@ -135,13 +104,10 @@
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
 		ABD67842084168CB00CF37C0 /* Scale.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Scale.hs; sourceTree = "<group>"; };
 		ABF3FF8B0880D284006724E1 /* Days.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Days.hs; sourceTree = "<group>"; };
-		ABFA25DF0839F8F70096540C /* Fixed.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Fixed.hs; sourceTree = "<group>"; };
 		ABFA2623083B28C00096540C /* ConvertBack.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ConvertBack.hs; sourceTree = "<group>"; };
 		ABFA2624083B28C00096540C /* CurrentTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = CurrentTime.hs; sourceTree = "<group>"; };
 		ABFA2625083B28C00096540C /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		ABFA2626083B28C00096540C /* ShowDST.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ShowDST.hs; sourceTree = "<group>"; };
-		ABFA2627083B28C00096540C /* TestFixed.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestFixed.hs; sourceTree = "<group>"; };
-		ABFA2628083B28C00096540C /* TestFixed.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestFixed.ref; sourceTree = "<group>"; };
 		ABFA2629083B28C00096540C /* TestFormat.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestFormat.hs; sourceTree = "<group>"; };
 		ABFA262A083B28C00096540C /* TestFormatStuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TestFormatStuff.c; sourceTree = "<group>"; };
 		ABFA262B083B28C00096540C /* TestFormatStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFormatStuff.h; sourceTree = "<group>"; };
@@ -156,7 +122,6 @@
 			isa = PBXGroup;
 			children = (
 				AB7FC8710954F5C200796113 /* Makefile */,
-				AB7FC81F0954E01C00796113 /* fixed */,
 				AB7FC82B0954E09800796113 /* time */,
 				AB35747F08386FCD00B5F897 /* Cabal */,
 				ABFA264B083C8AA40096540C /* Target Doc */,
@@ -210,50 +175,22 @@
 			name = Cabal;
 			sourceTree = "<group>";
 		};
-		AB7FC81F0954E01C00796113 /* fixed */ = {
-			isa = PBXGroup;
-			children = (
-				AB7FC8350954E15700796113 /* Setup.hs */,
-				AB7FC7A00954D54C00796113 /* fixed.cabal */,
-				AB7FC8340954E15700796113 /* LICENSE */,
-				AB7FC8370954E1A500796113 /* Makefile */,
-				AB7FC8200954E03C00796113 /* Data */,
-				AB7FC84D0954F4A700796113 /* test */,
-			);
-			path = fixed;
-			sourceTree = "<group>";
-		};
-		AB7FC8200954E03C00796113 /* Data */ = {
-			isa = PBXGroup;
-			children = (
-				ABFA25DF0839F8F70096540C /* Fixed.hs */,
-			);
-			path = Data;
-			sourceTree = "<group>";
-		};
 		AB7FC82B0954E09800796113 /* time */ = {
 			isa = PBXGroup;
 			children = (
-				AB01DCF608374808003C9EF7 /* Setup.hs */,
-				AB01DCF708374808003C9EF7 /* time.cabal */,
 				AB7FC8360954E17000796113 /* LICENSE */,
+				AB6859EB0AC73993004B83FC /* aclocal.m4 */,
+				AB6859EC0AC73993004B83FC /* configure.ac */,
+				AB6859ED0AC73993004B83FC /* package.conf.in */,
+				AB6859EE0AC73993004B83FC /* prologue.txt */,
+				AB01DCF708374808003C9EF7 /* time.cabal */,
 				AB01DCF508374807003C9EF7 /* Makefile */,
+				AB01DCF908374808003C9EF7 /* HsTime.h */,
+				AB01DCF808374808003C9EF7 /* HsTime.c */,
 				ABFA25DC0839F8C90096540C /* Data */,
-				AB01DCF908374808003C9EF7 /* timestuff.h */,
-				AB01DCF808374808003C9EF7 /* timestuff.c */,
-				ABFA25EC0839F9FD0096540C /* Test */,
+				ABFA25EC0839F9FD0096540C /* test */,
 			);
-			path = time;
-			sourceTree = "<group>";
-		};
-		AB7FC84D0954F4A700796113 /* test */ = {
-			isa = PBXGroup;
-			children = (
-				AB7FC8540954F4E200796113 /* Makefile */,
-				ABFA2627083B28C00096540C /* TestFixed.hs */,
-				ABFA2628083B28C00096540C /* TestFixed.ref */,
-			);
-			path = test;
+			name = time;
 			sourceTree = "<group>";
 		};
 		ABD6783C0841677900CF37C0 /* Clock */ = {
@@ -278,7 +215,7 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
-		ABFA25EC0839F9FD0096540C /* Test */ = {
+		ABFA25EC0839F9FD0096540C /* test */ = {
 			isa = PBXGroup;
 			children = (
 				ABFA2625083B28C00096540C /* Makefile */,
@@ -308,8 +245,8 @@
 				ABC0F98D090C7A6000DEF265 /* tai-utc.dat */,
 				AB26689F08A6D7290059DEC0 /* UseCases.lhs */,
 			);
-			name = Test;
-			path = test;
+			name = test;
+			path = time/test;
 			sourceTree = "<group>";
 		};
 		ABFA264B083C8AA40096540C /* Target Doc */ = {
@@ -330,18 +267,6 @@
 			buildConfigurationList = ABD26A470878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Build" */;
 			buildPhases = (
 			);
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			buildToolPath = /usr/bin/make;
 			dependencies = (
 			);
@@ -355,18 +280,6 @@
 			buildConfigurationList = ABD26A4B0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Test" */;
 			buildPhases = (
 			);
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Test;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			buildToolPath = /usr/bin/make;
 			dependencies = (
 			);
@@ -380,18 +293,6 @@
 			buildConfigurationList = ABD26A430878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Dependencies" */;
 			buildPhases = (
 			);
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			buildToolPath = /usr/bin/make;
 			dependencies = (
 			);
@@ -405,18 +306,6 @@
 			buildConfigurationList = ABD26A4F0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Documentation" */;
 			buildPhases = (
 			);
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			buildToolPath = /usr/bin/make;
 			dependencies = (
 			);
@@ -430,12 +319,6 @@
 		AB01DCEE083747B1003C9EF7 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "TimeLib" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				AB01DCEC083747B1003C9EF7 /* Development */,
-				AB01DCED083747B1003C9EF7 /* Deployment */,
-			);
 			hasScannedForEncodings = 0;
 			mainGroup = AB01DCEA083747B1003C9EF7;
 			projectDirPath = "";
