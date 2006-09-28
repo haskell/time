@@ -19,6 +19,8 @@ SRC_HC_OPTS += -Wall -Werror -fffi -Iinclude
 
 SRC_CC_OPTS += -Wall -Werror -Iinclude
 
+EXCLUDED_SRCS += Setup.hs
+
 SRC_HADDOCK_OPTS += -t "Haskell Hierarchical Libraries ($(PACKAGE) package)"
 
 UseGhcForCc = YES
