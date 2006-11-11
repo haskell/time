@@ -113,11 +113,11 @@ class FormatTime t where
 --
 -- [@%A@] day of week, long form ('fst' from 'wDays' @locale@), @Sunday@ - @Saturday@
 --
--- [@%U@] week number of year, where weeks start on Sunday (as 'sundayStartWeek'), @01@ - @53@
+-- [@%U@] week number of year, where weeks start on Sunday (as 'sundayStartWeek'), @00@ - @53@
 --
 -- [@%w@] day of week number, @0@ (= Sunday) - @6@ (= Saturday)
 --
--- [@%W@] week number of year, where weeks start on Monday (as 'mondayStartWeek'), @01@ - @53@
+-- [@%W@] week number of year, where weeks start on Monday (as 'mondayStartWeek'), @00@ - @53@
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
 formatTime _ [] _ = ""
 formatTime locale ('%':c:cs) t = (formatChar c) ++ (formatTime locale cs t) where
