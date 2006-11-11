@@ -33,7 +33,7 @@ showOrdinalDate :: Day -> String
 showOrdinalDate date = (show4 y) ++ "-" ++ (show3 d) where
 	(y,d) = toOrdinalDate date
 
--- | Is this year a leap year according to the propleptic Gregorian calendar?
+-- | Is this year a leap year according to the proleptic Gregorian calendar?
 isLeapYear :: Integer -> Bool
 isLeapYear year = (mod year 4 == 0) && ((mod year 400 == 0) || not (mod year 100 == 0))
 

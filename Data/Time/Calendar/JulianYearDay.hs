@@ -33,6 +33,6 @@ showJulianYearAndDay :: Day -> String
 showJulianYearAndDay date = (show4 y) ++ "-" ++ (show3 d) where
 	(y,d) = toJulianYearAndDay date
 
--- | Is this year a leap year according to the propleptic Gregorian calendar?
+-- | Is this year a leap year according to the proleptic Gregorian calendar?
 isJulianLeapYear :: Integer -> Bool
 isJulianLeapYear year = (mod year 4 == 0)
