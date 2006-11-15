@@ -35,7 +35,7 @@ fromWeekDate y w d = ModifiedJulianDay (k - (mod k 7) + (toInteger (((clip 1 (if
 			(_,53,_) -> True
 			_ -> False
 
--- | show in ISO 8601 Week Date format as yyyy-Www-dd (e.g. 
+-- | show in ISO 8601 Week Date format as yyyy-Www-dd (e.g. \"2006-W46-3\").
 showWeekDate :: Day -> String
 showWeekDate date = (show4 y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where
 	(y,w,d) = toWeekDate date
