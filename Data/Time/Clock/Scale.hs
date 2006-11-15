@@ -8,9 +8,11 @@ module Data.Time.Clock.Scale
 	UniversalTime(..),
 
 	-- * Absolute intervals
-	DiffTime
+	DiffTime,
+        secondsToDiffTime, picosecondsToDiffTime
 ) where
 
+import Data.Ratio ((%))
 import Data.Fixed
 
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
@@ -55,3 +57,11 @@ instance Fractional DiffTime where
 	(MkDiffTime a) / (MkDiffTime b) = MkDiffTime (a / b)
 	recip (MkDiffTime a) = MkDiffTime (recip a)
 	fromRational r = MkDiffTime (fromRational r)
+
+-- | Create a 'DiffTime' which represents an integral number of seconds.
+secondsToDiffTime :: Integer -> DiffTime
+secondsToDiffTime = fromInteger
+
+-- | Create a 'DiffTime' from a number of picoseconds.
+picosecondsToDiffTime :: Integer -> DiffTime
+picosecondsToDiffTime x = fromRational (x % 1000000000000)
