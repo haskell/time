@@ -160,6 +160,7 @@ instance FormatTime TimeOfDay where
 	formatCharacter _   = Nothing
 
 instance FormatTime ZonedTime where
+	formatCharacter 'c' = Just (\locale -> formatTime locale (dateTimeFmt locale))
 	formatCharacter 's' = Just (\_ zt -> show (truncate (utcTimeToPOSIXSeconds (zonedTimeToUTC zt)) :: Integer))
 	formatCharacter c = case (formatCharacter c) of
 		Just f -> Just (\locale dt -> f locale (zonedTimeToLocalTime dt))
