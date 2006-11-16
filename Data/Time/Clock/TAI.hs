@@ -26,7 +26,7 @@ newtype AbsoluteTime = MkAbsoluteTime {unAbsoluteTime :: DiffTime} deriving (Eq,
 instance Show AbsoluteTime where
 	show t = show (utcToLocalTime utc (taiToUTCTime (const 0) t)) ++ " TAI" -- ugly, but standard apparently
 
--- | The epoch of TAI, which is 
+-- | The epoch of TAI, which is 1858-11-17 00:00:00 TAI.
 taiEpoch :: AbsoluteTime
 taiEpoch = MkAbsoluteTime 0
 
