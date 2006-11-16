@@ -1,52 +1,55 @@
+GHC = ghc
+GHCFLAGS = 
+
 default: CurrentTime.run ShowDST.run test
 
 TestMonthDay: TestMonthDay.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 ConvertBack: ConvertBack.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TestCalendars: TestCalendars.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TestTime: TestTime.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 LongWeekYears: LongWeekYears.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 ClipDates: ClipDates.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 AddDays: AddDays.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TestFormat: TestFormat.o TestFormatStuff.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TestFormatStuff.o: TestFormatStuff.c TestFormatStuff.h
 	gcc -o $@ -c $<
 
 TestParseDAT: TestParseDAT.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TestEaster: TestEaster.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 CurrentTime: CurrentTime.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 ShowDST: ShowDST.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TimeZone: TimeZone.o ../libHStime.a
-	ghc -package fixed $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TimeZone.ref: FORCE
 	date +%z > $@
 
 TestParseTime: TestParseTime.o ../libHStime.a
-	ghc -package fixed -package QuickCheck $^ -o $@
+	$(GHC) $(GHCFLAGS) -package QuickCheck $^ -o $@
 
 test:	\
 	TestMonthDay.diff	\
@@ -60,6 +63,7 @@ test:	\
 	TestFormat.diff0	\
 	TestParseDAT.diff	\
 	TestEaster.diff	\
+	TestParseTime.run \
 	UseCases.o
 
 clean:

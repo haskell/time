@@ -2,7 +2,6 @@
 
 module Main where
 
-import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
 
