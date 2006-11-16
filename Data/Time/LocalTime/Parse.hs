@@ -33,7 +33,7 @@ class ParseTime t where
     -- | Builds a time value from a parsed input string.
     -- If the input does not include all the information needed to
     -- construct a complete value, any missing parts should be taken
-    -- from 1970-01-01 00:00:00 UTC (which was a Thursday).
+    -- from 1970-01-01 00:00:00 +0000 (which was a Thursday).
     buildTime :: TimeLocale -- ^ The time locale.
               -> [(Char,String)] -- ^ Pairs of format characters and the 
                                  -- corresponding part of the input.
@@ -263,7 +263,7 @@ instance ParseTime LocalTime where
     buildTime l xs = LocalTime (buildTime l xs) (buildTime l xs)
 
 instance ParseTime TimeZone where
-    buildTime _ = foldl f utc
+    buildTime _ = foldl f (minutesToTimeZone 0)
       where 
         f t@(TimeZone offset dst name) (c,x) = 
             case c of
