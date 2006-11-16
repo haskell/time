@@ -58,11 +58,11 @@ sundayStartWeek date =(fromInteger ((div d 7) - (div k 7)),fromInteger (mod d 7)
 -- | The inverse of 'mondayStartWeek'. Get a 'Day' given the year,
 -- the number of the Monday-starting week, and the day of the week.
 -- The first Monday is the first day of week 1, any earlier days in the year 
--- are week 0 (as \"%W\" in formatTime).
+-- are week 0 (as \"%W\" in 'formatTime').
 fromMondayStartWeek :: Integer -- ^ Year.
                     -> Int     -- ^ Monday-starting week number.
                     -> Int     -- ^ Day of week. 
-                               -- Monday is 1, Sunday is 7 (as \"%u\" in formatTime).
+                               -- Monday is 1, Sunday is 7 (as \"%u\" in 'formatTime').
                     -> Day
 fromMondayStartWeek y w d = ModifiedJulianDay (firstDay + yd)
     where yd = firstMonday + 7 * toInteger (w-1) + toInteger d - 1
@@ -74,12 +74,11 @@ fromMondayStartWeek y w d = ModifiedJulianDay (firstDay + yd)
 -- | The inverse of 'sundayStartWeek'. Get a 'Day' given the year and
 -- the number of the day of a Sunday-starting week.
 -- The first Sunday is the first day of week 1, any earlier days in the 
--- year are week 0 (as \"%U\" in formatTime).
--- Sunday is 0, Saturday is 6 (as \"%w\" in formatTime).
+-- year are week 0 (as \"%U\" in 'formatTime').
 fromSundayStartWeek :: Integer -- ^ Year.
                     -> Int     -- ^ Sunday-starting week number.
                     -> Int     -- ^ Day of week
-                               -- Sunday is 0, Saturday is 6 (as \"%w\" in formatTime).
+                               -- Sunday is 0, Saturday is 6 (as \"%w\" in 'formatTime').
                     -> Day
 fromSundayStartWeek y w d = ModifiedJulianDay (firstDay + yd)
     where yd = firstSunday + 7 * toInteger (w-1) + toInteger d
