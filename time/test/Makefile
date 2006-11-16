@@ -45,6 +45,9 @@ TimeZone: TimeZone.o ../libHStime.a
 TimeZone.ref: FORCE
 	date +%z > $@
 
+TestParseTime: TestParseTime.o ../libHStime.a
+	ghc -package fixed -package QuickCheck $^ -o $@
+
 test:	\
 	TestMonthDay.diff	\
 	ConvertBack.diff0	\
@@ -61,7 +64,8 @@ test:	\
 
 clean:
 	rm -rf TestMonthDay ConvertBack TestCalendars TestTime LongWeekYears ClipDates	\
-	AddDays TestFormat TestParseDAT TestEaster CurrentTime ShowDST TimeZone TimeZone.ref *.out *.o *.hi Makefile.bak
+	AddDays TestFormat TestParseDAT TestEaster CurrentTime ShowDST TimeZone TimeZone.ref TestParseTime \
+        *.out *.o *.hi Makefile.bak
 
 %.diff: %.ref %.out
 	diff -u $^
