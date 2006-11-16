@@ -35,7 +35,8 @@ Other-Modules:
 	Data.Time.LocalTime.TimeZone,
 	Data.Time.LocalTime.TimeOfDay,
 	Data.Time.LocalTime.LocalTime,
-	Data.Time.LocalTime.Format
+	Data.Time.LocalTime.Format,
+	Data.Time.LocalTime.Parse
 Extra-Source-Files:
 	aclocal.m4 configure.ac configure
 	include/HsTime.h include/HsTimeConfig.h.in
