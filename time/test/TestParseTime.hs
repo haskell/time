@@ -237,7 +237,7 @@ timeZoneFormats = map FormatString ["%z","%z%Z","%Z%z"]
 
 zonedTimeFormats :: [FormatString ZonedTime]
 zonedTimeFormats = map FormatString
-  ["%a, %d %b %Y %H:%M:%S %z","%c"]
+  ["%a, %d %b %Y %H:%M:%S %z"]
 
 utcTimeFormats :: [FormatString UTCTime]
 utcTimeFormats = map FormatString 
@@ -275,7 +275,8 @@ failingTimeZoneFormats = map FormatString
 failingZonedTimeFormats :: [FormatString ZonedTime]
 failingZonedTimeFormats = map FormatString 
     [
-     -- %Z is not implemented properly
+     -- can't figure out offset from %Z, also, formatTime produces "" for %Z
+     "%c",
      "%a, %d %b %Y %H:%M:%S %Z",
      -- %s does not include second decimals
      "%s %z"
