@@ -42,6 +42,7 @@ SRCS = \
 	Data/Time/LocalTime/TimeOfDay.hs \
 	Data/Time/LocalTime/LocalTime.hs \
 	Data/Time/LocalTime/Format.hs \
+	Data/Time/LocalTime/Parse.hs \
 	Data/Time/LocalTime.hs \
 	Data/Time.hs
 
@@ -121,19 +122,13 @@ Data/Time/Calendar/Julian.o : Data/Time/Calendar/Private.hi
 Data/Time/Calendar/Julian.o : Data/Time/Calendar/Days.hi
 Data/Time/Calendar/Julian.o : Data/Time/Calendar/JulianYearDay.hi
 Data/Time/Calendar/Julian.o : Data/Time/Calendar/MonthDay.hi
-Data/Time/Calendar.o : Data/Time/Calendar.hs
-Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
-Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
-Data/Time/Calendar/Easter.o : Data/Time/Calendar/Easter.hs
-Data/Time/Calendar/Easter.o : Data/Time/Calendar/Julian.hi
-Data/Time/Calendar/Easter.o : Data/Time/Calendar.hi
 Data/Time/Clock/UTC.o : Data/Time/Clock/UTC.hs
 Data/Time/Clock/UTC.o : Data/Time/Clock/Scale.hi
 Data/Time/Clock/UTC.o : Data/Time/Calendar/Days.hi
 Data/Time/Clock/POSIX.o : Data/Time/Clock/POSIX.hs
+Data/Time/Clock/POSIX.o : Data/Time/Clock/CTimeval.hi
 Data/Time/Clock/POSIX.o : Data/Time/Calendar/Days.hi
 Data/Time/Clock/POSIX.o : Data/Time/Clock/UTC.hi
-Data/Time/Clock/POSIX.o : Data/Time/Clock/CTimeval.hi
 Data/Time/Clock/UTCDiff.o : Data/Time/Clock/UTCDiff.hs
 Data/Time/Clock/UTCDiff.o : Data/Time/Clock/UTC.hi
 Data/Time/Clock/UTCDiff.o : Data/Time/Clock/POSIX.hi
@@ -150,11 +145,27 @@ Data/Time/LocalTime/TimeOfDay.o : Data/Time/LocalTime/TimeOfDay.hs
 Data/Time/LocalTime/TimeOfDay.o : Data/Time/Clock.hi
 Data/Time/LocalTime/TimeOfDay.o : Data/Time/Calendar/Private.hi
 Data/Time/LocalTime/TimeOfDay.o : Data/Time/LocalTime/TimeZone.hi
+Data/Time/Calendar.o : Data/Time/Calendar.hs
+Data/Time/Calendar.o : Data/Time/Calendar/Gregorian.hi
+Data/Time/Calendar.o : Data/Time/Calendar/Days.hi
+Data/Time/Calendar/Easter.o : Data/Time/Calendar/Easter.hs
+Data/Time/Calendar/Easter.o : Data/Time/Calendar/Julian.hi
+Data/Time/Calendar/Easter.o : Data/Time/Calendar.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/LocalTime/LocalTime.hs
 Data/Time/LocalTime/LocalTime.o : Data/Time/Clock.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/Calendar.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time/LocalTime/LocalTime.o : Data/Time/LocalTime/TimeOfDay.hi
+Data/Time/LocalTime/Parse.o : Data/Time/LocalTime/Parse.hs
+Data/Time/LocalTime/Parse.o : Data/Time/LocalTime/TimeZone.hi
+Data/Time/LocalTime/Parse.o : Data/Time/LocalTime/TimeOfDay.hi
+Data/Time/LocalTime/Parse.o : Data/Time/LocalTime/LocalTime.hi
+Data/Time/LocalTime/Parse.o : Data/Time/Calendar/WeekDate.hi
+Data/Time/LocalTime/Parse.o : Data/Time/Calendar/OrdinalDate.hi
+Data/Time/LocalTime/Parse.o : Data/Time/Calendar/Gregorian.hi
+Data/Time/LocalTime/Parse.o : Data/Time/Calendar/Days.hi
+Data/Time/LocalTime/Parse.o : Data/Time/Clock/UTC.hi
+Data/Time/LocalTime/Parse.o : Data/Time/Clock/POSIX.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/Format.hs
 Data/Time/LocalTime/Format.o : Data/Time/Clock/POSIX.hi
 Data/Time/LocalTime/Format.o : Data/Time/Clock.hi
@@ -166,6 +177,7 @@ Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeZone.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/TimeOfDay.hi
 Data/Time/LocalTime/Format.o : Data/Time/LocalTime/LocalTime.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime.hs
+Data/Time/LocalTime.o : Data/Time/LocalTime/Parse.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/Format.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/LocalTime.hi
 Data/Time/LocalTime.o : Data/Time/LocalTime/TimeOfDay.hi
