@@ -13,7 +13,6 @@
 			buildPhases = (
 			);
 			dependencies = (
-				ABD678610841714900CF37C0 /* PBXTargetDependency */,
 				ABFA25E90839F9AF0096540C /* PBXTargetDependency */,
 				ABFA25EB0839F9B10096540C /* PBXTargetDependency */,
 				ABFA25E70839F9AD0096540C /* PBXTargetDependency */,
@@ -24,13 +23,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXContainerItemProxy section */
-		ABD678600841714900CF37C0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AB01DCEE083747B1003C9EF7 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = ABD6785F0841710C00CF37C0;
-			remoteInfo = Dependencies;
-		};
 		ABFA25E60839F9AD0096540C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AB01DCEE083747B1003C9EF7 /* Project object */;
@@ -95,7 +87,6 @@
 		AB6859EE0AC73993004B83FC /* prologue.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = prologue.txt; sourceTree = "<group>"; };
 		AB7FC7490954C86800796113 /* UTCDiff.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTCDiff.hs; sourceTree = "<group>"; };
 		AB7FC8360954E17000796113 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		AB7FC8710954F5C200796113 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		ABC0F98D090C7A6000DEF265 /* tai-utc.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "tai-utc.dat"; sourceTree = "<group>"; };
 		ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseDAT.hs; sourceTree = "<group>"; };
 		ABC0F9910913518A00DEF265 /* TestParseDAT.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestParseDAT.ref; sourceTree = "<group>"; };
@@ -103,6 +94,7 @@
 		ABD67840084167D100CF37C0 /* CTimeval.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = CTimeval.hs; sourceTree = "<group>"; };
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
 		ABD67842084168CB00CF37C0 /* Scale.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Scale.hs; sourceTree = "<group>"; };
+		ABD6AC650B2D52D400843342 /* Parse.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Parse.hs; sourceTree = "<group>"; };
 		ABF3FF8B0880D284006724E1 /* Days.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Days.hs; sourceTree = "<group>"; };
 		ABFA2623083B28C00096540C /* ConvertBack.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = ConvertBack.hs; sourceTree = "<group>"; };
 		ABFA2624083B28C00096540C /* CurrentTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = CurrentTime.hs; sourceTree = "<group>"; };
@@ -121,10 +113,10 @@
 		AB01DCEA083747B1003C9EF7 = {
 			isa = PBXGroup;
 			children = (
-				AB7FC8710954F5C200796113 /* Makefile */,
+				ABD163480B38FB96000291C9 /* GHC stuff */,
 				AB7FC82B0954E09800796113 /* time */,
-				AB35747F08386FCD00B5F897 /* Cabal */,
-				ABFA264B083C8AA40096540C /* Target Doc */,
+				ABFA25EC0839F9FD0096540C /* test */,
+				ABD163330B38FA9E000291C9 /* Output */,
 			);
 			sourceTree = "<group>";
 		};
@@ -164,33 +156,42 @@
 				AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */,
 				AB01DD12083748EC003C9EF7 /* LocalTime.hs */,
 				AB01DD13083748EC003C9EF7 /* Format.hs */,
+				ABD6AC650B2D52D400843342 /* Parse.hs */,
 			);
 			path = LocalTime;
-			sourceTree = "<group>";
-		};
-		AB35747F08386FCD00B5F897 /* Cabal */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Cabal;
 			sourceTree = "<group>";
 		};
 		AB7FC82B0954E09800796113 /* time */ = {
 			isa = PBXGroup;
 			children = (
+				AB01DCF708374808003C9EF7 /* time.cabal */,
 				AB7FC8360954E17000796113 /* LICENSE */,
+				AB01DCF908374808003C9EF7 /* HsTime.h */,
+				AB01DCF808374808003C9EF7 /* HsTime.c */,
+				ABFA25DC0839F8C90096540C /* Data */,
+			);
+			name = time;
+			sourceTree = "<group>";
+		};
+		ABD163330B38FA9E000291C9 /* Output */ = {
+			isa = PBXGroup;
+			children = (
+				ABFA264B083C8AA40096540C /* Haddock */,
+			);
+			name = Output;
+			path = dist;
+			sourceTree = "<group>";
+		};
+		ABD163480B38FB96000291C9 /* GHC stuff */ = {
+			isa = PBXGroup;
+			children = (
 				AB6859EB0AC73993004B83FC /* aclocal.m4 */,
 				AB6859EC0AC73993004B83FC /* configure.ac */,
 				AB6859ED0AC73993004B83FC /* package.conf.in */,
 				AB6859EE0AC73993004B83FC /* prologue.txt */,
-				AB01DCF708374808003C9EF7 /* time.cabal */,
 				AB01DCF508374807003C9EF7 /* Makefile */,
-				AB01DCF908374808003C9EF7 /* HsTime.h */,
-				AB01DCF808374808003C9EF7 /* HsTime.c */,
-				ABFA25DC0839F8C90096540C /* Data */,
-				ABFA25EC0839F9FD0096540C /* test */,
 			);
-			name = time;
+			name = "GHC stuff";
 			sourceTree = "<group>";
 		};
 		ABD6783C0841677900CF37C0 /* Clock */ = {
@@ -245,17 +246,16 @@
 				ABC0F98D090C7A6000DEF265 /* tai-utc.dat */,
 				AB26689F08A6D7290059DEC0 /* UseCases.lhs */,
 			);
-			name = test;
-			path = time/test;
+			path = test;
 			sourceTree = "<group>";
 		};
-		ABFA264B083C8AA40096540C /* Target Doc */ = {
+		ABFA264B083C8AA40096540C /* Haddock */ = {
 			isa = PBXGroup;
 			children = (
 				ABFA2649083BF6210096540C /* index.html */,
 			);
-			name = "Target Doc";
-			path = haddock;
+			name = Haddock;
+			path = doc/html;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,11 +263,11 @@
 /* Begin PBXLegacyTarget section */
 		AB01DD2108374A56003C9EF7 /* Build */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "$(ACTION)build";
+			buildArgumentsString = "${ACTION}";
 			buildConfigurationList = ABD26A470878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Build" */;
 			buildPhases = (
 			);
-			buildToolPath = /usr/bin/make;
+			buildToolPath = time.xcodeproj/cabalbuild;
 			dependencies = (
 			);
 			name = Build;
@@ -280,33 +280,20 @@
 			buildConfigurationList = ABD26A4B0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Test" */;
 			buildPhases = (
 			);
-			buildToolPath = /usr/bin/make;
+			buildToolPath = time.xcodeproj/cabalbuild;
 			dependencies = (
 			);
 			name = Test;
 			passBuildSettingsInEnvironment = 1;
 			productName = Test;
 		};
-		ABD6785F0841710C00CF37C0 /* Dependencies */ = {
-			isa = PBXLegacyTarget;
-			buildArgumentsString = depend;
-			buildConfigurationList = ABD26A430878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Dependencies" */;
-			buildPhases = (
-			);
-			buildToolPath = /usr/bin/make;
-			dependencies = (
-			);
-			name = Dependencies;
-			passBuildSettingsInEnvironment = 1;
-			productName = Untitled;
-		};
 		ABFA25E20839F9310096540C /* Documentation */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "$(ACTION)doc";
+			buildArgumentsString = "$(ACTION)haddock";
 			buildConfigurationList = ABD26A4F0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Documentation" */;
 			buildPhases = (
 			);
-			buildToolPath = /usr/bin/make;
+			buildToolPath = time.xcodeproj/cabalbuild;
 			dependencies = (
 			);
 			name = Documentation;
@@ -318,12 +305,11 @@
 /* Begin PBXProject section */
 		AB01DCEE083747B1003C9EF7 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "TimeLib" */;
+			buildConfigurationList = ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "time" */;
 			hasScannedForEncodings = 0;
 			mainGroup = AB01DCEA083747B1003C9EF7;
 			projectDirPath = "";
 			targets = (
-				ABD6785F0841710C00CF37C0 /* Dependencies */,
 				AB01DD2108374A56003C9EF7 /* Build */,
 				AB3571F5083759B20059BD19 /* Test */,
 				ABFA25E20839F9310096540C /* Documentation */,
@@ -333,11 +319,6 @@
 /* End PBXProject section */
 
 /* Begin PBXTargetDependency section */
-		ABD678610841714900CF37C0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = ABD6785F0841710C00CF37C0 /* Dependencies */;
-			targetProxy = ABD678600841714900CF37C0 /* PBXContainerItemProxy */;
-		};
 		ABFA25E70839F9AD0096540C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = ABFA25E20839F9310096540C /* Documentation */;
@@ -356,56 +337,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		ABD26A440878B4D200AD8A23 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Development;
-		};
-		ABD26A450878B4D200AD8A23 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Deployment;
-		};
-		ABD26A460878B4D200AD8A23 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Default;
-		};
 		ABD26A480878B4D200AD8A23 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -443,16 +374,7 @@
 		ABD26A4A0878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
+				PATH = "/usr/local/bin:/usr/bin:/bin";
 			};
 			name = Default;
 		};
@@ -493,16 +415,7 @@
 		ABD26A4E0878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Test;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
+				PATH = "/usr/local/bin:/usr/bin:/bin";
 			};
 			name = Default;
 		};
@@ -543,16 +456,7 @@
 		ABD26A520878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
+				PATH = "/usr/local/bin:/usr/bin:/bin";
 			};
 			name = Default;
 		};
@@ -627,16 +531,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		ABD26A430878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Dependencies" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				ABD26A440878B4D200AD8A23 /* Development */,
-				ABD26A450878B4D200AD8A23 /* Deployment */,
-				ABD26A460878B4D200AD8A23 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
 		ABD26A470878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Build" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -677,7 +571,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "TimeLib" */ = {
+		ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "time" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ABD26A580878B4D200AD8A23 /* Development */,
