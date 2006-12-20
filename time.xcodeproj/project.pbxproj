@@ -87,6 +87,7 @@
 		AB6859EE0AC73993004B83FC /* prologue.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = prologue.txt; sourceTree = "<group>"; };
 		AB7FC7490954C86800796113 /* UTCDiff.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTCDiff.hs; sourceTree = "<group>"; };
 		AB7FC8360954E17000796113 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		AB9864C60B39084300D66E11 /* Setup.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = Setup.hs; sourceTree = "<group>"; };
 		ABC0F98D090C7A6000DEF265 /* tai-utc.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "tai-utc.dat"; sourceTree = "<group>"; };
 		ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseDAT.hs; sourceTree = "<group>"; };
 		ABC0F9910913518A00DEF265 /* TestParseDAT.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestParseDAT.ref; sourceTree = "<group>"; };
@@ -165,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				AB01DCF708374808003C9EF7 /* time.cabal */,
+				AB9864C60B39084300D66E11 /* Setup.hs */,
 				AB7FC8360954E17000796113 /* LICENSE */,
 				AB01DCF908374808003C9EF7 /* HsTime.h */,
 				AB01DCF808374808003C9EF7 /* HsTime.c */,
