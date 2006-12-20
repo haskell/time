@@ -1,6 +1,6 @@
 GHC = ghc
-GHCFLAGS = 
-LIBS = ../../dist/build/libHStime-1.0.a
+GHCFLAGS = -i../dist/build
+LIBS = ../dist/build/libHStime-1.0.a
 
 default: CurrentTime.run ShowDST.run test
 
@@ -88,10 +88,10 @@ clean:
 	@:
 
 %.o: %.hs
-	ghc -i.. -c $< -o $@
+	$(GHC) $(GHCFLAGS) -c $< -o $@
 
 %.o: %.lhs
-	ghc -i.. -c $< -o $@
+	$(GHC) $(GHCFLAGS) -c $< -o $@
 
 FORCE:
 
