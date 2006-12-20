@@ -91,6 +91,7 @@
 		ABC0F98D090C7A6000DEF265 /* tai-utc.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "tai-utc.dat"; sourceTree = "<group>"; };
 		ABC0F98E090C7A6000DEF265 /* TestParseDAT.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseDAT.hs; sourceTree = "<group>"; };
 		ABC0F9910913518A00DEF265 /* TestParseDAT.ref */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestParseDAT.ref; sourceTree = "<group>"; };
+		ABD4C3540B3939E7003A5C75 /* TestParseTime.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = TestParseTime.hs; sourceTree = "<group>"; };
 		ABD6783F084167B900CF37C0 /* POSIX.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = POSIX.hs; sourceTree = "<group>"; };
 		ABD67840084167D100CF37C0 /* CTimeval.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = CTimeval.hs; sourceTree = "<group>"; };
 		ABD67841084168B700CF37C0 /* UTC.hs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.haskell; path = UTC.hs; sourceTree = "<group>"; };
@@ -247,6 +248,7 @@
 				AB20A9E509275795001A7C3C /* TestEaster.ref */,
 				ABC0F98D090C7A6000DEF265 /* tai-utc.dat */,
 				AB26689F08A6D7290059DEC0 /* UseCases.lhs */,
+				ABD4C3540B3939E7003A5C75 /* TestParseTime.hs */,
 			);
 			path = test;
 			sourceTree = "<group>";
@@ -339,80 +341,12 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		ABD26A480878B4D200AD8A23 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Development;
-		};
-		ABD26A490878B4D200AD8A23 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Deployment;
-		};
 		ABD26A4A0878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PATH = "/usr/local/bin:/usr/bin:/bin";
 			};
 			name = Default;
-		};
-		ABD26A4C0878B4D200AD8A23 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Test;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Development;
-		};
-		ABD26A4D0878B4D200AD8A23 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Test;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Deployment;
 		};
 		ABD26A4E0878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -421,80 +355,12 @@
 			};
 			name = Default;
 		};
-		ABD26A500878B4D200AD8A23 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Development;
-		};
-		ABD26A510878B4D200AD8A23 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Untitled;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Deployment;
-		};
 		ABD26A520878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PATH = "/usr/local/bin:/usr/bin:/bin";
 			};
 			name = Default;
-		};
-		ABD26A540878B4D200AD8A23 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Everything;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Development;
-		};
-		ABD26A550878B4D200AD8A23 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Everything;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Deployment;
 		};
 		ABD26A560878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
@@ -512,18 +378,6 @@
 			};
 			name = Default;
 		};
-		ABD26A580878B4D200AD8A23 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Development;
-		};
-		ABD26A590878B4D200AD8A23 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Deployment;
-		};
 		ABD26A5A0878B4D200AD8A23 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -536,8 +390,6 @@
 		ABD26A470878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Build" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ABD26A480878B4D200AD8A23 /* Development */,
-				ABD26A490878B4D200AD8A23 /* Deployment */,
 				ABD26A4A0878B4D200AD8A23 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -546,8 +398,6 @@
 		ABD26A4B0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ABD26A4C0878B4D200AD8A23 /* Development */,
-				ABD26A4D0878B4D200AD8A23 /* Deployment */,
 				ABD26A4E0878B4D200AD8A23 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -556,8 +406,6 @@
 		ABD26A4F0878B4D200AD8A23 /* Build configuration list for PBXLegacyTarget "Documentation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ABD26A500878B4D200AD8A23 /* Development */,
-				ABD26A510878B4D200AD8A23 /* Deployment */,
 				ABD26A520878B4D200AD8A23 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -566,8 +414,6 @@
 		ABD26A530878B4D200AD8A23 /* Build configuration list for PBXAggregateTarget "Everything" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ABD26A540878B4D200AD8A23 /* Development */,
-				ABD26A550878B4D200AD8A23 /* Deployment */,
 				ABD26A560878B4D200AD8A23 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -576,8 +422,6 @@
 		ABD26A570878B4D200AD8A23 /* Build configuration list for PBXProject "time" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ABD26A580878B4D200AD8A23 /* Development */,
-				ABD26A590878B4D200AD8A23 /* Deployment */,
 				ABD26A5A0878B4D200AD8A23 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
