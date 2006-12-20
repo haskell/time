@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+$| = 1;
+my $found = false;
+while (<>)
+	{
+	s/^[ 	]*/ / if $found;
+	s/^ Warning:/ warning:/ if $found;
+	$found = s/(^[^ 	][^ 	]*:[0-9][0-9]*:)\n/$1/;
+	print;
+	}
