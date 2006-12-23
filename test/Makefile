@@ -1,55 +1,57 @@
 GHC = ghc
-GHCFLAGS = -i../dist/build
-LIBS = ../dist/build/libHStime-1.0.a
+GHCFLAGS = -package time
 
-default: CurrentTime.run ShowDST.run test
+default:
+	cd ..; runhaskell Setup.hs register --user --inplace
+	make CurrentTime.run ShowDST.run test
+	cd ..; runhaskell Setup.hs unregister --user
 
-TestMonthDay: TestMonthDay.o $(LIBS)
+TestMonthDay: TestMonthDay.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-ConvertBack: ConvertBack.o $(LIBS)
+ConvertBack: ConvertBack.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-TestCalendars: TestCalendars.o $(LIBS)
+TestCalendars: TestCalendars.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-TestTime: TestTime.o $(LIBS)
+TestTime: TestTime.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-LongWeekYears: LongWeekYears.o $(LIBS)
+LongWeekYears: LongWeekYears.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-ClipDates: ClipDates.o $(LIBS)
+ClipDates: ClipDates.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-AddDays: AddDays.o $(LIBS)
+AddDays: AddDays.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-TestFormat: TestFormat.o TestFormatStuff.o $(LIBS)
+TestFormat: TestFormat.o TestFormatStuff.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TestFormatStuff.o: TestFormatStuff.c TestFormatStuff.h
 	gcc -o $@ -c $<
 
-TestParseDAT: TestParseDAT.o $(LIBS)
+TestParseDAT: TestParseDAT.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-TestEaster: TestEaster.o $(LIBS)
+TestEaster: TestEaster.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-CurrentTime: CurrentTime.o $(LIBS)
+CurrentTime: CurrentTime.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-ShowDST: ShowDST.o $(LIBS)
+ShowDST: ShowDST.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
-TimeZone: TimeZone.o $(LIBS)
+TimeZone: TimeZone.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
 TimeZone.ref: FORCE
 	date +%z > $@
 
-TestParseTime: TestParseTime.o $(LIBS)
+TestParseTime: TestParseTime.o
 	$(GHC) $(GHCFLAGS) -package QuickCheck $^ -o $@
 
 test:	\

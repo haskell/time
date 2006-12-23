@@ -1,3 +1,5 @@
+{-# OPTIONS -Wall -Werror -fno-warn-type-defaults -fno-warn-unused-binds #-}
+
 import Control.Monad
 import Data.Char
 import Data.Ratio
@@ -10,6 +12,7 @@ import System.Locale
 import Test.QuickCheck
 
 
+ntest :: Int
 ntest = 1000
 
 main :: IO ()
@@ -26,10 +29,13 @@ checkOne :: Config -> NamedProperty -> IO ()
 checkOne config (n,p) = 
     do putStr (rpad 65 ' ' n)
        check config p
-  where rpad n c xs = xs ++ replicate (n - length xs) c
+  where rpad n' c xs = xs ++ replicate (n' - length xs) c
 
+
+parse :: ParseTime t => String -> String -> Maybe t
 parse f t = parseTime defaultTimeLocale f t
 
+format :: (FormatTime t) => String -> t -> String
 format f t = formatTime defaultTimeLocale f t
 
 
@@ -39,12 +45,12 @@ instance Arbitrary Day where
 
 instance Arbitrary DiffTime where
     arbitrary = oneof [intSecs, fracSecs] -- up to 1 leap second
-        where intSecs = liftM secondsToDiffTime $ choose (0, 86400) 
-              fracSecs = liftM picosecondsToDiffTime $ choose (0, 86400 * 10^12) 
-              secondsToDiffTime :: Integer -> DiffTime
-              secondsToDiffTime = fromInteger
-              picosecondsToDiffTime :: Integer -> DiffTime
-              picosecondsToDiffTime x = fromRational (x % 10^12)
+        where intSecs = liftM secondsToDiffTime' $ choose (0, 86400)
+              fracSecs = liftM picosecondsToDiffTime' $ choose (0, 86400 * 10^12)
+              secondsToDiffTime' :: Integer -> DiffTime
+              secondsToDiffTime' = fromInteger
+              picosecondsToDiffTime' :: Integer -> DiffTime
+              picosecondsToDiffTime' x = fromRational (x % 10^12)
     coarbitrary t = coarbitrary (fromEnum t)
 
 instance Arbitrary TimeOfDay where
@@ -75,6 +81,7 @@ instance Eq ZonedTime where
 -- * tests for dbugging failing cases
 --
 
+test_parse_format :: (FormatTime t,ParseTime t,Show t) => String -> t -> (String,String,Maybe t)
 test_parse_format f t = let s = format f t in (show t, s, parse f s `asTypeOf` Just t)
 
 --
@@ -101,11 +108,13 @@ prop_parse_showOrdinalDate d = parse "%Y-%j" (showOrdinalDate d) == Just d
 -- * fromMondayStartWeek and fromSundayStartWeek
 --
 
+prop_fromMondayStartWeek :: Day -> Bool
 prop_fromMondayStartWeek d = 
     let (w,wd)  = mondayStartWeek d
         (y,_,_) = toGregorian d
      in fromMondayStartWeek y w wd == d
 
+prop_fromSundayStartWeek :: Day -> Bool
 prop_fromSundayStartWeek d = 
     let (w,wd)  = sundayStartWeek d
         (y,_,_) = toGregorian d
