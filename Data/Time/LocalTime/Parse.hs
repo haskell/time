@@ -114,7 +114,9 @@ parseValue :: TimeLocale -> Char -> ReadP String
 parseValue l c = 
     case c of
       'z' -> liftM2 (:) (choice [char '+', char '-']) (digits 4)
-      'Z' -> munch isUpper
+      'Z' -> munch1 isUpper <++
+             liftM2 (:) (choice [char '+', char '-']) (digits 4) <++
+             return "" -- produced by %Z for LocalTime
       'P' -> oneOf (let (am,pm) = amPm l 
                      in [map toLower am, map toLower pm])
       'p' -> oneOf (let (am,pm) = amPm l in [am, pm])
@@ -271,13 +273,16 @@ instance ParseTime TimeZone where
       where 
         f t@(TimeZone offset dst name) (c,x) = 
             case c of
-              'z' -> TimeZone (sign * (60 * h + m)) dst name
+              'z' -> zone
+              'Z' | null x           -> t
+                  | isUpper (head x) -> TimeZone offset dst x -- FIXME: figure out timezone offset?
+                  | otherwise        -> zone
+              _   -> t
+          where zone = TimeZone (sign * (60 * h + m)) dst name
                   where (s:h1:h2:m1:m2:[]) = x
                         sign = if s == '-' then -1 else 1
                         h = read [h1,h2]
                         m = read [m1,m2] 
-              'Z' -> TimeZone offset dst x -- FIXME: figure out timezone offset?
-              _   -> t
 
 instance ParseTime ZonedTime where
     buildTime l xs = foldl f (ZonedTime (buildTime l xs) (buildTime l xs)) xs
@@ -305,9 +310,7 @@ instance Read LocalTime where
     readsPrec _ = readParen False $ readsTime defaultTimeLocale "%Y-%m-%d %H:%M:%S%Q"
 
 instance Read TimeZone where
-    readsPrec _ = readParen False $ \s ->
-                      readsTime defaultTimeLocale "%z" s
-                       ++ readsTime defaultTimeLocale "%Z" s
+    readsPrec _ = readParen False $ readsTime defaultTimeLocale "%Z"
 
 instance Read ZonedTime where
     readsPrec n = readParen False $ \s ->

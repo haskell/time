@@ -183,7 +183,9 @@ instance FormatTime ZonedTime where
 
 instance FormatTime TimeZone where
 	formatCharacter 'z' = Just (\_ -> timeZoneOffsetString)
-	formatCharacter 'Z' = Just (\_ -> timeZoneName)
+	formatCharacter 'Z' = 
+            Just (\_ z -> let n = timeZoneName z
+                           in if null n then timeZoneOffsetString z else n)
 	formatCharacter _ = Nothing
 
 instance FormatTime Day where
