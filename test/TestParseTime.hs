@@ -236,6 +236,8 @@ dayFormats = map FormatString
      -- ISO week dates
      "%G-%V-%u","%G-%V-%a","%G-%V-%A","%G-%V-%w", "%A week %V, %G", "day %V, week %A, %G",
      "%G-W%V-%u",
+     "%f%g-%V-%u","%f%g-%V-%a","%f%g-%V-%A","%f%g-%V-%w", "%A week %V, %f%g", "day %V, week %A, %f%g",
+     "%f%g-W%V-%u",
      -- monday and sunday week dates
      "%Y-w%U-%A", "%Y-w%W-%A", "%Y-%A-w%U", "%Y-%A-w%W", "%A week %U, %Y", "%A week %W, %Y"
     ]

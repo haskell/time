@@ -139,6 +139,7 @@ parseValue l c =
       'j' -> digits 3
       'G' -> digits 4
       'g' -> digits 2
+      'f' -> digits 2
       'V' -> digits 2
       'u' -> oneOf $ map (:[]) ['1'..'7']
       'a' -> oneOf (map snd (wDays l))
@@ -198,6 +199,8 @@ instance ParseTime Day where
           'G' -> let y = read x in [Century (y `div` 100), Year (y `mod` 100)]
           -- %g: last two digits of year for Week Date format, 00 - 99
           'g' -> [Year (read x)]
+          -- %f century (first two digits of year) for Week Date format, 00 - 99
+          'f' -> [Century (read x)]
           -- %V: week for Week Date format, 01 - 53
           'V' -> [Week ISOWeek (read x)]
           -- %u: day for Week Date format, 1 - 7

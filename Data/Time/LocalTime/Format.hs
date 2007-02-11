@@ -114,6 +114,8 @@ class FormatTime t where
 --
 -- [@%g@] last two digits of year for Week Date format, @00@ - @99@
 --
+-- [@%f@] century (first two digits of year) for Week Date format, @00@ - @99@
+--
 -- [@%V@] week for Week Date format, @01@ - @53@
 --
 -- [@%u@] day for Week Date format, @1@ - @7@
@@ -208,6 +210,8 @@ instance FormatTime Day where
 	-- ISO 8601 Week Date
 	formatCharacter 'G' = Just (\_ -> show . (\(y,_,_) -> y) . toWeekDate)
 	formatCharacter 'g' = Just (\_ -> show2 . mod100 . (\(y,_,_) -> y) . toWeekDate)
+	formatCharacter 'f' = Just (\_ -> show2 . div100 . (\(y,_,_) -> y) . toWeekDate)
+
 	formatCharacter 'V' = Just (\_ -> show2 . (\(_,w,_) -> w) . toWeekDate)
 	formatCharacter 'u' = Just (\_ -> show . (\(_,_,d) -> d) . toWeekDate)
 
