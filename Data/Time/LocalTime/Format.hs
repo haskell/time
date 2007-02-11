@@ -20,6 +20,7 @@ import Data.Time.Clock.POSIX
 import System.Locale
 import Data.Maybe
 import Data.Char
+import Data.Fixed
 
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
 class FormatTime t where
@@ -69,11 +70,19 @@ class FormatTime t where
 --
 -- [@%M@] minute, @00@ - @59@
 --
--- [@%S@] second with decimal part if not an integer, @00@ - @60.999999999999@
+-- [@%S@] second, without decimal part, @00@ - @60@
+--
+-- [@%q@] picosecond, including trailing zeros, @000000000000@ - @999999999999@.
+--
+-- [@%Q@] decimal point and up to 12 second decimals, without trailing zeros.
+-- For a whole number of seconds, @%Q@ produces the empty string.
 --
 -- For UTCTime and ZonedTime:
 --
--- [@%s@] number of seconds since the Unix epoch
+-- [@%s@] number of whole seconds since the Unix epoch. For times before
+-- the Unix epoch, this is a negative number. Note that in @%s.%q@ and @%s%Q@ 
+-- the decimals are positive, not negative. For example, 0.9 seconds
+-- before the Unix epoch is formatted as @-1.1@ with @%s%Q@.
 --
 -- For Day (and LocalTime and ZonedTime and UTCTime):
 --
@@ -154,14 +163,16 @@ instance FormatTime TimeOfDay where
 	-- Minute
 	formatCharacter 'M' = Just (\_ -> show2 . todMin)
 	-- Second
-	formatCharacter 'S' = Just (\_ -> show2Fixed . todSec)
+	formatCharacter 'S' = Just (\_ -> (show2 :: Int -> String) . truncate . todSec)
+	formatCharacter 'q' = Just (\_ -> drop 1 . dropWhile (/='.') . showFixed False . todSec)
+	formatCharacter 'Q' = Just (\_ -> dropWhile (/='.') . showFixed True . todSec)
 
 	-- Default
 	formatCharacter _   = Nothing
 
 instance FormatTime ZonedTime where
 	formatCharacter 'c' = Just (\locale -> formatTime locale (dateTimeFmt locale))
-	formatCharacter 's' = Just (\_ zt -> show (truncate (utcTimeToPOSIXSeconds (zonedTimeToUTC zt)) :: Integer))
+	formatCharacter 's' = Just (\_ zt -> show (floor (utcTimeToPOSIXSeconds (zonedTimeToUTC zt)) :: Integer))
 	formatCharacter c = case (formatCharacter c) of
 		Just f -> Just (\locale dt -> f locale (zonedTimeToLocalTime dt))
 		Nothing -> case (formatCharacter c) of

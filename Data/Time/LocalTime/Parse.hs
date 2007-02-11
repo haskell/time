@@ -123,10 +123,9 @@ parseValue l c =
       'k' -> spdigits 2
       'l' -> spdigits 2
       'M' -> digits 2 
-      'S' -> do s <- digits 2
-                ds <- liftM2 (:) (char '.') (munch isDigit)
-                      <++ return ""
-                return $ s ++ ds
+      'S' -> digits 2
+      'q' -> digits 12
+      'Q' -> liftM2 (:) (char '.') (munch isDigit) <++ return ""
       's' -> (char '-' >> liftM ('-':) (munch1 isDigit)) 
              <++ munch1 isDigit
       'Y' -> digits 4
@@ -246,18 +245,20 @@ instance ParseTime TimeOfDay where
                 'k' -> TimeOfDay (read x) m s
                 'l' -> TimeOfDay (read x) m s
                 'M' -> TimeOfDay h (read x) s
-                'S' -> TimeOfDay h m (readFixed x)
+                'S' -> TimeOfDay h m (fromInteger (read x))
+                'q' -> TimeOfDay h m (mkPico (truncate s) (read x))
+                'Q' -> if null x then t 
+                        else let ps = read $ take 12 $ rpad 12 '0' $ drop 1 x
+                              in TimeOfDay h m (mkPico (truncate s) ps)
                 _   -> t
             where am = TimeOfDay (h `mod` 12) m s
                   pm = TimeOfDay (if h < 12 then h + 12 else h) m s
 
+rpad :: Int -> a -> [a] -> [a]
+rpad n c xs = xs ++ replicate (n - length xs) c
 
-readFixed :: HasResolution a => String -> Fixed a
-readFixed s = case break (=='.') s of
-                (x,"")  -> fromInteger (read x)
-                (x,_:y) -> mkFixed12 (read x) (read (rpad 12 '0' y))
-  where rpad n c xs = xs ++ replicate (n - length xs) c
-        mkFixed12 i f = fromInteger i + fromRational (f % 1000000000000)
+mkPico :: Integer -> Integer -> Pico
+mkPico i f = fromInteger i + fromRational (f % 1000000000000)
 
 instance ParseTime LocalTime where
     buildTime l xs = LocalTime (buildTime l xs) (buildTime l xs)
@@ -278,9 +279,12 @@ instance ParseTime TimeZone where
 instance ParseTime ZonedTime where
     buildTime l xs = foldl f (ZonedTime (buildTime l xs) (buildTime l xs)) xs
         where
-          f t (c,x) =
+          f t@(ZonedTime (LocalTime _ tod) z) (c,x) =
               case c of
-                's' -> utcToZonedTime (zonedTimeZone t) (posixSecondsToUTCTime (fromInteger (read x)))
+                's' -> let s = fromInteger (read x)
+                           (_,ps) = properFraction (todSec tod) :: (Integer,Pico)
+                           s' = s + fromRational (toRational ps)
+                        in utcToZonedTime z (posixSecondsToUTCTime s')
                 _   -> t
 
 instance ParseTime UTCTime where
@@ -292,10 +296,10 @@ instance Read Day where
     readsPrec _ = readParen False $ readsTime defaultTimeLocale "%Y-%m-%d"
 
 instance Read TimeOfDay where
-    readsPrec _ = readParen False $ readsTime defaultTimeLocale "%H:%M:%S"
+    readsPrec _ = readParen False $ readsTime defaultTimeLocale "%H:%M:%S%Q"
 
 instance Read LocalTime where
-    readsPrec _ = readParen False $ readsTime defaultTimeLocale "%Y-%m-%d %H:%M:%S"
+    readsPrec _ = readParen False $ readsTime defaultTimeLocale "%Y-%m-%d %H:%M:%S%Q"
 
 instance Read TimeZone where
     readsPrec _ = readParen False $ \s ->
