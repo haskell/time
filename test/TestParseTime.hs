@@ -211,16 +211,15 @@ properties =
  ++ map (prop_format_parse_format_named "Day") partialDayFormats
  ++ map (prop_format_parse_format_named "TimeOfDay") partialTimeOfDayFormats
  ++ map (prop_format_parse_format_named "LocalTime") partialLocalTimeFormats
- ++ map (prop_format_parse_format_named "TimeZone") partialTimeZoneFormats
  ++ map (prop_format_parse_format_named "ZonedTime") partialZonedTimeFormats
  ++ map (prop_format_parse_format_named "UTCTime") partialUTCTimeFormats
 
- ++ map (prop_no_crash_bad_input_named "Day") (dayFormats ++ partialDayFormats ++ failingDayFormats)
- ++ map (prop_no_crash_bad_input_named "TimeOfDay") (timeOfDayFormats ++ partialTimeOfDayFormats ++ failingTimeOfDayFormats)
- ++ map (prop_no_crash_bad_input_named "LocalTime") (localTimeFormats ++ partialLocalTimeFormats ++ failingLocalTimeFormats)
- ++ map (prop_no_crash_bad_input_named "TimeZone") (timeZoneFormats ++ partialTimeZoneFormats ++ failingTimeZoneFormats)
- ++ map (prop_no_crash_bad_input_named "ZonedTime") (zonedTimeFormats ++ partialZonedTimeFormats ++ failingZonedTimeFormats)
- ++ map (prop_no_crash_bad_input_named "UTCTime") (utcTimeFormats ++ partialUTCTimeFormats ++ failingUTCTimeFormats)
+ ++ map (prop_no_crash_bad_input_named "Day") (dayFormats ++ partialDayFormats ++ failingPartialDayFormats)
+ ++ map (prop_no_crash_bad_input_named "TimeOfDay") (timeOfDayFormats ++ partialTimeOfDayFormats)
+ ++ map (prop_no_crash_bad_input_named "LocalTime") (localTimeFormats ++ partialLocalTimeFormats)
+ ++ map (prop_no_crash_bad_input_named "TimeZone") (timeZoneFormats)
+ ++ map (prop_no_crash_bad_input_named "ZonedTime") (zonedTimeFormats ++ partialZonedTimeFormats)
+ ++ map (prop_no_crash_bad_input_named "UTCTime") (utcTimeFormats ++ partialUTCTimeFormats)
 
 
 
@@ -263,11 +262,12 @@ localTimeFormats = map FormatString $
 -}
 
 timeZoneFormats :: [FormatString TimeZone]
-timeZoneFormats = map FormatString ["%z","%z%Z","%Z%z"]
+timeZoneFormats = map FormatString ["%z","%z%Z","%Z%z","%Z"]
 
 zonedTimeFormats :: [FormatString ZonedTime]
 zonedTimeFormats = map FormatString
-  ["%a, %d %b %Y %H:%M:%S.%q %z", "%a, %d %b %Y %H:%M:%S%Q %z", "%s.%q %z", "%s%Q %z"]
+  ["%a, %d %b %Y %H:%M:%S.%q %z", "%a, %d %b %Y %H:%M:%S%Q %z", "%s.%q %z", "%s%Q %z",
+   "%a, %d %b %Y %H:%M:%S.%q %Z", "%a, %d %b %Y %H:%M:%S%Q %Z", "%s.%q %Z", "%s%Q %Z"]
 
 utcTimeFormats :: [FormatString UTCTime]
 utcTimeFormats = map FormatString 
@@ -279,7 +279,7 @@ utcTimeFormats = map FormatString
 
 partialDayFormats :: [FormatString Day]
 partialDayFormats = map FormatString
-    [  ]
+    [ ]
 
 partialTimeOfDayFormats :: [FormatString TimeOfDay]
 partialTimeOfDayFormats = map FormatString
@@ -292,16 +292,13 @@ partialLocalTimeFormats = map FormatString
      "%c" 
     ]
 
-partialTimeZoneFormats :: [FormatString TimeZone]
-partialTimeZoneFormats = map FormatString 
-    [
-    ]
-
 partialZonedTimeFormats :: [FormatString ZonedTime]
 partialZonedTimeFormats = map FormatString 
     [
      -- %s does not include second decimals
-     "%s %z"
+     "%s %z",
+     -- %S does not include second decimals
+     "%c", "%a, %d %b %Y %H:%M:%S %Z"
     ]
 
 partialUTCTimeFormats :: [FormatString UTCTime]
@@ -320,47 +317,13 @@ partialUTCTimeFormats = map FormatString
 
 knownFailures :: [NamedProperty]
 knownFailures =
-    map (prop_parse_format_named "Day") failingDayFormats
- ++ map (prop_parse_format_named "LocalTime") failingLocalTimeFormats
- ++ map (prop_parse_format_named "TimeZone") failingTimeZoneFormats
- ++ map (prop_parse_format_named "ZonedTime") failingZonedTimeFormats
- ++ map (prop_parse_format_named "UTCTime") failingUTCTimeFormats
+    map (prop_format_parse_format_named "Day") failingPartialDayFormats
 
-
-
-
-failingDayFormats :: [FormatString Day]
-failingDayFormats = map FormatString
-    [ -- ISO week dates with two digit year
+failingPartialDayFormats :: [FormatString Day]
+failingPartialDayFormats = map FormatString
+    [ -- ISO week dates with two digit year. 
+      -- This can fail in the beginning or the end of a year where
+      -- the ISO week date year does not match the gregorian year.
      "%g-%V-%u","%g-%V-%a","%g-%V-%A","%g-%V-%w", "%A week %V, %g", "day %V, week %A, %g",
      "%g-W%V-%u"
     ]
-
-failingTimeOfDayFormats :: [FormatString TimeOfDay]
-failingTimeOfDayFormats = map FormatString
-    [ ]
-
-failingLocalTimeFormats :: [FormatString LocalTime]
-failingLocalTimeFormats = map FormatString 
-    [
-    ]
-
-failingTimeZoneFormats :: [FormatString TimeZone]
-failingTimeZoneFormats = map FormatString 
-    [
-     -- %Z does not figure out the offset
-     "%Z"
-    ]
-
-failingZonedTimeFormats :: [FormatString ZonedTime]
-failingZonedTimeFormats = map FormatString 
-    [
-     -- can't figure out offset from %Z, also, formatTime produces "" for %Z
-     "%c",
-     "%a, %d %b %Y %H:%M:%S %Z"
-    ]
-
-failingUTCTimeFormats :: [FormatString UTCTime]
-failingUTCTimeFormats = map FormatString 
-    []
-
