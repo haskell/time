@@ -1,15 +1,14 @@
 {-# OPTIONS -Wall -Werror #-}
 
--- #hide
-module Data.Time.LocalTime.Format
+module Data.Time.Format
 	(
 	-- * UNIX-style formatting
-	module Data.Time.LocalTime.Format
+	module Data.Time.Format,
+	module Data.Time.Format.Parse
 	) where
 
-import Data.Time.LocalTime.LocalTime
-import Data.Time.LocalTime.TimeOfDay
-import Data.Time.LocalTime.TimeZone
+import Data.Time.Format.Parse
+import Data.Time.LocalTime
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar

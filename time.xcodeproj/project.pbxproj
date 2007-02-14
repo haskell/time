@@ -130,6 +130,8 @@
 				ABD6783C0841677900CF37C0 /* Clock */,
 				AB01DCFD08374838003C9EF7 /* Clock.hs */,
 				AB2666A808A56FE30059DEC0 /* LocalTime */,
+				ABD4B1320B82BCA100CEB254 /* Format */,
+				AB01DD13083748EC003C9EF7 /* Format.hs */,
 				AB2666E808A571460059DEC0 /* LocalTime.hs */,
 			);
 			path = Time;
@@ -157,8 +159,6 @@
 				AB01DD18083748EC003C9EF7 /* TimeZone.hs */,
 				AB01DD17083748EC003C9EF7 /* TimeOfDay.hs */,
 				AB01DD12083748EC003C9EF7 /* LocalTime.hs */,
-				AB01DD13083748EC003C9EF7 /* Format.hs */,
-				ABD6AC650B2D52D400843342 /* Parse.hs */,
 			);
 			path = LocalTime;
 			sourceTree = "<group>";
@@ -195,6 +195,14 @@
 				AB01DCF508374807003C9EF7 /* Makefile */,
 			);
 			name = "GHC stuff";
+			sourceTree = "<group>";
+		};
+		ABD4B1320B82BCA100CEB254 /* Format */ = {
+			isa = PBXGroup;
+			children = (
+				ABD6AC650B2D52D400843342 /* Parse.hs */,
+			);
+			path = Format;
 			sourceTree = "<group>";
 		};
 		ABD6783C0841677900CF37C0 /* Clock */ = {

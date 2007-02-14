@@ -4,7 +4,7 @@ module Main where
 
 import Data.Time.Calendar.Easter
 import Data.Time.Calendar
-import Data.Time.LocalTime
+import Data.Time.Format
 
 import System.Locale
 

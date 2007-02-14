@@ -20,6 +20,7 @@ Exposed-Modules:
 	Data.Time.Clock.POSIX,
 	Data.Time.Clock.TAI,
 	Data.Time.LocalTime,
+	Data.Time.Format,
 	Data.Time
 Extensions:	ForeignFunctionInterface, CPP
 C-Sources:	cbits/HsTime.c
@@ -35,8 +36,7 @@ Other-Modules:
 	Data.Time.LocalTime.TimeZone,
 	Data.Time.LocalTime.TimeOfDay,
 	Data.Time.LocalTime.LocalTime,
-	Data.Time.LocalTime.Format,
-	Data.Time.LocalTime.Parse
+	Data.Time.Format.Parse
 Extra-Source-Files:
 	aclocal.m4 configure.ac configure
 	include/HsTime.h include/HsTimeConfig.h.in

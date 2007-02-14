@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -Werror #-}
 
 -- #hide
-module Data.Time.LocalTime.Parse 
+module Data.Time.Format.Parse 
     (
     -- * UNIX-style parsing
     parseTime, readTime, readsTime,
@@ -9,14 +9,11 @@ module Data.Time.LocalTime.Parse
     ) where
 
 import Data.Time.Clock.POSIX
-import Data.Time.Clock.UTC
-import Data.Time.Calendar.Days
-import Data.Time.Calendar.Gregorian
+import Data.Time.Clock
+import Data.Time.Calendar
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
-import Data.Time.LocalTime.LocalTime
-import Data.Time.LocalTime.TimeOfDay
-import Data.Time.LocalTime.TimeZone
+import Data.Time.LocalTime
 
 import Control.Monad
 import Data.Char
