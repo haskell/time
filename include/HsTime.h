@@ -7,6 +7,6 @@
 #include <time.h>
 #endif
 
-long int get_current_timezone_seconds (time_t,int* dst,char const* * name);
+long int get_current_timezone_seconds (time_t,int* pdst,char const* * pname);
 
 #endif
