@@ -2,7 +2,7 @@
 
 Name:		PACKAGE
 Version:	VERSION
-Stability:	Beta
+Stability:	stable
 License:	BSD3
 License-File:	LICENSE
 Author:		Ashley Yakeley
@@ -29,10 +29,11 @@ Exposed-modules:
 	Data.Time.Clock.POSIX,
 	Data.Time.Clock.TAI,
 	Data.Time.LocalTime,
+	Data.Time.Format,
 	Data.Time
-Extensions:	ForeignFunctionInterface
-C-Sources:	HsTime.c
-Hidden-modules:
+Extensions:	ForeignFunctionInterface, CPP
+C-Sources:	cbits/HsTime.c
+Other-Modules:
 	Data.Time.Calendar.Private,
 	Data.Time.Calendar.Days,
 	Data.Time.Calendar.Gregorian,
@@ -44,11 +45,12 @@ Hidden-modules:
 	Data.Time.LocalTime.TimeZone,
 	Data.Time.LocalTime.TimeOfDay,
 	Data.Time.LocalTime.LocalTime,
-	Data.Time.LocalTime.Format
+	Data.Time.Format.Parse
 import-dirs:		IMPORT_DIR
 library-dirs:		LIB_DIR
 hs-libraries:		"HStime"
 include-dirs:		INCLUDE_DIR
-includes:		"HsTime.h"
+Install-Includes:
+	HsTime.h HsTimeConfig.h
 haddock-interfaces:	HADDOCK_IFACE
 haddock-html:		HTML_DIR
