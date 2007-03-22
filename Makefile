@@ -9,6 +9,7 @@ ALL_DIRS = \
 	Data/Time \
 	Data/Time/Calendar \
 	Data/Time/Clock \
+	Data/Time/Format \
 	Data/Time/LocalTime
 
 PACKAGE = time
