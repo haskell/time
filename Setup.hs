@@ -4,7 +4,6 @@ import Control.Exception
 import Data.List
 import Distribution.Simple
 import Distribution.PackageDescription
-import Distribution.PreProcess
 import Distribution.Setup
 import Distribution.Simple.LocalBuildInfo
 import System.Cmd
@@ -30,7 +29,8 @@ withCurrentDirectory path f = do
 
 runTestScript :: Args -> Bool -> PackageDescription -> LocalBuildInfo
               -> IO ExitCode
-runTestScript args flag pd lbi = withCurrentDirectory "test" (system "make")
+runTestScript _args _flag _pd _lbi
+ = withCurrentDirectory "test" (system "make")
 
 extractGhcArgs :: [String] -> ([String], [String])
 extractGhcArgs = extractPrefixArgs "--ghc-option="
@@ -39,11 +39,11 @@ extractConfigureArgs :: [String] -> ([String], [String])
 extractConfigureArgs = extractPrefixArgs "--configure-option="
 
 extractPrefixArgs :: String -> [String] -> ([String], [String])
-extractPrefixArgs prefix args
+extractPrefixArgs the_prefix args
  = let f [] = ([], [])
        f (x:xs) = case f xs of
                       (wantedArgs, otherArgs) ->
-                          case removePrefix prefix x of
+                          case removePrefix the_prefix x of
                               Just wantedArg ->
                                   (wantedArg:wantedArgs, otherArgs)
                               Nothing ->
@@ -52,6 +52,7 @@ extractPrefixArgs prefix args
 
 removePrefix :: String -> String -> Maybe String
 removePrefix "" ys = Just ys
+removePrefix _  "" = Nothing
 removePrefix (x:xs) (y:ys)
  | x == y = removePrefix xs ys
  | otherwise = Nothing
