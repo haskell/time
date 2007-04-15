@@ -10,12 +10,15 @@ import System.Cmd
 import System.Directory
 import System.Environment
 import System.Exit
+import System.Info
 
 main :: IO ()
 main = do args <- getArgs
           let (ghcArgs, args') = extractGhcArgs args
               (_, args'') = extractConfigureArgs args'
               hooks = defaultUserHooks {
+                  confHook = add_Win32_dep
+                           $ confHook defaultUserHooks,
                   buildHook = add_ghc_options ghcArgs
                             $ buildHook defaultUserHooks,
                   runTests = runTestScript }
@@ -71,4 +74,15 @@ add_ghc_options args f pd lbi muhs x
                      Nothing -> error "Expected a library"
           pd' = pd { library = Just lib' }
       f pd' lbi muhs x
+
+type ConfHook = PackageDescription -> ConfigFlags -> IO LocalBuildInfo
+
+-- XXX Hideous hack
+add_Win32_dep :: ConfHook -> ConfHook
+add_Win32_dep f pd cf
+ = do let pd' = if os == "mingw32"
+                then pd { buildDepends = Dependency "Win32" AnyVersion
+                                       : buildDepends pd }
+                else pd
+      f pd' cf
 
