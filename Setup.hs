@@ -9,7 +9,6 @@ import Distribution.Simple.LocalBuildInfo
 import System.Cmd
 import System.Directory
 import System.Environment
-import System.Exit
 import System.Info
 
 main :: IO ()
@@ -31,7 +30,7 @@ withCurrentDirectory path f = do
     finally f (setCurrentDirectory cur)
 
 runTestScript :: Args -> Bool -> PackageDescription -> LocalBuildInfo
-              -> IO ExitCode
+              -> IO ()
 runTestScript _args _flag _pd _lbi
  = withCurrentDirectory "test" (system "make")
 
@@ -60,11 +59,10 @@ removePrefix (x:xs) (y:ys)
  | x == y = removePrefix xs ys
  | otherwise = Nothing
 
-type Hook a = PackageDescription -> LocalBuildInfo -> Maybe UserHooks -> a
-           -> IO ()
+type Hook a = PackageDescription -> LocalBuildInfo -> UserHooks -> a -> IO ()
 
 add_ghc_options :: [String] -> Hook a -> Hook a
-add_ghc_options args f pd lbi muhs x
+add_ghc_options args f pd lbi uhs x
  = do let lib' = case library pd of
                      Just lib ->
                          let bi = libBuildInfo lib
@@ -73,7 +71,7 @@ add_ghc_options args f pd lbi muhs x
                          in lib { libBuildInfo = bi' }
                      Nothing -> error "Expected a library"
           pd' = pd { library = Just lib' }
-      f pd' lbi muhs x
+      f pd' lbi uhs x
 
 type ConfHook = PackageDescription -> ConfigFlags -> IO LocalBuildInfo
 
