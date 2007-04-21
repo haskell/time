@@ -2,10 +2,11 @@ module Main (main) where
 
 import Control.Exception
 import Data.List
-import Distribution.Simple
 import Distribution.PackageDescription
 import Distribution.Setup
+import Distribution.Simple
 import Distribution.Simple.LocalBuildInfo
+import Distribution.Simple.Utils
 import System.Cmd
 import System.Directory
 import System.Environment
@@ -29,10 +30,9 @@ withCurrentDirectory path f = do
     setCurrentDirectory path
     finally f (setCurrentDirectory cur)
 
-runTestScript :: Args -> Bool -> PackageDescription -> LocalBuildInfo
-              -> IO ()
+runTestScript :: Args -> Bool -> PackageDescription -> LocalBuildInfo -> IO ()
 runTestScript _args _flag _pd _lbi
- = withCurrentDirectory "test" (system "make")
+ = maybeExit $ withCurrentDirectory "test" $ system "make"
 
 extractGhcArgs :: [String] -> ([String], [String])
 extractGhcArgs = extractPrefixArgs "--ghc-option="
