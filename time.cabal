@@ -7,7 +7,7 @@ Author:		Ashley Yakeley
 Maintainer:	<ashley@semantic.org>
 Homepage:	http://semantic.org/TimeLib/
 Category:
-Build-Depends:	base
+Build-Depends:	base, old-locale
 Synopsis:	time library
 Exposed-Modules:
 	Data.Time.Calendar,
