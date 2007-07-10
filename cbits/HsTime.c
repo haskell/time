@@ -22,7 +22,7 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
 		// implemented as part of localtime() in the CRT.  This is_dst
 		// flag is all we need here.
 		*pname = dst ? _tzname[1] : _tzname[0];
-		return dst ? _timezone - 3600 : _timezone;
+		return - (dst ? _timezone - 3600 : _timezone);
 #else
 # if HAVE_TZNAME
 		*pname = *tzname;
