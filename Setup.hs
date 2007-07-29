@@ -11,10 +11,7 @@ import System.Directory
 import System.Info
 
 main :: IO ()
-main = do let hooks = defaultUserHooks {
-                  confHook = add_Win32_dep
-                           $ confHook defaultUserHooks,
-                  runTests = runTestScript }
+main = do let hooks = defaultUserHooks { runTests = runTestScript }
           defaultMainWithHooks hooks
 
 withCurrentDirectory :: FilePath -> IO a -> IO a
@@ -29,11 +26,3 @@ runTestScript _args _flag _pd _lbi
 
 type ConfHook = PackageDescription -> ConfigFlags -> IO LocalBuildInfo
 
--- XXX Hideous hack
-add_Win32_dep :: ConfHook -> ConfHook
-add_Win32_dep f pd cf
- = do let pd' = if os == "mingw32"
-                then pd { buildDepends = Dependency "Win32" AnyVersion
-                                       : buildDepends pd }
-                else pd
-      f pd' cf
