@@ -110,9 +110,9 @@ parseInput l = liftM catMaybes . mapM p
 parseValue :: TimeLocale -> Char -> ReadP String
 parseValue l c = 
     case c of
-      'z' -> liftM2 (:) (choice [char '+', char '-']) (digits 4)
+      'z' -> numericTZ
       'Z' -> munch1 isUpper <++
-             liftM2 (:) (choice [char '+', char '-']) (digits 4) <++
+             numericTZ <++
              return "" -- produced by %Z for LocalTime
       'P' -> oneOf (let (am,pm) = amPm l 
                      in [map toLower am, map toLower pm])
@@ -154,8 +154,11 @@ parseValue l c =
     upTo :: Int -> ReadP a -> ReadP [a]
     upTo 0 _ = return []
     upTo n x = liftM2 (:) x (upTo (n-1) x) <++ return []
-
-
+    numericTZ = do s <- choice [char '+', char '-']
+                   h <- digits 2
+                   optional (char ':')
+                   m <- digits 2
+                   return (s:h++m)
 
 --
 -- * Instances for the time package types
