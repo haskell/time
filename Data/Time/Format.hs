@@ -37,7 +37,7 @@ class FormatTime t where
 --
 -- For TimeZone (and ZonedTime and UTCTime):
 --
--- [@%z@] timezone offset
+-- [@%z@] timezone offset on the format @-HHMM@.
 --
 -- [@%Z@] timezone name
 --
