@@ -36,8 +36,15 @@ class ParseTime t where
                                  -- corresponding part of the input.
               -> t
 
--- | Parse a time value given a format string. Supports the same %-codes as
--- 'formatTime'.
+-- | Parses a time value given a format string. Supports the same %-codes as
+-- 'formatTime'. Leading and trailing whitespace is accepted.
+-- Some variations in the input are accepted:
+--
+-- [@%z@] accepts any of @-HHMM@ or @-HH:MM@.
+--
+-- [@%Z@] accepts any string of upper case letters, or any
+-- of the formats accepted by @%z@.
+--
 parseTime :: ParseTime t =>
              TimeLocale -- ^ Time locale.
           -> String     -- ^ Format string.
@@ -49,8 +56,7 @@ parseTime l fmt s = case readsTime l fmt s of
                       _        -> Nothing
 
 -- | Parse a time value given a format string. Fails if the input could
--- not be parsed using the given format. Supports the same %-codes as
--- 'formatTime'.
+-- not be parsed using the given format. See 'parseTime' for details.
 readTime :: ParseTime t =>
             TimeLocale -- ^ Time locale.
          -> String     -- ^ Format string.
@@ -61,8 +67,7 @@ readTime l fmt s = case readsTime l fmt s of
                       [(_,x)]  -> error $ "readTime: junk at end of " ++ show x
                       _        -> error $ "readsTime: bad input " ++ show s
 
--- | Parse a time value given a format string. Supports the same %-codes as
--- 'formatTime'.
+-- | Parse a time value given a format string.  See 'parseTime' for details.
 readsTime :: ParseTime t =>
              TimeLocale -- ^ Time locale.
           -> String     -- ^ Format string
