@@ -8,6 +8,8 @@ Maintainer:	<ashley@semantic.org>
 Homepage:	http://semantic.org/TimeLib/
 Synopsis:	time library
 Category:
+Build-Type:     Custom
+Cabal-Version:  >=1.2
 
 Extra-Source-Files:
         aclocal.m4 configure.ac configure
@@ -16,11 +18,16 @@ Extra-Tmp-Files:
         config.log config.status autom4te.cache
         include/HsTimeConfig.h
 
+Flag split-base
+
 Library {
-    Build-Depends: base, old-locale
-    if os(mingw32) {
+    Build-Depends: base >= 2
+    if flag(split-base)
+       Build-Depends: base >= 3, old-locale
+    else
+       Build-Depends: base < 3
+    if os(windows)
         Build-Depends: Win32
-    }
     Exposed-Modules:
         Data.Time.Calendar,
         Data.Time.Calendar.MonthDay,
