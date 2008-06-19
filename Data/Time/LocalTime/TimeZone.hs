@@ -1,4 +1,4 @@
-{-# OPTIONS -ffi -Wall -Werror #-}
+{-# OPTIONS -ffi #-}
 
 -- #hide
 module Data.Time.LocalTime.TimeZone

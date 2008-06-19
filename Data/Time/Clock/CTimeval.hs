@@ -1,4 +1,4 @@
-{-# OPTIONS -ffi -Wall -Werror -cpp #-}
+{-# OPTIONS -ffi -cpp #-}
 
 -- #hide
 module Data.Time.Clock.CTimeval where
