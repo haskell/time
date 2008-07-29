@@ -21,7 +21,7 @@ newtype UniversalTime = ModJulianDate {getModJulianDate :: Rational} deriving (E
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions will treat it as seconds.
--- It has an accuracy of 10^-12 s.
+-- It has a precision of 10^-12 s.
 newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation

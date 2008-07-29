@@ -39,7 +39,7 @@ instance Ord UTCTime where
 
 -- | This is a length of time, as measured by UTC.
 -- Conversion functions will treat it as seconds.
--- It has an accuracy of 10^-12 s.
+-- It has a precision of 10^-12 s.
 -- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
