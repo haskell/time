@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -Werror #-}
+{-# OPTIONS -Wall -Werror -fno-warn-orphans #-}
 
 -- #hide
 module Data.Time.Calendar.Gregorian
