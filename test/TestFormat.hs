@@ -1,4 +1,4 @@
-{-# OPTIONS -ffi -Wall -Werror #-}
+{-# OPTIONS -XForeignFunctionInterface -Wall -Werror #-}
 
 module Main where
 

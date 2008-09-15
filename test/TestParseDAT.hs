@@ -1,4 +1,4 @@
-{-# OPTIONS -ffi -Wall -Werror #-}
+{-# OPTIONS -Wall -Werror #-}
 
 module Main where
 
