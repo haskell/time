@@ -6,8 +6,9 @@ License-File:	LICENSE
 Author:		Ashley Yakeley
 Maintainer:	<ashley@semantic.org>
 Homepage:	http://semantic.org/TimeLib/
-Synopsis:	time library
-Category:
+Synopsis:	 A time library
+Description: A time library
+Category:   System
 Build-Type:     Custom
 Cabal-Version:  >=1.2
 x-follows-version-policy:
