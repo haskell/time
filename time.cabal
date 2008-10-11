@@ -10,6 +10,7 @@ Synopsis:	time library
 Category:
 Build-Type:     Custom
 Cabal-Version:  >=1.2
+x-follows-version-policy:
 
 Extra-Source-Files:
         aclocal.m4 configure.ac configure
