@@ -5,6 +5,8 @@ module Data.Time.Calendar.Days
 	Day(..),addDays,diffDays
 ) where
 
+import Data.Ix
+
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
 newtype Day = ModifiedJulianDay {toModifiedJulianDay :: Integer} deriving (Eq,Ord)
 
@@ -18,6 +20,13 @@ instance Enum Day where
 	enumFromThen (ModifiedJulianDay a) (ModifiedJulianDay b) = fmap ModifiedJulianDay (enumFromThen a b)
 	enumFromTo (ModifiedJulianDay a) (ModifiedJulianDay b) = fmap ModifiedJulianDay (enumFromTo a b)
 	enumFromThenTo (ModifiedJulianDay a) (ModifiedJulianDay b) (ModifiedJulianDay c) = fmap ModifiedJulianDay (enumFromThenTo a b c)
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance Ix Day where
+	range (ModifiedJulianDay a,ModifiedJulianDay b) = fmap ModifiedJulianDay (range (a,b))
+	index (ModifiedJulianDay a,ModifiedJulianDay b) (ModifiedJulianDay c) = index (a,b) c
+	inRange (ModifiedJulianDay a,ModifiedJulianDay b) (ModifiedJulianDay c) = inRange (a,b) c
+	rangeSize (ModifiedJulianDay a,ModifiedJulianDay b) = rangeSize (a,b)
 
 addDays :: Integer -> Day -> Day
 addDays n (ModifiedJulianDay a) = ModifiedJulianDay (a + n)
