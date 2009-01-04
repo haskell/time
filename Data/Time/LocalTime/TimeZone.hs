@@ -1,4 +1,4 @@
-{-# OPTIONS -ffi #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
 
 -- #hide
 module Data.Time.LocalTime.TimeZone

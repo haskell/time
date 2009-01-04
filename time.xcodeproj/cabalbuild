@@ -1,8 +1,0 @@
-#!/bin/sh
-{
-case $1 in
-	''		) runghc Setup.hs configure;runghc Setup.hs build ;;
-	*		) runghc Setup.hs $1 ;;
-esac 2>&1;
-} | ${0/%cabalbuild/}/fixerrormsgs
-exit $PIPESTATUS

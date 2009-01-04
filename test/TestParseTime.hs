@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -Werror -fno-warn-type-defaults -fno-warn-unused-binds #-}
+{-# OPTIONS -Wall -Werror -fno-warn-type-defaults -fno-warn-unused-binds -fno-warn-orphans #-}
 
 import Control.Monad
 import Data.Char

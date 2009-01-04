@@ -9,7 +9,7 @@ import System.Cmd
 import System.Directory
 
 main :: IO ()
-main = do let hooks = defaultUserHooks { runTests = runTestScript }
+main = do let hooks = autoconfUserHooks { runTests = runTestScript }
           defaultMainWithHooks hooks
 
 withCurrentDirectory :: FilePath -> IO a -> IO a
