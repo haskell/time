@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Data.Time.Format
 	(
 	-- * UNIX-style formatting

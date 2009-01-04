@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -Werror -fno-warn-orphans #-}
+{-# OPTIONS -fno-warn-orphans #-}
 
 -- #hide
 module Data.Time.Format.Parse 

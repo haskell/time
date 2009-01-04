@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Data.Time.Calendar.MonthDay
 	(
 	monthAndDayToDayOfYear,dayOfYearToMonthAndDay,monthLength

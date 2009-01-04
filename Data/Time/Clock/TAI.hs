@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 -- | TAI and leap-second tables for converting to UTC: most people won't need this module.
 module Data.Time.Clock.TAI
 (

@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -Werror -fno-warn-orphans #-}
+{-# OPTIONS -fno-warn-orphans #-}
 
 -- #hide
 module Data.Time.LocalTime.LocalTime
@@ -65,6 +65,7 @@ zonedTimeToUTC (ZonedTime t zone) = localTimeToUTC zone t
 instance Show ZonedTime where
 	show (ZonedTime t zone) = show t ++ " " ++ show zone
 
+-- orphan instance
 instance Show UTCTime where
 	show t = show (utcToZonedTime utc t)
 

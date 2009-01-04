@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 -- #hide
 module Data.Time.Clock.UTCDiff where
 

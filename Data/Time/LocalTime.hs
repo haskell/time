@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Data.Time.LocalTime
 (
 	module Data.Time.LocalTime.TimeZone,

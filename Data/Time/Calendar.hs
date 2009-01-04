@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Data.Time.Calendar
 (
 	module Data.Time.Calendar.Days,

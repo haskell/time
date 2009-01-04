@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Data.Time.Calendar.Julian
 (
 	module Data.Time.Calendar.JulianYearDay,

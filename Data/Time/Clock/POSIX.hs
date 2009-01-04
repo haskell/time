@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror -cpp #-}
-
 -- | POSIX time, if you need to deal with timestamps and the like.
 -- Most people won't need this module.
 module Data.Time.Clock.POSIX

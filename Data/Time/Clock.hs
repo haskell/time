@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 -- | Types and functions for UTC and UT1
 module Data.Time.Clock
 (

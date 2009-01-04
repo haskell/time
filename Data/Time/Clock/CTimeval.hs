@@ -1,5 +1,3 @@
-{-# OPTIONS -cpp #-}
-
 -- #hide
 module Data.Time.Clock.CTimeval where
 

@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -Werror -fno-warn-orphans #-}
+{-# OPTIONS -fno-warn-orphans #-}
 
 -- #hide
 module Data.Time.Calendar.Gregorian
@@ -70,5 +70,6 @@ addGregorianYearsClip n = addGregorianMonthsClip (n * 12)
 addGregorianYearsRollOver :: Integer -> Day -> Day
 addGregorianYearsRollOver n = addGregorianMonthsRollOver (n * 12)
 
+-- orphan instance
 instance Show Day where
 	show = showGregorian
