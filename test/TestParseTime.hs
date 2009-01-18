@@ -136,6 +136,22 @@ prop_parse_format_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t
                            => String -> FormatString t -> NamedProperty
 prop_parse_format_named = prop_named "prop_parse_format" prop_parse_format
 
+-- Verify case-insensitivity with upper case.
+prop_parse_format_upper :: (Eq t, FormatTime t, ParseTime t) => FormatString t -> t -> Bool
+prop_parse_format_upper (FormatString f) t = parse f (map toUpper $ format f t) == Just t
+
+prop_parse_format_upper_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t) 
+                              => String -> FormatString t -> NamedProperty
+prop_parse_format_upper_named = prop_named "prop_parse_format_upper" prop_parse_format_upper
+
+-- Verify case-insensitivity with lower case.
+prop_parse_format_lower :: (Eq t, FormatTime t, ParseTime t) => FormatString t -> t -> Bool
+prop_parse_format_lower (FormatString f) t = parse f (map toLower $ format f t) == Just t
+
+prop_parse_format_lower_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t) 
+                              => String -> FormatString t -> NamedProperty
+prop_parse_format_lower_named = prop_named "prop_parse_format_lower" prop_parse_format_lower
+
 prop_format_parse_format :: (FormatTime t, ParseTime t) => FormatString t -> t -> Bool
 prop_format_parse_format (FormatString f) t = 
     fmap (format f) (parse f (format f t) `asTypeOf` Just t) == Just (format f t)
@@ -206,6 +222,20 @@ properties =
  ++ map (prop_parse_format_named "TimeZone") timeZoneFormats
  ++ map (prop_parse_format_named "ZonedTime") zonedTimeFormats
  ++ map (prop_parse_format_named "UTCTime") utcTimeFormats
+
+ ++ map (prop_parse_format_upper_named "Day") dayFormats
+ ++ map (prop_parse_format_upper_named "TimeOfDay") timeOfDayFormats
+ ++ map (prop_parse_format_upper_named "LocalTime") localTimeFormats
+ ++ map (prop_parse_format_upper_named "TimeZone") timeZoneFormats
+ ++ map (prop_parse_format_upper_named "ZonedTime") zonedTimeFormats
+ ++ map (prop_parse_format_upper_named "UTCTime") utcTimeFormats
+
+ ++ map (prop_parse_format_lower_named "Day") dayFormats
+ ++ map (prop_parse_format_lower_named "TimeOfDay") timeOfDayFormats
+ ++ map (prop_parse_format_lower_named "LocalTime") localTimeFormats
+ ++ map (prop_parse_format_lower_named "TimeZone") timeZoneFormats
+ ++ map (prop_parse_format_lower_named "ZonedTime") zonedTimeFormats
+ ++ map (prop_parse_format_lower_named "UTCTime") utcTimeFormats
 
  ++ map (prop_format_parse_format_named "Day") partialDayFormats
  ++ map (prop_format_parse_format_named "TimeOfDay") partialTimeOfDayFormats
