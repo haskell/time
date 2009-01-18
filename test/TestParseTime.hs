@@ -124,14 +124,17 @@ prop_fromSundayStartWeek d =
 -- * format and parse 
 --
 
+-- | Helper for defining named properties.
+prop_named :: (Arbitrary t, Show t, Testable a)
+           => String -> (FormatString s -> t -> a) -> String -> FormatString s -> NamedProperty
+prop_named name prop typeName f = (name ++ " " ++ typeName ++ " " ++ show f, property (prop f))
+
 prop_parse_format :: (Eq t, FormatTime t, ParseTime t) => FormatString t -> t -> Bool
 prop_parse_format (FormatString f) t = parse f (format f t) == Just t
 
 prop_parse_format_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t) 
                            => String -> FormatString t -> NamedProperty
-prop_parse_format_named typeName f = 
-    ("prop_parse_format " ++ typeName ++ " " ++ show f, 
-     property (prop_parse_format f))
+prop_parse_format_named = prop_named "prop_parse_format" prop_parse_format
 
 prop_format_parse_format :: (FormatTime t, ParseTime t) => FormatString t -> t -> Bool
 prop_format_parse_format (FormatString f) t = 
@@ -139,9 +142,7 @@ prop_format_parse_format (FormatString f) t =
 
 prop_format_parse_format_named :: (Arbitrary t, Show t, FormatTime t, ParseTime t) 
                                   => String -> FormatString t -> NamedProperty
-prop_format_parse_format_named typeName f = 
-    ("prop_format_parse_format " ++ typeName ++ " " ++ show f, 
-     property (prop_format_parse_format f))
+prop_format_parse_format_named = prop_named "prop_format_parse_format" prop_format_parse_format
 
 --
 -- * crashes in parse
@@ -166,9 +167,7 @@ prop_no_crash_bad_input fs@(FormatString f) (Input s) = property $
   where 
 prop_no_crash_bad_input_named :: (Eq t, ParseTime t)
                                  => String -> FormatString t -> NamedProperty
-prop_no_crash_bad_input_named typeName f = 
-    ("prop_no_crash_bad_input " ++ typeName ++ " " ++ show f, 
-     property (prop_no_crash_bad_input f))
+prop_no_crash_bad_input_named = prop_named "prop_no_crash_bad_input" prop_no_crash_bad_input
 
 --
 --
