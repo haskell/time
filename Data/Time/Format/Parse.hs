@@ -22,7 +22,23 @@ import Data.List
 import Data.Maybe
 import Data.Ratio
 import System.Locale
-import Text.ParserCombinators.ReadP
+import Text.ParserCombinators.ReadP hiding (char, string)
+
+
+-- | Case-insensitive version of 'Text.ParserCombinators.ReadP.char'.
+char :: Char -> ReadP Char
+char c = satisfy (\x -> toUpper c == toUpper x)
+-- | Case-insensitive version of 'Text.ParserCombinators.ReadP.string'.
+string :: String -> ReadP String
+string this = do s <- look; scan this s
+  where
+    scan []     _                               = do return this
+    scan (x:xs) (y:ys) | toUpper x == toUpper y = do get; scan xs ys
+    scan _      _                               = do pfail
+-- | Convert string to upper case.
+up :: String -> String
+up = map toUpper
+
 
 -- | The class of types which can be parsed given a UNIX-style time format
 -- string.
@@ -37,12 +53,12 @@ class ParseTime t where
               -> t
 
 -- | Parses a time value given a format string. Supports the same %-codes as
--- 'formatTime'. Leading and trailing whitespace is accepted.
--- Some variations in the input are accepted:
+-- 'formatTime'. Leading and trailing whitespace is accepted. Case is not
+-- significant. Some variations in the input are accepted:
 --
 -- [@%z@] accepts any of @-HHMM@ or @-HH:MM@.
 --
--- [@%Z@] accepts any string of upper case letters, or any
+-- [@%Z@] accepts any string of letters, or any
 -- of the formats accepted by @%z@.
 --
 parseTime :: ParseTime t =>
@@ -116,11 +132,10 @@ parseValue :: TimeLocale -> Char -> ReadP String
 parseValue l c = 
     case c of
       'z' -> numericTZ
-      'Z' -> munch1 isUpper <++
+      'Z' -> munch1 isAlpha <++
              numericTZ <++
              return "" -- produced by %Z for LocalTime
-      'P' -> oneOf (let (am,pm) = amPm l 
-                     in [map toLower am, map toLower pm])
+      'P' -> oneOf (let (am,pm) = amPm l in [am, pm])
       'p' -> oneOf (let (am,pm) = amPm l in [am, pm])
       'H' -> digits 2
       'I' -> digits 2
@@ -191,9 +206,9 @@ instance ParseTime Day where
           -- %C: century (being the first two digits of the year), 00 - 99
           'C' -> [Century (read x)]
           -- %B: month name, long form (fst from months locale), January - December
-          'B' -> [Month (1 + fromJust (elemIndex x (map fst (months l))))]
+          'B' -> [Month (1 + fromJust (elemIndex (up x) (map (up . fst) (months l))))]
           -- %b: month name, short form (snd from months locale), Jan - Dec
-          'b' -> [Month (1 + fromJust (elemIndex x (map snd (months l))))]
+          'b' -> [Month (1 + fromJust (elemIndex (up x) (map (up . snd) (months l))))]
           -- %m: month of year, leading 0 as needed, 01 - 12
           'm' -> [Month (read x)]
           -- %d: day of month, leading 0 as needed, 01 - 31
@@ -213,9 +228,9 @@ instance ParseTime Day where
           -- %u: day for Week Date format, 1 - 7
           'u' -> [WeekDay (read x)]
           -- %a: day of week, short form (snd from wDays locale), Sun - Sat
-          'a' -> [WeekDay (1 + (fromJust (elemIndex x (map snd (wDays l))) + 6) `mod` 7)]
+          'a' -> [WeekDay (1 + (fromJust (elemIndex (up x) (map (up . snd) (wDays l))) + 6) `mod` 7)]
           -- %A: day of week, long form (fst from wDays locale), Sunday - Saturday
-          'A' -> [WeekDay (1 + (fromJust (elemIndex x (map fst (wDays l))) + 6) `mod` 7)]
+          'A' -> [WeekDay (1 + (fromJust (elemIndex (up x) (map (up . fst) (wDays l))) + 6) `mod` 7)]
           -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 01 - 53
           'U' -> [Week SundayWeek (read x)]
           -- %w: day of week number, 0 (= Sunday) - 6 (= Saturday)
@@ -248,8 +263,8 @@ instance ParseTime TimeOfDay where
         where
           f t@(TimeOfDay h m s) (c,x) = 
               case c of
-                'P' -> if x == map toLower (fst (amPm l)) then am else pm
-                'p' -> if x ==              fst (amPm l)  then am else pm
+                'P' -> if up x == fst (amPm l) then am else pm
+                'p' -> if up x == fst (amPm l) then am else pm
                 'H' -> TimeOfDay (read x) m s
                 'I' -> TimeOfDay (read x) m s
                 'k' -> TimeOfDay (read x) m s
@@ -280,10 +295,10 @@ instance ParseTime TimeZone where
             case c of
               'z' -> zone
               'Z' | null x           -> t
-                  | isUpper (head x) ->
-                      case lookup x _TIMEZONES_ of
-                        Just (offset', dst') -> TimeZone offset' dst' x
-                        Nothing -> TimeZone offset dst x
+                  | isAlpha (head x) -> let y = up x in
+                      case lookup y _TIMEZONES_ of
+                        Just (offset', dst') -> TimeZone offset' dst' y
+                        Nothing -> TimeZone offset dst y
                   | otherwise        -> zone
               _   -> t
           where zone = TimeZone (readTzOffset x) dst name
