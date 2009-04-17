@@ -1,36 +1,42 @@
-Name:		time
-Version:	1.1.2.3
-Stability:	stable
-License:	BSD3
-License-File:	LICENSE
-Author:		Ashley Yakeley
-Maintainer:	<ashley@semantic.org>
-Homepage:	http://semantic.org/TimeLib/
-Synopsis:	 A time library
-Description: A time library
-Category:   System
-Build-Type:     Custom
-Cabal-Version:  >=1.2
+name:           time
+version:        1.1.2.4
+stability:      stable
+license:        BSD3
+license-file:   LICENSE
+author:         Ashley Yakeley
+maintainer:     <ashley@semantic.org>
+homepage:       http://semantic.org/TimeLib/
+synopsis:       A time library
+description:    A time library
+category:       System
+build-type:  Custom
+cabal-version:   >=1.2
 x-follows-version-policy:
 
-Extra-Source-Files:
-        aclocal.m4 configure.ac configure
-        include/HsTime.h include/HsTimeConfig.h.in
-Extra-Tmp-Files:
-        config.log config.status autom4te.cache
-        include/HsTimeConfig.h
+extra-source-files:
+    aclocal.m4
+    configure.ac
+    configure
+    include/HsTime.h
+    include/HsTimeConfig.h.in
+extra-tmp-files:
+    config.log
+    config.status
+    autom4te.cache
+    include/HsTimeConfig.h
 
-Flag split-base
+flag split-base
 
-Library {
-    Build-Depends: base >= 2
+library
+{
+    build-depends:    base >= 2
     if flag(split-base)
-       Build-Depends: base >= 3, old-locale
+        Build-Depends: base >= 3, old-locale
     else
-       Build-Depends: base < 3
+        Build-Depends: base < 3
     if os(windows)
         Build-Depends: Win32
-    Exposed-Modules:
+    exposed-modules:
         Data.Time.Calendar,
         Data.Time.Calendar.MonthDay,
         Data.Time.Calendar.OrdinalDate,
@@ -43,9 +49,9 @@ Library {
         Data.Time.LocalTime,
         Data.Time.Format,
         Data.Time
-    Extensions:	ForeignFunctionInterface, CPP
-    C-Sources:	cbits/HsTime.c
-    Other-Modules:
+    extensions:    ForeignFunctionInterface, CPP
+    c-sources:    cbits/HsTime.c
+    other-modules:
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Days,
         Data.Time.Calendar.Gregorian,
@@ -58,8 +64,9 @@ Library {
         Data.Time.LocalTime.TimeOfDay,
         Data.Time.LocalTime.LocalTime,
         Data.Time.Format.Parse
-    Include-Dirs:	include
-    Install-Includes:
-        HsTime.h HsTimeConfig.h
+    include-dirs:    include
+    install-includes:
+        HsTime.h
+        HsTimeConfig.h
 }
 

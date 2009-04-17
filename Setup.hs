@@ -7,10 +7,12 @@ import Distribution.Simple.LocalBuildInfo
 import Distribution.Simple.Utils
 import System.Cmd
 import System.Directory
+import System.Info
 
 main :: IO ()
-main = do let hooks = autoconfUserHooks { runTests = runTestScript }
-          defaultMainWithHooks hooks
+main = if os == "windows"
+ then defaultMain
+ else let hooks = autoconfUserHooks { runTests = runTestScript } in defaultMainWithHooks hooks
 
 withCurrentDirectory :: FilePath -> IO a -> IO a
 withCurrentDirectory path f = do
