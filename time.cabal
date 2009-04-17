@@ -65,8 +65,12 @@ library
         Data.Time.LocalTime.LocalTime,
         Data.Time.Format.Parse
     include-dirs:    include
-    install-includes:
-        HsTime.h
-        HsTimeConfig.h
+    if os(windows)
+        install-includes:
+            HsTime.h
+    else
+        install-includes:
+            HsTime.h
+            HsTimeConfig.h
 }
 

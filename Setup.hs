@@ -10,9 +10,10 @@ import System.Directory
 import System.Info
 
 main :: IO ()
-main = if os == "windows"
- then defaultMain
- else let hooks = autoconfUserHooks { runTests = runTestScript } in defaultMainWithHooks hooks
+main = case os of
+    "windows" -> defaultMain
+    "mingw32" -> defaultMain
+    _ -> let hooks = autoconfUserHooks { runTests = runTestScript } in defaultMainWithHooks hooks
 
 withCurrentDirectory :: FilePath -> IO a -> IO a
 withCurrentDirectory path f = do

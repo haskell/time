@@ -2,6 +2,7 @@
 #define __HSTIME_H__
 
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(_WIN32)
+#define HAVE_TIME_H 1
 #else
 
 #include "HsTimeConfig.h"
@@ -11,10 +12,10 @@
 #undef PACKAGE_STRING
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
+#endif
 
 #if HAVE_TIME_H
 #include <time.h>
-#endif
 #endif
 
 long int get_current_timezone_seconds (time_t,int* pdst,char const* * pname);
