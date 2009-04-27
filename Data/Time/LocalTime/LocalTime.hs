@@ -16,6 +16,7 @@ import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar
 import Data.Time.Clock
+import Data.Typeable
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
@@ -25,6 +26,9 @@ data LocalTime = LocalTime {
 	localDay    :: Day,
 	localTimeOfDay   :: TimeOfDay
 } deriving (Eq,Ord)
+
+instance Typeable LocalTime where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.LocalTime.LocalTime") []
 
 instance Show LocalTime where
 	show (LocalTime d t) = (showGregorian d) ++ " " ++ (show t)
@@ -55,6 +59,9 @@ data ZonedTime = ZonedTime {
 	zonedTimeToLocalTime :: LocalTime,
 	zonedTimeZone :: TimeZone
 }
+
+instance Typeable ZonedTime where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.LocalTime.ZonedTime") []
 
 utcToZonedTime :: TimeZone -> UTCTime -> ZonedTime
 utcToZonedTime zone time = ZonedTime (utcToLocalTime zone time) zone

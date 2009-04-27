@@ -12,15 +12,22 @@ module Data.Time.Clock.Scale
 
 import Data.Ratio ((%))
 import Data.Fixed
+import Data.Typeable
 
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
 -- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.
 newtype UniversalTime = ModJulianDate {getModJulianDate :: Rational} deriving (Eq,Ord)
 
+instance Typeable UniversalTime where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.Scale.UniversalTime") []
+
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions will treat it as seconds.
 -- It has a precision of 10^-12 s.
 newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord)
+
+instance Typeable DiffTime where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.Scale.DiffTime") []
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum DiffTime where

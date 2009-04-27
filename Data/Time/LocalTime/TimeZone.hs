@@ -17,6 +17,7 @@ import Data.Time.Clock.POSIX
 
 import Foreign
 import Foreign.C
+import Data.Typeable
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone {
@@ -27,6 +28,9 @@ data TimeZone = TimeZone {
 	-- | The name of the zone, typically a three- or four-letter acronym.
 	timeZoneName :: String
 } deriving (Eq,Ord)
+
+instance Typeable TimeZone where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.TimeZone.TimeZone") []
 
 -- | Create a nameless non-summer timezone for this number of minutes
 minutesToTimeZone :: Int -> TimeZone

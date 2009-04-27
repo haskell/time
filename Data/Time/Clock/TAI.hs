@@ -16,10 +16,14 @@ module Data.Time.Clock.TAI
 import Data.Time.LocalTime
 import Data.Time.Calendar.Days
 import Data.Time.Clock
+import Data.Typeable
 import Data.Fixed
 
 -- | AbsoluteTime is TAI, time as measured by a clock.
 newtype AbsoluteTime = MkAbsoluteTime {unAbsoluteTime :: DiffTime} deriving (Eq,Ord)
+
+instance Typeable AbsoluteTime where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.TAI.AbsoluteTime") []
 
 instance Show AbsoluteTime where
 	show t = show (utcToLocalTime utc (taiToUTCTime (const 0) t)) ++ " TAI" -- ugly, but standard apparently

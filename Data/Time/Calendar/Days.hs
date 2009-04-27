@@ -6,9 +6,13 @@ module Data.Time.Calendar.Days
 ) where
 
 import Data.Ix
+import Data.Typeable
 
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
 newtype Day = ModifiedJulianDay {toModifiedJulianDay :: Integer} deriving (Eq,Ord)
+
+instance Typeable Day where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Calendar.Days.Day") []
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum Day where

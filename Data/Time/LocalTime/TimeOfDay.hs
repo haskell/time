@@ -11,6 +11,7 @@ module Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
 import Data.Time.Clock
+import Data.Typeable
 import Data.Fixed
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
@@ -23,6 +24,9 @@ data TimeOfDay = TimeOfDay {
 	-- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
 	todSec     :: Pico
 } deriving (Eq,Ord)
+
+instance Typeable TimeOfDay where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.TimeOfDay.TimeOfDay") []
 
 -- | Hour zero
 midnight :: TimeOfDay

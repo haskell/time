@@ -16,6 +16,7 @@ module Data.Time.Clock.UTC
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Scale
 import Data.Fixed
+import Data.Typeable
 
 -- | This is the simplest representation of UTC.
 -- It consists of the day number, and a time offset from midnight.
@@ -26,6 +27,9 @@ data UTCTime = UTCTime {
 	-- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
 	utctDayTime :: DiffTime
 }
+
+instance Typeable UTCTime where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.UTC.UTCTime") []
 
 instance Eq UTCTime where
 	(UTCTime da ta) == (UTCTime db tb) = (da == db) && (ta == tb)
@@ -42,6 +46,9 @@ instance Ord UTCTime where
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
 newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord)
+
+instance Typeable NominalDiffTime where
+	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.UTC.NominalDiffTime") []
 
 instance Enum NominalDiffTime where
 	succ (MkNominalDiffTime a) = MkNominalDiffTime (succ a)
