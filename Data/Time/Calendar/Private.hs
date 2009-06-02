@@ -49,3 +49,8 @@ clip :: (Ord t) => t -> t -> t -> t
 clip a _ x | x < a = a
 clip _ b x | x > b = b
 clip _ _ x = x
+
+clipValid :: (Ord t) => t -> t -> t -> Maybe t
+clipValid a _ x | x < a = Nothing
+clipValid _ b x | x > b = Nothing
+clipValid _ _ x = Just x

@@ -33,6 +33,20 @@ fromWeekDate y w d = ModifiedJulianDay (k - (mod k 7) + (toInteger (((clip 1 (if
 			(_,53,_) -> True
 			_ -> False
 
+-- | convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
+-- Invalid week and day values will return Nothing.
+fromWeekDateValid :: Integer -> Int -> Int -> Maybe Day
+fromWeekDateValid y w d = do
+	d' <- clipValid 1 7 d
+	let
+		longYear = case toWeekDate (fromOrdinalDate y 365) of
+			(_,53,_) -> True
+			_ -> False
+	w' <- clipValid 1 (if longYear then 53 else 52) w
+	let
+		k = toModifiedJulianDay (fromOrdinalDate y 6)
+	return (ModifiedJulianDay (k - (mod k 7) + (toInteger ((w' * 7) + d')) - 10))
+
 -- | show in ISO 8601 Week Date format as yyyy-Www-dd (e.g. \"2006-W46-3\").
 showWeekDate :: Day -> String
 showWeekDate date = (show4 y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where

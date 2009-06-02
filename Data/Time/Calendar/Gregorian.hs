@@ -4,7 +4,7 @@
 module Data.Time.Calendar.Gregorian
 (
 	-- * Gregorian calendar
-	toGregorian,fromGregorian,showGregorian,gregorianMonthLength,
+	toGregorian,fromGregorian,fromGregorianValid,showGregorian,gregorianMonthLength,
 
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
@@ -30,6 +30,13 @@ toGregorian date = (year,month,day) where
 -- Invalid values will be clipped to the correct range, month first, then day.
 fromGregorian :: Integer -> Int -> Int -> Day
 fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isLeapYear year) month day)
+
+-- | convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- Invalid values will return Nothing
+fromGregorianValid :: Integer -> Int -> Int -> Maybe Day
+fromGregorianValid year month day = do
+	doy <- monthAndDayToDayOfYearValid (isLeapYear year) month day
+	fromOrdinalDateValid year doy
 
 -- | show in ISO 8601 format (yyyy-mm-dd)
 showGregorian :: Day -> String

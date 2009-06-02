@@ -26,6 +26,16 @@ fromJulianYearAndDay year day = ModifiedJulianDay mjd where
 	y = year - 1
 	mjd = (fromIntegral (clip 1 (if isJulianLeapYear year then 366 else 365) day)) + (365 * y) + (div y 4) - 678578
 
+-- | convert from proleptic Julian year and day format.
+-- Invalid day numbers will return Nothing
+fromJulianYearAndDayValid :: Integer -> Int -> Maybe Day
+fromJulianYearAndDayValid year day = do
+	day' <- clipValid 1 (if isJulianLeapYear year then 366 else 365) day
+	let
+		y = year - 1
+		mjd = (fromIntegral day') + (365 * y) + (div y 4) - 678578
+	return (ModifiedJulianDay mjd)
+
 -- | show in proleptic Julian year and day format (yyyy-ddd)
 showJulianYearAndDay :: Day -> String
 showJulianYearAndDay date = (show4 y) ++ "-" ++ (show3 d) where

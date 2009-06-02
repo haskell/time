@@ -2,7 +2,7 @@ module Data.Time.Calendar.Julian
 (
 	module Data.Time.Calendar.JulianYearDay,
 
-	toJulian,fromJulian,showJulian,julianMonthLength,
+	toJulian,fromJulian,fromJulianValid,showJulian,julianMonthLength,
 
 	-- calendrical arithmetic
     -- e.g. "one month after March 31st"
@@ -25,6 +25,13 @@ toJulian date = (year,month,day) where
 -- Invalid values will be clipped to the correct range, month first, then day.
 fromJulian :: Integer -> Int -> Int -> Day
 fromJulian year month day = fromJulianYearAndDay year (monthAndDayToDayOfYear (isJulianLeapYear year) month day)
+
+-- | convert from proleptic Julian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- Invalid values will return Nothing.
+fromJulianValid :: Integer -> Int -> Int -> Maybe Day
+fromJulianValid year month day = do
+	doy <- monthAndDayToDayOfYearValid (isJulianLeapYear year) month day
+	fromJulianYearAndDayValid year doy
 
 -- | show in ISO 8601 format (yyyy-mm-dd)
 showJulian :: Day -> String

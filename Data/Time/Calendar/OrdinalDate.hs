@@ -26,6 +26,16 @@ fromOrdinalDate year day = ModifiedJulianDay mjd where
 	y = year - 1
 	mjd = (fromIntegral (clip 1 (if isLeapYear year then 366 else 365) day)) + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678576
 
+-- | convert from ISO 8601 Ordinal Date format.
+-- Invalid day numbers return Nothing
+fromOrdinalDateValid :: Integer -> Int -> Maybe Day
+fromOrdinalDateValid year day = do
+	day' <- clipValid 1 (if isLeapYear year then 366 else 365) day
+	let
+		y = year - 1
+		mjd = (fromIntegral day') + (365 * y) + (div y 4) - (div y 100) + (div y 400) - 678576
+	return (ModifiedJulianDay mjd)
+
 -- | show in ISO 8601 Ordinal Date format (yyyy-ddd)
 showOrdinalDate :: Day -> String
 showOrdinalDate date = (show4 y) ++ "-" ++ (show3 d) where
