@@ -31,11 +31,11 @@ library
 {
     build-depends:    base >= 2
     if flag(split-base)
-        Build-Depends: base >= 3, old-locale
+        build-depends: base >= 3, old-locale
     else
-        Build-Depends: base < 3
+        build-depends: base < 3
     if os(windows)
-        Build-Depends: Win32
+        build-depends: Win32
     exposed-modules:
         Data.Time.Calendar,
         Data.Time.Calendar.MonthDay,
