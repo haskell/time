@@ -79,6 +79,21 @@ fromMondayStartWeek y w d = ModifiedJulianDay (firstDay + yd)
           -- 0-based year day of first monday of the year
           firstMonday = (5 - firstDay) `mod` 7
 
+fromMondayStartWeekValid :: Integer -- ^ Year.
+                    -> Int     -- ^ Monday-starting week number.
+                    -> Int     -- ^ Day of week. 
+                               -- Monday is 1, Sunday is 7 (as \"%u\" in 'Data.Time.Format.formatTime').
+                    -> Maybe Day
+fromMondayStartWeekValid year w d = do
+	d' <- clipValid 1 7 d
+	-- first day of the year
+	let firstDay = toModifiedJulianDay (fromOrdinalDate year 1)
+	-- 0-based year day of first monday of the year
+	let firstMonday = (5 - firstDay) `mod` 7
+	let yd = firstMonday + 7 * toInteger (w-1) + toInteger d'
+	yd' <- clipValid 1 (if isLeapYear year then 366 else 365) yd
+	return (ModifiedJulianDay (firstDay - 1 + yd'))
+
 -- | The inverse of 'sundayStartWeek'. Get a 'Day' given the year and
 -- the number of the day of a Sunday-starting week.
 -- The first Sunday is the first day of week 1, any earlier days in the 
@@ -94,3 +109,19 @@ fromSundayStartWeek y w d = ModifiedJulianDay (firstDay + yd)
           firstDay = toModifiedJulianDay (fromOrdinalDate y 1)
           -- 0-based year day of first sunday of the year
           firstSunday = (4 - firstDay) `mod` 7
+
+fromSundayStartWeekValid :: Integer -- ^ Year.
+                    -> Int     -- ^ Monday-starting week number.
+                    -> Int     -- ^ Day of week. 
+                               -- Monday is 1, Sunday is 7 (as \"%u\" in 'Data.Time.Format.formatTime').
+                    -> Maybe Day
+fromSundayStartWeekValid year w d = do
+	d' <- clipValid 1 7 d
+	-- first day of the year
+	let firstDay = toModifiedJulianDay (fromOrdinalDate year 1)
+	-- 0-based year day of first sunday of the year
+	let firstMonday = (4 - firstDay) `mod` 7
+	let yd = firstMonday + 7 * toInteger (w-1) + toInteger d'
+	yd' <- clipValid 1 (if isLeapYear year then 366 else 365) yd
+	return (ModifiedJulianDay (firstDay - 1 + yd'))
+

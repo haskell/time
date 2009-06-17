@@ -2,7 +2,7 @@
 module Data.Time.LocalTime.TimeOfDay
 (
 	-- * Time of day
-	TimeOfDay(..),midnight,midday,
+	TimeOfDay(..),midnight,midday,makeTimeOfDayValid,
 	utcToLocalTimeOfDay,localToUTCTimeOfDay,
 	timeToTimeOfDay,timeOfDayToTime,
 	dayFractionToTimeOfDay,timeOfDayToDayFraction
@@ -38,6 +38,13 @@ midday = TimeOfDay 12 0 0
 
 instance Show TimeOfDay where
 	show (TimeOfDay h m s) = (show2 h) ++ ":" ++ (show2 m) ++ ":" ++ (show2Fixed s)
+
+makeTimeOfDayValid :: Int -> Int -> Pico -> Maybe TimeOfDay
+makeTimeOfDayValid h m s = do
+	clipValid 0 23 h
+	clipValid 0 59 m
+	clipValid 0 60.999999999999 s
+	return (TimeOfDay h m s)
 
 -- | Convert a ToD in UTC to a ToD in some timezone, together with a day adjustment.
 utcToLocalTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
