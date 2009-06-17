@@ -25,15 +25,9 @@ extra-tmp-files:
     autom4te.cache
     include/HsTimeConfig.h
 
-flag split-base
-
 library
 {
-    build-depends:    base >= 2
-    if flag(split-base)
-        build-depends: base >= 3, old-locale
-    else
-        build-depends: base < 3
+    build-depends: base == 4.*, old-locale
     if os(windows)
         build-depends: Win32
     exposed-modules:
