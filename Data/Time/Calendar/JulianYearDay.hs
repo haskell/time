@@ -38,7 +38,7 @@ fromJulianYearAndDayValid year day = do
 
 -- | show in proleptic Julian year and day format (yyyy-ddd)
 showJulianYearAndDay :: Day -> String
-showJulianYearAndDay date = (show4 y) ++ "-" ++ (show3 d) where
+showJulianYearAndDay date = (show4 (Just '0') y) ++ "-" ++ (show3 (Just '0') d) where
 	(y,d) = toJulianYearAndDay date
 
 -- | Is this year a leap year according to the proleptic Julian calendar?

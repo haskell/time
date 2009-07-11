@@ -37,7 +37,7 @@ midday :: TimeOfDay
 midday = TimeOfDay 12 0 0
 
 instance Show TimeOfDay where
-	show (TimeOfDay h m s) = (show2 h) ++ ":" ++ (show2 m) ++ ":" ++ (show2Fixed s)
+	show (TimeOfDay h m s) = (show2 (Just '0') h) ++ ":" ++ (show2 (Just '0') m) ++ ":" ++ (show2Fixed (Just '0') s)
 
 makeTimeOfDayValid :: Int -> Int -> Pico -> Maybe TimeOfDay
 makeTimeOfDayValid h m s = do

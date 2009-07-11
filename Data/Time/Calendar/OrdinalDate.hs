@@ -38,7 +38,7 @@ fromOrdinalDateValid year day = do
 
 -- | show in ISO 8601 Ordinal Date format (yyyy-ddd)
 showOrdinalDate :: Day -> String
-showOrdinalDate date = (show4 y) ++ "-" ++ (show3 d) where
+showOrdinalDate date = (show4 (Just '0') y) ++ "-" ++ (show3 (Just '0') d) where
 	(y,d) = toOrdinalDate date
 
 -- | Is this year a leap year according to the proleptic Gregorian calendar?

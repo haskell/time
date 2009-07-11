@@ -3,40 +3,38 @@ module Data.Time.Calendar.Private where
 
 import Data.Fixed
 
-show2 :: (Num t,Ord t,Show t) => t -> String
-show2 i | i < 0 = '-':(show2 (negate i))
-show2 i = let
+type NumericPadOption = Maybe Char
+
+pad1 :: NumericPadOption -> String -> String
+pad1 (Just c) s = c:s
+pad1 _ s = s
+
+show2Fixed :: NumericPadOption -> Pico -> String
+show2Fixed opt x | x < 10 = pad1 opt (showFixed True x)
+show2Fixed _ x = showFixed True x
+
+show2 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
+show2 opt i | i < 0 = '-':(show2 opt (negate i))
+show2 opt i = let
 	s = show i in
   case s of
-	[_] -> '0':s
+	[_] -> pad1 opt s
 	_ -> s
 
-show2Space :: (Num t,Ord t,Show t) => t -> String
-show2Space i | i < 0 = '-':(show2Space (negate i))
-show2Space i = let
-	s = show i in
+show3 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
+show3 opt i | i < 0 = '-':(show3 opt (negate i))
+show3 opt i = let
+	s = show2 opt i in
   case s of
-	[_] -> ' ':s
+	[_,_] -> pad1 opt s
 	_ -> s
 
-show2Fixed :: Pico -> String
-show2Fixed x | x < 10 = '0':(showFixed True x)
-show2Fixed x = showFixed True x
-
-show3 :: (Num t,Ord t,Show t) => t -> String
-show3 i | i < 0 = '-':(show3 (negate i))
-show3 i = let
-	s = show2 i in
+show4 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
+show4 opt i | i < 0 = '-':(show4 opt (negate i))
+show4 opt i = let
+	s = show3 opt i in
   case s of
-	[_,_] -> '0':s
-	_ -> s
-
-show4 :: (Num t,Ord t,Show t) => t -> String
-show4 i | i < 0 = '-':(show4 (negate i))
-show4 i = let
-	s = show3 i in
-  case s of
-	[_,_,_] -> '0':s
+	[_,_,_] -> pad1 opt s
 	_ -> s
 
 mod100 :: (Integral i) => i -> i

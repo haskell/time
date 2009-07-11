@@ -4,7 +4,7 @@
 module Data.Time.LocalTime.TimeZone
 (
 	-- * Time zones
-	TimeZone(..),timeZoneOffsetString,minutesToTimeZone,hoursToTimeZone,utc,
+	TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',minutesToTimeZone,hoursToTimeZone,utc,
 
 	-- getting the locale time zone
 	getTimeZone,getCurrentTimeZone
@@ -40,13 +40,17 @@ minutesToTimeZone m = TimeZone m False ""
 hoursToTimeZone :: Int -> TimeZone
 hoursToTimeZone i = minutesToTimeZone (60 * i)
 
-showT :: Int -> String
-showT t = (show2 (div t 60)) ++ (show2 (mod t 60))
+showT :: NumericPadOption -> Int -> String
+showT opt t = show4 opt ((div t 60) * 100 + (mod t 60))
+
+-- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like %z in formatTime), with arbitrary padding
+timeZoneOffsetString' :: NumericPadOption -> TimeZone -> String
+timeZoneOffsetString' opt (TimeZone t _ _) | t < 0 = '-':(showT opt (negate t))
+timeZoneOffsetString' opt (TimeZone t _ _) = '+':(showT opt t)
 
 -- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like %z in formatTime)
 timeZoneOffsetString :: TimeZone -> String
-timeZoneOffsetString (TimeZone t _ _) | t < 0 = '-':(showT (negate t))
-timeZoneOffsetString (TimeZone t _ _) = '+':(showT t)
+timeZoneOffsetString = timeZoneOffsetString' (Just '0')
 
 instance Show TimeZone where
 	show zone@(TimeZone _ _ "") = timeZoneOffsetString zone

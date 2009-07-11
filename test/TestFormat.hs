@@ -4,6 +4,7 @@ module Main where
 
 import Data.Time
 import Data.Time.Clock.POSIX
+import Data.Char
 
 import System.Locale
 import Foreign
@@ -65,12 +66,12 @@ times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 	(fmap getYearP1 [1980..2000]) ++ (fmap getYearP2 [1980..2000]) ++ (fmap getYearP3 [1980..2000]) ++ (fmap getYearP4 [1980..2000])
 
-compareFormat :: String -> TimeZone -> UTCTime -> IO ()
-compareFormat fmt zone time = let
+compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> IO ()
+compareFormat modUnix fmt zone time = let
 		ctime = utcToZonedTime zone time
 		haskellText = formatTime locale fmt ctime
 	in do
-		unixText <- unixFormatTime fmt zone time
+		unixText <- fmap modUnix (unixFormatTime fmt zone time)
 		if haskellText == unixText then return () else
 			putStrLn ("Mismatch with " ++ fmt ++ " for " ++ (show ctime) ++ ": UNIX=\"" ++ unixText ++ "\", TimeLib=\"" ++ haskellText ++ "\".")
 
@@ -81,8 +82,20 @@ compareFormat fmt zone time = let
 chars :: [Char]
 chars = "aAbBcCdDeFgGhHIjklmMnprRStTuUVwWxXyYzZ%"
 
+-- as found in "man strftime" on a glibc system. '#' is different, though
+modifiers :: [Char]
+modifiers = "_-0^"
+
 formats :: [String]
 formats =  ["%G-W%V-%u","%U-%w","%W-%u"] ++ (fmap (\char -> '%':char:[]) chars)
+ ++ (concat (fmap (\char -> fmap (\modifier -> '%':modifier:char:[]) modifiers) chars))
+
+hashformats :: [String]
+hashformats =  (fmap (\char -> '%':'#':char:[]) chars)
+
 
 main :: IO ()
-main = mapM_ (\fmt -> mapM_ (\time -> mapM_ (\zone -> compareFormat fmt zone time) zones) times) formats
+main = 
+	mapM_ (\fmt -> mapM_ (\time -> mapM_ (\zone -> compareFormat id fmt zone time) zones) times) formats >>
+	mapM_ (\fmt -> mapM_ (\time -> mapM_ (\zone -> compareFormat (fmap toLower) fmt zone time) zones) times) hashformats
+
