@@ -10,7 +10,7 @@ synopsis:       A time library
 description:    A time library
 category:       System
 build-type:  Custom
-cabal-version:   >=1.2
+cabal-version:   >=1.6
 x-follows-version-policy:
 
 extra-source-files:
