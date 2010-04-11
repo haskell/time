@@ -1,5 +1,5 @@
 name:           time
-version:        1.1.4
+version:        1.2
 stability:      stable
 license:        BSD3
 license-file:   LICENSE
@@ -29,6 +29,13 @@ library
 {
     build-depends: base == 4.*, old-locale
     ghc-options: -Wall
+    if impl(ghc)
+        extensions: Rank2Types DeriveDataTypeable
+        cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable
+    else
+        if impl(hugs)
+            extensions: Rank2Types
+            cpp-options: -DLANGUAGE_Rank2Types
     if os(windows)
         build-depends: Win32
     exposed-modules:

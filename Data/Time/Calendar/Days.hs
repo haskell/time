@@ -7,9 +7,20 @@ module Data.Time.Calendar.Days
 
 import Data.Ix
 import Data.Typeable
+#ifdef LANGUAGE_DeriveDataTypeable
+#ifdef LANGUAGE_Rank2Types
+import Data.Data
+#endif
+#endif
 
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
-newtype Day = ModifiedJulianDay {toModifiedJulianDay :: Integer} deriving (Eq,Ord)
+newtype Day = ModifiedJulianDay {toModifiedJulianDay :: Integer} deriving (Eq,Ord
+#ifdef LANGUAGE_DeriveDataTypeable
+#ifdef LANGUAGE_Rank2Types
+    ,Data
+#endif
+#endif
+    )
 
 instance Typeable Day where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Calendar.Days.Day") []

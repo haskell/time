@@ -4,7 +4,9 @@
 module Data.Time.Format.Parse 
     (
     -- * UNIX-style parsing
+#ifdef LANGUAGE_Rank2Types
     parseTime, readTime, readsTime,
+#endif
     ParseTime(..)
     ) where
 
@@ -15,16 +17,20 @@ import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.LocalTime
 
+#ifdef LANGUAGE_Rank2Types
 import Control.Monad
+#endif
 import Data.Char
 import Data.Fixed
 import Data.List
 import Data.Maybe
 import Data.Ratio
 import System.Locale
+#ifdef LANGUAGE_Rank2Types
 import Text.ParserCombinators.ReadP hiding (char, string)
+#endif
 
-
+#ifdef LANGUAGE_Rank2Types
 -- | Case-insensitive version of 'Text.ParserCombinators.ReadP.char'.
 char :: Char -> ReadP Char
 char c = satisfy (\x -> toUpper c == toUpper x)
@@ -35,6 +41,7 @@ string this = do s <- look; scan this s
     scan []     _                               = do return this
     scan (x:xs) (y:ys) | toUpper x == toUpper y = do _ <- get; scan xs ys
     scan _      _                               = do pfail
+#endif
 -- | Convert string to upper case.
 up :: String -> String
 up = map toUpper
@@ -52,6 +59,7 @@ class ParseTime t where
                                  -- corresponding part of the input.
               -> t
 
+#ifdef LANGUAGE_Rank2Types
 -- | Parses a time value given a format string. Supports the same %-codes as
 -- 'formatTime'. Leading and trailing whitespace is accepted. Case is not
 -- significant. Some variations in the input are accepted:
@@ -179,6 +187,7 @@ parseValue l c =
                    optional (char ':')
                    m <- digits 2
                    return (s:h++m)
+#endif
 
 --
 -- * Instances for the time package types
@@ -319,6 +328,7 @@ instance ParseTime UTCTime where
 
 -- * Read instances for time package types
 
+#ifdef LANGUAGE_Rank2Types
 instance Read Day where
     readsPrec _ = readParen False $ readsTime defaultTimeLocale "%Y-%m-%d"
 
@@ -337,6 +347,7 @@ instance Read ZonedTime where
 
 instance Read UTCTime where
     readsPrec n s = [ (zonedTimeToUTC t, r) | (t,r) <- readsPrec n s ]
+#endif
 
 readTzOffset :: String -> Int
 readTzOffset str =

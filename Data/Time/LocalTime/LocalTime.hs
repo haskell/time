@@ -17,6 +17,11 @@ import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar
 import Data.Time.Clock
 import Data.Typeable
+#ifdef LANGUAGE_DeriveDataTypeable
+#ifdef LANGUAGE_Rank2Types
+import Data.Data
+#endif
+#endif
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
@@ -25,7 +30,13 @@ import Data.Typeable
 data LocalTime = LocalTime {
 	localDay    :: Day,
 	localTimeOfDay   :: TimeOfDay
-} deriving (Eq,Ord)
+} deriving (Eq,Ord
+#ifdef LANGUAGE_DeriveDataTypeable
+#ifdef LANGUAGE_Rank2Types
+    ,Data
+#endif
+#endif
+    )
 
 instance Typeable LocalTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.LocalTime.LocalTime") []
@@ -59,6 +70,11 @@ data ZonedTime = ZonedTime {
 	zonedTimeToLocalTime :: LocalTime,
 	zonedTimeZone :: TimeZone
 }
+#ifdef LANGUAGE_DeriveDataTypeable
+#ifdef LANGUAGE_Rank2Types
+    deriving (Data)
+#endif
+#endif
 
 instance Typeable ZonedTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.LocalTime.ZonedTime") []

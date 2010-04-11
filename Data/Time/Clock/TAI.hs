@@ -18,9 +18,20 @@ import Data.Time.Calendar.Days
 import Data.Time.Clock
 import Data.Typeable
 import Data.Fixed
+#ifdef LANGUAGE_DeriveDataTypeable
+#ifdef LANGUAGE_Rank2Types
+import Data.Data
+#endif
+#endif
 
 -- | AbsoluteTime is TAI, time as measured by a clock.
-newtype AbsoluteTime = MkAbsoluteTime {unAbsoluteTime :: DiffTime} deriving (Eq,Ord)
+newtype AbsoluteTime = MkAbsoluteTime {unAbsoluteTime :: DiffTime} deriving (Eq,Ord
+#ifdef LANGUAGE_DeriveDataTypeable
+#ifdef LANGUAGE_Rank2Types
+    ,Data
+#endif
+#endif
+    )
 
 instance Typeable AbsoluteTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.TAI.AbsoluteTime") []
