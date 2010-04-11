@@ -33,7 +33,7 @@ string :: String -> ReadP String
 string this = do s <- look; scan this s
   where
     scan []     _                               = do return this
-    scan (x:xs) (y:ys) | toUpper x == toUpper y = do get; scan xs ys
+    scan (x:xs) (y:ys) | toUpper x == toUpper y = do _ <- get; scan xs ys
     scan _      _                               = do pfail
 -- | Convert string to upper case.
 up :: String -> String

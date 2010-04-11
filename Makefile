@@ -9,7 +9,7 @@ configure:
 	cabal configure --enable-library-profiling --enable-executable-profiling
 
 build: configure
-	cabal build --ghc-options="-Wall -Werror"
+	cabal build --ghc-options=-Werror
 
 test: build
 	cabal test

@@ -41,9 +41,9 @@ instance Show TimeOfDay where
 
 makeTimeOfDayValid :: Int -> Int -> Pico -> Maybe TimeOfDay
 makeTimeOfDayValid h m s = do
-	clipValid 0 23 h
-	clipValid 0 59 m
-	clipValid 0 60.999999999999 s
+	_ <- clipValid 0 23 h
+	_ <- clipValid 0 59 m
+	_ <- clipValid 0 60.999999999999 s
 	return (TimeOfDay h m s)
 
 -- | Convert a ToD in UTC to a ToD in some timezone, together with a day adjustment.

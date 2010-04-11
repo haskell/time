@@ -28,6 +28,7 @@ extra-tmp-files:
 library
 {
     build-depends: base == 4.*, old-locale
+    ghc-options: -Wall
     if os(windows)
         build-depends: Win32
     exposed-modules:
