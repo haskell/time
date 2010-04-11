@@ -1,5 +1,5 @@
 name:           time
-version:        1.2
+version:        1.2.0.1
 stability:      stable
 license:        BSD3
 license-file:   LICENSE
@@ -17,6 +17,7 @@ extra-source-files:
     aclocal.m4
     configure.ac
     configure
+    include/HsConfigure.h
     include/HsTime.h
     include/HsTimeConfig.h.in
 extra-tmp-files:
