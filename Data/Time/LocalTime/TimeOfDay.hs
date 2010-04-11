@@ -1,3 +1,5 @@
+{-# OPTIONS -fno-warn-unused-imports #-}
+#include "HsConfigure.h"
 -- #hide
 module Data.Time.LocalTime.TimeOfDay
 (
@@ -13,10 +15,8 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock
 import Data.Typeable
 import Data.Fixed
-#ifdef LANGUAGE_DeriveDataTypeable
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 #endif
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
@@ -29,9 +29,11 @@ data TimeOfDay = TimeOfDay {
 	-- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
 	todSec     :: Pico
 } deriving (Eq,Ord
-#ifdef LANGUAGE_DeriveDataTypeable
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_DeriveDataTypeable
+#if LANGUAGE_Rank2Types
+#if HAS_DataPico
     ,Data
+#endif
 #endif
 #endif
     )

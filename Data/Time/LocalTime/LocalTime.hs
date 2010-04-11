@@ -1,4 +1,5 @@
-{-# OPTIONS -fno-warn-orphans #-}
+{-# OPTIONS -fno-warn-orphans -fno-warn-unused-imports #-}
+#include "HsConfigure.h"
 
 -- #hide
 module Data.Time.LocalTime.LocalTime
@@ -17,10 +18,8 @@ import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar
 import Data.Time.Clock
 import Data.Typeable
-#ifdef LANGUAGE_DeriveDataTypeable
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 #endif
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
@@ -31,9 +30,11 @@ data LocalTime = LocalTime {
 	localDay    :: Day,
 	localTimeOfDay   :: TimeOfDay
 } deriving (Eq,Ord
-#ifdef LANGUAGE_DeriveDataTypeable
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_DeriveDataTypeable
+#if LANGUAGE_Rank2Types
+#if HAS_DataPico
     ,Data
+#endif
 #endif
 #endif
     )
@@ -70,9 +71,11 @@ data ZonedTime = ZonedTime {
 	zonedTimeToLocalTime :: LocalTime,
 	zonedTimeZone :: TimeZone
 }
-#ifdef LANGUAGE_DeriveDataTypeable
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_DeriveDataTypeable
+#if LANGUAGE_Rank2Types
+#if HAS_DataPico
     deriving (Data)
+#endif
 #endif
 #endif
 

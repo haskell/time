@@ -1,10 +1,11 @@
 {-# OPTIONS -fno-warn-orphans #-}
+#include "HsConfigure.h"
 
 -- #hide
 module Data.Time.Format.Parse 
     (
     -- * UNIX-style parsing
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
     parseTime, readTime, readsTime,
 #endif
     ParseTime(..)
@@ -17,7 +18,7 @@ import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.LocalTime
 
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
 import Control.Monad
 #endif
 import Data.Char
@@ -26,11 +27,11 @@ import Data.List
 import Data.Maybe
 import Data.Ratio
 import System.Locale
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
 import Text.ParserCombinators.ReadP hiding (char, string)
 #endif
 
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
 -- | Case-insensitive version of 'Text.ParserCombinators.ReadP.char'.
 char :: Char -> ReadP Char
 char c = satisfy (\x -> toUpper c == toUpper x)
@@ -59,7 +60,7 @@ class ParseTime t where
                                  -- corresponding part of the input.
               -> t
 
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
 -- | Parses a time value given a format string. Supports the same %-codes as
 -- 'formatTime'. Leading and trailing whitespace is accepted. Case is not
 -- significant. Some variations in the input are accepted:
@@ -328,7 +329,7 @@ instance ParseTime UTCTime where
 
 -- * Read instances for time package types
 
-#ifdef LANGUAGE_Rank2Types
+#if LANGUAGE_Rank2Types
 instance Read Day where
     readsPrec _ = readParen False $ readsTime defaultTimeLocale "%Y-%m-%d"
 

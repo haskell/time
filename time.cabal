@@ -30,8 +30,8 @@ library
     build-depends: base == 4.*, old-locale
     ghc-options: -Wall
     if impl(ghc)
-        extensions: Rank2Types DeriveDataTypeable
-        cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable
+        extensions: Rank2Types DeriveDataTypeable StandaloneDeriving
+        cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
     else
         if impl(hugs)
             extensions: Rank2Types
