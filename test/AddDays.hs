@@ -3,7 +3,6 @@
 module Main where
 
 import Data.Time.Calendar
-import Control.Monad
 
 days ::[Day]
 days =

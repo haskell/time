@@ -11,7 +11,7 @@ configure:
 build: configure
 	cabal build --ghc-options=-Werror
 
-test: build
+test: install
 	cabal test
 
 haddock: configure

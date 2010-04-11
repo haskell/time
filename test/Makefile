@@ -2,9 +2,7 @@ GHC = ghc
 GHCFLAGS = -package time
 
 default:
-	cd ..; runhaskell Setup.hs register --user --inplace
 	make CurrentTime.run ShowDST.run test
-	cd ..; runhaskell Setup.hs unregister --user
 
 TestMonthDay: TestMonthDay.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
@@ -66,7 +64,7 @@ test:	\
 	TestFormat.diff0	\
 	TestParseDAT.diff	\
 	TestEaster.diff	\
-	TestParseTime.run \
+#	TestParseTime.run \
 	UseCases.o
 
 clean:
