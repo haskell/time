@@ -1,5 +1,5 @@
 name:           time
-version:        1.2.0.1
+version:        1.2.0.2
 stability:      stable
 license:        BSD3
 license-file:   LICENSE
@@ -20,6 +20,13 @@ extra-source-files:
     include/HsConfigure.h
     include/HsTime.h
     include/HsTimeConfig.h.in
+    test/Makefile
+    test/*.hs
+    test/*.lhs
+    test/*.ref
+    test/*.dat
+    test/*.c
+    test/*.h
 extra-tmp-files:
     config.log
     config.status
