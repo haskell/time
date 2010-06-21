@@ -80,8 +80,18 @@ testUT1 = do
 	putStrLn (show (ut1ToLocalTime poslong (ModJulianDate 51604.0)))
 	putStrLn (show (ut1ToLocalTime poslong (ModJulianDate 51604.5)))
 
+testTimeOfDayToDayFraction :: IO ()
+testTimeOfDayToDayFraction = do
+	putStrLn ""
+	let f = dayFractionToTimeOfDay . timeOfDayToDayFraction
+	putStrLn (show (f (TimeOfDay 12 34 56.789)))
+	putStrLn (show (f (TimeOfDay 12 34 56.789123)))
+	putStrLn (show (f (TimeOfDay 12 34 56.789123456)))
+	putStrLn (show (f (TimeOfDay 12 34 56.789123456789)))
+
 main :: IO ()
 main = do
 	testCal
 	testUTC
 	testUT1
+	testTimeOfDayToDayFraction

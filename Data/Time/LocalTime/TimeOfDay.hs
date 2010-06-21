@@ -93,4 +93,4 @@ dayFractionToTimeOfDay df = timeToTimeOfDay (realToFrac (df * 86400))
 
 -- | Get the fraction of a day since midnight given a TimeOfDay.
 timeOfDayToDayFraction :: TimeOfDay -> Rational
-timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod / posixDayLength)
+timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod) / realToFrac posixDayLength
