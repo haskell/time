@@ -66,6 +66,7 @@ test:	\
 	TestEaster.diff	\
 #	TestParseTime.run \
 	UseCases.o
+	@echo "Success!"
 
 clean:
 	rm -rf TestMonthDay ConvertBack TestCalendars TestTime LongWeekYears ClipDates	\
