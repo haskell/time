@@ -1,4 +1,4 @@
-default: build
+default: install
 
 # Building
 

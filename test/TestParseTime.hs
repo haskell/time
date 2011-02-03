@@ -8,7 +8,9 @@ import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.POSIX
 import System.Locale
+import System.Exit
 import Test.QuickCheck
+import Test.QuickCheck.Batch
 
 
 ntest :: Int
@@ -16,19 +18,35 @@ ntest = 1000
 
 main :: IO ()
 main = do putStrLn "Should work:"
-          checkAll properties
+          good <- checkAll properties
           putStrLn "Known failures:"
-          checkAll knownFailures
+          _ <- checkAll knownFailures
+          exitWith (if good then ExitSuccess else ExitFailure 1)
 
-checkAll :: [NamedProperty] -> IO ()
-checkAll ps = mapM_ (checkOne config) ps
- where config = defaultConfig { configMaxTest = ntest }
-       
-checkOne :: Config -> NamedProperty -> IO ()
-checkOne config (n,p) = 
-    do putStr (rpad 65 ' ' n)
-       check config p
-  where rpad n' c xs = xs ++ replicate (n' - length xs) c
+
+checkAll :: [NamedProperty] -> IO Bool
+checkAll ps = fmap and (mapM checkOne ps)
+
+trMessage :: TestResult -> String
+trMessage (TestOk s _ _) = s
+trMessage (TestExausted s i ss) = "Exhausted " ++ (show s) ++ " " ++ (show i) ++ " " ++ (show ss)
+trMessage (TestFailed ss i) = "Failed " ++ (show ss) ++ " " ++ (show i)
+trMessage (TestAborted ex) = "Aborted " ++ (show ex)
+
+trGood :: TestResult -> Bool
+trGood (TestOk _ _ _) = True
+trGood _ = False
+
+checkOne :: NamedProperty -> IO Bool
+checkOne (n,p) =
+    do
+       putStr (rpad 65 ' ' n)
+       tr <- run p options
+       putStrLn (trMessage tr)
+       return (trGood tr)
+  where
+    rpad n' c xs = xs ++ replicate (n' - length xs) c
+    options = TestOptions {no_of_tests = 10000,length_of_tests = 0,debug_tests = False}
 
 
 parse :: ParseTime t => String -> String -> Maybe t

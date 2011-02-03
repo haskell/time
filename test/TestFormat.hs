@@ -9,6 +9,7 @@ import Data.Char
 import System.Locale
 import Foreign
 import Foreign.C
+import Control.Exception;
 
 {-
 	size_t format_time (
@@ -93,9 +94,63 @@ formats =  ["%G-W%V-%u","%U-%w","%W-%u"] ++ (fmap (\char -> '%':char:[]) chars)
 hashformats :: [String]
 hashformats =  (fmap (\char -> '%':'#':char:[]) chars)
 
+somestrings :: [String]
+somestrings = ["", " ", "-", "\n"]
+
+getBottom :: a -> IO (Maybe Control.Exception.SomeException);
+getBottom a = Control.Exception.catch (seq a (return Nothing)) (return . Just);    
+
+safeString :: String -> IO String
+safeString s = do
+ msx <- getBottom s
+ case msx of
+  Just sx -> return (show sx)
+  Nothing -> case s of
+   (c:cc) -> do
+    mcx <- getBottom c
+    case mcx of
+     Just cx -> return (show cx)
+     Nothing -> do
+      ss <- safeString cc
+      return (c:ss)
+   [] -> return ""
+
+compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> IO ()
+compareExpected ts fmt str expected = let
+ found = parseTime defaultTimeLocale fmt str
+ in do
+  mex <- getBottom found
+  case mex of
+   Just ex -> putStrLn ("Exception with " ++ fmt ++ " for " ++ ts ++" " ++ (show str) ++ ": expected " ++ (show expected) ++ ", caught " ++ (show ex))
+   Nothing -> if found == expected
+    then return ()
+    else do
+     sf <- safeString (show found)
+     putStrLn ("Mismatch with " ++ fmt ++ " for " ++ ts ++" " ++ (show str) ++ ": expected " ++ (show expected) ++ ", found " ++ sf)
+
+class (ParseTime t) => TestParse t where
+    expectedParse :: String -> String -> Maybe t
+    expectedParse "%Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
+    expectedParse _ _ = Nothing
+
+instance TestParse Day
+instance TestParse TimeOfDay
+instance TestParse LocalTime
+instance TestParse TimeZone
+instance TestParse ZonedTime
+instance TestParse UTCTime
+
+checkParse :: String -> String -> IO ()
+checkParse fmt str = do
+ compareExpected "Day" fmt str (expectedParse fmt str :: Maybe Day)
+ compareExpected "TimeOfDay" fmt str (expectedParse fmt str :: Maybe TimeOfDay)
+ compareExpected "LocalTime" fmt str (expectedParse fmt str :: Maybe LocalTime)
+ compareExpected "TimeZone" fmt str (expectedParse fmt str :: Maybe TimeZone)
+ compareExpected "UTCTime" fmt str (expectedParse fmt str :: Maybe UTCTime)
 
 main :: IO ()
-main = 
-	mapM_ (\fmt -> mapM_ (\time -> mapM_ (\zone -> compareFormat id fmt zone time) zones) times) formats >>
+main = do
+	mapM_ (\fmt -> mapM_ (checkParse fmt) somestrings) formats
+	mapM_ (\fmt -> mapM_ (\time -> mapM_ (\zone -> compareFormat id fmt zone time) zones) times) formats
 	mapM_ (\fmt -> mapM_ (\time -> mapM_ (\zone -> compareFormat (fmap toLower) fmt zone time) zones) times) hashformats
 

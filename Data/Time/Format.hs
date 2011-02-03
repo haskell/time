@@ -55,7 +55,7 @@ formatChar c locale mpado t = case (formatCharacter c) of
 --
 -- For 'TimeZone' (and 'ZonedTime' and 'UTCTime'):
 --
--- [@%z@] timezone offset on the format @-HHMM@.
+-- [@%z@] timezone offset in the format @-HHMM@.
 --
 -- [@%Z@] timezone name
 --

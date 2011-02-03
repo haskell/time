@@ -179,10 +179,13 @@ parseValue l c =
   where
     oneOf = choice . map string
     digits n = count n (satisfy isDigit)
-    spdigits n = skipSpaces >> upTo n (satisfy isDigit)
+    spdigits n = skipSpaces >> oneUpTo n (satisfy isDigit)
+    oneUpTo :: Int -> ReadP a -> ReadP [a]
+    oneUpTo 0 _ = pfail
+    oneUpTo n x = liftM2 (:) x (upTo (n-1) x)
     upTo :: Int -> ReadP a -> ReadP [a]
     upTo 0 _ = return []
-    upTo n x = liftM2 (:) x (upTo (n-1) x) <++ return []
+    upTo n x = (oneUpTo n x) <++ return []
     numericTZ = do s <- choice [char '+', char '-']
                    h <- digits 2
                    optional (char ':')
