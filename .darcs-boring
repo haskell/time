@@ -52,6 +52,7 @@ _split$
 ^include/HsTimeConfig\.h$
 ^include/HsTimeConfig\.h.in$
 ^test/.*\.out$
+^test/.*\.run$
 ^test/AddDays$
 ^test/ClipDates$
 ^test/ConvertBack$
