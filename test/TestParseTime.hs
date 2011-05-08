@@ -56,27 +56,22 @@ extests = [
     ("parse %C %y 2000s",MkExhaustiveTest [0..99] (parseCYY 20)),
     ("parse %C %y 1400s",MkExhaustiveTest [0..99] (parseCYY 14)),
     ("parse %C %y 700s",MkExhaustiveTest [0..99] (parseCYY 7)),
-    ("parseYearDay %Y %m %d",MkExhaustiveTest days2011 parseYearDayD),
-    ("parseYearDay %Y %m %d 0-pad",MkExhaustiveTest days2011 parseYearDayD2),
-    ("parseYearDay %Y %m %e",MkExhaustiveTest days2011 parseYearDayE),
-    ("parseYearDay %Y %m %e 0-pad",MkExhaustiveTest days2011 parseYearDayE2)
+    ("parse %Y%m%d",MkExhaustiveTest days2011 parseYMD),
+    ("parse %Y %m %d",MkExhaustiveTest days2011 parseYearDayD),
+    ("parse %Y %-m %e",MkExhaustiveTest days2011 parseYearDayE)
     ]
+
+parseYMD :: Day -> IO Bool
+parseYMD day = case toGregorian day of
+    (y,m,d) -> return $ (parse "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))) == Just day
 
 parseYearDayD :: Day -> IO Bool
 parseYearDayD day = case toGregorian day of
-    (y,m,d) -> return $ (parse "%Y %m %d" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))) == Just day
-
-parseYearDayD2 :: Day -> IO Bool
-parseYearDayD2 day = case toGregorian day of
     (y,m,d) -> return $ (parse "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))) == Just day
 
 parseYearDayE :: Day -> IO Bool
 parseYearDayE day = case toGregorian day of
-    (y,m,d) -> return $ (parse "%Y %m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))) == Just day
-
-parseYearDayE2 :: Day -> IO Bool
-parseYearDayE2 day = case toGregorian day of
-    (y,m,d) -> return $ (parse "%Y %m %e" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))) == Just day
+    (y,m,d) -> return $ (parse "%Y %-m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))) == Just day
 
 -- | 1969 - 2068
 expectedYear :: Integer -> Integer
