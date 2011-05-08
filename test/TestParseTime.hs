@@ -52,8 +52,13 @@ extests = [
     ("parse %C %y 1900s",MkExhaustiveTest [0..99] (parseCYY 19)),
     ("parse %C %y 2000s",MkExhaustiveTest [0..99] (parseCYY 20)),
     ("parse %C %y 1400s",MkExhaustiveTest [0..99] (parseCYY 14)),
-    ("parse %C %y 700s",MkExhaustiveTest [0..99] (parseCYY 7))
+    ("parse %C %y 700s",MkExhaustiveTest [0..99] (parseCYY 7)),
+    ("parseYearDay",MkExhaustiveTest [(fromGregorian 2011 1 1) .. (fromGregorian 2011 12 31)] parseYearDay)
     ]
+
+parseYearDay :: Day -> IO Bool
+parseYearDay day = case toGregorian day of
+    (y,m,d) -> return $ (parse "%Y %m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))) == Just day
 
 -- | 1969 - 2068
 expectedYear :: Integer -> Integer
