@@ -1,5 +1,5 @@
 GHC = ghc
-GHCFLAGS = -package time
+GHCFLAGS = -package time -package QuickCheck-1.2.0.1
 
 default:
 	make CurrentTime.run ShowDST.run test
@@ -50,7 +50,7 @@ TimeZone.ref: FORCE
 	date +%z > $@
 
 TestParseTime: TestParseTime.o
-	$(GHC) $(GHCFLAGS) -package QuickCheck $^ -o $@
+	$(GHC) $(GHCFLAGS) $^ -o $@
 
 test:	\
 	TestMonthDay.diff	\
