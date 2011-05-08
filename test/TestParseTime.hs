@@ -47,15 +47,27 @@ main = do
     exitWith (if good1 && good2 then ExitSuccess else ExitFailure 1)
 
 extests :: [(String,ExhaustiveTest)]
-extests = [("parse %y",MkExhaustiveTest [0..99] parseYY)]
+extests = [
+    ("parse %y",MkExhaustiveTest [0..99] parseYY),
+    ("parse %C %y 1900s",MkExhaustiveTest [0..99] (parseCYY 19)),
+    ("parse %C %y 2000s",MkExhaustiveTest [0..99] (parseCYY 20)),
+    ("parse %C %y 1400s",MkExhaustiveTest [0..99] (parseCYY 14)),
+    ("parse %C %y 700s",MkExhaustiveTest [0..99] (parseCYY 7))
+    ]
 
 -- | 1969 - 2068
 expectedYear :: Integer -> Integer
 expectedYear i | i >= 69 = 1900 + i
 expectedYear i = 2000 + i
 
+show2 :: Integer -> String
+show2 i = (show (div i 10)) ++ (show (mod i 10))
+
 parseYY :: Integer -> IO Bool
-parseYY i = return (parse "%y" ((show (div i 10)) ++ (show (mod i 10))) == Just (fromGregorian (expectedYear i) 1 1))
+parseYY i = return (parse "%y" (show2 i) == Just (fromGregorian (expectedYear i) 1 1))
+
+parseCYY :: Integer -> Integer -> IO Bool
+parseCYY c i = return (parse "%C %y" ((show2 c) ++ " " ++ (show2 i)) == Just (fromGregorian ((c * 100) + i) 1 1))
 
 checkAll :: RunTest p => [(String,p)] -> IO Bool
 checkAll ps = fmap and (mapM checkOne ps)
