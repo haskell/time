@@ -131,6 +131,9 @@ compareExpected ts fmt str expected = let
 class (ParseTime t) => TestParse t where
     expectedParse :: String -> String -> Maybe t
     expectedParse "%Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
+    expectedParse "%_Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
+    expectedParse "%-Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
+    expectedParse "%0Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
     expectedParse _ _ = Nothing
 
 instance TestParse Day

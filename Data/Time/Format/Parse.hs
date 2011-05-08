@@ -104,9 +104,12 @@ readsTime l f = readP_to_S (liftM (buildTime l) r)
 -- * Internals
 --
 
+data Padding = NoPadding | SpacePadding | ZeroPadding
+  deriving Show
+
 type DateFormat = [DateFormatSpec]
 
-data DateFormatSpec = Value Char
+data DateFormatSpec = Value (Maybe Padding) Char
                      | WhiteSpace
                      | Literal Char
   deriving Show
@@ -114,31 +117,33 @@ data DateFormatSpec = Value Char
 parseFormat :: TimeLocale -> String -> DateFormat
 parseFormat l = p
   where p "" = []
-        p ('%': c :cs) = s ++ p cs
-            where s = case c of
-                        'c' -> p (dateTimeFmt l)
-                        'R' -> p "%H:%M"
-                        'T' -> p "%H:%M:%S"
-                        'X' -> p (timeFmt l)
-                        'r' -> p (time12Fmt l)
-                        'D' -> p "%m/%d/%y"
-                        'F' -> p "%Y-%m-%d"
-                        'x' -> p (dateFmt l)
-                        'h' -> p "%b"
-                        '%' -> [Literal '%']
-                        _   -> [Value c]
+        p ('%': '-' : c :cs) = (pc (Just NoPadding) c) ++ p cs
+        p ('%': '_' : c :cs) = (pc (Just SpacePadding) c) ++ p cs
+        p ('%': '0' : c :cs) = (pc (Just ZeroPadding) c) ++ p cs
+        p ('%': c :cs) = (pc Nothing c) ++ p cs
         p (c:cs) | isSpace c = WhiteSpace : p cs
         p (c:cs) = Literal c : p cs
+        pc _ 'c' = p (dateTimeFmt l)
+        pc _ 'R' = p "%H:%M"
+        pc _ 'T' = p "%H:%M:%S"
+        pc _ 'X' = p (timeFmt l)
+        pc _ 'r' = p (time12Fmt l)
+        pc _ 'D' = p "%m/%d/%y"
+        pc _ 'F' = p "%Y-%m-%d"
+        pc _ 'x' = p (dateFmt l)
+        pc _ 'h' = p "%b"
+        pc _ '%' = [Literal '%']
+        pc mpad c   = [Value mpad c]
 
 parseInput :: TimeLocale -> DateFormat -> ReadP [(Char,String)]
 parseInput l = liftM catMaybes . mapM p
-  where p (Value c)   = parseValue l c >>= return . Just . (,) c
+  where p (Value mpad c)   = parseValue l mpad c >>= return . Just . (,) c
         p WhiteSpace  = skipSpaces >> return Nothing
         p (Literal c) = char c >> return Nothing
 
 -- | Get the string corresponding to the given format specifier.
-parseValue :: TimeLocale -> Char -> ReadP String
-parseValue l c = 
+parseValue :: TimeLocale -> Maybe Padding -> Char -> ReadP String
+parseValue l mpad c = 
     case c of
       'z' -> numericTZ
       'Z' -> munch1 isAlpha <++
@@ -146,40 +151,42 @@ parseValue l c =
              return "" -- produced by %Z for LocalTime
       'P' -> oneOf (let (am,pm) = amPm l in [am, pm])
       'p' -> oneOf (let (am,pm) = amPm l in [am, pm])
-      'H' -> digits 2
-      'I' -> digits 2
-      'k' -> spdigits 2
-      'l' -> spdigits 2
-      'M' -> digits 2 
-      'S' -> digits 2
-      'q' -> digits 12
+      'H' -> digits ZeroPadding 2
+      'I' -> digits ZeroPadding 2
+      'k' -> digits NoPadding 2
+      'l' -> digits NoPadding 2
+      'M' -> digits ZeroPadding 2 
+      'S' -> digits ZeroPadding 2
+      'q' -> digits ZeroPadding 12
       'Q' -> liftM2 (:) (char '.') (munch isDigit) <++ return ""
       's' -> (char '-' >> liftM ('-':) (munch1 isDigit)) 
              <++ munch1 isDigit
-      'Y' -> digits 4
-      'y' -> digits 2
-      'C' -> digits 2
+      'Y' -> digits ZeroPadding 4
+      'y' -> digits ZeroPadding 2
+      'C' -> digits ZeroPadding 2
       'B' -> oneOf (map fst (months l))
       'b' -> oneOf (map snd (months l))
-      'm' -> digits 2
-      'd' -> digits 2
-      'e' -> spdigits 2
-      'j' -> digits 3
-      'G' -> digits 4
-      'g' -> digits 2
-      'f' -> digits 2
-      'V' -> digits 2
+      'm' -> digits ZeroPadding 2
+      'd' -> digits ZeroPadding 2
+      'e' -> digits NoPadding 2
+      'j' -> digits ZeroPadding 3
+      'G' -> digits ZeroPadding 4
+      'g' -> digits ZeroPadding 2
+      'f' -> digits ZeroPadding 2
+      'V' -> digits ZeroPadding 2
       'u' -> oneOf $ map (:[]) ['1'..'7']
       'a' -> oneOf (map snd (wDays l))
       'A' -> oneOf (map fst (wDays l))
-      'U' -> digits 2
+      'U' -> digits ZeroPadding 2
       'w' -> oneOf $ map (:[]) ['0'..'6']
-      'W' -> digits 2
+      'W' -> digits ZeroPadding 2
       _   -> fail $ "Unknown format character: " ++ show c
   where
     oneOf = choice . map string
-    digits n = count n (satisfy isDigit)
-    spdigits n = skipSpaces >> oneUpTo n (satisfy isDigit)
+    digitsforce ZeroPadding n = count n (satisfy isDigit)
+    digitsforce SpacePadding n = skipSpaces >> oneUpTo n (satisfy isDigit)
+    digitsforce NoPadding n = skipSpaces >> oneUpTo n (satisfy isDigit)
+    digits pad = digitsforce (fromMaybe pad mpad)
     oneUpTo :: Int -> ReadP a -> ReadP [a]
     oneUpTo 0 _ = pfail
     oneUpTo n x = liftM2 (:) x (upTo (n-1) x)
@@ -187,9 +194,9 @@ parseValue l c =
     upTo 0 _ = return []
     upTo n x = (oneUpTo n x) <++ return []
     numericTZ = do s <- choice [char '+', char '-']
-                   h <- digits 2
+                   h <- digitsforce ZeroPadding 2
                    optional (char ':')
-                   m <- digits 2
+                   m <- digitsforce ZeroPadding 2
                    return (s:h++m)
 #endif
 
