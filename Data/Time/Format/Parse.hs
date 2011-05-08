@@ -254,8 +254,9 @@ instance ParseTime Day where
 
       buildDay cs = rest cs
         where
-        y = let c = safeLast 19 [x | Century x <- cs]
+        y = let 
                 d = safeLast 70 [x | Year x <- cs]
+                c = safeLast (if d >= 69 then 19 else 20) [x | Century x <- cs]
              in 100 * c + d
 
         rest (Month m:_)  = let d = safeLast 1 [x | Day x <- cs]
