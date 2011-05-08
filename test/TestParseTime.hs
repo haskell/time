@@ -46,6 +46,9 @@ main = do
     _ <- checkAll knownFailures
     exitWith (if good1 && good2 then ExitSuccess else ExitFailure 1)
 
+days2011 :: [Day]
+days2011 = [(fromGregorian 2011 1 1) .. (fromGregorian 2011 12 31)]
+
 extests :: [(String,ExhaustiveTest)]
 extests = [
     ("parse %y",MkExhaustiveTest [0..99] parseYY),
@@ -53,19 +56,34 @@ extests = [
     ("parse %C %y 2000s",MkExhaustiveTest [0..99] (parseCYY 20)),
     ("parse %C %y 1400s",MkExhaustiveTest [0..99] (parseCYY 14)),
     ("parse %C %y 700s",MkExhaustiveTest [0..99] (parseCYY 7)),
-    ("parseYearDay",MkExhaustiveTest [(fromGregorian 2011 1 1) .. (fromGregorian 2011 12 31)] parseYearDay)
+    ("parseYearDay %Y %m %d",MkExhaustiveTest days2011 parseYearDayD),
+    ("parseYearDay %Y %m %d 0-pad",MkExhaustiveTest days2011 parseYearDayD2),
+    ("parseYearDay %Y %m %e",MkExhaustiveTest days2011 parseYearDayE),
+    ("parseYearDay %Y %m %e 0-pad",MkExhaustiveTest days2011 parseYearDayE2)
     ]
 
-parseYearDay :: Day -> IO Bool
-parseYearDay day = case toGregorian day of
+parseYearDayD :: Day -> IO Bool
+parseYearDayD day = case toGregorian day of
+    (y,m,d) -> return $ (parse "%Y %m %d" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))) == Just day
+
+parseYearDayD2 :: Day -> IO Bool
+parseYearDayD2 day = case toGregorian day of
+    (y,m,d) -> return $ (parse "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))) == Just day
+
+parseYearDayE :: Day -> IO Bool
+parseYearDayE day = case toGregorian day of
     (y,m,d) -> return $ (parse "%Y %m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))) == Just day
+
+parseYearDayE2 :: Day -> IO Bool
+parseYearDayE2 day = case toGregorian day of
+    (y,m,d) -> return $ (parse "%Y %m %e" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))) == Just day
 
 -- | 1969 - 2068
 expectedYear :: Integer -> Integer
 expectedYear i | i >= 69 = 1900 + i
 expectedYear i = 2000 + i
 
-show2 :: Integer -> String
+show2 :: (Integral n) => n -> String
 show2 i = (show (div i 10)) ++ (show (mod i 10))
 
 parseYY :: Integer -> IO Bool
