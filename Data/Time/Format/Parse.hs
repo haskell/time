@@ -55,20 +55,21 @@ class ParseTime t where
     -- If the input does not include all the information needed to
     -- construct a complete value, any missing parts should be taken
     -- from 1970-01-01 00:00:00 +0000 (which was a Thursday).
+    -- In the absence of @%C@ or @%Y@, century is 1969 - 2068.
     buildTime :: TimeLocale -- ^ The time locale.
               -> [(Char,String)] -- ^ Pairs of format characters and the 
                                  -- corresponding part of the input.
               -> t
 
 #if LANGUAGE_Rank2Types
--- | Parses a time value given a format string. Supports the same %-codes as
--- 'formatTime'. Leading and trailing whitespace is accepted. Case is not
--- significant. Some variations in the input are accepted:
+-- | Parses a time value given a format string.
+-- Supports the same %-codes as 'formatTime', including @%-@, @%_@ and @%0@ modifiers.
+-- Leading and trailing whitespace is accepted. Case is not significant.
+-- Some variations in the input are accepted:
 --
 -- [@%z@] accepts any of @-HHMM@ or @-HH:MM@.
 --
--- [@%Z@] accepts any string of letters, or any
--- of the formats accepted by @%z@.
+-- [@%Z@] accepts any string of letters, or any of the formats accepted by @%z@.
 --
 parseTime :: ParseTime t =>
              TimeLocale -- ^ Time locale.
@@ -153,8 +154,8 @@ parseValue l mpad c =
       'p' -> oneOf (let (am,pm) = amPm l in [am, pm])
       'H' -> digits ZeroPadding 2
       'I' -> digits ZeroPadding 2
-      'k' -> digits NoPadding 2
-      'l' -> digits NoPadding 2
+      'k' -> digits SpacePadding 2
+      'l' -> digits SpacePadding 2
       'M' -> digits ZeroPadding 2 
       'S' -> digits ZeroPadding 2
       'q' -> digits ZeroPadding 12
@@ -168,7 +169,7 @@ parseValue l mpad c =
       'b' -> oneOf (map snd (months l))
       'm' -> digits ZeroPadding 2
       'd' -> digits ZeroPadding 2
-      'e' -> digits NoPadding 2
+      'e' -> digits SpacePadding 2
       'j' -> digits ZeroPadding 3
       'G' -> digits ZeroPadding 4
       'g' -> digits ZeroPadding 2
@@ -185,7 +186,7 @@ parseValue l mpad c =
     oneOf = choice . map string
     digitsforce ZeroPadding n = count n (satisfy isDigit)
     digitsforce SpacePadding n = skipSpaces >> oneUpTo n (satisfy isDigit)
-    digitsforce NoPadding n = skipSpaces >> oneUpTo n (satisfy isDigit)
+    digitsforce NoPadding n = oneUpTo n (satisfy isDigit)
     digits pad = digitsforce (fromMaybe pad mpad)
     oneUpTo :: Int -> ReadP a -> ReadP [a]
     oneUpTo 0 _ = pfail
