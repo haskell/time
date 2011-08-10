@@ -83,6 +83,14 @@ instance Fractional DiffTime where
 	recip (MkDiffTime a) = MkDiffTime (recip a)
 	fromRational r = MkDiffTime (fromRational r)
 
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance RealFrac DiffTime where
+    properFraction (MkDiffTime a) = let (b',a') = properFraction a in (b',MkDiffTime a')
+    truncate (MkDiffTime a) = truncate a
+    round (MkDiffTime a) = round a
+    ceiling (MkDiffTime a) = ceiling a
+    floor (MkDiffTime a) = floor a
+
 -- | Create a 'DiffTime' which represents an integral number of seconds.
 secondsToDiffTime :: Integer -> DiffTime
 secondsToDiffTime = fromInteger
