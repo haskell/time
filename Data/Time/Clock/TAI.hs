@@ -18,6 +18,7 @@ module Data.Time.Clock.TAI
 import Data.Time.LocalTime
 import Data.Time.Calendar.Days
 import Data.Time.Clock
+import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
 #if LANGUAGE_Rank2Types
@@ -34,6 +35,9 @@ newtype AbsoluteTime = MkAbsoluteTime {unAbsoluteTime :: DiffTime} deriving (Eq,
 #endif
 #endif
     )
+
+instance NFData AbsoluteTime where
+	rnf (MkAbsoluteTime a) = rnf a
 
 instance Typeable AbsoluteTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.TAI.AbsoluteTime") []

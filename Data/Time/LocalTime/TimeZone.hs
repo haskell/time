@@ -19,6 +19,7 @@ import Data.Time.Clock.POSIX
 
 import Foreign
 import Foreign.C
+import Control.DeepSeq
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
@@ -39,6 +40,9 @@ data TimeZone = TimeZone {
 #endif
 #endif
     )
+
+instance NFData TimeZone where
+	rnf (TimeZone m so n) = m `deepseq` so `deepseq` n `deepseq` ()
 
 instance Typeable TimeZone where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.TimeZone.TimeZone") []

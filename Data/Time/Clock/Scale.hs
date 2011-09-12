@@ -12,6 +12,7 @@ module Data.Time.Clock.Scale
         secondsToDiffTime, picosecondsToDiffTime
 ) where
 
+import Control.DeepSeq
 import Data.Ratio ((%))
 import Data.Fixed
 import Data.Typeable
@@ -29,6 +30,10 @@ newtype UniversalTime = ModJulianDate {getModJulianDate :: Rational} deriving (E
 #endif
     )
 
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance NFData UniversalTime where
+	rnf (ModJulianDate a) = rnf a
+
 instance Typeable UniversalTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.Scale.UniversalTime") []
 
@@ -45,6 +50,9 @@ newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord
 #endif
 #endif
     )
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance NFData DiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 instance Typeable DiffTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.Scale.DiffTime") []

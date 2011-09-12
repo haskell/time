@@ -13,6 +13,7 @@ module Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
 import Data.Time.Clock
+import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
 #if LANGUAGE_Rank2Types
@@ -37,6 +38,9 @@ data TimeOfDay = TimeOfDay {
 #endif
 #endif
     )
+
+instance NFData TimeOfDay where
+	rnf (TimeOfDay h m s) = h `deepseq` m `deepseq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 instance Typeable TimeOfDay where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.TimeOfDay.TimeOfDay") []

@@ -7,6 +7,7 @@ module Data.Time.Calendar.Days
 	Day(..),addDays,diffDays
 ) where
 
+import Control.DeepSeq
 import Data.Ix
 import Data.Typeable
 #if LANGUAGE_Rank2Types
@@ -21,6 +22,9 @@ newtype Day = ModifiedJulianDay {toModifiedJulianDay :: Integer} deriving (Eq,Or
 #endif
 #endif
     )
+
+instance NFData Day where
+	rnf (ModifiedJulianDay a) = rnf a
 
 instance Typeable Day where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Calendar.Days.Day") []

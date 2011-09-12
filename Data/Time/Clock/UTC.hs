@@ -15,6 +15,7 @@ module Data.Time.Clock.UTC
 	UTCTime(..),NominalDiffTime
 ) where
 
+import Control.DeepSeq
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Scale
 import Data.Fixed
@@ -39,6 +40,9 @@ data UTCTime = UTCTime {
 #endif
 #endif
 #endif
+
+instance NFData UTCTime where
+	rnf (UTCTime d t) = d `deepseq` t `deepseq` ()
 
 instance Typeable UTCTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.UTC.UTCTime") []
@@ -66,6 +70,9 @@ newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord
 #endif
 #endif
     )
+
+-- necessary because H98 doesn't have "cunning newtype" derivation
+instance NFData NominalDiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 instance Typeable NominalDiffTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.UTC.NominalDiffTime") []

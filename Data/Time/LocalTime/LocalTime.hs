@@ -17,6 +17,7 @@ import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar
 import Data.Time.Clock
+import Control.DeepSeq
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
@@ -38,6 +39,9 @@ data LocalTime = LocalTime {
 #endif
 #endif
     )
+
+instance NFData LocalTime where
+	rnf (LocalTime d t) = d `deepseq` t `deepseq` ()
 
 instance Typeable LocalTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.LocalTime.LocalTime") []
@@ -78,6 +82,9 @@ data ZonedTime = ZonedTime {
 #endif
 #endif
 #endif
+
+instance NFData ZonedTime where
+	rnf (ZonedTime lt z) = lt `deepseq` z `deepseq` ()
 
 instance Typeable ZonedTime where
 	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.LocalTime.ZonedTime") []
