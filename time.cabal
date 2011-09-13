@@ -35,7 +35,7 @@ extra-tmp-files:
 
 library
 {
-    build-depends: base == 4.*, deepseq >= 1.1 && < 1.2, old-locale
+    build-depends: base == 4.*, deepseq >= 1.1, old-locale
     ghc-options: -Wall
     if impl(ghc)
         extensions: Rank2Types DeriveDataTypeable StandaloneDeriving
