@@ -52,6 +52,9 @@ TimeZone.ref: FORCE
 TestParseTime: TestParseTime.o
 	$(GHC) $(GHCFLAGS) $^ -o $@
 
+RealToFracBenchmark: RealToFracBenchmark.o
+	$(GHC) $(GHCFLAGS) $^ -o $@
+
 test:	\
 	TestMonthDay.diff	\
 	ConvertBack.diff0	\
@@ -64,13 +67,14 @@ test:	\
 	TestFormat.diff0	\
 	TestParseDAT.diff	\
 	TestEaster.diff	\
-	TestParseTime.run \
-	UseCases.o
+	TestParseTime.run	\
+	UseCases.o	\
+	RealToFracBenchmark.run
 	@echo "Success!"
 
 clean:
 	rm -rf TestMonthDay ConvertBack TestCalendars TestTime LongWeekYears ClipDates	\
-	AddDays TestFormat TestParseDAT TestEaster CurrentTime ShowDST TimeZone TimeZone.ref TestParseTime \
+	AddDays TestFormat TestParseDAT TestEaster CurrentTime ShowDST TimeZone TimeZone.ref TestParseTime RealToFracBenchmark \
         *.out *.run *.o *.hi Makefile.bak
 
 %.diff: %.ref %.out

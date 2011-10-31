@@ -118,3 +118,12 @@ instance RealFrac NominalDiffTime where
 	round (MkNominalDiffTime a) = round a
 	ceiling (MkNominalDiffTime a) = ceiling a
 	floor (MkNominalDiffTime a) = floor a
+
+{-# RULES
+"realToFrac/DiffTime->NominalDiffTime"   realToFrac = \ dt -> MkNominalDiffTime (realToFrac dt)
+"realToFrac/NominalDiffTime->DiffTime"   realToFrac = \ (MkNominalDiffTime ps) -> realToFrac ps
+
+"realToFrac/NominalDiffTime->Pico"       realToFrac = \ (MkNominalDiffTime ps) -> ps
+"realToFrac/Pico->NominalDiffTime"       realToFrac = MkNominalDiffTime
+  #-}
+

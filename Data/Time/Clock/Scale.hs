@@ -106,3 +106,9 @@ secondsToDiffTime = fromInteger
 -- | Create a 'DiffTime' from a number of picoseconds.
 picosecondsToDiffTime :: Integer -> DiffTime
 picosecondsToDiffTime x = fromRational (x % 1000000000000)
+
+{-# RULES
+"realToFrac/DiffTime->Pico"              realToFrac = \ (MkDiffTime ps) -> ps
+"realToFrac/Pico->DiffTime"              realToFrac = MkDiffTime
+  #-}
+
