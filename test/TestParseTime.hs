@@ -78,7 +78,7 @@ expectedYear :: Integer -> Integer
 expectedYear i | i >= 69 = 1900 + i
 expectedYear i = 2000 + i
 
-show2 :: (Integral n) => n -> String
+show2 :: (Integral n,Show n) => n -> String
 show2 i = (show (div i 10)) ++ (show (mod i 10))
 
 parseYY :: Integer -> IO Bool
