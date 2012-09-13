@@ -1,5 +1,5 @@
 name:           time
-version:        1.4.0.1
+version:        1.4.0.2
 stability:      stable
 license:        BSD3
 license-file:   LICENSE
@@ -9,8 +9,8 @@ homepage:       http://semantic.org/TimeLib/
 synopsis:       A time library
 description:    A time library
 category:       System
-build-type:  Custom
-cabal-version:   >=1.6
+build-type:     Simple
+cabal-version:  >=1.9.2
 x-follows-version-policy:
 
 extra-source-files:
@@ -34,8 +34,9 @@ extra-tmp-files:
     include/HsTimeConfig.h
 
 library
-{
-    build-depends: base == 4.*, deepseq >= 1.1, old-locale
+    Build-Depends: base >= 4,
+                   deepseq >= 1.1,
+                   old-locale
     ghc-options: -Wall
     if impl(ghc)
         extensions: Rank2Types DeriveDataTypeable StandaloneDeriving
@@ -82,5 +83,58 @@ library
         install-includes:
             HsTime.h
             HsTimeConfig.h
-}
 
+Test-Suite tests
+  type: detailed-0.9
+  test-module: Test.Tests
+  extensions: Rank2Types, ForeignFunctionInterface, CPP, DeriveDataTypeable, StandaloneDeriving 
+  cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
+  c-sources: cbits/HsTime.c Test/TestFormatStuff.c
+  include-dirs: include
+  build-depends: base, deepseq, Cabal >= 1.9.2, old-locale, process
+  other-modules:
+    Test.TestTime
+    Test.TestTimeRef
+    Test.TestParseDAT
+    Test.TAI_UTC_DAT
+    Test.TestParseDAT_Ref
+    Test.TestMonthDay
+    Test.TestMonthDayRef
+    Test.TestFormat
+    Test.TestEaster
+    Test.TestEasterRef
+    Test.TestCalendars
+    Test.TestCalendarsRef
+    Test.LongWeekYears
+    Test.LongWeekYearsRef
+    Test.ConvertBack
+    Test.ClipDates
+    Test.ClipDatesRef
+    Test.AddDays
+    Test.AddDaysRef
+    Test.TestUtil
+
+    Data.Time.Calendar.Private,
+    Data.Time.Calendar.Days,
+    Data.Time.Calendar.Gregorian,
+    Data.Time.Calendar.JulianYearDay,
+    Data.Time.Clock.Scale,
+    Data.Time.Clock.UTC,
+    Data.Time.Clock.CTimeval,
+    Data.Time.Clock.UTCDiff,
+    Data.Time.LocalTime.TimeZone,
+    Data.Time.LocalTime.TimeOfDay,
+    Data.Time.LocalTime.LocalTime,
+    Data.Time.Format.Parse
+    Data.Time.Calendar,
+    Data.Time.Calendar.MonthDay,
+    Data.Time.Calendar.OrdinalDate,
+    Data.Time.Calendar.WeekDate,
+    Data.Time.Calendar.Julian,
+    Data.Time.Calendar.Easter,
+    Data.Time.Clock,
+    Data.Time.Clock.POSIX,
+    Data.Time.Clock.TAI,
+    Data.Time.LocalTime,
+    Data.Time.Format,
+    Data.Time

@@ -1,6 +1,8 @@
 {-# OPTIONS -Wall -Werror -fno-warn-type-defaults -fno-warn-unused-binds -fno-warn-orphans #-}
 {-# LANGUAGE FlexibleInstances, ExistentialQuantification #-}
 
+module Test.TestParseTime where
+
 import Control.Monad
 import Data.Char
 import Data.Ratio
@@ -36,15 +38,16 @@ instance RunTest ExhaustiveTest where
 ntest :: Int
 ntest = 1000
 
-main :: IO ()
-main = do
-    putStrLn "Should work:"
-    good1 <- checkAll extests
-    putStrLn "Should work:"
-    good2 <- checkAll properties
-    putStrLn "Known failures:"
-    _ <- checkAll knownFailures
-    exitWith (if good1 && good2 then ExitSuccess else ExitFailure 1)
+testParseTime :: Test
+testParseTime 
+  = impureTest $ Test "testParseTime"
+      $ good1 <- checkAll extests
+        good2 <- checkAll properties
+        putStrLn "Known failures:"
+        _ <- checkAll knownFailures
+        return $ if good1 && good2
+                   then Pass
+                   else Fail "testParseTime failed and gave a redundant error message"
 
 days2011 :: [Day]
 days2011 = [(fromGregorian 2011 1 1) .. (fromGregorian 2011 12 31)]
@@ -78,7 +81,7 @@ expectedYear :: Integer -> Integer
 expectedYear i | i >= 69 = 1900 + i
 expectedYear i = 2000 + i
 
-show2 :: (Integral n,Show n) => n -> String
+show2 :: (Integral n) => n -> String
 show2 i = (show (div i 10)) ++ (show (mod i 10))
 
 parseYY :: Integer -> IO Bool

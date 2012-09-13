@@ -1,8 +1,13 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module Main where
+module Test.AddDays where
 
 import Data.Time.Calendar
+
+import Test.TestUtil
+import Test.AddDaysRef
+
+--
 
 days ::[Day]
 days =
@@ -36,6 +41,7 @@ resultDays = do
 	day <- days
 	return ((showGregorian day) ++ " + " ++ (show increment) ++ " * " ++ aname ++ " = " ++ showGregorian (adder increment day))
 
-main :: IO ()
-main = do
-	mapM_ putStrLn resultDays
+addDaysTest :: Test
+addDaysTest
+  = pure $ SimpleTest "addDays"
+      $ diff addDaysRef $ unlines resultDays
