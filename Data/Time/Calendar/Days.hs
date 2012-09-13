@@ -27,7 +27,7 @@ instance NFData Day where
 	rnf (ModifiedJulianDay a) = rnf a
 
 instance Typeable Day where
-	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Calendar.Days.Day") []
+	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Calendar.Days" "Day") []
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum Day where

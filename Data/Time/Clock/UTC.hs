@@ -45,7 +45,7 @@ instance NFData UTCTime where
 	rnf (UTCTime d t) = d `deepseq` t `deepseq` ()
 
 instance Typeable UTCTime where
-	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.UTC.UTCTime") []
+	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Clock.UTC" "UTCTime") []
 
 instance Eq UTCTime where
 	(UTCTime da ta) == (UTCTime db tb) = (da == db) && (ta == tb)
@@ -75,7 +75,7 @@ newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord
 instance NFData NominalDiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 instance Typeable NominalDiffTime where
-	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.UTC.NominalDiffTime") []
+	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Clock.UTC" "NominalDiffTime") []
 
 instance Enum NominalDiffTime where
 	succ (MkNominalDiffTime a) = MkNominalDiffTime (succ a)

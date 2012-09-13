@@ -45,7 +45,7 @@ instance NFData TimeZone where
 	rnf (TimeZone m so n) = m `deepseq` so `deepseq` n `deepseq` ()
 
 instance Typeable TimeZone where
-	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.TimeZone.TimeZone") []
+	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.LocalTime.TimeZone" "TimeZone") []
 
 -- | Create a nameless non-summer timezone for this number of minutes
 minutesToTimeZone :: Int -> TimeZone

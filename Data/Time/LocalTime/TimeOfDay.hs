@@ -43,7 +43,7 @@ instance NFData TimeOfDay where
 	rnf (TimeOfDay h m s) = h `deepseq` m `deepseq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 instance Typeable TimeOfDay where
-	typeOf _ = mkTyConApp (mkTyCon "Data.Time.LocalTime.TimeOfDay.TimeOfDay") []
+	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.LocalTime.TimeOfDay" "TimeOfDay") []
 
 -- | Hour zero
 midnight :: TimeOfDay

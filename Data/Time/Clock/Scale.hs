@@ -35,7 +35,7 @@ instance NFData UniversalTime where
 	rnf (ModJulianDate a) = rnf a
 
 instance Typeable UniversalTime where
-	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.Scale.UniversalTime") []
+	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Clock.Scale" "UniversalTime") []
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions will treat it as seconds.
@@ -55,7 +55,7 @@ newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord
 instance NFData DiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 instance Typeable DiffTime where
-	typeOf _ = mkTyConApp (mkTyCon "Data.Time.Clock.Scale.DiffTime") []
+	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Clock.Scale" "DiffTime") []
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum DiffTime where
