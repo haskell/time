@@ -13,8 +13,8 @@ import Test.TestMonthDay
 import Test.TestParseDAT
 import Test.TestTime
 
-tests :: [Test]
-tests = [ addDaysTest
+tests :: IO [Test]
+tests = return [ addDaysTest
         , clipDates
         , convertBack
         , longWeekYears

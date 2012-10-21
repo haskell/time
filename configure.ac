@@ -6,6 +6,8 @@ AC_CONFIG_SRCDIR([include/HsTime.h])
 AC_ARG_WITH([cc],
             [C compiler],
             [CC=$withval])
+AC_ARG_WITH([gcc],[Gnu C compiler])
+AC_ARG_WITH([compiler],[Haskell compiler])
 AC_PROG_CC()
 
 AC_CONFIG_HEADERS([include/HsTimeConfig.h])
