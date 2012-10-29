@@ -113,7 +113,7 @@ formatChar c locale mpado t = case (formatCharacter c) of
 --
 -- [@%y@] last two digits of year, @00@ - @99@
 --
--- [@%C@] century (being the first two digits of the year), @00@ - @99@
+-- [@%C@] century
 --
 -- [@%B@] month name, long form ('fst' from 'months' @locale@), @January@ - @December@
 --
@@ -213,7 +213,7 @@ instance FormatTime Day where
 	-- Year Count
 	formatCharacter 'Y' = Just (\_ _ -> show . fst . toOrdinalDate)
 	formatCharacter 'y' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . mod100 . fst . toOrdinalDate)
-	formatCharacter 'C' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . div100 . fst . toOrdinalDate)
+	formatCharacter 'C' = Just (\_ _ -> show . div100 . fst . toOrdinalDate)
 	-- Month of Year
 	formatCharacter 'B' = Just (\locale _ -> fst . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
 	formatCharacter 'b' = Just (\locale _ -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)

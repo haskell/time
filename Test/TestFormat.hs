@@ -68,9 +68,12 @@ getYearP3 year = localTimeToUTC utc (LocalTime (fromGregorian year 03 04) midnig
 getYearP4 :: Integer -> UTCTime
 getYearP4 year = localTimeToUTC utc (LocalTime (fromGregorian year 12 31) midnight)
 
+years :: [Integer]
+years = [999,1000,1899,1900,1901] ++ [1980..2000] ++ [9999,10000]
+
 times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
-	(fmap getYearP1 [1980..2000]) ++ (fmap getYearP2 [1980..2000]) ++ (fmap getYearP3 [1980..2000]) ++ (fmap getYearP4 [1980..2000])
+	(fmap getYearP1 years) ++ (fmap getYearP2 years) ++ (fmap getYearP3 years) ++ (fmap getYearP4 years)
 
 compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> TestInstance
 compareFormat testname modUnix fmt zone time =
