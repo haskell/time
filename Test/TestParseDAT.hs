@@ -43,7 +43,7 @@ times =
 
 testParseDAT :: Test
 testParseDAT
-  = Test $ pure $ SimpleTest "testParseDAT"
+  = Test $ pure "testParseDAT"
       $ diff testParseDAT_Ref parseDAT
  where
   parseDAT =

@@ -29,7 +29,7 @@ days = [
 
 testCalendars :: Test
 testCalendars 
-  = Test $ pure $ SimpleTest "testCalendars"
+  = Test $ pure "testCalendars"
       $ diff testCalendarsRef 
           $ unlines $ map (\d -> showShowers d) days
  where

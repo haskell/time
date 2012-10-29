@@ -6,19 +6,21 @@ module Test.TestUtil
 
 import Distribution.TestSuite
 
-data SimpleTest = SimpleTest String Result
+impure :: String -> IO Result -> TestInstance
+impure name mresult = TestInstance {
+    run = fmap Finished mresult,
+    name = name,
+    tags = [],
+    options = [],
+    setOption = \_ _ -> Left "unsupported"
+}
 
-pure :: SimpleTest -> TestInstance
-pure (SimpleTest name result) = TestInstance (return (Finished result)) name [] [] (\_ _ -> Left "")
-
-data IO_SimpleTest = IO_SimpleTest String (IO Result)
-
-impure :: IO_SimpleTest -> TestInstance
-impure (IO_SimpleTest name mresult) = TestInstance (fmap Finished mresult) name [] [] (\_ _ -> Left "")
+pure :: String -> Result -> TestInstance
+pure name result = impure name (return result)
 
 diff :: String -> String -> Result
-diff s t
-  = if s == t then Pass else Fail ""
+diff s t | s == t = Pass
+diff _ _ = Fail ""
 
 finish :: IO Progress -> IO Result
 finish iop = do
@@ -27,24 +29,18 @@ finish iop = do
         Finished result -> return result
         Progress _ iop' -> finish iop'
 
-concatRun :: [IO Progress] -> IO Progress
-concatRun [] = return (Finished Pass)
+concatRun :: [IO Progress] -> IO Result
+concatRun [] = return Pass
 concatRun (iop:iops) = do
     result <- finish iop
     case result of
         Pass -> concatRun iops
-        _ -> return (Finished result)
+        _ -> return result
 
 concatTestInstance :: String -> [TestInstance] -> TestInstance
-concatTestInstance tname tis = TestInstance {
-    run = concatRun (fmap run tis),
-    name = tname,
-    tags = [],
-    options = [],
-    setOption = \_ _ -> Left "unsupported"
-}
+concatTestInstance tname tis = impure tname (concatRun (fmap run tis))
 
 fastTestInstanceGroup :: String -> [TestInstance] -> Test
---fastTestGroup tname tis = testGroup tname (fmap Test tis)
+fastTestInstanceGroup tname tis | False = testGroup tname (fmap Test tis)
 fastTestInstanceGroup tname tis = Test (concatTestInstance tname tis)
 

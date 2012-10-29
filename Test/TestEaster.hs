@@ -21,7 +21,7 @@ showWithWDay = formatTime defaultTimeLocale "%F %A"
 
 testEaster :: Test
 testEaster 
-  = Test $ pure $ SimpleTest "testEaster"
+  = Test $ pure "testEaster"
       $ let ds = unlines $ map (\day ->
                    unwords [ showWithWDay day, "->"
                            , showWithWDay (sundayAfter day)]) days

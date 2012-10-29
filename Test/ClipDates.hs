@@ -35,7 +35,7 @@ tupleUp3 l1 l2 l3
 
 clipDates :: Test
 clipDates
-  = Test $ pure $ SimpleTest "clipDates"
+  = Test $ pure "clipDates"
       $ let yad  = unlines $ map yearAndDay
                    $ tupleUp2 [1968,1969,1971] [-4,0,1,200,364,365,366,367,700]
                               

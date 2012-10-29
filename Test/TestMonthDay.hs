@@ -15,7 +15,7 @@ showCompare a1 b a2 = "DIFF: " ++ (show a1) ++ " -> " ++ b ++ " -> " ++ (show a2
 
 testMonthDay :: Test
 testMonthDay
-  = Test $ pure $ SimpleTest "testMonthDay"
+  = Test $ pure "testMonthDay"
       $ diff testMonthDayRef 
             $ concat $ map (\isL -> unlines (leap isL : yearDays isL)) [False,True]
  where

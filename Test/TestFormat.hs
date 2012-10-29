@@ -75,7 +75,7 @@ times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> TestInstance
 compareFormat testname modUnix fmt zone time =
   let ctime = utcToZonedTime zone time in
-  impure $ IO_SimpleTest (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
+  impure (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
     do
       let haskellText = formatTime locale fmt ctime
       unixText <- fmap modUnix (unixFormatTime fmt zone time)
@@ -124,7 +124,7 @@ safeString s = do
    [] -> return ""
 
 compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> TestInstance
-compareExpected testname fmt str expected = impure $ IO_SimpleTest (testname ++ ": " ++ (show fmt) ++ " on " ++ (show str)) $ do
+compareExpected testname fmt str expected = impure (testname ++ ": " ++ (show fmt) ++ " on " ++ (show str)) $ do
     let found = parseTime defaultTimeLocale fmt str
     mex <- getBottom found
     case mex of
