@@ -6,7 +6,6 @@ import Data.Time
 import Data.Time.Clock.POSIX
 
 import Data.Char
-import Data.Functor
 
 import System.Locale
 import Foreign
@@ -73,17 +72,17 @@ times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 	(fmap getYearP1 [1980..2000]) ++ (fmap getYearP2 [1980..2000]) ++ (fmap getYearP3 [1980..2000]) ++ (fmap getYearP4 [1980..2000])
 
-compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> IO Bool
-compareFormat modUnix fmt zone time
-  = do let ctime = utcToZonedTime zone time
-           haskellText = formatTime locale fmt ctime
-       unixText <- fmap modUnix (unixFormatTime fmt zone time)
-       if haskellText == unixText
-         then return True -- ""
-         else return False
-           {- unwords
-                [ "Mismatch with", fmt, "for"
-                , show ctime ++ ": UNIX=\"" ++ unixText ++ "\", TimeLib=\"" ++ haskellText ++ "\"."] -}
+compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> TestInstance
+compareFormat testname modUnix fmt zone time =
+  let ctime = utcToZonedTime zone time in
+  impure $ IO_SimpleTest (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
+    do
+      let haskellText = formatTime locale fmt ctime
+      unixText <- fmap modUnix (unixFormatTime fmt zone time)
+      if haskellText == unixText
+        then return Pass
+        else return $ Fail $ unwords
+          [ "Mismatch for", show ctime ++ ": UNIX=\"" ++ unixText ++ "\", TimeLib=\"" ++ haskellText ++ "\"."]
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
@@ -124,28 +123,18 @@ safeString s = do
       return (c:ss)
    [] -> return ""
 
-compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> IO Bool
-compareExpected _ fmt str expected
-   = do let found = parseTime defaultTimeLocale fmt str
-        mex <- getBottom found
-        case mex of
-          Just _ -> return False
-                  {- return $ unwords
-                       [ "Exception with", fmt
-                       , "for", ts
-                       , show str ++ ": expected"
-                       , show expected ++ ", caught", show ex] -}
-
-          Nothing -> 
+compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> TestInstance
+compareExpected testname fmt str expected = impure $ IO_SimpleTest (testname ++ ": " ++ (show fmt) ++ " on " ++ (show str)) $ do
+    let found = parseTime defaultTimeLocale fmt str
+    mex <- getBottom found
+    case mex of
+        Just ex -> return $ Fail $ unwords [ "Exception: expected" , show expected ++ ", caught", show ex]
+        Nothing -> 
             if found == expected
-              then return True -- return ""
-              else return False
-                {- do sf <- safeString (show found)
-                      return $ unwords 
-                        [ "Mismatch with", fmt
-                        , "for", ts
-                        , show str ++ ": expected"
-                        , show expected ++ ", found", sf] -}
+                then return Pass
+                else do
+                    sf <- safeString (show found)
+                    return $ Fail $ unwords [ "Mismatch: expected", show expected ++ ", found", sf]
 
 class (ParseTime t) => TestParse t where
     expectedParse :: String -> String -> Maybe t
@@ -162,39 +151,29 @@ instance TestParse TimeZone
 instance TestParse ZonedTime
 instance TestParse UTCTime
 
-checkParse :: String -> String -> IO [Bool]
+checkParse :: String -> String -> [TestInstance]
 checkParse fmt str
-  = sequence [ compareExpected "Day" fmt str (expectedParse fmt str :: Maybe Day)
+  =         [ compareExpected "Day" fmt str (expectedParse fmt str :: Maybe Day)
              , compareExpected "TimeOfDay" fmt str (expectedParse fmt str :: Maybe TimeOfDay)
              , compareExpected "LocalTime" fmt str (expectedParse fmt str :: Maybe LocalTime)
              , compareExpected "TimeZone" fmt str (expectedParse fmt str :: Maybe TimeZone)
              , compareExpected "UTCTime" fmt str (expectedParse fmt str :: Maybe UTCTime) ]
 
+testCheckParse :: [TestInstance]
+testCheckParse = concatMap (\fmt -> concatMap (\str -> checkParse fmt str) somestrings) formats
+
+testCompareFormat :: [TestInstance]
+testCompareFormat = concatMap (\fmt -> concatMap (\time -> fmap (\zone -> compareFormat "compare format" id fmt zone time) zones) times) formats
+
+testCompareHashFormat :: [TestInstance]
+testCompareHashFormat = concatMap (\fmt -> concatMap (\time -> fmap (\zone -> compareFormat "compare hashformat" (fmap toLower) fmt zone time) zones) times) hashformats
+
+testFormats :: [Test]
+testFormats = [
+    fastTestInstanceGroup "checkParse" testCheckParse,
+    fastTestInstanceGroup "compare format" testCompareFormat,
+    fastTestInstanceGroup "compare hashformat" testCompareHashFormat
+    ]
+
 testFormat :: Test
-testFormat
-  = impure $ IO_SimpleTest "testFormat"
-      $ do a <- concat <$>  mapM (\fmt -> concat <$> mapM (checkParse fmt) somestrings) formats
-           let a' = if all (== True) a
-                      then Pass
-                      else Fail $ "testFormat: checkParse failed"
-         
-	   b <- mapM (\fmt -> mapM (\time -> mapM (\zone -> compareFormat id fmt zone time) zones) times) formats
-           let b' = if all (== True) $ concat $ concat b
-                      then Pass
-                      else Fail $ "testFormat: compareFormat failed on variable formats"
-
-	   c <- mapM (\fmt -> mapM (\time -> mapM (\zone -> compareFormat (fmap toLower) fmt zone time) zones) times) hashformats
-           let c' = if all (== True) $ concat $ concat c
-                      then Pass
-                      else Fail $ "testFormat: compareFormat failed on variable hashFormats"
-          
-           let fs = concatFailures [a', b', c']
-           return $ if null fs  then Pass  else Fail $ fs 
-
-concatFailures :: [Result] -> String
-concatFailures
-  = foldr (\e s ->
-      case e 
-        of Fail f -> f ++ "\n" ++ s
-           _ -> s)
-      ""
+testFormat = testGroup "testFormat" testFormats

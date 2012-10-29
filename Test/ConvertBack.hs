@@ -42,5 +42,5 @@ days = [ModifiedJulianDay 50000 .. ModifiedJulianDay 50200] ++
 
 convertBack :: Test
 convertBack
-  = pure $ SimpleTest "convertBack"
+  = Test $ pure $ SimpleTest "convertBack"
       $ diff "" $ concatMap (\ch -> concatMap ch days) checkers

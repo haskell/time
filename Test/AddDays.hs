@@ -43,5 +43,5 @@ resultDays = do
 
 addDaysTest :: Test
 addDaysTest
-  = pure $ SimpleTest "addDays"
+  = Test $ pure $ SimpleTest "addDays"
       $ diff addDaysRef $ unlines resultDays

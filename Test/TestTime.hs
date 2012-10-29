@@ -108,5 +108,5 @@ testTimeOfDayToDayFraction
 
 testTime :: Test
 testTime
-  = pure $ SimpleTest "testTime"
+  = Test $ pure $ SimpleTest "testTime"
       $ diff testTimeRef $ unlines [testCal, testUTC, testUT1, testTimeOfDayToDayFraction]

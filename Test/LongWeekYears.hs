@@ -22,5 +22,5 @@ showLongYear year
 
 longWeekYears :: Test
 longWeekYears
-  = pure $ SimpleTest "longWeekYears"
+  = Test $ pure $ SimpleTest "longWeekYears"
       $ diff longWeekYearsRef $ unlines $ map showLongYear [1901 .. 2050]
