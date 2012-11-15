@@ -12,13 +12,7 @@ import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.POSIX
 import System.Locale
 import Test.QuickCheck hiding (Result)
---import qualified Test.QuickCheck
 import Test.TestUtil
---import qualified Test.TestUtil
-
-
---instance RunTest Property where
---    runTest p = run p (TestOptions {no_of_tests = 10000,length_of_tests = 0,debug_tests = False})
 
 ntest :: Int
 ntest = 1000
@@ -32,9 +26,6 @@ testParseTime = testGroup "testParseTime"
     testGroup "properties" (fmap (\(n,prop) -> testProperty n prop) properties)
     ]
 
-{-
-knownFailures
--}
 yearDays :: Integer -> [Day]
 yearDays y = [(fromGregorian y 1 1) .. (fromGregorian y 12 31)]
 
@@ -83,37 +74,11 @@ parseCYY c i = return $ diff (Just (fromGregorian ((c * 100) + i) 1 1)) (parse "
 parseCYY2 :: Integer -> Integer -> IO Result
 parseCYY2 c i = return $ diff (Just (fromGregorian ((c * 100) + i) 1 1)) (parse "%C %y" ((show2 c) ++ " " ++ (show2 i)))
 
-{-
-checkAll :: RunTest p => [(String,p)] -> IO Bool
-checkAll ps = fmap and (mapM checkOne ps)
-
-trMessage :: TestResult -> String
-trMessage (TestOk s _ _) = s
-trMessage (TestExausted s i ss) = "Exhausted " ++ (show s) ++ " " ++ (show i) ++ " " ++ (show ss)
-trMessage (TestFailed ss i) = "Failed " ++ (show ss) ++ " " ++ (show i)
-trMessage (TestAborted ex) = "Aborted " ++ (show ex)
-
-trGood :: TestResult -> Bool
-trGood (TestOk _ _ _) = True
-trGood _ = False
-
-checkOne :: RunTest p => (String,p) -> IO Bool
-checkOne (n,p) =
-    do
-       putStr (rpad 65 ' ' n)
-       tr <- runTest p
-       putStrLn (trMessage tr)
-       return (trGood tr)
-  where
-    rpad n' c xs = xs ++ replicate (n' - length xs) c
--}
-
 parse :: ParseTime t => String -> String -> Maybe t
 parse f t = parseTime defaultTimeLocale f t
 
 format :: (FormatTime t) => String -> t -> String
 format f t = formatTime defaultTimeLocale f t
-
 
 instance Arbitrary Day where
     arbitrary = liftM ModifiedJulianDay $ choose (-313698, 2973483) -- 1000-01-1 to 9999-12-31
