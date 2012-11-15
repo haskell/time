@@ -1,15 +1,10 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Test.TestParseDAT where
 
 import Data.Time
 import Data.Time.Clock.TAI
-
 import Test.TestUtil
 import Test.TestParseDAT_Ref
 import Test.TAI_UTC_DAT
-
---
 
 tods :: [TimeOfDay]
 tods = [
@@ -42,19 +37,17 @@ times =
 	fmap (LocalTime (fromGregorian 1999 01 02)) tods
 
 testParseDAT :: Test
-testParseDAT
-  = Test $ pure "testParseDAT"
-      $ diff testParseDAT_Ref parseDAT
- where
-  parseDAT =
-    let lst = parseTAIUTCDATFile taiUTC_DAT
-    in unlines $
-         map (\lt ->
-                 let utcTime  = localTimeToUTC utc lt
-                     taiTime  = utcToTAITime lst utcTime
-                     utcTime' = taiToUTCTime lst taiTime
-                 in if utcTime == utcTime'
-                      then unwords [show utcTime, "==", show taiTime]
-                      else unwords [ "correction:", show utcTime
-                                   , "->", show taiTime, "->", show utcTime'])
-             times
+testParseDAT = pureTest "testParseDAT" $ diff testParseDAT_Ref parseDAT where
+    parseDAT = 
+        let lst = parseTAIUTCDATFile taiUTC_DAT in 
+        unlines $ map
+        (\lt ->
+            let
+                utcTime  = localTimeToUTC utc lt
+                taiTime  = utcToTAITime lst utcTime
+                utcTime' = taiToUTCTime lst taiTime
+            in if utcTime == utcTime'
+                then unwords [show utcTime, "==", show taiTime]
+                else unwords [ "correction:", show utcTime, "->", show taiTime, "->", show utcTime']
+        )
+        times

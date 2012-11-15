@@ -1,13 +1,8 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Test.AddDays where
 
 import Data.Time.Calendar
-
 import Test.TestUtil
 import Test.AddDaysRef
-
---
 
 days ::[Day]
 days =
@@ -42,6 +37,5 @@ resultDays = do
 	return ((showGregorian day) ++ " + " ++ (show increment) ++ " * " ++ aname ++ " = " ++ showGregorian (adder increment day))
 
 addDaysTest :: Test
-addDaysTest
-  = Test $ pure "addDays"
-      $ diff addDaysRef $ unlines resultDays
+addDaysTest = pureTest "addDays" $
+    diff addDaysRef $ unlines resultDays

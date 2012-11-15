@@ -1,15 +1,10 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Test.TestTime where
 
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time
-
 import Test.TestUtil
 import Test.TestTimeRef
-
---
 
 showCal :: Integer -> String
 showCal mjd
@@ -107,6 +102,5 @@ testTimeOfDayToDayFraction
                , show $ f $ TimeOfDay 12 34 56.789123456789 ]
 
 testTime :: Test
-testTime
-  = Test $ pure "testTime"
-      $ diff testTimeRef $ unlines [testCal, testUTC, testUT1, testTimeOfDayToDayFraction]
+testTime = pureTest "testTime" $
+    diff testTimeRef $ unlines [testCal, testUTC, testUT1, testTimeOfDayToDayFraction]

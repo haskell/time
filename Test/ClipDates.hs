@@ -1,4 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
 {-# Language TupleSections #-}
 
 module Test.ClipDates where
@@ -6,11 +5,8 @@ module Test.ClipDates where
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
-
 import Test.TestUtil
 import Test.ClipDatesRef
-
---
 
 yearAndDay :: (Integer,Int) -> String
 yearAndDay (y,d) = (show y) ++ "-" ++ (show d) ++ " = " ++ (showOrdinalDate (fromOrdinalDate y d))
@@ -34,23 +30,17 @@ tupleUp3 l1 l2 l3
 --
 
 clipDates :: Test
-clipDates
-  = Test $ pure "clipDates"
-      $ let yad  = unlines $ map yearAndDay
-                   $ tupleUp2 [1968,1969,1971] [-4,0,1,200,364,365,366,367,700]
+clipDates = pureTest "clipDates" $
+    let 
+        yad  = unlines $ map yearAndDay $ 
+            tupleUp2 [1968,1969,1971] [-4,0,1,200,364,365,366,367,700]
                               
 
-            greg = unlines $ map gregorian
-                   $ tupleUp3 [1968,1969,1971]
-                              [-20,-1,0,1,2,12,13,17]
-                              [-7,-1,0,1,2,27,28,29,30,31,32,40]
+        greg = unlines $ map gregorian $ 
+            tupleUp3 [1968,1969,1971] [-20,-1,0,1,2,12,13,17] [-7,-1,0,1,2,27,28,29,30,31,32,40]
 
-            iso  = unlines $ map iSOWeekDay
-                   $ tupleUp3 [1968,1969,2004]
-                              [-20,-1,0,1,20,51,52,53,54]
-                              [-2,-1,0,1,4,6,7,8,9]
+        iso  = unlines $ map iSOWeekDay $ 
+            tupleUp3 [1968,1969,2004] [-20,-1,0,1,20,51,52,53,54] [-2,-1,0,1,4,6,7,8,9]
 
-        in diff clipDatesRef 
-               $ concat [ "YearAndDay\n", yad
-                        , "Gregorian\n", greg
-                        , "ISOWeekDay\n", iso ]
+    in diff clipDatesRef $ 
+        concat [ "YearAndDay\n", yad, "Gregorian\n", greg, "ISOWeekDay\n", iso ]

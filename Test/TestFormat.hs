@@ -1,20 +1,15 @@
-{-# OPTIONS -XForeignFunctionInterface -Wall -Werror #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
 
 module Test.TestFormat where
 
 import Data.Time
 import Data.Time.Clock.POSIX
-
 import Data.Char
-
 import System.Locale
 import Foreign
 import Foreign.C
 import Control.Exception;
-
 import Test.TestUtil
-
---
 
 {-
 	size_t format_time (
@@ -75,17 +70,14 @@ times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 	(fmap getYearP1 years) ++ (fmap getYearP2 years) ++ (fmap getYearP3 years) ++ (fmap getYearP4 years)
 
-compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> TestInstance
-compareFormat testname modUnix fmt zone time =
-  let ctime = utcToZonedTime zone time in
-  impure (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
+compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> Test
+compareFormat testname modUnix fmt zone time = let
+    ctime = utcToZonedTime zone time 
+    haskellText = formatTime locale fmt ctime
+    in ioTest (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
     do
-      let haskellText = formatTime locale fmt ctime
-      unixText <- fmap modUnix (unixFormatTime fmt zone time)
-      if haskellText == unixText
-        then return Pass
-        else return $ Fail $ unwords
-          [ "Mismatch for", show ctime ++ ": UNIX=\"" ++ unixText ++ "\", TimeLib=\"" ++ haskellText ++ "\"."]
+       unixText <- fmap modUnix (unixFormatTime fmt zone time)
+       return $ diff unixText haskellText
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
@@ -126,18 +118,13 @@ safeString s = do
       return (c:ss)
    [] -> return ""
 
-compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> TestInstance
-compareExpected testname fmt str expected = impure (testname ++ ": " ++ (show fmt) ++ " on " ++ (show str)) $ do
+compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> Test
+compareExpected testname fmt str expected = ioTest (testname ++ ": " ++ (show fmt) ++ " on " ++ (show str)) $ do
     let found = parseTime defaultTimeLocale fmt str
     mex <- getBottom found
     case mex of
         Just ex -> return $ Fail $ unwords [ "Exception: expected" , show expected ++ ", caught", show ex]
-        Nothing -> 
-            if found == expected
-                then return Pass
-                else do
-                    sf <- safeString (show found)
-                    return $ Fail $ unwords [ "Mismatch: expected", show expected ++ ", found", sf]
+        Nothing -> return $ diff expected found
 
 class (ParseTime t) => TestParse t where
     expectedParse :: String -> String -> Maybe t
@@ -154,7 +141,7 @@ instance TestParse TimeZone
 instance TestParse ZonedTime
 instance TestParse UTCTime
 
-checkParse :: String -> String -> [TestInstance]
+checkParse :: String -> String -> [Test]
 checkParse fmt str
   =         [ compareExpected "Day" fmt str (expectedParse fmt str :: Maybe Day)
              , compareExpected "TimeOfDay" fmt str (expectedParse fmt str :: Maybe TimeOfDay)
@@ -162,20 +149,20 @@ checkParse fmt str
              , compareExpected "TimeZone" fmt str (expectedParse fmt str :: Maybe TimeZone)
              , compareExpected "UTCTime" fmt str (expectedParse fmt str :: Maybe UTCTime) ]
 
-testCheckParse :: [TestInstance]
+testCheckParse :: [Test]
 testCheckParse = concatMap (\fmt -> concatMap (\str -> checkParse fmt str) somestrings) formats
 
-testCompareFormat :: [TestInstance]
+testCompareFormat :: [Test]
 testCompareFormat = concatMap (\fmt -> concatMap (\time -> fmap (\zone -> compareFormat "compare format" id fmt zone time) zones) times) formats
 
-testCompareHashFormat :: [TestInstance]
+testCompareHashFormat :: [Test]
 testCompareHashFormat = concatMap (\fmt -> concatMap (\time -> fmap (\zone -> compareFormat "compare hashformat" (fmap toLower) fmt zone time) zones) times) hashformats
 
 testFormats :: [Test]
 testFormats = [
-    fastTestInstanceGroup "checkParse" testCheckParse,
-    fastTestInstanceGroup "compare format" testCompareFormat,
-    fastTestInstanceGroup "compare hashformat" testCompareHashFormat
+    testGroup "checkParse" testCheckParse,
+    testGroup "compare format" testCompareFormat,
+    testGroup "compare hashformat" testCompareHashFormat
     ]
 
 testFormat :: Test

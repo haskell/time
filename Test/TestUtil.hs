@@ -1,46 +1,43 @@
+{-# OPTIONS -fno-warn-overlapping-patterns #-}
 module Test.TestUtil
-  (
-  module Test.TestUtil
-  , module Distribution.TestSuite
-  ) where
+    (
+    module Test.TestUtil,
+    module Test.Framework,
+    module Test.Framework.Providers.QuickCheck2
+    ) where
 
-import Distribution.TestSuite
+import Test.Framework
+import Test.Framework.Providers.API
+import Test.Framework.Providers.QuickCheck2
 
-impure :: String -> IO Result -> TestInstance
-impure name mresult = TestInstance {
-    run = fmap Finished mresult,
-    name = name,
-    tags = [],
-    options = [],
-    setOption = \_ _ -> Left "unsupported"
-}
+data Result = Pass | Fail String
 
-pure :: String -> Result -> TestInstance
-pure name result = impure name (return result)
+instance Show Result where
+    show Pass = "passed"
+    show (Fail s) = "failed: " ++ s
 
-diff :: String -> String -> Result
-diff s t | s == t = Pass
-diff _ _ = Fail ""
+instance TestResultlike () Result where
+    testSucceeded Pass = True
+    testSucceeded (Fail _) = False
 
-finish :: IO Progress -> IO Result
-finish iop = do
-    progress <- iop
-    case progress of
-        Finished result -> return result
-        Progress _ iop' -> finish iop'
+instance Testlike () Result (IO Result) where
+    testTypeName _ = "Cases"
+    runTest _ ior = do
+        r <- ior
+        return (Finished r,return ())
 
-concatRun :: [IO Progress] -> IO Result
-concatRun [] = return Pass
-concatRun (iop:iops) = do
-    result <- finish iop
-    case result of
-        Pass -> concatRun iops
-        _ -> return result
+ioTest :: String -> IO Result -> Test
+ioTest = Test
 
-concatTestInstance :: String -> [TestInstance] -> TestInstance
-concatTestInstance tname tis = impure tname (concatRun (fmap run tis))
+pureTest :: String -> Result -> Test
+pureTest name result = ioTest name (return result)
 
-fastTestInstanceGroup :: String -> [TestInstance] -> Test
-fastTestInstanceGroup tname tis | False = testGroup tname (fmap Test tis)
-fastTestInstanceGroup tname tis = Test (concatTestInstance tname tis)
+diff :: (Show a,Eq a) => a -> a -> Result
+diff expected found | expected == found = Pass
+diff expected found = Fail ("expected [" ++ (show expected) ++ "] but found [" ++ (show found) ++ "]")
 
+data ExhaustiveTest = forall t. (Show t) => MkExhaustiveTest String [t] (t -> IO Result)
+
+exhaustiveTestInstances :: ExhaustiveTest -> Test
+exhaustiveTestInstances (MkExhaustiveTest name cases f) = testGroup name (fmap toTI cases) where
+    toTI t = ioTest (show t) (f t)

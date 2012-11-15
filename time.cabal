@@ -34,13 +34,17 @@ extra-tmp-files:
     include/HsTimeConfig.h
 
 library
-    build-depends: base >= 4,
-                   deepseq >= 1.1,
-                   old-locale
+    build-depends: 
+        base >= 4,
+        deepseq >= 1.1,
+        old-locale
     ghc-options: -Wall
     default-language: Haskell2010
     if impl(ghc)
-        default-extensions: Rank2Types DeriveDataTypeable StandaloneDeriving
+        default-extensions: 
+            Rank2Types 
+            DeriveDataTypeable 
+            StandaloneDeriving
         cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
     else
         if impl(hugs)
@@ -85,58 +89,78 @@ library
             HsTime.h
             HsTimeConfig.h
 
-Test-Suite tests
-  type: detailed-0.9
-  test-module: Test.Tests
-  default-language: Haskell2010
-  default-extensions: Rank2Types, CPP, DeriveDataTypeable, StandaloneDeriving 
-  cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
-  c-sources: cbits/HsTime.c Test/TestFormatStuff.c
-  include-dirs: include
-  build-depends: base, deepseq, Cabal >= 1.16, old-locale, process
-  other-modules:
-    Test.TestTime
-    Test.TestTimeRef
-    Test.TestParseDAT
-    Test.TAI_UTC_DAT
-    Test.TestParseDAT_Ref
-    Test.TestMonthDay
-    Test.TestMonthDayRef
-    Test.TestFormat
-    Test.TestEaster
-    Test.TestEasterRef
-    Test.TestCalendars
-    Test.TestCalendarsRef
-    Test.LongWeekYears
-    Test.LongWeekYearsRef
-    Test.ConvertBack
-    Test.ClipDates
-    Test.ClipDatesRef
-    Test.AddDays
-    Test.AddDaysRef
-    Test.TestUtil
+test-suite tests
+    type: exitcode-stdio-1.0
+    default-language: Haskell2010
+    default-extensions: 
+        Rank2Types
+        CPP
+        DeriveDataTypeable
+        StandaloneDeriving
+        ExistentialQuantification
+        MultiParamTypeClasses
+        FlexibleInstances
+        UndecidableInstances
+        ScopedTypeVariables
+    cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
+    ghc-options: -Wall
+    c-sources: cbits/HsTime.c Test/TestFormatStuff.c
+    include-dirs: include
+    build-depends: 
+        base,
+        deepseq,
+        Cabal >= 1.16,
+        old-locale,
+        process,
+        QuickCheck >= 2.5.1,
+        test-framework >= 0.6.1,
+        test-framework-quickcheck2 >= 0.2.12
+    main-is: Test.hs
+    other-modules:
+        Test.Tests
+        Test.TestTime
+        Test.TestTimeRef
+        Test.TestParseDAT
+        Test.TAI_UTC_DAT
+        Test.TestParseDAT_Ref
+        Test.TestParseTime
+        Test.TestMonthDay
+        Test.TestMonthDayRef
+        Test.TestFormat
+        Test.TestEaster
+        Test.TestEasterRef
+        Test.TestCalendars
+        Test.TestCalendarsRef
+        Test.LongWeekYears
+        Test.LongWeekYearsRef
+        Test.ConvertBack
+        Test.ClipDates
+        Test.ClipDatesRef
+        Test.AddDays
+        Test.AddDaysRef
+        Test.TestUtil
 
-    Data.Time.Calendar.Private,
-    Data.Time.Calendar.Days,
-    Data.Time.Calendar.Gregorian,
-    Data.Time.Calendar.JulianYearDay,
-    Data.Time.Clock.Scale,
-    Data.Time.Clock.UTC,
-    Data.Time.Clock.CTimeval,
-    Data.Time.Clock.UTCDiff,
-    Data.Time.LocalTime.TimeZone,
-    Data.Time.LocalTime.TimeOfDay,
-    Data.Time.LocalTime.LocalTime,
-    Data.Time.Format.Parse
-    Data.Time.Calendar,
-    Data.Time.Calendar.MonthDay,
-    Data.Time.Calendar.OrdinalDate,
-    Data.Time.Calendar.WeekDate,
-    Data.Time.Calendar.Julian,
-    Data.Time.Calendar.Easter,
-    Data.Time.Clock,
-    Data.Time.Clock.POSIX,
-    Data.Time.Clock.TAI,
-    Data.Time.LocalTime,
-    Data.Time.Format,
-    Data.Time
+        Data.Time.Calendar.Private,
+        Data.Time.Calendar.Days,
+        Data.Time.Calendar.Gregorian,
+        Data.Time.Calendar.JulianYearDay,
+        Data.Time.Clock.Scale,
+        Data.Time.Clock.UTC,
+        Data.Time.Clock.CTimeval,
+        Data.Time.Clock.UTCDiff,
+        Data.Time.LocalTime.TimeZone,
+        Data.Time.LocalTime.TimeOfDay,
+        Data.Time.LocalTime.LocalTime,
+        Data.Time.Format.Parse
+        Data.Time.Calendar,
+        Data.Time.Calendar.MonthDay,
+        Data.Time.Calendar.OrdinalDate,
+        Data.Time.Calendar.WeekDate,
+        Data.Time.Calendar.Julian,
+        Data.Time.Calendar.Easter,
+        Data.Time.Clock,
+        Data.Time.Clock.POSIX,
+        Data.Time.Clock.TAI,
+        Data.Time.LocalTime,
+        Data.Time.Format,
+        Data.Time

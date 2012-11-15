@@ -1,15 +1,10 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Test.ConvertBack where
 
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Julian
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
-
 import Test.TestUtil
-
---
 
 checkDay :: (Show t) => (Day -> t) -> (t -> Day) -> (t -> Maybe Day) -> Day -> String
 checkDay encodeDay decodeDay decodeDayValid day
@@ -41,6 +36,5 @@ days = [ModifiedJulianDay 50000 .. ModifiedJulianDay 50200] ++
 	(fmap (\year -> (fromGregorian year 1 4)) [1980..2000])
 
 convertBack :: Test
-convertBack
-  = Test $ pure "convertBack"
-      $ diff "" $ concatMap (\ch -> concatMap ch days) checkers
+convertBack = pureTest "convertBack" $
+    diff "" $ concatMap (\ch -> concatMap ch days) checkers

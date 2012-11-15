@@ -12,7 +12,7 @@ build: configure
 	cabal build --ghc-options=-Werror
 
 test: build
-	cabal test
+	cabal test --test-option=--hide-successes --test-option=--color
 
 haddock: configure
 	cabal haddock
