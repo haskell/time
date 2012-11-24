@@ -34,10 +34,5 @@ pureTest name result = ioTest name (return result)
 
 diff :: (Show a,Eq a) => a -> a -> Result
 diff expected found | expected == found = Pass
-diff expected found = Fail ("expected [" ++ (show expected) ++ "] but found [" ++ (show found) ++ "]")
+diff expected found = Fail ("expected " ++ (show expected) ++ " but found " ++ (show found))
 
-data ExhaustiveTest = forall t. (Show t) => MkExhaustiveTest String [t] (t -> IO Result)
-
-exhaustiveTestInstances :: ExhaustiveTest -> Test
-exhaustiveTestInstances (MkExhaustiveTest name cases f) = testGroup name (fmap toTI cases) where
-    toTI t = ioTest (show t) (f t)

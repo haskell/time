@@ -22,40 +22,48 @@ type NamedProperty = (String, Property)
 testParseTime :: Test
 testParseTime = testGroup "testParseTime"
     [
-    testGroup "extests" (fmap exhaustiveTestInstances extests),
+    testGroup "extests" extests,
     testGroup "properties" (fmap (\(n,prop) -> testProperty n prop) properties)
     ]
 
 yearDays :: Integer -> [Day]
 yearDays y = [(fromGregorian y 1 1) .. (fromGregorian y 12 31)]
 
-extests :: [ExhaustiveTest]
+makeExhaustiveTest :: String -> [t] -> (t -> Test) -> Test
+makeExhaustiveTest name cases f = testGroup name (fmap f cases)
+
+extests :: [Test]
 extests = [
-    MkExhaustiveTest "parse %y" [0..99] parseYY,
-    MkExhaustiveTest "parse %C %y 1900s" [0..99] (parseCYY 19),
-    MkExhaustiveTest "parse %C %y 2000s" [0..99] (parseCYY 20),
-    MkExhaustiveTest "parse %C %y 1400s" [0..99] (parseCYY 14),
-    MkExhaustiveTest "parse %C %y 700s" [0..99] (parseCYY2 7),
-    MkExhaustiveTest "parse %C %y 700s" [0..99] (parseCYY 7)
+    makeExhaustiveTest "parse %y" [0..99] parseYY,
+    makeExhaustiveTest "parse %-C %y 1900s" [0,1,50,99] (parseCYY 19),
+    makeExhaustiveTest "parse %-C %y 2000s" [0,1,50,99] (parseCYY 20),
+    makeExhaustiveTest "parse %-C %y 1400s" [0,1,50,99] (parseCYY 14),
+    makeExhaustiveTest "parse %C %y 0700s" [0,1,50,99] (parseCYY2 7),
+    makeExhaustiveTest "parse %-C %y 700s" [0,1,50,99] (parseCYY 7),
+    makeExhaustiveTest "parse %-C %y 10000s" [0,1,50,99] (parseCYY 100),
+    makeExhaustiveTest "parse %-C centuries" [20..100] (parseCentury " "),
+    makeExhaustiveTest "parse %-C century X" [1,10,20,100] (parseCentury "X"),
+    makeExhaustiveTest "parse %-C century 2sp" [1,10,20,100] (parseCentury "  "),
+    makeExhaustiveTest "parse %-C century 5sp" [1,10,20,100] (parseCentury "     ")
     ] ++
     (concat $ fmap
     (\y -> [
-    (MkExhaustiveTest "parse %Y%m%d" (yearDays y) parseYMD),
-    (MkExhaustiveTest "parse %Y %m %d" (yearDays y) parseYearDayD),
-    (MkExhaustiveTest "parse %Y %-m %e" (yearDays y) parseYearDayE)
-    ]) [1,20,753,2000,2011,10001])
+    (makeExhaustiveTest "parse %Y%m%d" (yearDays y) parseYMD),
+    (makeExhaustiveTest "parse %Y %m %d" (yearDays y) parseYearDayD),
+    (makeExhaustiveTest "parse %Y %-m %e" (yearDays y) parseYearDayE)
+    ]) [1,4,20,753,2000,2011,10001])
 
-parseYMD :: Day -> IO Result
+parseYMD :: Day -> Test
 parseYMD day = case toGregorian day of
-    (y,m,d) -> return $ diff (Just day) (parse "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d)))
+    (y,m,d) -> parseTest (Just day) "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))
 
-parseYearDayD :: Day -> IO Result
+parseYearDayD :: Day -> Test
 parseYearDayD day = case toGregorian day of
-    (y,m,d) -> return $ diff (Just day) (parse "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d)))
+    (y,m,d) -> parseTest (Just day) "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))
 
-parseYearDayE :: Day -> IO Result
+parseYearDayE :: Day -> Test
 parseYearDayE day = case toGregorian day of
-    (y,m,d) -> return $ diff (Just day) (parse "%Y %-m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d)))
+    (y,m,d) -> parseTest (Just day) "%Y %-m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))
 
 -- | 1969 - 2068
 expectedYear :: Integer -> Integer
@@ -65,14 +73,35 @@ expectedYear i = 2000 + i
 show2 :: (Show n,Integral n) => n -> String
 show2 i = (show (div i 10)) ++ (show (mod i 10))
 
-parseYY :: Integer -> IO Result
-parseYY i = return $ diff (Just (fromGregorian (expectedYear i) 1 1)) (parse "%y" (show2 i))
+parseYY :: Integer -> Test
+parseYY i = parseTest (Just (fromGregorian (expectedYear i) 1 1)) "%y" (show2 i)
 
-parseCYY :: Integer -> Integer -> IO Result
-parseCYY c i = return $ diff (Just (fromGregorian ((c * 100) + i) 1 1)) (parse "%C %y" ((show c) ++ " " ++ (show2 i)))
+parseCYY :: Integer -> Integer -> Test
+parseCYY c i = parseTest (Just (fromGregorian ((c * 100) + i) 1 1)) "%-C %y" ((show c) ++ " " ++ (show2 i))
 
-parseCYY2 :: Integer -> Integer -> IO Result
-parseCYY2 c i = return $ diff (Just (fromGregorian ((c * 100) + i) 1 1)) (parse "%C %y" ((show2 c) ++ " " ++ (show2 i)))
+parseCYY2 :: Integer -> Integer -> Test
+parseCYY2 c i = parseTest (Just (fromGregorian ((c * 100) + i) 1 1)) "%C %y" ((show2 c) ++ " " ++ (show2 i))
+
+parseCentury :: String -> Integer -> Test
+parseCentury int c = parseTest (Just (fromGregorian (c * 100) 1 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
+
+parseTest :: (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
+parseTest expected formatStr target = 
+    let
+        found = parse formatStr target
+        result = diff expected found
+        name = (show formatStr) ++ " of " ++ (show target)
+    in pureTest name result
+
+readsTest :: (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
+readsTest expected formatStr target = 
+    let
+        ff (Just e) = [(e,"")]
+        ff Nothing = []
+        found = readsTime defaultTimeLocale formatStr target
+        result = diff (ff expected) found
+        name = (show formatStr) ++ " of " ++ (show target)
+    in pureTest name result
 
 parse :: ParseTime t => String -> String -> Maybe t
 parse f t = parseTime defaultTimeLocale f t
@@ -370,10 +399,7 @@ partialTimeOfDayFormats = map FormatString
 
 partialLocalTimeFormats :: [FormatString LocalTime]
 partialLocalTimeFormats = map FormatString 
-    [
-     -- %c does not include second decimals 
-     "%c" 
-    ]
+    [ ]
 
 partialZonedTimeFormats :: [FormatString ZonedTime]
 partialZonedTimeFormats = map FormatString 

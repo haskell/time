@@ -1,5 +1,6 @@
 module Test.TestParseDAT_Ref where
 
+testParseDAT_Ref :: String
 testParseDAT_Ref =
  unlines
   [ "1998-04-02 00:00:00 UTC == 1998-04-02 00:00:31 TAI"

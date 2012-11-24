@@ -1,5 +1,6 @@
 module Test.TestEasterRef where
 
+testEasterRef :: String
 testEasterRef =
  unlines
   [ "2003-12-27 Saturday -> 2003-12-28 Sunday"

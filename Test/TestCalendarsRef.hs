@@ -1,5 +1,6 @@
 module Test.TestCalendarsRef where
 
+testCalendarsRef :: String
 testCalendarsRef =
  unlines
   [ " == MJD -678576 == Gregorian 0000-12-31 == Julian 0001-01-02 == ISO 8601 0000-W52-7"

@@ -1,5 +1,6 @@
 module Test.TestMonthDayRef where
 
+testMonthDayRef :: String
 testMonthDayRef =
  unlines
   [ "Regular:"

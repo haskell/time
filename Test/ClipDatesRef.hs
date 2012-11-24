@@ -1,5 +1,6 @@
 module Test.ClipDatesRef where
 
+clipDatesRef :: String
 clipDatesRef =
  unlines 
   [ "YearAndDay"

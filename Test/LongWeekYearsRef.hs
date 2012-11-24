@@ -1,5 +1,6 @@
 module Test.LongWeekYearsRef where
 
+longWeekYearsRef :: String
 longWeekYearsRef =
  unlines
   [ "1901:   "

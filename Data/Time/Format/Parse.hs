@@ -77,9 +77,9 @@ parseTime :: ParseTime t =>
           -> String     -- ^ Input string.
           -> Maybe t    -- ^ The time value, or 'Nothing' if the input could
                         -- not be parsed using the given format.
-parseTime l fmt s = case readsTime l fmt s of
-                      [(t,r)] | all isSpace r -> Just t
-                      _        -> Nothing
+parseTime l fmt s = case goodReadsTime l fmt s of
+    [t] -> Just t
+    _   -> Nothing
 
 -- | Parse a time value given a format string. Fails if the input could
 -- not be parsed using the given format. See 'parseTime' for details.
@@ -88,10 +88,17 @@ readTime :: ParseTime t =>
          -> String     -- ^ Format string.
          -> String     -- ^ Input string.
          -> t          -- ^ The time value.
-readTime l fmt s = case readsTime l fmt s of
-                      [(t,r)] | all isSpace r -> t
-                      [(_,x)]  -> error $ "readTime: junk at end of " ++ show x
-                      _        -> error $ "readsTime: bad input " ++ show s
+readTime l fmt s = case goodReadsTime l fmt s of
+    [t] -> t
+    []  -> error $ "readTime: no parse of " ++ show s
+    _   -> error $ "readTime: multiple parses of " ++ show s
+
+goodReadsTime :: ParseTime t =>
+             TimeLocale -- ^ Time locale.
+          -> String     -- ^ Format string
+          -> String     -- ^ Input string.
+          -> [t]
+goodReadsTime l fmt s = [t | (t,r) <- readsTime l fmt s, all isSpace r]
 
 -- | Parse a time value given a format string.  See 'parseTime' for details.
 readsTime :: ParseTime t =>
@@ -137,63 +144,99 @@ parseFormat l = p
         pc mpad c   = [Value mpad c]
 
 parseInput :: TimeLocale -> DateFormat -> ReadP [(Char,String)]
-parseInput l = liftM catMaybes . mapM p
-  where p (Value mpad c)   = parseValue l mpad c >>= return . Just . (,) c
-        p WhiteSpace  = skipSpaces >> return Nothing
-        p (Literal c) = char c >> return Nothing
+parseInput _ [] = return []
+parseInput l (Value mpad c:ff) = do
+  s <- parseValue l mpad c
+  r <- parseInput l ff
+  return ((c,s):r)
+parseInput l (Literal c:ff) = do
+  _ <- char c
+  parseInput l ff
+parseInput l (WhiteSpace:ff) = do
+  _ <- satisfy isSpace
+  case ff of
+     (WhiteSpace:_) -> return ()
+     _ -> skipSpaces
+  parseInput l ff
 
 -- | Get the string corresponding to the given format specifier.
 parseValue :: TimeLocale -> Maybe Padding -> Char -> ReadP String
 parseValue l mpad c = 
     case c of
+      -- century
+      'C' -> digits SpacePadding 2
+      'f' -> digits SpacePadding 2
+
+      -- year
+      'Y' -> digits SpacePadding 4
+      'G' -> digits SpacePadding 4
+      
+      -- year of century
+      'y' -> digits ZeroPadding 2
+      'g' -> digits ZeroPadding 2
+
+      -- month of year
+      'B' -> oneOf (map fst (months l))
+      'b' -> oneOf (map snd (months l))
+      'm' -> digits ZeroPadding 2
+      
+      -- day of month
+      'd' -> digits ZeroPadding 2
+      'e' -> digits SpacePadding 2
+      
+      -- week of year
+      'V' -> digits ZeroPadding 2
+      'U' -> digits ZeroPadding 2
+      'W' -> digits ZeroPadding 2
+      
+      -- day of week
+      'u' -> oneOf $ map (:[]) ['1'..'7']
+      'a' -> oneOf (map snd (wDays l))
+      'A' -> oneOf (map fst (wDays l))
+      'w' -> oneOf $ map (:[]) ['0'..'6']
+      
+      -- day of year
+      'j' -> digits ZeroPadding 3
+
+      -- dayhalf of day (i.e. AM or PM)
+      'P' -> oneOf (let (am,pm) = amPm l in [am, pm])
+      'p' -> oneOf (let (am,pm) = amPm l in [am, pm])
+
+      -- hour of day (i.e. 24h)
+      'H' -> digits ZeroPadding 2
+      'k' -> digits SpacePadding 2
+      
+      -- hour of dayhalf (i.e. 12h)
+      'I' -> digits ZeroPadding 2
+      'l' -> digits SpacePadding 2
+      
+      -- minute of hour
+      'M' -> digits ZeroPadding 2
+      
+      -- second of minute
+      'S' -> digits ZeroPadding 2
+      
+      -- picosecond of second
+      'q' -> digits ZeroPadding 12
+      'Q' -> liftM2 (:) (char '.') (munch isDigit) <++ return ""
+
+      -- time zone
       'z' -> numericTZ
       'Z' -> munch1 isAlpha <++
              numericTZ <++
              return "" -- produced by %Z for LocalTime
-      'P' -> oneOf (let (am,pm) = amPm l in [am, pm])
-      'p' -> oneOf (let (am,pm) = amPm l in [am, pm])
-      'H' -> digits ZeroPadding 2
-      'I' -> digits ZeroPadding 2
-      'k' -> digits SpacePadding 2
-      'l' -> digits SpacePadding 2
-      'M' -> digits ZeroPadding 2 
-      'S' -> digits ZeroPadding 2
-      'q' -> digits ZeroPadding 12
-      'Q' -> liftM2 (:) (char '.') (munch isDigit) <++ return ""
+
+      -- seconds since epoch
       's' -> (char '-' >> liftM ('-':) (munch1 isDigit)) 
              <++ munch1 isDigit
-      'Y' -> digits ZeroPadding 4
-      'y' -> digits ZeroPadding 2
-      'C' -> digits ZeroPadding 2
-      'B' -> oneOf (map fst (months l))
-      'b' -> oneOf (map snd (months l))
-      'm' -> digits ZeroPadding 2
-      'd' -> digits ZeroPadding 2
-      'e' -> digits SpacePadding 2
-      'j' -> digits ZeroPadding 3
-      'G' -> digits ZeroPadding 4
-      'g' -> digits ZeroPadding 2
-      'f' -> digits ZeroPadding 2
-      'V' -> digits ZeroPadding 2
-      'u' -> oneOf $ map (:[]) ['1'..'7']
-      'a' -> oneOf (map snd (wDays l))
-      'A' -> oneOf (map fst (wDays l))
-      'U' -> digits ZeroPadding 2
-      'w' -> oneOf $ map (:[]) ['0'..'6']
-      'W' -> digits ZeroPadding 2
+
       _   -> fail $ "Unknown format character: " ++ show c
   where
     oneOf = choice . map string
     digitsforce ZeroPadding n = count n (satisfy isDigit)
-    digitsforce SpacePadding n = skipSpaces >> oneUpTo n (satisfy isDigit)
-    digitsforce NoPadding n = oneUpTo n (satisfy isDigit)
+    digitsforce SpacePadding _n = skipSpaces >> many1 (satisfy isDigit)
+    digitsforce NoPadding _n = many1 (satisfy isDigit)
     digits pad = digitsforce (fromMaybe pad mpad)
-    oneUpTo :: Int -> ReadP a -> ReadP [a]
-    oneUpTo 0 _ = pfail
-    oneUpTo n x = liftM2 (:) x (upTo (n-1) x)
-    upTo :: Int -> ReadP a -> ReadP [a]
-    upTo 0 _ = return []
-    upTo n x = (oneUpTo n x) <++ return []
     numericTZ = do s <- choice [char '+', char '-']
                    h <- digitsforce ZeroPadding 2
                    optional (char ':')
@@ -205,13 +248,13 @@ parseValue l mpad c =
 -- * Instances for the time package types
 --
 
-data DayComponent = Year Integer -- 0-99, last two digits of both real years and week years
-                  | Century Integer -- century of all years
-                  | Month Int -- 1-12
-                  | Day Int -- 1-31
+data DayComponent = Century Integer -- century of all years
+                  | CenturyYear Integer -- 0-99, last two digits of both real years and week years
+                  | YearMonth Int -- 1-12
+                  | MonthDay Int -- 1-31
                   | YearDay Int -- 1-366
                   | WeekDay Int -- 1-7 (mon-sun)
-                  | Week WeekType Int -- 1-53 or 0-53
+                  | YearWeek WeekType Int -- 1-53 or 0-53
 
 data WeekType = ISOWeek | SundayWeek | MondayWeek
 
@@ -221,31 +264,31 @@ instance ParseTime Day where
       f c x = 
         case c of
           -- %Y: year
-          'Y' -> let y = read x in [Century (y `div` 100), Year (y `mod` 100)]
+          'Y' -> let y = read x in [Century (y `div` 100), CenturyYear (y `mod` 100)]
           -- %y: last two digits of year, 00 - 99
-          'y' -> [Year (read x)]
-          -- %C: century (being the first two digits of the year), 00 - 99
+          'y' -> [CenturyYear (read x)]
+          -- %C: century (all but the last two digits of the year), 00 - 99
           'C' -> [Century (read x)]
           -- %B: month name, long form (fst from months locale), January - December
-          'B' -> [Month (1 + fromJust (elemIndex (up x) (map (up . fst) (months l))))]
+          'B' -> [YearMonth (1 + fromJust (elemIndex (up x) (map (up . fst) (months l))))]
           -- %b: month name, short form (snd from months locale), Jan - Dec
-          'b' -> [Month (1 + fromJust (elemIndex (up x) (map (up . snd) (months l))))]
+          'b' -> [YearMonth (1 + fromJust (elemIndex (up x) (map (up . snd) (months l))))]
           -- %m: month of year, leading 0 as needed, 01 - 12
-          'm' -> [Month (read x)]
+          'm' -> [YearMonth (read x)]
           -- %d: day of month, leading 0 as needed, 01 - 31
-          'd' -> [Day (read x)]
+          'd' -> [MonthDay (read x)]
           -- %e: day of month, leading space as needed, 1 - 31
-          'e' -> [Day (read x)]
+          'e' -> [MonthDay (read x)]
           -- %j: day of year for Ordinal Date format, 001 - 366
           'j' -> [YearDay (read x)]
           -- %G: year for Week Date format
-          'G' -> let y = read x in [Century (y `div` 100), Year (y `mod` 100)]
+          'G' -> let y = read x in [Century (y `div` 100), CenturyYear (y `mod` 100)]
           -- %g: last two digits of year for Week Date format, 00 - 99
-          'g' -> [Year (read x)]
-          -- %f century (first two digits of year) for Week Date format, 00 - 99
+          'g' -> [CenturyYear (read x)]
+          -- %f century (all but the last two digits of the year), 00 - 99
           'f' -> [Century (read x)]
           -- %V: week for Week Date format, 01 - 53
-          'V' -> [Week ISOWeek (read x)]
+          'V' -> [YearWeek ISOWeek (read x)]
           -- %u: day for Week Date format, 1 - 7
           'u' -> [WeekDay (read x)]
           -- %a: day of week, short form (snd from wDays locale), Sun - Sat
@@ -253,30 +296,30 @@ instance ParseTime Day where
           -- %A: day of week, long form (fst from wDays locale), Sunday - Saturday
           'A' -> [WeekDay (1 + (fromJust (elemIndex (up x) (map (up . fst) (wDays l))) + 6) `mod` 7)]
           -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 01 - 53
-          'U' -> [Week SundayWeek (read x)]
+          'U' -> [YearWeek SundayWeek (read x)]
           -- %w: day of week number, 0 (= Sunday) - 6 (= Saturday)
           'w' -> [WeekDay (((read x + 6) `mod` 7) + 1)]
           -- %W: week number of year, where weeks start on Monday (as mondayStartWeek), 01 - 53
-          'W' -> [Week MondayWeek (read x)]
+          'W' -> [YearWeek MondayWeek (read x)]
           _   -> []
 
       buildDay cs = rest cs
         where
         y = let 
-                d = safeLast 70 [x | Year x <- cs]
+                d = safeLast 70 [x | CenturyYear x <- cs]
                 c = safeLast (if d >= 69 then 19 else 20) [x | Century x <- cs]
              in 100 * c + d
 
-        rest (Month m:_)  = let d = safeLast 1 [x | Day x <- cs]
+        rest (YearMonth m:_)  = let d = safeLast 1 [x | MonthDay x <- cs]
                              in fromGregorian y m d
         rest (YearDay d:_) = fromOrdinalDate y d
-        rest (Week wt w:_) = let d = safeLast 4 [x | WeekDay x <- cs]
+        rest (YearWeek wt w:_) = let d = safeLast 4 [x | WeekDay x <- cs]
                               in case wt of
                                    ISOWeek    -> fromWeekDate y w d
                                    SundayWeek -> fromSundayStartWeek y w (d `mod` 7)
                                    MondayWeek -> fromMondayStartWeek y w d
         rest (_:xs)        = rest xs
-        rest []            = rest [Month 1]
+        rest []            = rest [YearMonth 1]
 
       safeLast x xs = last (x:xs)
 
@@ -373,6 +416,7 @@ readTzOffset str =
                     h = read [h1,h2]
                     m = read [m1,m2]
 
+-- Dubious
 _TIMEZONES_ :: [(String, (Int, Bool))]
 _TIMEZONES_ =
     -- New Zealand Daylight-Saving Time

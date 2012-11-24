@@ -1,5 +1,6 @@
 module Test.AddDaysRef where
 
+addDaysRef :: String
 addDaysRef =
  unlines
   [ "2005-02-28 + -10 * day = 2005-02-18"
