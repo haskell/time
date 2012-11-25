@@ -9,33 +9,29 @@ pad1 :: NumericPadOption -> String -> String
 pad1 (Just c) s = c:s
 pad1 _ s = s
 
+padN :: Int -> Char -> String -> String
+padN i _ s | i <= 0 = s
+padN i c s = (replicate i c) ++ s
+
 show2Fixed :: NumericPadOption -> Pico -> String
 show2Fixed opt x | x < 10 = pad1 opt (showFixed True x)
 show2Fixed _ x = showFixed True x
 
+showPaddedMin :: (Num t,Ord t,Show t) => Int -> NumericPadOption -> t -> String
+showPaddedMin _ Nothing i = show i
+showPaddedMin pl opt i | i < 0 = '-':(showPaddedMin pl opt (negate i))
+showPaddedMin pl (Just c) i =
+  let s = show i in 
+    padN (pl - (length s)) c s
+
 show2 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
-show2 opt i | i < 0 = '-':(show2 opt (negate i))
-show2 opt i = let
-	s = show i in
-  case s of
-	[_] -> pad1 opt s
-	_ -> s
+show2 = showPaddedMin 2
 
 show3 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
-show3 opt i | i < 0 = '-':(show3 opt (negate i))
-show3 opt i = let
-	s = show2 opt i in
-  case s of
-	[_,_] -> pad1 opt s
-	_ -> s
+show3 = showPaddedMin 3
 
 show4 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
-show4 opt i | i < 0 = '-':(show4 opt (negate i))
-show4 opt i = let
-	s = show3 opt i in
-  case s of
-	[_,_,_] -> pad1 opt s
-	_ -> s
+show4 = showPaddedMin 4
 
 mod100 :: (Integral i) => i -> i
 mod100 x = mod x 100

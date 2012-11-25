@@ -211,9 +211,9 @@ instance FormatTime Day where
 	formatCharacter 'x' = Just (\locale _ -> formatTime locale (dateFmt locale))
 
 	-- Year Count
-	formatCharacter 'Y' = Just (\_ _ -> show . fst . toOrdinalDate)
+	formatCharacter 'Y' = Just (\_ opt -> (show4 (fromMaybe Nothing opt)) . fst . toOrdinalDate)
 	formatCharacter 'y' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . mod100 . fst . toOrdinalDate)
-	formatCharacter 'C' = Just (\_ _ -> show . div100 . fst . toOrdinalDate)
+	formatCharacter 'C' = Just (\_ opt -> (show2 (fromMaybe Nothing opt)) . div100 . fst . toOrdinalDate)
 	-- Month of Year
 	formatCharacter 'B' = Just (\locale _ -> fst . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
 	formatCharacter 'b' = Just (\locale _ -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
@@ -226,9 +226,9 @@ instance FormatTime Day where
 	formatCharacter 'j' = Just (\_ opt -> (show3 (fromMaybe (Just '0') opt)) . snd . toOrdinalDate)
 
 	-- ISO 8601 Week Date
-	formatCharacter 'G' = Just (\_ _ -> show . (\(y,_,_) -> y) . toWeekDate)
+	formatCharacter 'G' = Just (\_ opt -> (show4 (fromMaybe Nothing opt)) . (\(y,_,_) -> y) . toWeekDate)
 	formatCharacter 'g' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . mod100 . (\(y,_,_) -> y) . toWeekDate)
-	formatCharacter 'f' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . div100 . (\(y,_,_) -> y) . toWeekDate)
+	formatCharacter 'f' = Just (\_ opt -> (show2 (fromMaybe Nothing opt)) . div100 . (\(y,_,_) -> y) . toWeekDate)
 
 	formatCharacter 'V' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . (\(_,w,_) -> w) . toWeekDate)
 	formatCharacter 'u' = Just (\_ _ -> show . (\(_,_,d) -> d) . toWeekDate)

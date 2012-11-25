@@ -70,17 +70,34 @@ times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
 	(fmap getYearP1 years) ++ (fmap getYearP2 years) ++ (fmap getYearP3 years) ++ (fmap getYearP4 years)
 
+padN :: Int -> Char -> String -> String
+padN n _ s | n <= (length s) = s
+padN n c s = (replicate (n - length s) c) ++ s
+
+unixWorkarounds :: String -> String -> String
+unixWorkarounds "%_Y" s = padN 4 ' ' s
+unixWorkarounds "%0Y" s = padN 4 '0' s
+unixWorkarounds "%_C" s = padN 2 ' ' s
+unixWorkarounds "%0C" s = padN 2 '0' s
+unixWorkarounds "%_G" s = padN 4 ' ' s
+unixWorkarounds "%0G" s = padN 4 '0' s
+unixWorkarounds "%_f" s = padN 2 ' ' s
+unixWorkarounds "%0f" s = padN 2 '0' s
+unixWorkarounds _ s = s
+
 compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> Test
 compareFormat testname modUnix fmt zone time = let
     ctime = utcToZonedTime zone time 
     haskellText = formatTime locale fmt ctime
     in ioTest (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
     do
-       unixText <- fmap modUnix (unixFormatTime fmt zone time)
-       return $ diff unixText haskellText
+       unixText <- unixFormatTime fmt zone time
+       let expectedText = unixWorkarounds fmt (modUnix unixText)
+       return $ diff expectedText haskellText
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
+-- f not supported
 -- P not always supported
 -- s time-zone dependent
 chars :: [Char]
