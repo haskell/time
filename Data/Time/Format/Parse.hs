@@ -71,6 +71,14 @@ class ParseTime t where
 --
 -- [@%Z@] accepts any string of letters, or any of the formats accepted by @%z@.
 --
+-- [@%0Y@] accepts exactly four digits.
+--
+-- [@%0G@] accepts exactly four digits.
+--
+-- [@%0C@] accepts exactly two digits.
+--
+-- [@%0f@] accepts exactly two digits.
+--
 parseTime :: ParseTime t =>
              TimeLocale -- ^ Time locale.
           -> String     -- ^ Format string.
@@ -263,12 +271,18 @@ instance ParseTime Day where
      where
       f c x = 
         case c of
-          -- %Y: year
-          'Y' -> let y = read x in [Century (y `div` 100), CenturyYear (y `mod` 100)]
-          -- %y: last two digits of year, 00 - 99
-          'y' -> [CenturyYear (read x)]
           -- %C: century (all but the last two digits of the year), 00 - 99
           'C' -> [Century (read x)]
+          -- %f century (all but the last two digits of the year), 00 - 99
+          'f' -> [Century (read x)]
+          -- %Y: year
+          'Y' -> let y = read x in [Century (y `div` 100), CenturyYear (y `mod` 100)]
+          -- %G: year for Week Date format
+          'G' -> let y = read x in [Century (y `div` 100), CenturyYear (y `mod` 100)]
+          -- %y: last two digits of year, 00 - 99
+          'y' -> [CenturyYear (read x)]
+          -- %g: last two digits of year for Week Date format, 00 - 99
+          'g' -> [CenturyYear (read x)]
           -- %B: month name, long form (fst from months locale), January - December
           'B' -> [YearMonth (1 + fromJust (elemIndex (up x) (map (up . fst) (months l))))]
           -- %b: month name, short form (snd from months locale), Jan - Dec
@@ -279,28 +293,22 @@ instance ParseTime Day where
           'd' -> [MonthDay (read x)]
           -- %e: day of month, leading space as needed, 1 - 31
           'e' -> [MonthDay (read x)]
-          -- %j: day of year for Ordinal Date format, 001 - 366
-          'j' -> [YearDay (read x)]
-          -- %G: year for Week Date format
-          'G' -> let y = read x in [Century (y `div` 100), CenturyYear (y `mod` 100)]
-          -- %g: last two digits of year for Week Date format, 00 - 99
-          'g' -> [CenturyYear (read x)]
-          -- %f century (all but the last two digits of the year), 00 - 99
-          'f' -> [Century (read x)]
           -- %V: week for Week Date format, 01 - 53
           'V' -> [YearWeek ISOWeek (read x)]
+          -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 01 - 53
+          'U' -> [YearWeek SundayWeek (read x)]
+          -- %W: week number of year, where weeks start on Monday (as mondayStartWeek), 01 - 53
+          'W' -> [YearWeek MondayWeek (read x)]
           -- %u: day for Week Date format, 1 - 7
           'u' -> [WeekDay (read x)]
           -- %a: day of week, short form (snd from wDays locale), Sun - Sat
           'a' -> [WeekDay (1 + (fromJust (elemIndex (up x) (map (up . snd) (wDays l))) + 6) `mod` 7)]
           -- %A: day of week, long form (fst from wDays locale), Sunday - Saturday
           'A' -> [WeekDay (1 + (fromJust (elemIndex (up x) (map (up . fst) (wDays l))) + 6) `mod` 7)]
-          -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 01 - 53
-          'U' -> [YearWeek SundayWeek (read x)]
           -- %w: day of week number, 0 (= Sunday) - 6 (= Saturday)
           'w' -> [WeekDay (((read x + 6) `mod` 7) + 1)]
-          -- %W: week number of year, where weeks start on Monday (as mondayStartWeek), 01 - 53
-          'W' -> [YearWeek MondayWeek (read x)]
+          -- %j: day of year for Ordinal Date format, 001 - 366
+          'j' -> [YearDay (read x)]
           _   -> []
 
       buildDay cs = rest cs
