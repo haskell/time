@@ -20,18 +20,19 @@ extra-source-files:
     include/HsConfigure.h
     include/HsTime.h
     include/HsTimeConfig.h.in
-    test/Makefile
-    test/*.hs
-    test/*.lhs
-    test/*.ref
-    test/*.dat
-    test/*.c
-    test/*.h
+    Test/*.hs
+    Test/*.lhs
+    Test/*.c
+    Test/*.h
 extra-tmp-files:
     config.log
     config.status
     autom4te.cache
     include/HsTimeConfig.h
+
+source-repository head
+  type:     darcs
+  location: http://code.haskell.org/time/
 
 library
     build-depends: 
