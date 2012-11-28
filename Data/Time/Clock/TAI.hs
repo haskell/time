@@ -30,7 +30,7 @@ newtype AbsoluteTime = MkAbsoluteTime {unAbsoluteTime :: DiffTime} deriving (Eq,
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
 #if HAS_DataPico
-    ,Data
+    ,Data, Typeable
 #endif
 #endif
 #endif
@@ -38,9 +38,6 @@ newtype AbsoluteTime = MkAbsoluteTime {unAbsoluteTime :: DiffTime} deriving (Eq,
 
 instance NFData AbsoluteTime where
 	rnf (MkAbsoluteTime a) = rnf a
-
-instance Typeable AbsoluteTime where
-	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Clock.TAI" "AbsoluteTime") []
 
 instance Show AbsoluteTime where
 	show t = show (utcToLocalTime utc (taiToUTCTime (const 0) t)) ++ " TAI" -- ugly, but standard apparently

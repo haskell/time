@@ -36,16 +36,13 @@ data UTCTime = UTCTime {
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
 #if HAS_DataPico
-    deriving (Data)
+    deriving (Data, Typeable)
 #endif
 #endif
 #endif
 
 instance NFData UTCTime where
 	rnf (UTCTime d t) = d `deepseq` t `deepseq` ()
-
-instance Typeable UTCTime where
-	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Clock.UTC" "UTCTime") []
 
 instance Eq UTCTime where
 	(UTCTime da ta) == (UTCTime db tb) = (da == db) && (ta == tb)
@@ -65,7 +62,7 @@ newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
 #if HAS_DataPico
-    ,Data
+    ,Data, Typeable
 #endif
 #endif
 #endif
@@ -73,9 +70,6 @@ newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData NominalDiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
-
-instance Typeable NominalDiffTime where
-	typeOf _ = mkTyConApp (mkTyCon3 "time" "Data.Time.Clock.UTC" "NominalDiffTime") []
 
 instance Enum NominalDiffTime where
 	succ (MkNominalDiffTime a) = MkNominalDiffTime (succ a)
