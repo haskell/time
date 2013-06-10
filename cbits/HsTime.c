@@ -5,6 +5,7 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
 {
 #if HAVE_LOCALTIME_R
 	struct tm tmd;
+        tzset();
 	struct tm* ptm = localtime_r(&t,&tmd);
 #else
 	struct tm* ptm = localtime(&t);
