@@ -1,4 +1,5 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
+{-# LANGUAGE Trustworthy #-}
 #include "HsConfigure.h"
 -- #hide
 module Data.Time.Clock.UTC

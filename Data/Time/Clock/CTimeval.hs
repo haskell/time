@@ -4,7 +4,7 @@ module Data.Time.Clock.CTimeval where
 #ifndef mingw32_HOST_OS
 -- All Unix-specific, this
 
-import Foreign
+import Foreign.Safe
 import Foreign.C
 
 data CTimeval = MkCTimeval CLong CLong

@@ -17,7 +17,7 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock
 import Data.Time.Clock.POSIX
 
-import Foreign
+import Foreign.Safe
 import Foreign.C
 import Control.DeepSeq
 import Data.Typeable
