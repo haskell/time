@@ -1,0 +1,6 @@
+dist/
+configure
+autom4te.cache/
+config.*
+include/HsTimeConfig.h
+include/HsTimeConfig.h.in
