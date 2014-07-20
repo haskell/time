@@ -5,7 +5,7 @@ license:        BSD3
 license-file:   LICENSE
 author:         Ashley Yakeley
 maintainer:     <ashley@semantic.org>
-homepage:       http://semantic.org/TimeLib/
+homepage:       https://github.com/haskell/time
 synopsis:       A time library
 description:    A time library
 category:       System
@@ -31,8 +31,8 @@ extra-tmp-files:
     include/HsTimeConfig.h
 
 source-repository head
-  type:     darcs
-  location: http://code.haskell.org/time/
+  type:     git
+  location: https://github.com/haskell/time
 
 library
     build-depends: 
