@@ -9,8 +9,9 @@ module Test.TestUtil
 import Test.Framework
 import Test.Framework.Providers.API
 import Test.Framework.Providers.QuickCheck2
+import Data.Typeable
 
-data Result = Pass | Fail String
+data Result = Pass | Fail String deriving Typeable
 
 instance Show Result where
     show Pass = "passed"

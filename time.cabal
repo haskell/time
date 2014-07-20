@@ -114,8 +114,8 @@ test-suite tests
         old-locale,
         process,
         QuickCheck >= 2.5.1,
-        test-framework >= 0.6.1 && < 0.7,
-        test-framework-quickcheck2 >= 0.2.12,
+        test-framework >= 0.8,
+        test-framework-quickcheck2 >= 0.3,
         unix
     main-is: Test.hs
     other-modules:
