@@ -11,8 +11,9 @@ import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.POSIX
 import System.Locale
-import Test.QuickCheck hiding (Result)
-import Test.TestUtil
+import Test.QuickCheck hiding (Result,reason)
+import Test.QuickCheck.Property hiding (result)
+import Test.TestUtil hiding (Result)
 
 ntest :: Int
 ntest = 1000
@@ -22,7 +23,8 @@ type NamedProperty = (String, Property)
 testParseTime :: Test
 testParseTime = testGroup "testParseTime"
     [
-    testGroup "extests" extests,
+    simpleFormatTests,
+    extests,
     testGroup "properties" (fmap (\(n,prop) -> testProperty n prop) properties)
     ]
 
@@ -32,8 +34,8 @@ yearDays y = [(fromGregorian y 1 1) .. (fromGregorian y 12 31)]
 makeExhaustiveTest :: String -> [t] -> (t -> Test) -> Test
 makeExhaustiveTest name cases f = testGroup name (fmap f cases)
 
-extests :: [Test]
-extests = [
+extests :: Test
+extests = testGroup "exhaustive" ([
     makeExhaustiveTest "parse %y" [0..99] parseYY,
     makeExhaustiveTest "parse %-C %y 1900s" [0,1,50,99] (parseCYY 19),
     makeExhaustiveTest "parse %-C %y 2000s" [0,1,50,99] (parseCYY 20),
@@ -51,7 +53,24 @@ extests = [
     (makeExhaustiveTest "parse %Y%m%d" (yearDays y) parseYMD),
     (makeExhaustiveTest "parse %Y %m %d" (yearDays y) parseYearDayD),
     (makeExhaustiveTest "parse %Y %-m %e" (yearDays y) parseYearDayE)
-    ]) [1,4,20,753,2000,2011,10001])
+    ]) [1,4,20,753,2000,2011,10001]))
+
+simpleFormatTests :: Test
+simpleFormatTests = testGroup "simple" [
+    readsTest' [(epoch,"")] "%m" "01",
+    readsTest' [(epoch," ")] "%m" "01 ",
+    readsTest' [(epoch," ")] " %m" " 01 ",
+    readsTest' [(epoch,"")] " %m" " 01",
+    readsTest' [(epoch,"")] " %M" " 00",
+    readsTest' [(epoch,"")] "%Q" "",
+    readsTest' [(epoch," ")] "%Q" " ",
+    readsTest' [(epoch,"X")] "%Q" "X",
+    readsTest' [(epoch," X")] "%Q" " X",
+    readsTest' [(epoch,"")] "%Q " " ",
+    readsTest' [(epoch,"")] "%Q X" " X",
+    readsTest' [(epoch,"")] "%QX" "X"
+    ] where
+    epoch = LocalTime (fromGregorian 1970 0 0) midnight
 
 parseYMD :: Day -> Test
 parseYMD day = case toGregorian day of
@@ -93,15 +112,17 @@ parseTest expected formatStr target =
         name = (show formatStr) ++ " of " ++ (show target)
     in pureTest name result
 
-readsTest :: (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
-readsTest expected formatStr target = 
+readsTest' :: (Show t, Eq t, ParseTime t) => [(t,String)] -> String -> String -> Test
+readsTest' expected formatStr target = 
     let
-        ff (Just e) = [(e,"")]
-        ff Nothing = []
         found = readsTime defaultTimeLocale formatStr target
-        result = diff (ff expected) found
+        result = diff expected found
         name = (show formatStr) ++ " of " ++ (show target)
     in pureTest name result
+
+readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
+readsTest (Just e) = readsTest' [(e,"")]
+readsTest Nothing = readsTest' ([] :: [(t,String)])
 
 parse :: ParseTime t => String -> String -> Maybe t
 parse f t = parseTime defaultTimeLocale f t
@@ -161,6 +182,17 @@ instance CoArbitrary UTCTime where
 instance Eq ZonedTime where
     ZonedTime t1 tz1 == ZonedTime t2 tz2 = t1 == t2 && tz1 == tz2
 
+compareResult' :: (Eq a,Show a) => String -> a -> a -> Result
+compareResult' extra expected found
+    | expected == found = succeeded
+    | otherwise = failed {reason = "expected " ++ (show expected) ++ ", found " ++ (show found) ++ extra}
+
+compareResult :: (Eq a,Show a) => a -> a -> Result
+compareResult = compareResult' ""
+
+compareParse :: forall a. (Eq a,Show a,ParseTime a) => a -> String -> String -> Result
+compareParse expected fmt text = compareResult' (", parsing " ++ (show text)) (Just expected) (parse fmt text)
+
 -- 
 -- * tests for dbugging failing cases
 --
@@ -172,37 +204,37 @@ test_parse_format f t = let s = format f t in (show t, s, parse f s `asTypeOf` J
 -- * show and read 
 --
 
-prop_read_show :: (Read a, Show a, Eq a) => a -> Bool
-prop_read_show t = read (show t) == t
+prop_read_show :: (Read a, Show a, Eq a) => a -> Result
+prop_read_show t = compareResult t (read (show t))
 
 --
 -- * special show functions
 --
 
-prop_parse_showWeekDate :: Day -> Bool
-prop_parse_showWeekDate d = parse "%G-W%V-%u" (showWeekDate d) == Just d
+prop_parse_showWeekDate :: Day -> Result
+prop_parse_showWeekDate d = compareParse d "%G-W%V-%u" (showWeekDate d)
 
-prop_parse_showGregorian :: Day -> Bool
-prop_parse_showGregorian d = parse "%Y-%m-%d" (showGregorian d) == Just d
+prop_parse_showGregorian :: Day -> Result
+prop_parse_showGregorian d = compareParse d "%Y-%m-%d" (showGregorian d)
 
-prop_parse_showOrdinalDate :: Day -> Bool
-prop_parse_showOrdinalDate d = parse "%Y-%j" (showOrdinalDate d) == Just d
+prop_parse_showOrdinalDate :: Day -> Result
+prop_parse_showOrdinalDate d = compareParse d "%Y-%j" (showOrdinalDate d)
 
 --
 -- * fromMondayStartWeek and fromSundayStartWeek
 --
 
-prop_fromMondayStartWeek :: Day -> Bool
+prop_fromMondayStartWeek :: Day -> Result
 prop_fromMondayStartWeek d = 
     let (w,wd)  = mondayStartWeek d
         (y,_,_) = toGregorian d
-     in fromMondayStartWeek y w wd == d
+     in compareResult d (fromMondayStartWeek y w wd)
 
-prop_fromSundayStartWeek :: Day -> Bool
+prop_fromSundayStartWeek :: Day -> Result
 prop_fromSundayStartWeek d = 
     let (w,wd)  = sundayStartWeek d
         (y,_,_) = toGregorian d
-     in fromSundayStartWeek y w wd == d
+     in compareResult d (fromSundayStartWeek y w wd)
 
 --
 -- * format and parse 
@@ -213,32 +245,33 @@ prop_named :: (Arbitrary t, Show t, Testable a)
            => String -> (FormatString s -> t -> a) -> String -> FormatString s -> NamedProperty
 prop_named n prop typeName f = (n ++ " " ++ typeName ++ " " ++ show f, property (prop f))
 
-prop_parse_format :: (Eq t, FormatTime t, ParseTime t) => FormatString t -> t -> Bool
-prop_parse_format (FormatString f) t = parse f (format f t) == Just t
+prop_parse_format :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
+prop_parse_format (FormatString f) t = compareParse t f (format f t)
 
 prop_parse_format_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t) 
                            => String -> FormatString t -> NamedProperty
 prop_parse_format_named = prop_named "prop_parse_format" prop_parse_format
 
 -- Verify case-insensitivity with upper case.
-prop_parse_format_upper :: (Eq t, FormatTime t, ParseTime t) => FormatString t -> t -> Bool
-prop_parse_format_upper (FormatString f) t = parse f (map toUpper $ format f t) == Just t
+prop_parse_format_upper :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
+prop_parse_format_upper (FormatString f) t = compareParse t f (map toUpper $ format f t)
 
 prop_parse_format_upper_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t) 
                               => String -> FormatString t -> NamedProperty
 prop_parse_format_upper_named = prop_named "prop_parse_format_upper" prop_parse_format_upper
 
 -- Verify case-insensitivity with lower case.
-prop_parse_format_lower :: (Eq t, FormatTime t, ParseTime t) => FormatString t -> t -> Bool
-prop_parse_format_lower (FormatString f) t = parse f (map toLower $ format f t) == Just t
+prop_parse_format_lower :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
+prop_parse_format_lower (FormatString f) t = compareParse t f (map toLower $ format f t)
 
 prop_parse_format_lower_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t) 
                               => String -> FormatString t -> NamedProperty
 prop_parse_format_lower_named = prop_named "prop_parse_format_lower" prop_parse_format_lower
 
-prop_format_parse_format :: (FormatTime t, ParseTime t) => FormatString t -> t -> Bool
-prop_format_parse_format (FormatString f) t = 
-    fmap (format f) (parse f (format f t) `asTypeOf` Just t) == Just (format f t)
+prop_format_parse_format :: (FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
+prop_format_parse_format (FormatString f) t = compareResult
+    (Just (format f t))
+    (fmap (format f) (parse f (format f t) `asTypeOf` Just t))
 
 prop_format_parse_format_named :: (Arbitrary t, Show t, FormatTime t, ParseTime t) 
                                   => String -> FormatString t -> NamedProperty
@@ -289,12 +322,12 @@ properties :: [NamedProperty]
 properties = 
     [("prop_fromMondayStartWeek", property prop_fromMondayStartWeek),
      ("prop_fromSundayStartWeek", property prop_fromSundayStartWeek)]
- ++ [("prop_read_show Day", property (prop_read_show :: Day -> Bool)),
-     ("prop_read_show TimeOfDay", property (prop_read_show :: TimeOfDay -> Bool)),
-     ("prop_read_show LocalTime", property (prop_read_show :: LocalTime -> Bool)),
-     ("prop_read_show TimeZone", property (prop_read_show :: TimeZone -> Bool)),
-     ("prop_read_show ZonedTime", property (prop_read_show :: ZonedTime -> Bool)),
-     ("prop_read_show UTCTime", property (prop_read_show :: UTCTime -> Bool))]
+ ++ [("prop_read_show Day", property (prop_read_show :: Day -> Result)),
+     ("prop_read_show TimeOfDay", property (prop_read_show :: TimeOfDay -> Result)),
+     ("prop_read_show LocalTime", property (prop_read_show :: LocalTime -> Result)),
+     ("prop_read_show TimeZone", property (prop_read_show :: TimeZone -> Result)),
+     ("prop_read_show ZonedTime", property (prop_read_show :: ZonedTime -> Result)),
+     ("prop_read_show UTCTime", property (prop_read_show :: UTCTime -> Result))]
  ++ [("prop_parse_showWeekDate", property prop_parse_showWeekDate),
      ("prop_parse_showGregorian", property prop_parse_showGregorian),
      ("prop_parse_showOrdinalDate", property prop_parse_showOrdinalDate)]
@@ -364,14 +397,13 @@ timeOfDayFormats = map FormatString
      "%I:%M:%S%Q %p","%I:%M:%S%Q %P","%l:%M:%S%Q %p","%r %Q"
     ]
 
-localTimeFormats :: [FormatString LocalTime]
-localTimeFormats = map FormatString $ 
-  []
-{-
-  -- there's soo many of them...
+localTimeFormats' :: [FormatString LocalTime]
+localTimeFormats' = map FormatString $ 
   concat [ [df ++ " " ++ tf, tf ++ " " ++ df] | FormatString df <- dayFormats, 
                                                    FormatString tf <- timeOfDayFormats]
--}
+
+localTimeFormats :: [FormatString LocalTime]
+localTimeFormats = map FormatString [{-"%Q","%Q ","%QX"-}]
 
 timeZoneFormats :: [FormatString TimeZone]
 timeZoneFormats = map FormatString ["%z","%z%Z","%Z%z","%Z"]
