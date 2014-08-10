@@ -136,7 +136,7 @@ safeString s = do
 
 compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> Test
 compareExpected testname fmt str expected = ioTest (testname ++ ": " ++ (show fmt) ++ " on " ++ (show str)) $ do
-    let found = parseTime defaultTimeLocale fmt str
+    let found = parseTimeM False defaultTimeLocale fmt str
     mex <- getBottom found
     case mex of
         Just ex -> return $ Fail $ unwords [ "Exception: expected" , show expected ++ ", caught", show ex]
@@ -144,10 +144,10 @@ compareExpected testname fmt str expected = ioTest (testname ++ ": " ++ (show fm
 
 class (ParseTime t) => TestParse t where
     expectedParse :: String -> String -> Maybe t
-    expectedParse "%Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
-    expectedParse "%_Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
-    expectedParse "%-Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
-    expectedParse "%0Z" str | all isSpace str = Just (buildTime defaultTimeLocale [])
+    expectedParse "%Z" "" = Just (buildTime defaultTimeLocale [])
+    expectedParse "%_Z" "" = Just (buildTime defaultTimeLocale [])
+    expectedParse "%-Z" "" = Just (buildTime defaultTimeLocale [])
+    expectedParse "%0Z" "" = Just (buildTime defaultTimeLocale [])
     expectedParse _ _ = Nothing
 
 instance TestParse Day

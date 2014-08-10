@@ -22,6 +22,8 @@ type NamedProperty = (String, Property)
 testParseTime :: Test
 testParseTime = testGroup "testParseTime"
     [
+    readOtherTypesTest,
+    readTests,
     simpleFormatTests,
     extests,
     testGroup "properties" (fmap (\(n,prop) -> testProperty n prop) properties)
@@ -54,22 +56,64 @@ extests = testGroup "exhaustive" ([
     (makeExhaustiveTest "parse %Y %-m %e" (yearDays y) parseYearDayE)
     ]) [1,4,20,753,2000,2011,10001]))
 
+readTest :: (Eq a,Show a,Read a) => [(a,String)] -> String -> Test
+readTest expected target = let
+    found = reads target
+    result = diff expected found
+    name = show target
+    in pureTest name result
+
+readOtherTypesTest :: Test
+readOtherTypesTest = testGroup "read other types"
+    [
+    readTest [(3,"")] "3",
+    readTest [(3,"")] "(3)",
+    readTest [(3,"")] " (3)",
+    readTest [(3," ")] " ( 3 ) ",
+    readTest [(3," ")] " (( 3 )) ",
+    readTest [("a","")] "(\"a\")",
+    readTest ([] :: [(String,String)]) "(\"a\"",
+    readTest [("a",")")] "\"a\")",
+    readTest [("a","")] "((\"a\"))",
+    readTest [("a"," ")] "  (   (     \"a\"   )  ) "
+    ] where
+
+readTests :: Test
+readTests = testGroup "read times"
+    [
+    ]
+
 simpleFormatTests :: Test
-simpleFormatTests = testGroup "simple" [
-    readsTest' [(epoch,"")] "%m" "01",
-    readsTest' [(epoch," ")] "%m" "01 ",
-    readsTest' [(epoch," ")] " %m" " 01 ",
-    readsTest' [(epoch,"")] " %m" " 01",
-    readsTest' [(epoch,"")] " %M" " 00",
-    readsTest' [(epoch,"")] "%Q" "",
-    readsTest' [(epoch," ")] "%Q" " ",
-    readsTest' [(epoch,"X")] "%Q" "X",
-    readsTest' [(epoch," X")] "%Q" " X",
-    readsTest' [(epoch,"")] "%Q " " ",
-    readsTest' [(epoch,"")] "%Q X" " X",
-    readsTest' [(epoch,"")] "%QX" "X"
+simpleFormatTests = testGroup "simple"
+    [
+    readsTest [(epoch,"")] "" "",
+    readsTest [(epoch," ")] "" " ",
+    readsTest [(epoch,"")] " " " ",
+    readsTest [(epoch,"")] " " "  ",
+    readsTest [(epoch,"")] "%k" "0",
+    readsTest [(epoch,"")] "%k" " 0",
+    readsTest [(epoch,"")] "%m" "01",
+    readsTest [(epoch," ")] "%m" "01 ",
+    readsTest [(epoch," ")] " %m" " 01 ",
+    readsTest [(epoch,"")] " %m" " 01",
+    -- https://ghc.haskell.org/trac/ghc/ticket/9150
+    readsTest [(epoch,"")] " %M" " 00",
+    readsTest [(epoch,"")] "%M " "00 ",
+    readsTest [(epoch,"")] "%Q" "",
+    readsTest [(epoch," ")] "%Q" " ",
+    readsTest [(epoch,"X")] "%Q" "X",
+    readsTest [(epoch," X")] "%Q" " X",
+    readsTest [(epoch,"")] "%Q " " ",
+    readsTest [(epoch,"")] "%Q X" " X",
+    readsTest [(epoch,"")] "%QX" "X"
     ] where
     epoch = LocalTime (fromGregorian 1970 0 0) midnight
+    readsTest :: (Show a, Eq a, ParseTime a) => [(a,String)] -> String -> String -> Test
+    readsTest expected formatStr target = let
+        found = readSTime False defaultTimeLocale formatStr target
+        result = diff expected found
+        name = (show formatStr) ++ " of " ++ (show target)
+        in pureTest name result
 
 parseYMD :: Day -> Test
 parseYMD day = case toGregorian day of
@@ -110,21 +154,13 @@ parseTest expected formatStr target =
         result = diff expected found
         name = (show formatStr) ++ " of " ++ (show target)
     in pureTest name result
-
-readsTest' :: (Show t, Eq t, ParseTime t) => [(t,String)] -> String -> String -> Test
-readsTest' expected formatStr target = 
-    let
-        found = readsTime defaultTimeLocale formatStr target
-        result = diff expected found
-        name = (show formatStr) ++ " of " ++ (show target)
-    in pureTest name result
-
+{-
 readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
 readsTest (Just e) = readsTest' [(e,"")]
 readsTest Nothing = readsTest' ([] :: [(t,String)])
-
+-}
 parse :: ParseTime t => String -> String -> Maybe t
-parse f t = parseTime defaultTimeLocale f t
+parse f t = parseTimeM False defaultTimeLocale f t
 
 format :: (FormatTime t) => String -> t -> String
 format f t = formatTime defaultTimeLocale f t
@@ -204,7 +240,10 @@ test_parse_format f t = let s = format f t in (show t, s, parse f s `asTypeOf` J
 --
 
 prop_read_show :: (Read a, Show a, Eq a) => a -> Result
-prop_read_show t = compareResult t (read (show t))
+prop_read_show t = compareResult [(t,"")] (reads (show t))
+
+prop_read_show' :: (Read a, Show a, Eq a) => a -> Result
+prop_read_show' t = compareResult t (read (show t))
 
 --
 -- * special show functions
