@@ -14,7 +14,6 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock
 import Data.Time.Clock.POSIX
 
-import System.Locale
 import Data.Maybe
 import Data.Char
 import Data.Fixed

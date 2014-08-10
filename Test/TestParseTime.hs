@@ -10,7 +10,6 @@ import Data.Time
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.POSIX
-import System.Locale
 import Test.QuickCheck hiding (Result,reason)
 import Test.QuickCheck.Property hiding (result)
 import Test.TestUtil hiding (Result)

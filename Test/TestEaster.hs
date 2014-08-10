@@ -6,8 +6,6 @@ import Data.Time.Calendar.Easter
 import Data.Time.Calendar
 import Data.Time.Format
 
-import System.Locale
-
 import Test.TestUtil
 import Test.TestEasterRef
 

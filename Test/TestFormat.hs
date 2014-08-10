@@ -5,7 +5,6 @@ module Test.TestFormat where
 import Data.Time
 import Data.Time.Clock.POSIX
 import Data.Char
-import System.Locale
 import Foreign
 import Foreign.C
 import Control.Exception;

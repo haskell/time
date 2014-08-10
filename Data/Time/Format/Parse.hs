@@ -8,7 +8,9 @@ module Data.Time.Format.Parse
 #if LANGUAGE_Rank2Types
     parseTime, readTime, readsTime,
 #endif
-    ParseTime(..)
+    ParseTime(..),
+    -- * Locale
+    module System.Locale
     ) where
 
 import Data.Time.Clock.POSIX
