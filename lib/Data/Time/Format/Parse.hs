@@ -131,7 +131,7 @@ readPTime :: ParseTime t =>
           -> String     -- ^ Format string
           -> ReadP t
 readPTime False l f = readPOnlyTime l f
-readPTime True l f = readPOnlyTime l f <++ (skipSpaces >> readPOnlyTime l f)
+readPTime True l f = (skipSpaces >> readPOnlyTime l f) <++ readPOnlyTime l f
 
 -- | Parse a time value given a format string (without allowing leading whitespace).  See 'parseTimeM' for details.
 readPOnlyTime :: ParseTime t =>

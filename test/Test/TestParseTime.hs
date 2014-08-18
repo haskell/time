@@ -147,9 +147,13 @@ particularParseTests :: Test
 particularParseTests = testGroup "particular"
     [
         spacingTests epoch "%Q" "",
+        spacingTests epoch "%Q" ".0",
         spacingTests epoch "%k" " 0",
         spacingTests epoch "%M" "00",
-        spacingTests (TimeZone 120 False "") "%Z" "+0200"
+        spacingTests epoch "%m" "01",
+        spacingTests (TimeZone 120 False "") "%z" "+0200",
+        spacingTests (TimeZone 120 False "") "%Z" "+0200",
+        spacingTests (TimeZone (-480) False "PST") "%Z" "PST"
     ]
 
 parseYMD :: Day -> Test
