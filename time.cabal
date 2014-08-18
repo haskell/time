@@ -17,18 +17,16 @@ extra-source-files:
     aclocal.m4
     configure.ac
     configure
-    include/HsConfigure.h
-    include/HsTime.h
-    include/HsTimeConfig.h.in
-    Test/*.hs
-    Test/*.lhs
-    Test/*.c
-    Test/*.h
+    lib/include/HsConfigure.h
+    lib/include/HsTime.h
+    lib/include/HsTimeConfig.h.in
+    test/Test/*.c
+    test/Test/*.h
 extra-tmp-files:
     config.log
     config.status
     autom4te.cache
-    include/HsTimeConfig.h
+    lib/include/HsTimeConfig.h
 
 source-repository head
   type:     git
@@ -36,16 +34,16 @@ source-repository head
 
 library
     hs-source-dirs: lib
-    build-depends: 
+    build-depends:
         base >= 4.4 && < 5,
         deepseq >= 1.1,
         old-locale
     ghc-options: -Wall
     default-language: Haskell2010
     if impl(ghc)
-        default-extensions: 
-            Rank2Types 
-            DeriveDataTypeable 
+        default-extensions:
+            Rank2Types
+            DeriveDataTypeable
             StandaloneDeriving
         cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
     else
@@ -68,7 +66,7 @@ library
         Data.Time.Format,
         Data.Time
     default-extensions:    CPP
-    c-sources:    cbits/HsTime.c
+    c-sources: lib/cbits/HsTime.c
     other-modules:
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Days,
@@ -82,7 +80,7 @@ library
         Data.Time.LocalTime.TimeOfDay,
         Data.Time.LocalTime.LocalTime,
         Data.Time.Format.Parse
-    include-dirs:    include
+    include-dirs: lib/include
     if os(windows)
         install-includes:
             HsTime.h
@@ -95,7 +93,7 @@ test-suite tests
     hs-source-dirs: test
     type: exitcode-stdio-1.0
     default-language: Haskell2010
-    default-extensions: 
+    default-extensions:
         Rank2Types
         CPP
         DeriveDataTypeable
@@ -106,15 +104,12 @@ test-suite tests
         UndecidableInstances
         ScopedTypeVariables
     ghc-options: -Wall
-    c-sources: cbits/HsTime.c test/Test/TestFormatStuff.c
-    include-dirs: include
-    build-depends: 
+    c-sources: test/Test/TestFormatStuff.c
+    build-depends:
         base,
         deepseq,
         old-locale,
         time == 1.5,
-        Cabal >= 1.16,
-        process,
         QuickCheck >= 2.5.1,
         test-framework >= 0.8,
         test-framework-quickcheck2 >= 0.3,
