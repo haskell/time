@@ -63,25 +63,37 @@ readTest expected target = let
     name = show target
     in pureTest name result
 
+readTestsParensSpaces :: forall a. (Eq a,Show a,Read a) => a -> String -> Test
+readTestsParensSpaces expected target = testGroup target
+    [
+    readTest [(expected,"")] $ target,
+    readTest [(expected,"")] $ "("++target++")",
+    readTest [(expected,"")] $ " ("++target++")",
+    readTest [(expected," ")] $ " ( "++target++" ) ",
+    readTest [(expected," ")] $ " (( "++target++" )) ",
+    readTest ([] :: [(a,String)]) $ "("++target,
+    readTest [(expected,")")] $ ""++target++")",
+    readTest [(expected,"")] $ "(("++target++"))",
+    readTest [(expected," ")] $ "  (   (     "++target++"   )  ) "
+    ] where
+
 readOtherTypesTest :: Test
 readOtherTypesTest = testGroup "read other types"
     [
-    readTest [(3,"")] "3",
-    readTest [(3,"")] "(3)",
-    readTest [(3,"")] " (3)",
-    readTest [(3," ")] " ( 3 ) ",
-    readTest [(3," ")] " (( 3 )) ",
-    readTest [("a","")] "(\"a\")",
-    readTest ([] :: [(String,String)]) "(\"a\"",
-    readTest [("a",")")] "\"a\")",
-    readTest [("a","")] "((\"a\"))",
-    readTest [("a"," ")] "  (   (     \"a\"   )  ) "
-    ] where
+    readTestsParensSpaces 3 "3",
+    readTestsParensSpaces "a" "\"a\""
+    ]
 
 readTests :: Test
 readTests = testGroup "read times"
     [
-    ]
+    readTestsParensSpaces testDay "1912-07-08",
+    readTestsParensSpaces testDay "1912-7-8",
+    readTestsParensSpaces testTimeOfDay "08:04:02",
+    readTestsParensSpaces testTimeOfDay "8:4:2"
+    ] where
+    testDay = fromGregorian 1912 7 8
+    testTimeOfDay = TimeOfDay 8 4 2
 
 simpleFormatTests :: Test
 simpleFormatTests = testGroup "simple"
