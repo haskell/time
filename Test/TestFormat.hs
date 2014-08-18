@@ -86,7 +86,7 @@ unixWorkarounds _ s = s
 
 compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> Test
 compareFormat testname modUnix fmt zone time = let
-    ctime = utcToZonedTime zone time 
+    ctime = utcToZonedTime zone time
     haskellText = formatTime locale fmt ctime
     in ioTest (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
     do
@@ -117,7 +117,7 @@ somestrings :: [String]
 somestrings = ["", " ", "-", "\n"]
 
 getBottom :: a -> IO (Maybe Control.Exception.SomeException);
-getBottom a = Control.Exception.catch (seq a (return Nothing)) (return . Just);    
+getBottom a = Control.Exception.catch (seq a (return Nothing)) (return . Just);
 
 safeString :: String -> IO String
 safeString s = do

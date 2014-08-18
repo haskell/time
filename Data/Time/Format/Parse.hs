@@ -2,7 +2,7 @@
 #include "HsConfigure.h"
 
 -- #hide
-module Data.Time.Format.Parse 
+module Data.Time.Format.Parse
     (
     -- * UNIX-style parsing
 #if LANGUAGE_Rank2Types
@@ -60,7 +60,7 @@ class ParseTime t where
     -- from 1970-01-01 00:00:00 +0000 (which was a Thursday).
     -- In the absence of @%C@ or @%Y@, century is 1969 - 2068.
     buildTime :: TimeLocale -- ^ The time locale.
-              -> [(Char,String)] -- ^ Pairs of format characters and the 
+              -> [(Char,String)] -- ^ Pairs of format characters and the
                                  -- corresponding part of the input.
               -> t
 
@@ -218,7 +218,7 @@ parseInput l (WhiteSpace:ff) = do
 
 -- | Get the string corresponding to the given format specifier.
 parseValue :: TimeLocale -> Maybe Padding -> Char -> ReadP String
-parseValue l mpad c = 
+parseValue l mpad c =
     case c of
       -- century
       'C' -> digits SpacePadding 2
@@ -227,7 +227,7 @@ parseValue l mpad c =
       -- year
       'Y' -> digits SpacePadding 4
       'G' -> digits SpacePadding 4
-      
+
       -- year of century
       'y' -> digits ZeroPadding 2
       'g' -> digits ZeroPadding 2
@@ -236,22 +236,22 @@ parseValue l mpad c =
       'B' -> oneOf (map fst (months l))
       'b' -> oneOf (map snd (months l))
       'm' -> digits ZeroPadding 2
-      
+
       -- day of month
       'd' -> digits ZeroPadding 2
       'e' -> digits SpacePadding 2
-      
+
       -- week of year
       'V' -> digits ZeroPadding 2
       'U' -> digits ZeroPadding 2
       'W' -> digits ZeroPadding 2
-      
+
       -- day of week
       'u' -> oneOf $ map (:[]) ['1'..'7']
       'a' -> oneOf (map snd (wDays l))
       'A' -> oneOf (map fst (wDays l))
       'w' -> oneOf $ map (:[]) ['0'..'6']
-      
+
       -- day of year
       'j' -> digits ZeroPadding 3
 
@@ -262,17 +262,17 @@ parseValue l mpad c =
       -- hour of day (i.e. 24h)
       'H' -> digits ZeroPadding 2
       'k' -> digits SpacePadding 2
-      
+
       -- hour of dayhalf (i.e. 12h)
       'I' -> digits ZeroPadding 2
       'l' -> digits SpacePadding 2
-      
+
       -- minute of hour
       'M' -> digits ZeroPadding 2
-      
+
       -- second of minute
       'S' -> digits ZeroPadding 2
-      
+
       -- picosecond of second
       'q' -> digits ZeroPadding 12
       'Q' -> liftM2 (:) (char '.') (munch isDigit) <++ return ""
@@ -284,7 +284,7 @@ parseValue l mpad c =
              return "" -- produced by %Z for LocalTime
 
       -- seconds since epoch
-      's' -> (char '-' >> liftM ('-':) (munch1 isDigit)) 
+      's' -> (char '-' >> liftM ('-':) (munch1 isDigit))
              <++ munch1 isDigit
 
       _   -> fail $ "Unknown format character: " ++ show c
@@ -318,7 +318,7 @@ data WeekType = ISOWeek | SundayWeek | MondayWeek
 instance ParseTime Day where
     buildTime l = buildDay . concatMap (uncurry f)
      where
-      f c x = 
+      f c x =
         case c of
           -- %C: century (all but the last two digits of the year), 00 - 99
           'C' -> [Century (read x)]
@@ -362,7 +362,7 @@ instance ParseTime Day where
 
       buildDay cs = rest cs
         where
-        y = let 
+        y = let
                 d = safeLast 70 [x | CenturyYear x <- cs]
                 c = safeLast (if d >= 69 then 19 else 20) [x | Century x <- cs]
              in 100 * c + d
@@ -383,7 +383,7 @@ instance ParseTime Day where
 instance ParseTime TimeOfDay where
     buildTime l = foldl f midnight
         where
-          f t@(TimeOfDay h m s) (c,x) = 
+          f t@(TimeOfDay h m s) (c,x) =
               case c of
                 'P' -> if up x == fst (amPm l) then am else pm
                 'p' -> if up x == fst (amPm l) then am else pm
@@ -394,7 +394,7 @@ instance ParseTime TimeOfDay where
                 'M' -> TimeOfDay h (read x) s
                 'S' -> TimeOfDay h m (fromInteger (read x))
                 'q' -> TimeOfDay h m (mkPico (truncate s) (read x))
-                'Q' -> if null x then t 
+                'Q' -> if null x then t
                         else let ps = read $ take 12 $ rpad 12 '0' $ drop 1 x
                               in TimeOfDay h m (mkPico (truncate s) ps)
                 _   -> t
@@ -412,8 +412,8 @@ instance ParseTime LocalTime where
 
 instance ParseTime TimeZone where
     buildTime _ = foldl f (minutesToTimeZone 0)
-      where 
-        f t@(TimeZone offset dst name) (c,x) = 
+      where
+        f t@(TimeZone offset dst name) (c,x) =
             case c of
               'z' -> zone
               'Z' | null x           -> t
