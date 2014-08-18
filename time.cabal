@@ -35,6 +35,7 @@ source-repository head
   location: https://github.com/haskell/time
 
 library
+    hs-source-dirs: lib
     build-depends: 
         base >= 4.4 && < 5,
         deepseq >= 1.1,
@@ -91,6 +92,7 @@ library
             HsTimeConfig.h
 
 test-suite tests
+    hs-source-dirs: test
     type: exitcode-stdio-1.0
     default-language: Haskell2010
     default-extensions: 
@@ -103,15 +105,15 @@ test-suite tests
         FlexibleInstances
         UndecidableInstances
         ScopedTypeVariables
-    cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
     ghc-options: -Wall
-    c-sources: cbits/HsTime.c Test/TestFormatStuff.c
+    c-sources: cbits/HsTime.c test/Test/TestFormatStuff.c
     include-dirs: include
     build-depends: 
         base,
         deepseq,
-        Cabal >= 1.16,
         old-locale,
+        time == 1.5,
+        Cabal >= 1.16,
         process,
         QuickCheck >= 2.5.1,
         test-framework >= 0.8,
@@ -142,27 +144,3 @@ test-suite tests
         Test.AddDaysRef
         Test.TestUtil
 
-        Data.Time.Calendar.Private,
-        Data.Time.Calendar.Days,
-        Data.Time.Calendar.Gregorian,
-        Data.Time.Calendar.JulianYearDay,
-        Data.Time.Clock.Scale,
-        Data.Time.Clock.UTC,
-        Data.Time.Clock.CTimeval,
-        Data.Time.Clock.UTCDiff,
-        Data.Time.LocalTime.TimeZone,
-        Data.Time.LocalTime.TimeOfDay,
-        Data.Time.LocalTime.LocalTime,
-        Data.Time.Format.Parse
-        Data.Time.Calendar,
-        Data.Time.Calendar.MonthDay,
-        Data.Time.Calendar.OrdinalDate,
-        Data.Time.Calendar.WeekDate,
-        Data.Time.Calendar.Julian,
-        Data.Time.Calendar.Easter,
-        Data.Time.Clock,
-        Data.Time.Clock.POSIX,
-        Data.Time.Clock.TAI,
-        Data.Time.LocalTime,
-        Data.Time.Format,
-        Data.Time
