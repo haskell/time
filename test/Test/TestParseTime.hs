@@ -26,6 +26,7 @@ testParseTime = testGroup "testParseTime"
     readTests,
     simpleFormatTests,
     extests,
+    particularParseTests,
     testGroup "properties" (fmap (\(n,prop) -> testProperty n prop) properties)
     ]
 
@@ -88,12 +89,15 @@ readTests :: Test
 readTests = testGroup "read times"
     [
     readTestsParensSpaces testDay "1912-07-08",
-    readTestsParensSpaces testDay "1912-7-8",
-    readTestsParensSpaces testTimeOfDay "08:04:02",
-    readTestsParensSpaces testTimeOfDay "8:4:2"
+    --readTestsParensSpaces testDay "1912-7-8",
+    readTestsParensSpaces testTimeOfDay "08:04:02"
+    --,readTestsParensSpaces testTimeOfDay "8:4:2"
     ] where
     testDay = fromGregorian 1912 7 8
     testTimeOfDay = TimeOfDay 8 4 2
+
+epoch :: LocalTime
+epoch = LocalTime (fromGregorian 1970 0 0) midnight
 
 simpleFormatTests :: Test
 simpleFormatTests = testGroup "simple"
@@ -119,7 +123,6 @@ simpleFormatTests = testGroup "simple"
     readsTest [(epoch,"")] "%Q X" " X",
     readsTest [(epoch,"")] "%QX" "X"
     ] where
-    epoch = LocalTime (fromGregorian 1970 0 0) midnight
     readsTest :: (Show a, Eq a, ParseTime a) => [(a,String)] -> String -> String -> Test
     readsTest expected formatStr target = let
         found = readSTime False defaultTimeLocale formatStr target
@@ -127,17 +130,39 @@ simpleFormatTests = testGroup "simple"
         name = (show formatStr) ++ " of " ++ (show target)
         in pureTest name result
 
+spacingTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> Test
+spacingTests expected formatStr target = testGroup "particular"
+    [
+        parseTest False (Just expected) formatStr target,
+        parseTest True (Just expected) formatStr target,
+        parseTest False (Just expected) (formatStr ++ " ") (target ++ " "),
+        parseTest True (Just expected) (formatStr ++ " ") (target ++ " "),
+        parseTest False (Just expected) (" " ++ formatStr) (" " ++ target),
+        parseTest True (Just expected) (" " ++ formatStr) (" " ++ target),
+        parseTest True (Just expected) ("" ++ formatStr) (" " ++ target),
+        parseTest True (Just expected) (" " ++ formatStr) ("  " ++ target)
+    ]
+
+particularParseTests :: Test
+particularParseTests = testGroup "particular"
+    [
+        spacingTests epoch "%Q" "",
+        spacingTests epoch "%k" " 0",
+        spacingTests epoch "%M" "00",
+        spacingTests (TimeZone 120 False "") "%Z" "+0200"
+    ]
+
 parseYMD :: Day -> Test
 parseYMD day = case toGregorian day of
-    (y,m,d) -> parseTest (Just day) "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))
+    (y,m,d) -> parseTest False (Just day) "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))
 
 parseYearDayD :: Day -> Test
 parseYearDayD day = case toGregorian day of
-    (y,m,d) -> parseTest (Just day) "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))
+    (y,m,d) -> parseTest False (Just day) "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))
 
 parseYearDayE :: Day -> Test
 parseYearDayE day = case toGregorian day of
-    (y,m,d) -> parseTest (Just day) "%Y %-m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))
+    (y,m,d) -> parseTest False (Just day) "%Y %-m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))
 
 -- | 1969 - 2068
 expectedYear :: Integer -> Integer
@@ -148,31 +173,31 @@ show2 :: (Show n,Integral n) => n -> String
 show2 i = (show (div i 10)) ++ (show (mod i 10))
 
 parseYY :: Integer -> Test
-parseYY i = parseTest (Just (fromGregorian (expectedYear i) 1 1)) "%y" (show2 i)
+parseYY i = parseTest False (Just (fromGregorian (expectedYear i) 1 1)) "%y" (show2 i)
 
 parseCYY :: Integer -> Integer -> Test
-parseCYY c i = parseTest (Just (fromGregorian ((c * 100) + i) 1 1)) "%-C %y" ((show c) ++ " " ++ (show2 i))
+parseCYY c i = parseTest False (Just (fromGregorian ((c * 100) + i) 1 1)) "%-C %y" ((show c) ++ " " ++ (show2 i))
 
 parseCYY2 :: Integer -> Integer -> Test
-parseCYY2 c i = parseTest (Just (fromGregorian ((c * 100) + i) 1 1)) "%C %y" ((show2 c) ++ " " ++ (show2 i))
+parseCYY2 c i = parseTest False (Just (fromGregorian ((c * 100) + i) 1 1)) "%C %y" ((show2 c) ++ " " ++ (show2 i))
 
 parseCentury :: String -> Integer -> Test
-parseCentury int c = parseTest (Just (fromGregorian (c * 100) 1 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
+parseCentury int c = parseTest False (Just (fromGregorian (c * 100) 1 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
 
-parseTest :: (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
-parseTest expected formatStr target =
+parseTest :: (Show t, Eq t, ParseTime t) => Bool -> Maybe t -> String -> String -> Test
+parseTest sp expected formatStr target =
     let
-        found = parse formatStr target
+        found = parse sp formatStr target
         result = diff expected found
-        name = (show formatStr) ++ " of " ++ (show target)
+        name = (show formatStr) ++ " of " ++ (show target) ++ (if sp then " allowing spaces" else "")
     in pureTest name result
 {-
 readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
 readsTest (Just e) = readsTest' [(e,"")]
 readsTest Nothing = readsTest' ([] :: [(t,String)])
 -}
-parse :: ParseTime t => String -> String -> Maybe t
-parse f t = parseTimeM False defaultTimeLocale f t
+parse :: ParseTime t => Bool -> String -> String -> Maybe t
+parse sp f t = parseTimeM sp defaultTimeLocale f t
 
 format :: (FormatTime t) => String -> t -> String
 format f t = formatTime defaultTimeLocale f t
@@ -238,14 +263,14 @@ compareResult :: (Eq a,Show a) => a -> a -> Result
 compareResult = compareResult' ""
 
 compareParse :: forall a. (Eq a,Show a,ParseTime a) => a -> String -> String -> Result
-compareParse expected fmt text = compareResult' (", parsing " ++ (show text)) (Just expected) (parse fmt text)
+compareParse expected fmt text = compareResult' (", parsing " ++ (show text)) (Just expected) (parse False fmt text)
 
 --
 -- * tests for dbugging failing cases
 --
 
 test_parse_format :: (FormatTime t,ParseTime t,Show t) => String -> t -> (String,String,Maybe t)
-test_parse_format f t = let s = format f t in (show t, s, parse f s `asTypeOf` Just t)
+test_parse_format f t = let s = format f t in (show t, s, parse False f s `asTypeOf` Just t)
 
 --
 -- * show and read
@@ -321,7 +346,7 @@ prop_parse_format_lower_named = prop_named "prop_parse_format_lower" prop_parse_
 prop_format_parse_format :: (FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
 prop_format_parse_format (FormatString f) t = compareResult
     (Just (format f t))
-    (fmap (format f) (parse f (format f t) `asTypeOf` Just t))
+    (fmap (format f) (parse False f (format f t) `asTypeOf` Just t))
 
 prop_format_parse_format_named :: (Arbitrary t, Show t, FormatTime t, ParseTime t)
                                   => String -> FormatString t -> NamedProperty
@@ -345,7 +370,7 @@ instance CoArbitrary Input where
 
 prop_no_crash_bad_input :: (Eq t, ParseTime t) => FormatString t -> Input -> Property
 prop_no_crash_bad_input fs@(FormatString f) (Input s) = property $
-    case parse f s of
+    case parse False f s of
       Nothing -> True
       Just t  -> t == t `asTypeOf` formatType fs
   where
