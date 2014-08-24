@@ -11,7 +11,7 @@ module Data.Time.Format.Parse
 #endif
     ParseTime(..),
     -- * Locale
-    module System.Locale
+    module Data.Time.Format.Locale
     ) where
 
 import Data.Time.Clock.POSIX
@@ -29,7 +29,7 @@ import Data.Fixed
 import Data.List
 import Data.Maybe
 import Data.Ratio
-import System.Locale
+import Data.Time.Format.Locale
 #if LANGUAGE_Rank2Types
 import Text.ParserCombinators.ReadP hiding (char, string)
 #endif

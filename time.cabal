@@ -36,8 +36,7 @@ library
     hs-source-dirs: lib
     build-depends:
         base >= 4.4 && < 5,
-        deepseq >= 1.1,
-        old-locale
+        deepseq >= 1.1
     ghc-options: -Wall
     default-language: Haskell2010
     if impl(ghc)
@@ -64,7 +63,8 @@ library
         Data.Time.Clock.TAI,
         Data.Time.LocalTime,
         Data.Time.Format,
-        Data.Time
+        Data.Time,
+        System.Locale
     default-extensions:    CPP
     c-sources: lib/cbits/HsTime.c
     other-modules:
@@ -80,6 +80,7 @@ library
         Data.Time.LocalTime.TimeOfDay,
         Data.Time.LocalTime.LocalTime,
         Data.Time.Format.Parse
+        Data.Time.Format.Locale
     include-dirs: lib/include
     if os(windows)
         install-includes:
@@ -108,7 +109,6 @@ test-suite tests
     build-depends:
         base,
         deepseq,
-        old-locale,
         time == 1.5,
         QuickCheck >= 2.5.1,
         test-framework >= 0.8,
