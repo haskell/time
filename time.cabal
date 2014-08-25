@@ -63,8 +63,7 @@ library
         Data.Time.Clock.TAI,
         Data.Time.LocalTime,
         Data.Time.Format,
-        Data.Time,
-        System.Locale
+        Data.Time
     default-extensions:    CPP
     c-sources: lib/cbits/HsTime.c
     other-modules:
