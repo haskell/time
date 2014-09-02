@@ -18,7 +18,6 @@ data TimeLocale = TimeLocale {
         wDays  :: [(String, String)],
         -- |full and abbreviated months
         months :: [(String, String)],
-        intervals :: [(String, String)],
         -- |AM\/PM symbols
         amPm   :: (String, String),
         -- |formatting strings
@@ -46,15 +45,6 @@ defaultTimeLocale =  TimeLocale {
                   ("July",      "Jul"), ("August",    "Aug"),
                   ("September", "Sep"), ("October",   "Oct"),
                   ("November",  "Nov"), ("December",  "Dec")],
-
-        intervals = [ ("year","years")
-                    , ("month", "months")
-                    , ("day","days")
-                    , ("hour","hours")
-                    , ("min","mins")
-                    , ("sec","secs")
-                    , ("usec","usecs")
-                    ],
 
         amPm = ("AM", "PM"),
         dateTimeFmt = "%a %b %e %H:%M:%S %Z %Y",
