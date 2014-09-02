@@ -27,6 +27,9 @@ testParseTime = testGroup "testParseTime"
     simpleFormatTests,
     extests,
     particularParseTests,
+    badParseTests,
+    defaultTimeZoneTests,
+    militaryTimeZoneTests,
     testGroup "properties" (fmap (\(n,prop) -> testProperty n prop) properties)
     ]
 
@@ -156,6 +159,12 @@ particularParseTests = testGroup "particular"
         spacingTests (TimeZone (-480) False "PST") "%Z" "PST"
     ]
 
+badParseTests :: Test
+badParseTests = testGroup "bad"
+    [
+        parseTest False (Nothing :: Maybe Day) "%Y" ""
+    ]
+
 parseYMD :: Day -> Test
 parseYMD day = case toGregorian day of
     (y,m,d) -> parseTest False (Just day) "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))
@@ -200,6 +209,29 @@ readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> Strin
 readsTest (Just e) = readsTest' [(e,"")]
 readsTest Nothing = readsTest' ([] :: [(t,String)])
 -}
+
+enumAdd :: (Enum a) => Int -> a -> a
+enumAdd i a = toEnum (i + fromEnum a)
+
+getMilZoneLetter :: Int -> Char
+getMilZoneLetter 0 = 'Z'
+getMilZoneLetter h | h < 0 = enumAdd (negate h) 'M'
+getMilZoneLetter h | h < 10 = enumAdd (h - 1) 'A'
+getMilZoneLetter h = enumAdd (h - 10) 'K'
+
+getMilZone :: Int -> TimeZone
+getMilZone hour = TimeZone (hour * 60) False [getMilZoneLetter hour]
+
+testParseTimeZone :: TimeZone -> Test
+testParseTimeZone tz = parseTest False (Just tz) "%Z" (timeZoneName tz)
+
+defaultTimeZoneTests :: Test
+defaultTimeZoneTests = testGroup "default time zones" (fmap testParseTimeZone (knownTimeZones defaultTimeLocale))
+
+militaryTimeZoneTests :: Test
+militaryTimeZoneTests = testGroup "military time zones" (fmap (testParseTimeZone . getMilZone) [-12 .. 12])
+
+
 parse :: ParseTime t => Bool -> String -> String -> Maybe t
 parse sp f t = parseTimeM sp defaultTimeLocale f t
 

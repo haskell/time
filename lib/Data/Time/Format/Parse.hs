@@ -410,6 +410,18 @@ mkPico i f = fromInteger i + fromRational (f % 1000000000000)
 instance ParseTime LocalTime where
     buildTime l xs = LocalTime (buildTime l xs) (buildTime l xs)
 
+enumDiff :: (Enum a) => a -> a -> Int
+enumDiff a b = (fromEnum a) - (fromEnum b)
+
+getMilZoneHours :: Char -> Maybe Int
+getMilZoneHours c | c < 'A' = Nothing
+getMilZoneHours c | c <= 'I' = Just $ 1 + enumDiff c 'A'
+getMilZoneHours 'J' = Nothing
+getMilZoneHours c | c <= 'M' = Just $ 10 + enumDiff c 'K'
+getMilZoneHours c | c <= 'Y' = Just $ (enumDiff 'N' c) - 1
+getMilZoneHours 'Z' = Just 0
+getMilZoneHours _ = Nothing
+
 instance ParseTime TimeZone where
     buildTime l = foldl f (minutesToTimeZone 0)
       where
@@ -420,7 +432,9 @@ instance ParseTime TimeZone where
                   | isAlpha (head x) -> let y = up x in
                       case find (\tz -> y == timeZoneName tz) (knownTimeZones l) of
                         Just tz -> tz
-                        Nothing -> TimeZone offset dst y
+                        Nothing -> case y of
+                            [yc] | Just hours <- getMilZoneHours yc -> TimeZone (hours * 60) False y
+                            _ -> TimeZone offset dst y
                   | otherwise        -> zone
               _   -> t
           where zone = TimeZone (readTzOffset x) dst name

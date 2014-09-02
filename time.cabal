@@ -89,6 +89,14 @@ library
             HsTime.h
             HsTimeConfig.h
 
+test-suite ShowDefaultTZAbbreviations
+    hs-source-dirs: test
+    type: exitcode-stdio-1.0
+    build-depends:
+        base,
+        time == 1.5
+    main-is: ShowDefaultTZAbbreviations.hs
+
 test-suite tests
     hs-source-dirs: test
     type: exitcode-stdio-1.0

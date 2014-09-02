@@ -210,8 +210,6 @@ _TIMEZONES_ =
     --  Universal Coordinated Time
     ,("UTC",     (readTzOffset "+00:00", False))
     --  Same as UTC
-    ,("Z",       (readTzOffset "+00:00", False))
-    --  Same as UTC
     ,("ZULU",    (readTzOffset "+00:00", False))
     --  Western European Time
     ,("WET",     (readTzOffset "+00:00", False))
