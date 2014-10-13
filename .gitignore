@@ -1,6 +1,9 @@
-dist/
-configure
+GNUmakefile
 autom4te.cache/
 config.*
-include/HsTimeConfig.h
-include/HsTimeConfig.h.in
+configure
+dist/
+dist-install
+ghc.mk
+lib/include/HsTimeConfig.h
+lib/include/HsTimeConfig.h.in
