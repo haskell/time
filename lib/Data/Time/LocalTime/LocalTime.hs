@@ -73,15 +73,18 @@ data ZonedTime = ZonedTime {
 	zonedTimeToLocalTime :: LocalTime,
 	zonedTimeZone :: TimeZone
 }
-  deriving (Eq
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
 #if HAS_DataPico
-    , Data, Typeable
+  deriving (Data, Typeable)
 #endif
 #endif
 #endif
-    )
+
+instance Eq ZonedTime where
+  t1 == t2 = case comparing zonedTimeToUTC t1 t2 of
+    EQ -> True
+    _ -> False
 
 instance Ord ZonedTime where
   compare = comparing zonedTimeToUTC
