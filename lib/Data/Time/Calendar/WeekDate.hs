@@ -9,21 +9,20 @@ import Data.Time.Calendar.Private
 -- Note that \"Week\" years are not quite the same as Gregorian years, as the first day of the year is always a Monday.
 -- The first week of a year is the first week to contain at least four days in the corresponding Gregorian year.
 toWeekDate :: Day -> (Integer,Int,Int)
-toWeekDate date@(ModifiedJulianDay mjd) = (y1,fromInteger (w1 + 1),fromInteger (mod d 7) + 1) where
+toWeekDate date@(ModifiedJulianDay mjd) = (y1,fromInteger (w1 + 1),fromInteger d_mod_7 + 1) where
+        (d_div_7, d_mod_7) = d `divMod` 7
 	(y0,yd) = toOrdinalDate date
 	d = mjd + 2
 	foo :: Integer -> Integer
 	foo y = bar (toModifiedJulianDay (fromOrdinalDate y 6))
-	bar k = (div d 7) - (div k 7)
-	w0 = bar (d - (toInteger yd) + 4)
-	(y1,w1) = if w0 == -1
-		then (y0 - 1,foo (y0 - 1))
-		else if w0 == 52
-		then if (foo (y0 + 1)) == 0
-			then (y0 + 1,0)
-			else (y0,w0)
-		else (y0,w0)
-
+	bar k = d_div_7 - k `div` 7
+	(y1,w1) = case bar (d - toInteger yd + 4) of
+	            -1 -> (y0 - 1, foo (y0 - 1))
+	            52 -> if foo (y0 + 1) == 0
+	                  then (y0 + 1, 0)
+	                  else (y0, 52)
+	            w0  -> (y0, w0)
+	
 -- | convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will be clipped to the correct range.
 fromWeekDate :: Integer -> Int -> Int -> Day
