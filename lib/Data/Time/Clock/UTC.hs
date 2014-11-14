@@ -70,7 +70,8 @@ newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord
     )
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
-instance NFData NominalDiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+instance NFData NominalDiffTime where -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+        rnf ndt = seq ndt ()
 
 instance Enum NominalDiffTime where
 	succ (MkNominalDiffTime a) = MkNominalDiffTime (succ a)
