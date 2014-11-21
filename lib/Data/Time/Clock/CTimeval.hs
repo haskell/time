@@ -4,7 +4,11 @@ module Data.Time.Clock.CTimeval where
 #ifndef mingw32_HOST_OS
 -- All Unix-specific, this
 
+#if __GLASGOW_HASKELL__ >= 709
+import Foreign
+#else
 import Foreign.Safe
+#endif
 import Foreign.C
 
 data CTimeval = MkCTimeval CLong CLong
