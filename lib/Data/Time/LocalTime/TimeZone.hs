@@ -17,7 +17,11 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock
 import Data.Time.Clock.POSIX
 
+#if __GLASGOW_HASKELL__ >= 709
+import Foreign
+#else
 import Foreign.Safe
+#endif
 import Foreign.C
 import Control.DeepSeq
 import Data.Typeable
