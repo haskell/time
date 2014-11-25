@@ -49,18 +49,13 @@ fromWeekDateValid y w d = do
 
  -- | convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will wrap-around
--- It is O(n) in the amount the year changes
 fromWeekDateWrap :: Integer -> Int -> Int -> Day
-fromWeekDateWrap year week day
-  | day == 0 = fromWeekDateWrap year (week - 1) 7
-  | day < 0 = fromWeekDateWrap year (week + day `div` 7) (day `mod` 7)
-  | day > 7 = fromWeekDateWrap year (week + day `div` 7) (day `mod` 7)
-  | week == 0 = fromWeekDateWrap (year-1) (weeksIn $ year - 1) day
-  | week > weeksIn year = fromWeekDateWrap (year + 1) (week-weeksIn year) day
-  | week < 0 = fromWeekDateWrap (year - 1) (week + weeksIn (year - 1)) day
-  | otherwise = fromWeekDate year week day
-    where snd' (_,b,_) = b
-          weeksIn year = max (snd' $ toWeekDate $ fromGregorian year 12 27) (snd' $ toWeekDate $ fromGregorian year 12 31)
+fromWeekDateWrap year week day = ModifiedJulianDay
+                                 $ (+) (week'*7 + day')
+                                 $ toModifiedJulianDay
+                                 $ fromGregorian year 01 01
+  where day' = fromIntegral day :: Integer
+        week' = fromIntegral week
 
 -- | show in ISO 8601 Week Date format as yyyy-Www-d (e.g. \"2006-W46-3\").
 showWeekDate :: Day -> String
