@@ -14,7 +14,7 @@ where
 import Data.Time.LocalTime
 
 data TimeLocale = TimeLocale {
-        -- |full and abbreviated week days
+        -- |full and abbreviated week days, starting with Sunday
         wDays  :: [(String, String)],
         -- |full and abbreviated months
         months :: [(String, String)],
