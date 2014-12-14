@@ -108,7 +108,7 @@ formatChar c locale mpado t = case (formatCharacter c) of
 --
 -- [@%x@] as 'dateFmt' @locale@ (e.g. @%m\/%d\/%y@)
 --
--- [@%Y@] year, no padding. Note @%0y@ and @%_y@ pad to four chars
+-- [@%Y@] year, no padding. Note @%0Y@ and @%_Y@ pad to four chars
 --
 -- [@%y@] year of century, 0-padded to two chars, @00@ - @99@
 --
