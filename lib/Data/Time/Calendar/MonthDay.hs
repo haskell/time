@@ -1,7 +1,7 @@
 module Data.Time.Calendar.MonthDay
-	(
-	monthAndDayToDayOfYear,monthAndDayToDayOfYearValid,dayOfYearToMonthAndDay,monthLength
-	) where
+    (
+    monthAndDayToDayOfYear,monthAndDayToDayOfYearValid,dayOfYearToMonthAndDay,monthLength
+    ) where
 
 import Data.Time.Calendar.Private
 
@@ -9,22 +9,22 @@ import Data.Time.Calendar.Private
 -- First arg is leap year flag
 monthAndDayToDayOfYear :: Bool -> Int -> Int -> Int
 monthAndDayToDayOfYear isLeap month day = (div (367 * month'' - 362) 12) + k + day' where
-	month' = clip 1 12 month
-	day' = fromIntegral (clip 1 (monthLength' isLeap month') day)
-	month'' = fromIntegral month'
-	k = if month' <= 2 then 0 else if isLeap then -1 else -2
+    month' = clip 1 12 month
+    day' = fromIntegral (clip 1 (monthLength' isLeap month') day)
+    month'' = fromIntegral month'
+    k = if month' <= 2 then 0 else if isLeap then -1 else -2
 
 -- | convert month and day in the Gregorian or Julian calendars to day of year.
 -- First arg is leap year flag
 monthAndDayToDayOfYearValid :: Bool -> Int -> Int -> Maybe Int
 monthAndDayToDayOfYearValid isLeap month day = do
-	month' <- clipValid 1 12 month
-	day' <- clipValid 1 (monthLength' isLeap month') day
-	let
-		day'' = fromIntegral day'
-		month'' = fromIntegral month'
-		k = if month' <= 2 then 0 else if isLeap then -1 else -2
-	return ((div (367 * month'' - 362) 12) + k + day'')
+    month' <- clipValid 1 12 month
+    day' <- clipValid 1 (monthLength' isLeap month') day
+    let
+        day'' = fromIntegral day'
+        month'' = fromIntegral month'
+        k = if month' <= 2 then 0 else if isLeap then -1 else -2
+    return ((div (367 * month'' - 362) 12) + k + day'')
 
 -- | convert day of year in the Gregorian or Julian calendars to month and day.
 -- First arg is leap year flag
@@ -44,6 +44,6 @@ monthLength' :: Bool -> Int -> Int
 monthLength' isLeap month' = (monthLengths isLeap) !! (month' - 1)
 
 monthLengths :: Bool -> [Int]
-monthLengths isleap = 
-	[31,if isleap then 29 else 28,31,30,31,30,31,31,30,31,30,31]
-	--J        F                   M  A  M  J  J  A  S  O  N  D
+monthLengths isleap =
+    [31,if isleap then 29 else 28,31,30,31,30,31,31,30,31,30,31]
+    --J        F                   M  A  M  J  J  A  S  O  N  D
