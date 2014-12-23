@@ -5,11 +5,11 @@
 -- #hide
 module Data.Time.LocalTime.TimeZone
 (
-	-- * Time zones
-	TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',minutesToTimeZone,hoursToTimeZone,utc,
+    -- * Time zones
+    TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',minutesToTimeZone,hoursToTimeZone,utc,
 
-	-- getting the locale time zone
-	getTimeZone,getCurrentTimeZone
+    -- getting the locale time zone
+    getTimeZone,getCurrentTimeZone
 ) where
 
 --import System.Time.Calendar.Format
@@ -31,12 +31,12 @@ import Data.Data
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone {
-	-- | The number of minutes offset from UTC. Positive means local time will be later in the day than UTC.
-	timeZoneMinutes :: Int,
-	-- | Is this time zone just persisting for the summer?
-	timeZoneSummerOnly :: Bool,
-	-- | The name of the zone, typically a three- or four-letter acronym.
-	timeZoneName :: String
+    -- | The number of minutes offset from UTC. Positive means local time will be later in the day than UTC.
+    timeZoneMinutes :: Int,
+    -- | Is this time zone just persisting for the summer?
+    timeZoneSummerOnly :: Bool,
+    -- | The name of the zone, typically a three- or four-letter acronym.
+    timeZoneName :: String
 } deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
@@ -46,7 +46,7 @@ data TimeZone = TimeZone {
     )
 
 instance NFData TimeZone where
-	rnf (TimeZone m so n) = m `deepseq` so `deepseq` n `deepseq` ()
+    rnf (TimeZone m so n) = m `deepseq` so `deepseq` n `deepseq` ()
 
 -- | Create a nameless non-summer timezone for this number of minutes
 minutesToTimeZone :: Int -> TimeZone
@@ -69,8 +69,8 @@ timeZoneOffsetString :: TimeZone -> String
 timeZoneOffsetString = timeZoneOffsetString' (Just '0')
 
 instance Show TimeZone where
-	show zone@(TimeZone _ _ "") = timeZoneOffsetString zone
-	show (TimeZone _ _ name) = name
+    show zone@(TimeZone _ _ "") = timeZoneOffsetString zone
+    show (TimeZone _ _ name) = name
 
 -- | The UTC time zone
 utc :: TimeZone
@@ -85,15 +85,15 @@ posixToCTime  = fromInteger . floor
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
 getTimeZone :: UTCTime -> IO TimeZone
 getTimeZone time = with 0 (\pdst -> with nullPtr (\pcname -> do
-	secs <- get_current_timezone_seconds (posixToCTime (utcTimeToPOSIXSeconds time)) pdst pcname
-	case secs of
-		0x80000000 -> fail "localtime_r failed"
-		_ -> do
-			dst <- peek pdst
-			cname <- peek pcname
-			name <- peekCString cname
-			return (TimeZone (div (fromIntegral secs) 60) (dst == 1) name)
-	))
+    secs <- get_current_timezone_seconds (posixToCTime (utcTimeToPOSIXSeconds time)) pdst pcname
+    case secs of
+        0x80000000 -> fail "localtime_r failed"
+        _ -> do
+            dst <- peek pdst
+            cname <- peek pcname
+            name <- peekCString cname
+            return (TimeZone (div (fromIntegral secs) 60) (dst == 1) name)
+    ))
 
 -- | Get the current time-zone
 getCurrentTimeZone :: IO TimeZone

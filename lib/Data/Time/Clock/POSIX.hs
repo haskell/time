@@ -2,7 +2,7 @@
 -- Most people won't need this module.
 module Data.Time.Clock.POSIX
 (
-	posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime
+    posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime
 ) where
 
 import Data.Time.Clock.UTC
@@ -11,7 +11,7 @@ import Data.Fixed
 import Control.Monad
 
 #ifdef mingw32_HOST_OS
-import Data.Word	( Word64)
+import Data.Word    ( Word64)
 import System.Win32.Time
 #else
 import Data.Time.Clock.CTimeval
@@ -22,7 +22,7 @@ posixDayLength :: NominalDiffTime
 posixDayLength = 86400
 
 -- | POSIX time is the nominal time since 1970-01-01 00:00 UTC
--- 
+--
 -- To convert from a 'Foreign.C.CTime' or 'System.Posix.EpochTime', use 'realToFrac'.
 --
 type POSIXTime = NominalDiffTime
@@ -32,7 +32,7 @@ unixEpochDay = ModifiedJulianDay 40587
 
 posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
-	(d,t) = divMod' i posixDayLength
+    (d,t) = divMod' i posixDayLength
  in UTCTime (addDays d unixEpochDay) (realToFrac t)
 
 utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime

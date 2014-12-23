@@ -3,11 +3,11 @@
 -- #hide
 module Data.Time.LocalTime.TimeOfDay
 (
-	-- * Time of day
-	TimeOfDay(..),midnight,midday,makeTimeOfDayValid,
-	utcToLocalTimeOfDay,localToUTCTimeOfDay,
-	timeToTimeOfDay,timeOfDayToTime,
-	dayFractionToTimeOfDay,timeOfDayToDayFraction
+    -- * Time of day
+    TimeOfDay(..),midnight,midday,makeTimeOfDayValid,
+    utcToLocalTimeOfDay,localToUTCTimeOfDay,
+    timeToTimeOfDay,timeOfDayToTime,
+    dayFractionToTimeOfDay,timeOfDayToDayFraction
 ) where
 
 import Data.Time.LocalTime.TimeZone
@@ -22,13 +22,13 @@ import Data.Data
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay {
-	-- | range 0 - 23
-	todHour    :: Int,
-	-- | range 0 - 59
-	todMin     :: Int,
-	-- | Note that 0 <= todSec < 61, accomodating leap seconds.
-	-- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
-	todSec     :: Pico
+    -- | range 0 - 23
+    todHour    :: Int,
+    -- | range 0 - 59
+    todMin     :: Int,
+    -- | Note that 0 <= todSec < 61, accomodating leap seconds.
+    -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
+    todSec     :: Pico
 } deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
@@ -40,7 +40,7 @@ data TimeOfDay = TimeOfDay {
     )
 
 instance NFData TimeOfDay where
-	rnf (TimeOfDay h m s) = h `deepseq` m `deepseq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+    rnf (TimeOfDay h m s) = h `deepseq` m `deepseq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 -- | Hour zero
 midnight :: TimeOfDay
@@ -51,20 +51,20 @@ midday :: TimeOfDay
 midday = TimeOfDay 12 0 0
 
 instance Show TimeOfDay where
-	show (TimeOfDay h m s) = (show2 (Just '0') h) ++ ":" ++ (show2 (Just '0') m) ++ ":" ++ (show2Fixed (Just '0') s)
+    show (TimeOfDay h m s) = (show2 (Just '0') h) ++ ":" ++ (show2 (Just '0') m) ++ ":" ++ (show2Fixed (Just '0') s)
 
 makeTimeOfDayValid :: Int -> Int -> Pico -> Maybe TimeOfDay
 makeTimeOfDayValid h m s = do
-	_ <- clipValid 0 23 h
-	_ <- clipValid 0 59 m
-	_ <- clipValid 0 60.999999999999 s
-	return (TimeOfDay h m s)
+    _ <- clipValid 0 23 h
+    _ <- clipValid 0 59 m
+    _ <- clipValid 0 60.999999999999 s
+    return (TimeOfDay h m s)
 
 -- | Convert a ToD in UTC to a ToD in some timezone, together with a day adjustment.
 utcToLocalTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
 utcToLocalTimeOfDay zone (TimeOfDay h m s) = (fromIntegral (div h' 24),TimeOfDay (mod h' 24) (mod m' 60) s) where
-	m' = m + timeZoneMinutes zone
-	h' = h + (div m' 60)
+    m' = m + timeZoneMinutes zone
+    h' = h + (div m' 60)
 
 -- | Convert a ToD in some timezone to a ToD in UTC, together with a day adjustment.
 localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
@@ -78,11 +78,11 @@ posixDayLength = fromInteger 86400
 timeToTimeOfDay :: DiffTime -> TimeOfDay
 timeToTimeOfDay dt | dt >= posixDayLength = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDayLength)))
 timeToTimeOfDay dt = TimeOfDay (fromInteger h) (fromInteger m) s where
-	s' = realToFrac dt
-	s = mod' s' 60
-	m' = div' s' 60
-	m = mod' m' 60
-	h = div' m' 60
+    s' = realToFrac dt
+    s = mod' s' 60
+    m' = div' s' 60
+    m = mod' m' 60
+    h = div' m' 60
 
 -- | Find out how much time since midnight a given TimeOfDay is.
 timeOfDayToTime :: TimeOfDay -> DiffTime
