@@ -27,6 +27,9 @@ import Data.Data
 -- and the time is a TimeOfDay.
 -- Conversion of this (as local civil time) to UTC depends on the time zone.
 -- Conversion of this (as local mean time) to UT1 depends on the longitude.
+--
+-- For the 'Read' instance of 'LocalTime',
+-- import "Data.Time" or "Data.Time.Format".
 data LocalTime = LocalTime {
     localDay    :: Day,
     localTimeOfDay   :: TimeOfDay
@@ -68,6 +71,9 @@ localTimeToUT1 :: Rational -> LocalTime -> UniversalTime
 localTimeToUT1 long (LocalTime (ModifiedJulianDay localMJD) tod) = ModJulianDate ((fromIntegral localMJD) + (timeOfDayToDayFraction tod) - (long / 360))
 
 -- | A local time together with a TimeZone.
+--
+-- For the 'Read' instance of 'ZonedTime',
+-- import "Data.Time" or "Data.Time.Format".
 data ZonedTime = ZonedTime {
     zonedTimeToLocalTime :: LocalTime,
     zonedTimeZone :: TimeZone

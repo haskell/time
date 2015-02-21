@@ -15,6 +15,9 @@ import Data.Data
 #endif
 
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
+--
+-- For the 'Read' instance of 'Day',
+-- import "Data.Time" or "Data.Time.Format".
 newtype Day = ModifiedJulianDay {toModifiedJulianDay :: Integer} deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
