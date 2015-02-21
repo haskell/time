@@ -23,6 +23,9 @@ import Data.Data
 
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
 -- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.
+--
+-- For the 'Show' instance of 'UniversalTime',
+-- import "Data.Time" or "Data.Time.LocalTime".
 newtype UniversalTime = ModJulianDate {getModJulianDate :: Rational} deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types

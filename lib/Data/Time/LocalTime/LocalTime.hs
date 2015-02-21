@@ -70,6 +70,10 @@ ut1ToLocalTime long (ModJulianDate date) = LocalTime (ModifiedJulianDay localMJD
 localTimeToUT1 :: Rational -> LocalTime -> UniversalTime
 localTimeToUT1 long (LocalTime (ModifiedJulianDay localMJD) tod) = ModJulianDate ((fromIntegral localMJD) + (timeOfDayToDayFraction tod) - (long / 360))
 
+-- orphan instance
+instance Show UniversalTime where
+    show t = show (ut1ToLocalTime 0 t)
+
 -- | A local time together with a TimeZone.
 --
 -- For the 'Read' instance of 'ZonedTime',
