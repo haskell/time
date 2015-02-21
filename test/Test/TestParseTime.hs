@@ -286,6 +286,13 @@ instance Arbitrary UTCTime where
 instance CoArbitrary UTCTime where
     coarbitrary t = coarbitrary (truncate (utcTimeToPOSIXSeconds t) :: Integer)
 
+instance Arbitrary UniversalTime where
+    arbitrary = liftM (\n -> ModJulianDate $ n % k) $ choose (-313698 * k, 2973483 * k) where -- 1000-01-1 to 9999-12-31
+        k = 86400
+
+instance CoArbitrary UniversalTime where
+    coarbitrary (ModJulianDate d) = coarbitrary d
+
 -- missing from the time package
 instance Eq ZonedTime where
     ZonedTime t1 tz1 == ZonedTime t2 tz2 = t1 == t2 && tz1 == tz2
@@ -438,7 +445,8 @@ properties =
      ("prop_read_show LocalTime", property (prop_read_show :: LocalTime -> Result)),
      ("prop_read_show TimeZone", property (prop_read_show :: TimeZone -> Result)),
      ("prop_read_show ZonedTime", property (prop_read_show :: ZonedTime -> Result)),
-     ("prop_read_show UTCTime", property (prop_read_show :: UTCTime -> Result))]
+     ("prop_read_show UTCTime", property (prop_read_show :: UTCTime -> Result)),
+     ("prop_read_show UniversalTime", property (prop_read_show :: UniversalTime -> Result))]
  ++ [("prop_parse_showWeekDate", property prop_parse_showWeekDate),
      ("prop_parse_showGregorian", property prop_parse_showGregorian),
      ("prop_parse_showOrdinalDate", property prop_parse_showOrdinalDate)]
@@ -449,6 +457,7 @@ properties =
  ++ map (prop_parse_format_named "TimeZone") timeZoneFormats
  ++ map (prop_parse_format_named "ZonedTime") zonedTimeFormats
  ++ map (prop_parse_format_named "UTCTime") utcTimeFormats
+ ++ map (prop_parse_format_named "UniversalTime") universalTimeFormats
 
  ++ map (prop_parse_format_upper_named "Day") dayFormats
  ++ map (prop_parse_format_upper_named "TimeOfDay") timeOfDayFormats
@@ -456,6 +465,7 @@ properties =
  ++ map (prop_parse_format_upper_named "TimeZone") timeZoneFormats
  ++ map (prop_parse_format_upper_named "ZonedTime") zonedTimeFormats
  ++ map (prop_parse_format_upper_named "UTCTime") utcTimeFormats
+ ++ map (prop_parse_format_upper_named "UniversalTime") universalTimeFormats
 
  ++ map (prop_parse_format_lower_named "Day") dayFormats
  ++ map (prop_parse_format_lower_named "TimeOfDay") timeOfDayFormats
@@ -463,12 +473,14 @@ properties =
  ++ map (prop_parse_format_lower_named "TimeZone") timeZoneFormats
  ++ map (prop_parse_format_lower_named "ZonedTime") zonedTimeFormats
  ++ map (prop_parse_format_lower_named "UTCTime") utcTimeFormats
+ ++ map (prop_parse_format_lower_named "UniversalTime") universalTimeFormats
 
  ++ map (prop_format_parse_format_named "Day") partialDayFormats
  ++ map (prop_format_parse_format_named "TimeOfDay") partialTimeOfDayFormats
  ++ map (prop_format_parse_format_named "LocalTime") partialLocalTimeFormats
  ++ map (prop_format_parse_format_named "ZonedTime") partialZonedTimeFormats
  ++ map (prop_format_parse_format_named "UTCTime") partialUTCTimeFormats
+ ++ map (prop_format_parse_format_named "UniversalTime") partialUniversalTimeFormats
 
  ++ map (prop_no_crash_bad_input_named "Day") (dayFormats ++ partialDayFormats ++ failingPartialDayFormats)
  ++ map (prop_no_crash_bad_input_named "TimeOfDay") (timeOfDayFormats ++ partialTimeOfDayFormats)
@@ -476,6 +488,7 @@ properties =
  ++ map (prop_no_crash_bad_input_named "TimeZone") (timeZoneFormats)
  ++ map (prop_no_crash_bad_input_named "ZonedTime") (zonedTimeFormats ++ partialZonedTimeFormats)
  ++ map (prop_no_crash_bad_input_named "UTCTime") (utcTimeFormats ++ partialUTCTimeFormats)
+ ++ map (prop_no_crash_bad_input_named "UniversalTime") (universalTimeFormats ++ partialUniversalTimeFormats)
 
 
 
@@ -528,6 +541,9 @@ utcTimeFormats :: [FormatString UTCTime]
 utcTimeFormats = map FormatString
   ["%s.%q","%s%Q"]
 
+universalTimeFormats :: [FormatString UniversalTime]
+universalTimeFormats = map FormatString []
+
 --
 -- * Formats that do not include all the information
 --
@@ -561,6 +577,10 @@ partialUTCTimeFormats = map FormatString
      -- %c does not include second decimals
      "%c"
     ]
+
+partialUniversalTimeFormats :: [FormatString UniversalTime]
+partialUniversalTimeFormats = map FormatString
+    [ ]
 
 
 --

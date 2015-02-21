@@ -464,6 +464,9 @@ instance ParseTime ZonedTime where
 instance ParseTime UTCTime where
     buildTime l = zonedTimeToUTC . buildTime l
 
+instance ParseTime UniversalTime where
+    buildTime l = localTimeToUT1 0 . buildTime l
+
 -- * Read instances for time package types
 
 #if LANGUAGE_Rank2Types
@@ -485,5 +488,8 @@ instance Read ZonedTime where
 
 instance Read UTCTime where
     readsPrec n s = [ (zonedTimeToUTC t, r) | (t,r) <- readsPrec n s ]
+
+instance Read UniversalTime where
+    readsPrec n s = [ (localTimeToUT1 0 t, r) | (t,r) <- readsPrec n s ]
 #endif
 

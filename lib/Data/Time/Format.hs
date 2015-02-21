@@ -58,11 +58,11 @@ formatChar c locale mpado t = case (formatCharacter c) of
 --
 -- [@%Z@] timezone name
 --
--- For 'LocalTime' (and 'ZonedTime' and 'UTCTime'):
+-- For 'LocalTime' (and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%c@] as 'dateTimeFmt' @locale@ (e.g. @%a %b %e %H:%M:%S %Z %Y@)
 --
--- For 'TimeOfDay' (and 'LocalTime' and 'ZonedTime' and 'UTCTime'):
+-- For 'TimeOfDay' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%R@] same as @%H:%M@
 --
@@ -100,7 +100,7 @@ formatChar c locale mpado t = case (formatCharacter c) of
 -- the decimals are positive, not negative. For example, 0.9 seconds
 -- before the Unix epoch is formatted as @-1.1@ with @%s%Q@.
 --
--- For 'Day' (and 'LocalTime' and 'ZonedTime' and 'UTCTime'):
+-- For 'Day' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%D@] same as @%m\/%d\/%y@
 --
@@ -244,3 +244,6 @@ instance FormatTime Day where
 
 instance FormatTime UTCTime where
     formatCharacter c = fmap (\f locale mpado t -> f locale mpado (utcToZonedTime utc t)) (formatCharacter c)
+
+instance FormatTime UniversalTime where
+    formatCharacter c = fmap (\f locale mpado t -> f locale mpado (ut1ToLocalTime 0 t)) (formatCharacter c)
