@@ -52,26 +52,3 @@ addDays n (ModifiedJulianDay a) = ModifiedJulianDay (a + n)
 
 diffDays :: Day -> Day -> Integer
 diffDays (ModifiedJulianDay a) (ModifiedJulianDay b) = a - b
-
-{-
-instance Show Day where
-    show (ModifiedJulianDay d) = "MJD " ++ (show d)
-
--- necessary because H98 doesn't have "cunning newtype" derivation
-instance Num Day where
-    (ModifiedJulianDay a) + (ModifiedJulianDay b) = ModifiedJulianDay (a + b)
-    (ModifiedJulianDay a) - (ModifiedJulianDay b) = ModifiedJulianDay (a - b)
-    (ModifiedJulianDay a) * (ModifiedJulianDay b) = ModifiedJulianDay (a * b)
-    negate (ModifiedJulianDay a) = ModifiedJulianDay (negate a)
-    abs (ModifiedJulianDay a) = ModifiedJulianDay (abs a)
-    signum (ModifiedJulianDay a) = ModifiedJulianDay (signum a)
-    fromInteger = ModifiedJulianDay
-
-instance Real Day where
-    toRational (ModifiedJulianDay a) = toRational a
-
-instance Integral Day where
-    toInteger (ModifiedJulianDay a) = toInteger a
-    quotRem (ModifiedJulianDay a) (ModifiedJulianDay b) = (ModifiedJulianDay c,ModifiedJulianDay d) where
-        (c,d) = quotRem a b
--}
