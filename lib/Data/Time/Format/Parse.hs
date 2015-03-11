@@ -15,7 +15,8 @@ module Data.Time.Format.Parse
     ) where
 
 import Data.Time.Clock.POSIX
-import Data.Time.Clock
+import Data.Time.Clock.Scale
+import Data.Time.Clock.UTC
 import Data.Time.Calendar
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate

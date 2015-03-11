@@ -16,7 +16,12 @@ module Data.Time.LocalTime.LocalTime
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar
-import Data.Time.Clock
+
+import Data.Time.Clock.Scale
+import Data.Time.Clock.UTCDiff
+import Data.Time.Clock.UTC
+import Data.Time.Clock.POSIX
+
 import Control.DeepSeq
 import Data.Typeable
 #if LANGUAGE_Rank2Types

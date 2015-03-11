@@ -28,12 +28,6 @@ import Data.Data
 -- | This is the simplest representation of UTC.
 -- It consists of the day number, and a time offset from midnight.
 -- Note that if a day has a leap second added to it, it will have 86401 seconds.
---
--- For the 'Read' instance of 'UTCTime',
--- import "Data.Time" or "Data.Time.Format".
---
--- For the 'Show' instance of 'UTCTime',
--- import "Data.Time" or "Data.Time.LocalTime".
 data UTCTime = UTCTime {
     -- | the day
     utctDay :: Day,

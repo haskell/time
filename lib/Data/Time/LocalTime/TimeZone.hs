@@ -14,8 +14,8 @@ module Data.Time.LocalTime.TimeZone
 
 --import System.Time.Calendar.Format
 import Data.Time.Calendar.Private
-import Data.Time.Clock
 import Data.Time.Clock.POSIX
+import Data.Time.Clock.UTC
 
 #if __GLASGOW_HASKELL__ >= 709
 import Foreign
