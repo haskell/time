@@ -11,7 +11,7 @@ synopsis:       A time library
 description:    A time library
 category:       System
 build-type:     Configure
-cabal-version:  >=1.14
+cabal-version:  >=1.10
 x-follows-version-policy:
 
 extra-source-files:
