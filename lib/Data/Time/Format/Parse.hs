@@ -17,10 +17,13 @@ module Data.Time.Format.Parse
 import Data.Time.Clock.POSIX
 import Data.Time.Clock.Scale
 import Data.Time.Clock.UTC
-import Data.Time.Calendar
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
-import Data.Time.LocalTime
+import Data.Time.LocalTime.TimeZone
+import Data.Time.LocalTime.TimeOfDay
+import Data.Time.LocalTime.LocalTime
 
 #if LANGUAGE_Rank2Types
 import Control.Monad
@@ -493,4 +496,3 @@ instance Read UTCTime where
 instance Read UniversalTime where
     readsPrec n s = [ (localTimeToUT1 0 t, r) | (t,r) <- readsPrec n s ]
 #endif
-

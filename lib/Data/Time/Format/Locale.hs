@@ -11,7 +11,8 @@ module Data.Time.Format.Locale (
     )
 where
 
-import Data.Time.LocalTime
+import Data.Time.LocalTime.TimeZone
+
 
 data TimeLocale = TimeLocale {
         -- |full and abbreviated week days, starting with Sunday

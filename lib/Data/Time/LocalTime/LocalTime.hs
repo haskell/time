@@ -15,7 +15,8 @@ module Data.Time.LocalTime.LocalTime
 
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
-import Data.Time.Calendar
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Gregorian
 
 import Data.Time.Clock.Scale
 import Data.Time.Clock.UTCDiff
@@ -32,9 +33,6 @@ import Data.Data
 -- and the time is a TimeOfDay.
 -- Conversion of this (as local civil time) to UTC depends on the time zone.
 -- Conversion of this (as local mean time) to UT1 depends on the longitude.
---
--- For the 'Read' instance of 'LocalTime',
--- import "Data.Time" or "Data.Time.Format".
 data LocalTime = LocalTime {
     localDay    :: Day,
     localTimeOfDay   :: TimeOfDay
@@ -80,9 +78,6 @@ instance Show UniversalTime where
     show t = show (ut1ToLocalTime 0 t)
 
 -- | A local time together with a TimeZone.
---
--- For the 'Read' instance of 'ZonedTime',
--- import "Data.Time" or "Data.Time.Format".
 data ZonedTime = ZonedTime {
     zonedTimeToLocalTime :: LocalTime,
     zonedTimeZone :: TimeZone
