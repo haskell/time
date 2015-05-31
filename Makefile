@@ -1,8 +1,9 @@
-default: clean test install sdist
+default: clean test install test-sdist
 
 # Building
 
 clean:
+	rm -rf test-sdist
 	cabal clean
 
 configure:
@@ -26,7 +27,13 @@ install:
 sdist: clean configure
 	cabal sdist
 
+test-sdist: sdist
+	mkdir -p test-sdist
+	tar -C test-sdist -z -x -f dist/time-1.5.1.tar.gz
+	cp Makefile test-sdist/time-1.5.1/
+	cd test-sdist/time-1.5.1 && make test
+
 # switch off intermediate file deletion
 .SECONDARY:
 
-.PHONY: default clean configure build haddock copy install test sdist
+.PHONY: default clean configure build haddock copy install test sdist test-sdist
