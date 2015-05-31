@@ -10,7 +10,9 @@ module Data.Time.Clock.Scale
 
     -- * Absolute intervals
     DiffTime,
-        secondsToDiffTime, picosecondsToDiffTime
+    secondsToDiffTime,
+    picosecondsToDiffTime,
+    diffTimeToPicoseconds,
 ) where
 
 import Control.DeepSeq
@@ -101,7 +103,11 @@ secondsToDiffTime = fromInteger
 
 -- | Create a 'DiffTime' from a number of picoseconds.
 picosecondsToDiffTime :: Integer -> DiffTime
-picosecondsToDiffTime x = fromRational (x % 1000000000000)
+picosecondsToDiffTime x = MkDiffTime (MkFixed x)
+
+-- | Get the number of picoseconds in a 'DiffTime'.
+diffTimeToPicoseconds :: DiffTime -> Integer
+diffTimeToPicoseconds (MkDiffTime (MkFixed x)) = x
 
 {-# RULES
 "realToFrac/DiffTime->Pico"              realToFrac = \ (MkDiffTime ps) -> ps
