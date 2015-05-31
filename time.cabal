@@ -30,15 +30,11 @@ extra-tmp-files:
     lib/include/HsTimeConfig.h
 
 source-repository head
-  type:     git
-  location: https://github.com/haskell/time
+    type:     git
+    location: https://github.com/haskell/time
 
 library
     hs-source-dirs: lib
-    build-depends:
-        base >= 4.4 && < 5,
-        deepseq >= 1.1
-    ghc-options: -Wall -fwarn-tabs
     default-language: Haskell2010
     if impl(ghc)
         default-extensions:
@@ -50,6 +46,10 @@ library
         if impl(hugs)
             default-extensions: Rank2Types
             cpp-options: -DLANGUAGE_Rank2Types
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+        base >= 4.4 && < 5,
+        deepseq >= 1.1
     if os(windows)
         build-depends: Win32
     exposed-modules:
@@ -91,16 +91,18 @@ library
             HsTimeConfig.h
 
 test-suite ShowDefaultTZAbbreviations
-    hs-source-dirs: test
     type: exitcode-stdio-1.0
+    hs-source-dirs: test
+    default-language: Haskell2010
+    ghc-options: -Wall -fwarn-tabs
     build-depends:
         base,
         time == 1.5.0.1
     main-is: ShowDefaultTZAbbreviations.hs
 
 test-suite tests
-    hs-source-dirs: test
     type: exitcode-stdio-1.0
+    hs-source-dirs: test
     default-language: Haskell2010
     default-extensions:
         Rank2Types
@@ -112,7 +114,7 @@ test-suite tests
         FlexibleInstances
         UndecidableInstances
         ScopedTypeVariables
-    ghc-options: -Wall
+    ghc-options: -Wall -fwarn-tabs
     c-sources: test/Test/TestFormatStuff.c
     build-depends:
         base,
