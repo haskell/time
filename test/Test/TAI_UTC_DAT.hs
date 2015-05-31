@@ -2,7 +2,7 @@ module Test.TAI_UTC_DAT where
 
 taiUTC_DAT :: String
 taiUTC_DAT =
-  unlines 
+  unlines
   [ "1961 JAN  1 =JD 2437300.5  TAI-UTC=   1.4228180 S + (MJD - 37300.) X 0.001296 S"
   , "1961 AUG  1 =JD 2437512.5  TAI-UTC=   1.3728180 S + (MJD - 37300.) X 0.001296 S"
   , "1962 JAN  1 =JD 2437665.5  TAI-UTC=   1.8458580 S + (MJD - 37665.) X 0.0011232S"

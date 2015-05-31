@@ -13,8 +13,8 @@ testMonthDay = pureTest "testMonthDay" $
     diff testMonthDayRef $ concat $ map (\isL -> unlines (leap isL : yearDays isL)) [False,True]
     where
         leap isLeap = if isLeap then "Leap:" else "Regular:"
-        yearDays isLeap = 
-            map (\yd -> let 
+        yearDays isLeap =
+            map (\yd -> let
                 (m,d)  = dayOfYearToMonthAndDay isLeap yd
                 yd'    = monthAndDayToDayOfYear isLeap m d
                 mdtext = show m ++ "-" ++ show d

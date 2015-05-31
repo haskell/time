@@ -31,16 +31,16 @@ tupleUp3 l1 l2 l3
 
 clipDates :: Test
 clipDates = pureTest "clipDates" $
-    let 
-        yad  = unlines $ map yearAndDay $ 
+    let
+        yad  = unlines $ map yearAndDay $
             tupleUp2 [1968,1969,1971] [-4,0,1,200,364,365,366,367,700]
-                              
 
-        greg = unlines $ map gregorian $ 
+
+        greg = unlines $ map gregorian $
             tupleUp3 [1968,1969,1971] [-20,-1,0,1,2,12,13,17] [-7,-1,0,1,2,27,28,29,30,31,32,40]
 
-        iso  = unlines $ map iSOWeekDay $ 
+        iso  = unlines $ map iSOWeekDay $
             tupleUp3 [1968,1969,2004] [-20,-1,0,1,20,51,52,53,54] [-2,-1,0,1,4,6,7,8,9]
 
-    in diff clipDatesRef $ 
+    in diff clipDatesRef $
         concat [ "YearAndDay\n", yad, "Gregorian\n", greg, "ISOWeekDay\n", iso ]

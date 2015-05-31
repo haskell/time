@@ -7,23 +7,23 @@ import Data.Time.Calendar
 import Test.TestUtil
 
 checkDay :: (Show t) => (Day -> t) -> (t -> Day) -> (t -> Maybe Day) -> Day -> String
-checkDay encodeDay decodeDay decodeDayValid day
-  = let st    = encodeDay day
-	day'  = decodeDay st
-	mday' = decodeDayValid st
+checkDay encodeDay decodeDay decodeDayValid day = let
+    st    = encodeDay day
+    day'  = decodeDay st
+    mday' = decodeDayValid st
 
-	a = if day /= day'
-	      then unwords [ show day, "-> "
+    a = if day /= day'
+          then unwords [ show day, "-> "
                            , show st,  "-> "
                            , show day'
                            , "(diff", show (diffDays day' day) ++ ")" ]
-	      else ""
+          else ""
 
-	b = if Just day /= mday'
-	      then unwords [show day, "->", show st, "->", show mday']
-	      else ""
+    b = if Just day /= mday'
+          then unwords [show day, "->", show st, "->", show mday']
+          else ""
     in a ++ b
-		
+        
 checkers :: [Day -> String]
 checkers
   = [ checkDay toOrdinalDate (\(y,d) -> fromOrdinalDate y d) (\(y,d) -> fromOrdinalDateValid y d)
@@ -33,7 +33,7 @@ checkers
 
 days :: [Day]
 days = [ModifiedJulianDay 50000 .. ModifiedJulianDay 50200] ++
-	(fmap (\year -> (fromGregorian year 1 4)) [1980..2000])
+    (fmap (\year -> (fromGregorian year 1 4)) [1980..2000])
 
 convertBack :: Test
 convertBack = pureTest "convertBack" $

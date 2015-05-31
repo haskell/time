@@ -1,7 +1,7 @@
 module Test.TestTimeRef where
 
 testTimeRef :: String
-testTimeRef = 
+testTimeRef =
   unlines [
   "-678950=-0001-12-23=-0001-357=-0001-W51-4"
   ,"-678949=-0001-12-24=-0001-358=-0001-W51-5"

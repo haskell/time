@@ -18,7 +18,7 @@ showWithWDay :: Day -> String
 showWithWDay = formatTime defaultTimeLocale "%F %A"
 
 testEaster :: Test
-testEaster = pureTest "testEaster" $ let 
+testEaster = pureTest "testEaster" $ let
     ds = unlines $ map (\day ->
                    unwords [ showWithWDay day, "->"
                            , showWithWDay (sundayAfter day)]) days

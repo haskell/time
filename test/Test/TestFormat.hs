@@ -11,29 +11,29 @@ import Control.Exception;
 import Test.TestUtil
 
 {-
-	size_t format_time (
-	char *s, size_t maxsize,
-	const char *format,
-	int isdst,int gmtoff,time_t t);
+    size_t format_time (
+    char *s, size_t maxsize,
+    const char *format,
+    int isdst,int gmtoff,time_t t);
 -}
 
 foreign import ccall unsafe "TestFormatStuff.h format_time" format_time :: CString -> CSize -> CString -> CInt -> CInt -> CString -> CTime -> IO CSize
 
 withBuffer :: Int -> (CString -> IO CSize) -> IO String
 withBuffer n f = withArray (replicate n 0) (\buffer -> do
-			len <- f buffer
-			peekCStringLen (buffer,fromIntegral len)
-		)
+            len <- f buffer
+            peekCStringLen (buffer,fromIntegral len)
+        )
 
 unixFormatTime :: String -> TimeZone -> UTCTime -> IO String
 unixFormatTime fmt zone time = withCString fmt (\pfmt -> withCString (timeZoneName zone) (\pzonename ->
-		withBuffer 100 (\buffer -> format_time buffer 100 pfmt
-				(if timeZoneSummerOnly zone then 1 else 0)
-				(fromIntegral (timeZoneMinutes zone * 60))
-				pzonename
-				(fromInteger (truncate (utcTimeToPOSIXSeconds time)))
-			)
-		))
+        withBuffer 100 (\buffer -> format_time buffer 100 pfmt
+                (if timeZoneSummerOnly zone then 1 else 0)
+                (fromIntegral (timeZoneMinutes zone * 60))
+                pzonename
+                (fromInteger (truncate (utcTimeToPOSIXSeconds time)))
+            )
+        ))
 
 locale :: TimeLocale
 locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
@@ -67,7 +67,7 @@ years = [999,1000,1899,1900,1901] ++ [1980..2000] ++ [9999,10000]
 
 times :: [UTCTime]
 times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
-	(fmap getYearP1 years) ++ (fmap getYearP2 years) ++ (fmap getYearP3 years) ++ (fmap getYearP4 years)
+    (fmap getYearP1 years) ++ (fmap getYearP2 years) ++ (fmap getYearP3 years) ++ (fmap getYearP4 years)
 
 padN :: Int -> Char -> String -> String
 padN n _ s | n <= (length s) = s

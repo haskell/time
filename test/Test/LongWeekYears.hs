@@ -7,8 +7,8 @@ import Test.LongWeekYearsRef
 
 longYear :: Integer -> Bool
 longYear year = case toWeekDate (fromGregorian year 12 31) of
-	(_,53,_) -> True
-	_ -> False
+    (_,53,_) -> True
+    _ -> False
 
 showLongYear :: Integer -> String
 showLongYear year

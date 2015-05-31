@@ -2,7 +2,7 @@ module Test.ClipDatesRef where
 
 clipDatesRef :: String
 clipDatesRef =
- unlines 
+ unlines
   [ "YearAndDay"
   , "1968--4 = 1968-001"
   , "1968-0 = 1968-001"

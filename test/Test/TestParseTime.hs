@@ -11,7 +11,7 @@ import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.POSIX
 import Test.QuickCheck hiding (Result,reason)
-import Test.QuickCheck.Property hiding (result)
+import Test.QuickCheck.Property
 import Test.TestUtil hiding (Result)
 
 ntest :: Int

@@ -6,5 +6,5 @@ import Data.Time
 
 main :: IO ()
 main = do
-	zone <- getCurrentTimeZone
-	putStrLn (timeZoneOffsetString zone)
+    zone <- getCurrentTimeZone
+    putStrLn (timeZoneOffsetString zone)

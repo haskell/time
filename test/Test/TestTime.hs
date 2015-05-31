@@ -12,26 +12,26 @@ showCal mjd
         (y,m,d) = toGregorian date
         date' = fromGregorian y m d
     in concat [ show mjd ++ "="
-                 ++ showGregorian date ++ "=" 
+                 ++ showGregorian date ++ "="
                  ++ showOrdinalDate date ++ "="
                  ++ showWeekDate date
                  ++ "\n"
 
                , if date == date'
-                   then "" 
+                   then ""
                    else "=" ++ (show $ toModifiedJulianDay date') ++ "!" ]
 
 testCal :: String
 testCal
   = concat
         -- days around 1 BCE/1 CE
-      [ concatMap showCal [-678950 .. -678930]	
+      [ concatMap showCal [-678950 .. -678930]    
 
         -- days around 1000 CE
-      , concatMap showCal [-313710 .. -313690]	
+      , concatMap showCal [-313710 .. -313690]    
 
         -- days around MJD zero
-      , concatMap showCal [-30..30]	
+      , concatMap showCal [-30..30]    
       , showCal 40000
       , showCal 50000
 
@@ -73,10 +73,10 @@ testUTC
   = let lsMineCal = utcToLocalTime myzone leapSec1998
         lsMine = localTimeToUTC myzone lsMineCal
     in unlines [ showCal 51178
-	       , show leapSec1998Cal
-	       , showUTCTime leapSec1998
-	       , show lsMineCal
-	       , showUTCTime lsMine ]
+           , show leapSec1998Cal
+           , showUTCTime leapSec1998
+           , show lsMineCal
+           , showUTCTime lsMine ]
 
 neglong :: Rational
 neglong = -120
