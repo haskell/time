@@ -2,7 +2,7 @@
 -- Most people won't need this module.
 module Data.Time.Clock.POSIX
 (
-    posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime
+    posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime
 ) where
 
 import Data.Time.Clock.UTC
@@ -64,3 +64,7 @@ ctimevalToPosixSeconds (MkCTimeval s mus) = (fromIntegral s) + (fromIntegral mus
 getPOSIXTime = liftM ctimevalToPosixSeconds getCTimeval
 
 #endif
+
+-- | Get the current UTC time from the system clock.
+getCurrentTime :: IO UTCTime
+getCurrentTime = liftM posixSecondsToUTCTime getPOSIXTime

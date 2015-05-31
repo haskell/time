@@ -5,6 +5,7 @@ module Data.Time.LocalTime
     module Data.Time.LocalTime.LocalTime
 ) where
 
+import Data.Time.Format()
 import Data.Time.LocalTime.TimeZone
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.LocalTime

@@ -12,7 +12,7 @@ module Data.Time.LocalTime.TimeOfDay
 
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
-import Data.Time.Clock
+import Data.Time.Clock.Scale
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
@@ -21,9 +21,6 @@ import Data.Data
 #endif
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
---
--- For the 'Read' instance of 'TimeOfDay',
--- import "Data.Time" or "Data.Time.Format".
 data TimeOfDay = TimeOfDay {
     -- | range 0 - 23
     todHour    :: Int,

@@ -14,8 +14,8 @@ module Data.Time.LocalTime.TimeZone
 
 --import System.Time.Calendar.Format
 import Data.Time.Calendar.Private
-import Data.Time.Clock
 import Data.Time.Clock.POSIX
+import Data.Time.Clock.UTC
 
 #if __GLASGOW_HASKELL__ >= 709
 import Foreign
@@ -30,9 +30,6 @@ import Data.Data
 #endif
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
---
--- For the 'Read' instance of 'TimeZone',
--- import "Data.Time" or "Data.Time.Format".
 data TimeZone = TimeZone {
     -- | The number of minutes offset from UTC. Positive means local time will be later in the day than UTC.
     timeZoneMinutes :: Int,
