@@ -1,4 +1,6 @@
+#if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
+#endif
 {-# OPTIONS -fno-warn-unused-imports #-}
 #include "HsConfigure.h"
 -- #hide
@@ -107,4 +109,3 @@ picosecondsToDiffTime x = fromRational (x % 1000000000000)
 "realToFrac/DiffTime->Pico"              realToFrac = \ (MkDiffTime ps) -> ps
 "realToFrac/Pico->DiffTime"              realToFrac = MkDiffTime
   #-}
-
