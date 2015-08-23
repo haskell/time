@@ -17,7 +17,7 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock.POSIX
 import Data.Time.Clock.UTC
 
-#if __GLASGOW_HASKELL__ >= 709
+#if __GLASGOW_HASKELL__ >= 709 || __GLASGOW_HASKELL__ < 702
 import Foreign
 #else
 import Foreign.Safe

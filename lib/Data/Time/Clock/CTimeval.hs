@@ -4,7 +4,7 @@ module Data.Time.Clock.CTimeval where
 #ifndef mingw32_HOST_OS
 -- All Unix-specific, this
 
-#if __GLASGOW_HASKELL__ >= 709
+#if __GLASGOW_HASKELL__ >= 709 || __GLASGOW_HASKELL__ < 702
 import Foreign
 #else
 import Foreign.Safe

@@ -1,5 +1,7 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
+#if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
+#endif
 #include "HsConfigure.h"
 -- #hide
 module Data.Time.Clock.UTC
@@ -122,4 +124,3 @@ instance RealFrac NominalDiffTime where
 "realToFrac/NominalDiffTime->Pico"       realToFrac = \ (MkNominalDiffTime ps) -> ps
 "realToFrac/Pico->NominalDiffTime"       realToFrac = MkNominalDiffTime
   #-}
-
