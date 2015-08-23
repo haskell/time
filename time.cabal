@@ -75,6 +75,7 @@ library
         Data.Time.Clock.Scale,
         Data.Time.Clock.UTC,
         Data.Time.Clock.CTimeval,
+        Data.Time.Clock.CTimespec,
         Data.Time.Clock.UTCDiff,
         Data.Time.LocalTime.TimeZone,
         Data.Time.LocalTime.TimeOfDay,

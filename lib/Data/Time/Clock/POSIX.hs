@@ -10,9 +10,14 @@ import Data.Time.Calendar.Days
 import Data.Fixed
 import Control.Monad
 
+#include "HsTimeConfig.h"
+
 #ifdef mingw32_HOST_OS
 import Data.Word    ( Word64)
 import System.Win32.Time
+#elif HAVE_CLOCK_GETTIME
+import Data.Time.Clock.CTimespec
+import Foreign.C.Types (CTime(..))
 #else
 import Data.Time.Clock.CTimeval
 #endif
@@ -54,6 +59,15 @@ getPOSIXTime = do
 
 win32_epoch_adjust :: Word64
 win32_epoch_adjust = 116444736000000000
+
+#elif HAVE_CLOCK_GETTIME
+
+-- Use hi-res POSIX time
+ctimespecToPosixSeconds :: CTimespec -> POSIXTime
+ctimespecToPosixSeconds (MkCTimespec (CTime s) ns) =
+    (fromIntegral s) + (fromIntegral ns) / 1000000000
+
+getPOSIXTime = liftM ctimespecToPosixSeconds getCTimespec
 
 #else
 
