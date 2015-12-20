@@ -68,60 +68,103 @@ sundayStartWeek date =(fromInteger ((div d 7) - (div k 7)),fromInteger (mod d 7)
 -- The first Monday is the first day of week 1, any earlier days in the year
 -- are week 0 (as \"%W\" in 'Data.Time.Format.formatTime').
 fromMondayStartWeek :: Integer -- ^ Year.
-                    -> Int     -- ^ Monday-starting week number.
+                    -> Int     -- ^ Monday-starting week number (as \"%W\" in 'Data.Time.Format.formatTime').
                     -> Int     -- ^ Day of week.
                                -- Monday is 1, Sunday is 7 (as \"%u\" in 'Data.Time.Format.formatTime').
                     -> Day
-fromMondayStartWeek y w d = ModifiedJulianDay (firstDay + yd)
-    where yd = firstMonday + 7 * toInteger (w-1) + toInteger d - 1
-          -- first day of the year
-          firstDay = toModifiedJulianDay (fromOrdinalDate y 1)
-          -- 0-based year day of first monday of the year
-          firstMonday = (5 - firstDay) `mod` 7
+fromMondayStartWeek year w d = let
+    -- first day of the year
+    firstDay = fromOrdinalDate year 1
+
+    -- 0-based year day of first monday of the year
+    zbFirstMonday = (5 - toModifiedJulianDay firstDay) `mod` 7
+    
+    -- 0-based week of year
+    zbWeek = w - 1
+    
+    -- 0-based day of week
+    zbDay = d - 1
+    
+    -- 0-based day in year
+    zbYearDay = zbFirstMonday + 7 * toInteger zbWeek + toInteger zbDay
+    
+    in addDays zbYearDay firstDay
 
 fromMondayStartWeekValid :: Integer -- ^ Year.
-                    -> Int     -- ^ Monday-starting week number.
+                    -> Int     -- ^ Monday-starting week number (as \"%W\" in 'Data.Time.Format.formatTime').
                     -> Int     -- ^ Day of week.
                                -- Monday is 1, Sunday is 7 (as \"%u\" in 'Data.Time.Format.formatTime').
                     -> Maybe Day
 fromMondayStartWeekValid year w d = do
     d' <- clipValid 1 7 d
-    -- first day of the year
-    let firstDay = toModifiedJulianDay (fromOrdinalDate year 1)
-    -- 0-based year day of first monday of the year
-    let firstMonday = (5 - firstDay) `mod` 7
-    let yd = firstMonday + 7 * toInteger (w-1) + toInteger d'
-    yd' <- clipValid 1 (if isLeapYear year then 366 else 365) yd
-    return (ModifiedJulianDay (firstDay - 1 + yd'))
+    let
+        -- first day of the year
+        firstDay = fromOrdinalDate year 1
+
+        -- 0-based week of year
+        zbFirstMonday = (5 - toModifiedJulianDay firstDay) `mod` 7
+        
+        -- 0-based week number
+        zbWeek = w - 1
+        
+        -- 0-based day of week
+        zbDay = d' - 1
+        
+        -- 0-based day in year
+        zbYearDay = zbFirstMonday + 7 * toInteger zbWeek + toInteger zbDay
+        
+    zbYearDay' <- clipValid 0 (if isLeapYear year then 365 else 364) zbYearDay
+    return $ addDays zbYearDay' firstDay
 
 -- | The inverse of 'sundayStartWeek'. Get a 'Day' given the year and
 -- the number of the day of a Sunday-starting week.
 -- The first Sunday is the first day of week 1, any earlier days in the
 -- year are week 0 (as \"%U\" in 'Data.Time.Format.formatTime').
 fromSundayStartWeek :: Integer -- ^ Year.
-                    -> Int     -- ^ Sunday-starting week number.
+                    -> Int     -- ^ Sunday-starting week number (as \"%U\" in 'Data.Time.Format.formatTime').
                     -> Int     -- ^ Day of week
                                -- Sunday is 0, Saturday is 6 (as \"%w\" in 'Data.Time.Format.formatTime').
                     -> Day
-fromSundayStartWeek y w d = ModifiedJulianDay (firstDay + yd)
-    where yd = firstSunday + 7 * toInteger (w-1) + toInteger d
-          -- first day of the year
-          firstDay = toModifiedJulianDay (fromOrdinalDate y 1)
-          -- 0-based year day of first sunday of the year
-          firstSunday = (4 - firstDay) `mod` 7
+fromSundayStartWeek year w d = let
+    -- first day of the year
+    firstDay = fromOrdinalDate year 1
+
+    -- 0-based year day of first monday of the year
+    zbFirstSunday = (4 - toModifiedJulianDay firstDay) `mod` 7
+    
+    -- 0-based week of year
+    zbWeek = w - 1
+    
+    -- 0-based day of week
+    zbDay = d
+    
+    -- 0-based day in year
+    zbYearDay = zbFirstSunday + 7 * toInteger zbWeek + toInteger zbDay
+    
+    in addDays zbYearDay firstDay
 
 fromSundayStartWeekValid :: Integer -- ^ Year.
-                    -> Int     -- ^ Monday-starting week number.
+                    -> Int     -- ^ Sunday-starting week number (as \"%U\" in 'Data.Time.Format.formatTime').
                     -> Int     -- ^ Day of week.
-                               -- Monday is 1, Sunday is 7 (as \"%u\" in 'Data.Time.Format.formatTime').
+                               -- Sunday is 0, Saturday is 6 (as \"%w\" in 'Data.Time.Format.formatTime').
                     -> Maybe Day
-fromSundayStartWeekValid year w d = do
-    d' <- clipValid 1 7 d
-    -- first day of the year
-    let firstDay = toModifiedJulianDay (fromOrdinalDate year 1)
-    -- 0-based year day of first sunday of the year
-    let firstMonday = (4 - firstDay) `mod` 7
-    let yd = firstMonday + 7 * toInteger (w-1) + toInteger d'
-    yd' <- clipValid 1 (if isLeapYear year then 366 else 365) yd
-    return (ModifiedJulianDay (firstDay - 1 + yd'))
+fromSundayStartWeekValid year w d =  do
+    d' <- clipValid 0 6 d
+    let
+        -- first day of the year
+        firstDay = fromOrdinalDate year 1
 
+        -- 0-based week of year
+        zbFirstSunday = (4 - toModifiedJulianDay firstDay) `mod` 7
+        
+        -- 0-based week number
+        zbWeek = w - 1
+        
+        -- 0-based day of week
+        zbDay = d'
+        
+        -- 0-based day in year
+        zbYearDay = zbFirstSunday + 7 * toInteger zbWeek + toInteger zbDay
+        
+    zbYearDay' <- clipValid 0 (if isLeapYear year then 365 else 364) zbYearDay
+    return $ addDays zbYearDay' firstDay

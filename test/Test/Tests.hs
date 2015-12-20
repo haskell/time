@@ -14,6 +14,7 @@ import Test.TestParseDAT
 import Test.TestParseTime
 import Test.TestTime
 import Test.TestTimeZone
+import Test.TestValid
 
 tests :: [Test]
 tests = [ addDaysTest
@@ -27,4 +28,5 @@ tests = [ addDaysTest
         , testParseDAT
         , testParseTime
         , testTime
-        , testTimeZone ]
+        , testTimeZone
+        , testValid ]

@@ -142,6 +142,7 @@ test-suite tests
         Test.TestCalendars
         Test.TestCalendarsRef
         Test.TestTimeZone
+        Test.TestValid
         Test.LongWeekYears
         Test.LongWeekYearsRef
         Test.ConvertBack
