@@ -15,6 +15,7 @@ cabal-version:  >=1.10
 x-follows-version-policy:
 
 extra-source-files:
+    changelog.md
     aclocal.m4
     configure.ac
     configure
