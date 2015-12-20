@@ -27,6 +27,9 @@ import Data.Time.LocalTime.TimeZone
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.LocalTime
 
+#if !MIN_VERSION_base(4,8,0)
+import Control.Applicative ((<$>),(<*>))
+#endif
 #if LANGUAGE_Rank2Types
 import Control.Monad
 #endif
