@@ -25,13 +25,13 @@ testCal :: String
 testCal
   = concat
         -- days around 1 BCE/1 CE
-      [ concatMap showCal [-678950 .. -678930]    
+      [ concatMap showCal [-678950 .. -678930]
 
         -- days around 1000 CE
-      , concatMap showCal [-313710 .. -313690]    
+      , concatMap showCal [-313710 .. -313690]
 
         -- days around MJD zero
-      , concatMap showCal [-30..30]    
+      , concatMap showCal [-30..30]
       , showCal 40000
       , showCal 50000
 

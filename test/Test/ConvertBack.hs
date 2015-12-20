@@ -23,7 +23,7 @@ checkDay encodeDay decodeDay decodeDayValid day = let
           then unwords [show day, "->", show st, "->", show mday']
           else ""
     in a ++ b
-        
+
 checkers :: [Day -> String]
 checkers
   = [ checkDay toOrdinalDate (\(y,d) -> fromOrdinalDate y d) (\(y,d) -> fromOrdinalDateValid y d)

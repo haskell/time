@@ -329,20 +329,20 @@ instance ParseTime Day where
     buildTime l = let
 
         -- 'Nothing' indicates a parse failure,
-        -- while 'Just []' means no information 
+        -- while 'Just []' means no information
         f :: Char -> String -> Maybe [DayComponent]
         f c x = let
             ra :: (Read a) => Maybe a
             ra = readMaybe x
-            
+
             zeroBasedListIndex :: [String] -> Maybe Int
             zeroBasedListIndex ss = elemIndex (up x) $ fmap up ss
-            
+
             oneBasedListIndex :: [String] -> Maybe Int
             oneBasedListIndex ss = do
                 index <- zeroBasedListIndex ss
                 return $ 1 + index
-            
+
             in case c of
             -- %C: century (all but the last two digits of the year), 00 - 99
             'C' -> do
@@ -380,7 +380,7 @@ instance ParseTime Day where
             'm' -> do
                 raw <- ra
                 a <- clipValid 1 12 raw
-                return [YearMonth a] 
+                return [YearMonth a]
             -- %d: day of month, leading 0 as needed, 01 - 31
             'd' -> do
                 raw <- ra
@@ -473,7 +473,7 @@ instance ParseTime TimeOfDay where
         f t@(TimeOfDay h m s) (c,x) = let
             ra :: (Read a) => Maybe a
             ra = readMaybe x
-            
+
             getAmPm = let
                 upx = up x
                 (amStr,pmStr) = amPm l
@@ -482,7 +482,7 @@ instance ParseTime TimeOfDay where
                     else if upx == pmStr
                     then Just $ TimeOfDay (if h < 12 then h + 12 else h) m s
                     else Nothing
-            
+
             in case c of
                 'P' -> getAmPm
                 'p' -> getAmPm
@@ -511,7 +511,7 @@ instance ParseTime TimeOfDay where
                     ps <- readMaybe $ take 12 $ rpad 12 '0' $ drop 1 x
                     return $ TimeOfDay h m (mkPico (truncate s) ps)
                 _   -> Just t
-                  
+
         in mfoldl f (Just midnight)
 
 rpad :: Int -> a -> [a] -> [a]
@@ -544,7 +544,7 @@ getMilZone c = let
 
 getKnownTimeZone :: TimeLocale -> String -> Maybe TimeZone
 getKnownTimeZone locale x = find (\tz -> up x == timeZoneName tz) (knownTimeZones locale)
-   
+
 instance ParseTime TimeZone where
     buildTime l = let
         f (TimeZone _ dst name) ('z',x) | Just offset <- readTzOffset x = TimeZone offset dst name

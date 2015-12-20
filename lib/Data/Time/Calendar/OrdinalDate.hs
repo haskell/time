@@ -78,16 +78,16 @@ fromMondayStartWeek year w d = let
 
     -- 0-based year day of first monday of the year
     zbFirstMonday = (5 - toModifiedJulianDay firstDay) `mod` 7
-    
+
     -- 0-based week of year
     zbWeek = w - 1
-    
+
     -- 0-based day of week
     zbDay = d - 1
-    
+
     -- 0-based day in year
     zbYearDay = zbFirstMonday + 7 * toInteger zbWeek + toInteger zbDay
-    
+
     in addDays zbYearDay firstDay
 
 fromMondayStartWeekValid :: Integer -- ^ Year.
@@ -103,16 +103,16 @@ fromMondayStartWeekValid year w d = do
 
         -- 0-based week of year
         zbFirstMonday = (5 - toModifiedJulianDay firstDay) `mod` 7
-        
+
         -- 0-based week number
         zbWeek = w - 1
-        
+
         -- 0-based day of week
         zbDay = d' - 1
-        
+
         -- 0-based day in year
         zbYearDay = zbFirstMonday + 7 * toInteger zbWeek + toInteger zbDay
-        
+
     zbYearDay' <- clipValid 0 (if isLeapYear year then 365 else 364) zbYearDay
     return $ addDays zbYearDay' firstDay
 
@@ -131,16 +131,16 @@ fromSundayStartWeek year w d = let
 
     -- 0-based year day of first monday of the year
     zbFirstSunday = (4 - toModifiedJulianDay firstDay) `mod` 7
-    
+
     -- 0-based week of year
     zbWeek = w - 1
-    
+
     -- 0-based day of week
     zbDay = d
-    
+
     -- 0-based day in year
     zbYearDay = zbFirstSunday + 7 * toInteger zbWeek + toInteger zbDay
-    
+
     in addDays zbYearDay firstDay
 
 fromSundayStartWeekValid :: Integer -- ^ Year.
@@ -156,15 +156,15 @@ fromSundayStartWeekValid year w d =  do
 
         -- 0-based week of year
         zbFirstSunday = (4 - toModifiedJulianDay firstDay) `mod` 7
-        
+
         -- 0-based week number
         zbWeek = w - 1
-        
+
         -- 0-based day of week
         zbDay = d'
-        
+
         -- 0-based day in year
         zbYearDay = zbFirstSunday + 7 * toInteger zbWeek + toInteger zbDay
-        
+
     zbYearDay' <- clipValid 0 (if isLeapYear year then 365 else 364) zbYearDay
     return $ addDays zbYearDay' firstDay
