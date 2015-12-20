@@ -144,10 +144,10 @@ compareExpected testname fmt str expected = ioTest (testname ++ ": " ++ (show fm
 
 class (ParseTime t) => TestParse t where
     expectedParse :: String -> String -> Maybe t
-    expectedParse "%Z" "" = Just (buildTime defaultTimeLocale [])
-    expectedParse "%_Z" "" = Just (buildTime defaultTimeLocale [])
-    expectedParse "%-Z" "" = Just (buildTime defaultTimeLocale [])
-    expectedParse "%0Z" "" = Just (buildTime defaultTimeLocale [])
+    expectedParse "%Z" "" = buildTime defaultTimeLocale []
+    expectedParse "%_Z" "" = buildTime defaultTimeLocale []
+    expectedParse "%-Z" "" = buildTime defaultTimeLocale []
+    expectedParse "%0Z" "" = buildTime defaultTimeLocale []
     expectedParse _ _ = Nothing
 
 instance TestParse Day
