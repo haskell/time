@@ -9,6 +9,8 @@ AC_ARG_WITH([compiler],[Haskell compiler])
 
 AC_PROG_CC()
 
+AC_USE_SYSTEM_EXTENSIONS
+
 AC_CONFIG_HEADERS([lib/include/HsTimeConfig.h])
 
 AC_CHECK_HEADERS([time.h])
