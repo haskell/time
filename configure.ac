@@ -3,12 +3,13 @@ AC_INIT([Haskell time package], [1.6], [ashley@semantic.org], [time])
 # Safety check: Ensure that we are in the correct source directory.
 AC_CONFIG_SRCDIR([lib/include/HsTime.h])
 
-AC_ARG_WITH([cc],
-            [C compiler],
-            [CC=$withval])
+# These are to silence warnings with older Cabal versions
 AC_ARG_WITH([gcc],[Gnu C compiler])
 AC_ARG_WITH([compiler],[Haskell compiler])
+
 AC_PROG_CC()
+
+AC_USE_SYSTEM_EXTENSIONS
 
 AC_CONFIG_HEADERS([lib/include/HsTimeConfig.h])
 
