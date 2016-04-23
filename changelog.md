@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.6.0.1]
+- Get building with earlier GHC versions
+- Set lower bound of base correctly
+
 ## [1.6]
 
 ### Added
