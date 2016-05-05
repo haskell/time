@@ -12,6 +12,7 @@ description:    A time library
 category:       System
 build-type:     Configure
 cabal-version:  >=1.10
+tested-with:    GHC == 8.0.1, GHC == 7.10.3, GHC == 7.8.4
 x-follows-version-policy:
 
 extra-source-files:
