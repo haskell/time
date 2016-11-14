@@ -10,7 +10,6 @@ import Test.TestCalendars
 import Test.TestEaster
 import Test.TestFormat
 import Test.TestMonthDay
-import Test.TestParseDAT
 import Test.TestParseTime
 import Test.TestTime
 import Test.TestTimeZone
@@ -25,7 +24,6 @@ tests = [ addDaysTest
         , testEaster
         , testFormat
         , testMonthDay
-        , testParseDAT
         , testParseTime
         , testTime
         , testTimeZone

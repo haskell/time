@@ -132,9 +132,6 @@ test-suite tests
         Test.Tests
         Test.TestTime
         Test.TestTimeRef
-        Test.TestParseDAT
-        Test.TAI_UTC_DAT
-        Test.TestParseDAT_Ref
         Test.TestParseTime
         Test.TestMonthDay
         Test.TestMonthDayRef
