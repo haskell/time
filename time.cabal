@@ -140,6 +140,7 @@ test-suite tests
         Test.TestEasterRef
         Test.TestCalendars
         Test.TestCalendarsRef
+        Test.TestTAI
         Test.TestTimeZone
         Test.TestValid
         Test.LongWeekYears

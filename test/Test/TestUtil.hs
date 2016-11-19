@@ -37,3 +37,23 @@ diff :: (Show a,Eq a) => a -> a -> Result
 diff expected found | expected == found = Pass
 diff expected found = Fail ("expected " ++ (show expected) ++ " but found " ++ (show found))
 
+
+-- for tasty-like test code
+
+type TestTree = Test
+type Assertion = Either String ()
+
+testCase :: String -> Assertion -> Test
+testCase name (Right ()) = pureTest name Pass
+testCase name (Left s) = pureTest name (Fail s)
+
+assertFailure :: String -> Either String a
+assertFailure = Left
+
+assertEqual :: (Show a,Eq a) => String -> a -> a -> Assertion
+assertEqual _ expected found | expected == found = return ()
+assertEqual name expected found = assertFailure $ name ++ ": expected " ++ (show expected) ++ " but found " ++ (show found)
+
+assertJust :: Maybe a -> Either String a
+assertJust (Just a) = return a
+assertJust Nothing = assertFailure "Nothing"

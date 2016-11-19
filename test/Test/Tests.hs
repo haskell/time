@@ -11,6 +11,7 @@ import Test.TestEaster
 import Test.TestFormat
 import Test.TestMonthDay
 import Test.TestParseTime
+import Test.TestTAI
 import Test.TestTime
 import Test.TestTimeZone
 import Test.TestValid
@@ -25,6 +26,7 @@ tests = [ addDaysTest
         , testFormat
         , testMonthDay
         , testParseTime
+        , testTAI
         , testTime
         , testTimeZone
         , testValid ]
