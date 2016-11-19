@@ -56,25 +56,25 @@ diffAbsoluteTime (MkAbsoluteTime a) (MkAbsoluteTime b) = a - b
 -- | TAI - UTC during this day.
 -- No table is provided, as any program compiled with it would become
 -- out of date in six months.
-type LeapSecondMap m = Day -> m Int
+type LeapSecondMap = Day -> Maybe Int
 
-utcDayLength :: Monad m => LeapSecondMap m -> Day -> m DiffTime
+utcDayLength :: LeapSecondMap -> Day -> Maybe DiffTime
 utcDayLength lsmap day = do
     i0 <- lsmap day
     i1 <- lsmap $ addDays 1 day
     return $ realToFrac (86400 + i1 - i0)
 
-dayStart :: Monad m => LeapSecondMap m -> Day -> m AbsoluteTime
+dayStart :: LeapSecondMap -> Day -> Maybe AbsoluteTime
 dayStart lsmap day = do
     i <- lsmap day
     return $ addAbsoluteTime (realToFrac $ (toModifiedJulianDay day) * 86400 + toInteger i) taiEpoch
 
-utcToTAITime :: Monad m => LeapSecondMap m -> UTCTime -> m AbsoluteTime
+utcToTAITime :: LeapSecondMap -> UTCTime -> Maybe AbsoluteTime
 utcToTAITime lsmap (UTCTime day dtime) = do
     t <- dayStart lsmap day
     return $ addAbsoluteTime dtime t
 
-taiToUTCTime :: Monad m => LeapSecondMap m -> AbsoluteTime -> m UTCTime
+taiToUTCTime :: LeapSecondMap -> AbsoluteTime -> Maybe UTCTime
 taiToUTCTime lsmap abstime = let
     stable day = do
         dayt <- dayStart lsmap day

@@ -5,7 +5,7 @@ import Data.Time.Clock.TAI
 import Test.TestUtil
 
 
-sampleLeapSecondMap :: LeapSecondMap Maybe
+sampleLeapSecondMap :: LeapSecondMap
 sampleLeapSecondMap d | d < fromGregorian 1972 1 1 = Nothing
 sampleLeapSecondMap d | d < fromGregorian 1972 7 1 = Just 10
 sampleLeapSecondMap d | d < fromGregorian 1975 1 1 = Just 11
