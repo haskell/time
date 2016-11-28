@@ -6,18 +6,20 @@ module Data.Time.Clock.POSIX
 ) where
 
 import Data.Time.Clock.UTC
+import Data.Time.Clock.Scale (picosecondsToDiffTime)
 import Data.Time.Calendar.Days
 import Data.Fixed
 import Control.Monad
+import Data.Int    (Int64)
 
 #include "HsTimeConfig.h"
 
 #ifdef mingw32_HOST_OS
-import Data.Word    ( Word64)
+import Data.Word    (Word64)
 import System.Win32.Time
 #elif HAVE_CLOCK_GETTIME
 import Data.Time.Clock.CTimespec
-import Foreign.C.Types (CTime(..))
+import Foreign.C.Types (CTime(..), CLong(..))
 #else
 import Data.Time.Clock.CTimeval
 #endif
@@ -25,6 +27,10 @@ import Data.Time.Clock.CTimeval
 -- | 86400 nominal seconds in every day
 posixDayLength :: NominalDiffTime
 posixDayLength = 86400
+
+-- | 86400 nominal seconds in every day
+posixDayLength_ :: Int64
+posixDayLength_ = 86400
 
 -- | POSIX time is the nominal time since 1970-01-01 00:00 UTC
 --
@@ -60,6 +66,17 @@ getPOSIXTime = do
 win32_epoch_adjust :: Word64
 win32_epoch_adjust = 116444736000000000
 
+getCurrentTime = do
+    FILETIME ft <- System.Win32.Time.getSystemTimeAsFileTime
+    let (s, us) = (ft - win32_epoch_adjust) `divMod` 10000000
+        (d, s') = fromIntegral s `divMod` posixDayLength_
+        ps = s' * 1000000000000 + fromIntegral us * 1000000 -- 'Int64' can hold ps in one day
+    return
+        (UTCTime
+            (addDays (fromIntegral d) unixEpochDay)
+            (picosecondsToDiffTime (fromIntegral ps))
+        )
+
 #elif HAVE_CLOCK_GETTIME
 
 -- Use hi-res POSIX time
@@ -69,6 +86,15 @@ ctimespecToPosixSeconds (MkCTimespec (CTime s) ns) =
 
 getPOSIXTime = liftM ctimespecToPosixSeconds getCTimespec
 
+getCurrentTime = do
+    MkCTimespec (CTime s) (CLong ns) <- getCTimespec
+    let (d, s') = s `divMod` posixDayLength_
+        ps = s' * 1000000000000 + ns * 1000
+    return
+        (UTCTime
+            (addDays (fromIntegral d) unixEpochDay)
+            (picosecondsToDiffTime (fromIntegral ps))
+        )
 #else
 
 -- Use POSIX time
@@ -77,8 +103,13 @@ ctimevalToPosixSeconds (MkCTimeval s mus) = (fromIntegral s) + (fromIntegral mus
 
 getPOSIXTime = liftM ctimevalToPosixSeconds getCTimeval
 
+getCurrentTime = do
+    MkCTimeval (CLong s) (CLong us) <- getCTimeval
+    let (d, s') = s `divMod` posixDayLength_
+        ps = s' * 1000000000000 + us * 1000000
+    return
+        (UTCTime
+            (addDays (fromIntegral d) unixEpochDay)
+            (picosecondsToDiffTime (fromIntegral ps))
+        )
 #endif
-
--- | Get the current UTC time from the system clock.
-getCurrentTime :: IO UTCTime
-getCurrentTime = liftM posixSecondsToUTCTime getPOSIXTime

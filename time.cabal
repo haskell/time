@@ -151,3 +151,66 @@ test-suite tests
         Test.AddDays
         Test.AddDaysRef
         Test.TestUtil
+        
+benchmark bench
+    hs-source-dirs: lib, benchmark
+    default-language: Haskell2010
+    type: exitcode-stdio-1.0
+    main-is: Main.hs
+    if impl(ghc)
+        default-extensions:
+            Rank2Types
+            DeriveDataTypeable
+            StandaloneDeriving
+        cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
+    else
+        if impl(hugs)
+            default-extensions: Rank2Types
+            cpp-options: -DLANGUAGE_Rank2Types
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+            base >= 4.7 && < 5
+        ,   deepseq >= 1.1
+        ,   criterion >= 1.0.2.0
+        ,   time
+
+    if os(windows)
+        build-depends: Win32
+    other-modules:
+        Data.Time.Calendar,
+        Data.Time.Calendar.MonthDay,
+        Data.Time.Calendar.OrdinalDate,
+        Data.Time.Calendar.WeekDate,
+        Data.Time.Calendar.Julian,
+        Data.Time.Calendar.Easter,
+        Data.Time.Clock,
+        Data.Time.Clock.POSIX,
+        Data.Time.Clock.TAI,
+        Data.Time.LocalTime,
+        Data.Time.Format,
+        Data.Time
+    default-extensions:    CPP
+    c-sources: lib/cbits/HsTime.c
+    other-modules:
+        Data.Time.Calendar.Private,
+        Data.Time.Calendar.Days,
+        Data.Time.Calendar.Gregorian,
+        Data.Time.Calendar.JulianYearDay,
+        Data.Time.Clock.Scale,
+        Data.Time.Clock.UTC,
+        Data.Time.Clock.CTimeval,
+        Data.Time.Clock.CTimespec,
+        Data.Time.Clock.UTCDiff,
+        Data.Time.LocalTime.TimeZone,
+        Data.Time.LocalTime.TimeOfDay,
+        Data.Time.LocalTime.LocalTime,
+        Data.Time.Format.Parse
+        Data.Time.Format.Locale
+    include-dirs: lib/include
+    if os(windows)
+        install-includes:
+            HsTime.h
+    else
+        install-includes:
+            HsTime.h
+            HsTimeConfig.h
