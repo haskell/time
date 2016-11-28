@@ -22,6 +22,7 @@ import Data.Time.Clock.CTimespec
 import Foreign.C.Types (CTime(..), CLong(..))
 #else
 import Data.Time.Clock.CTimeval
+import Foreign.C.Types (CLong(..))
 #endif
 
 -- | 86400 nominal seconds in every day
