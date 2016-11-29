@@ -2,7 +2,6 @@
 {-# LANGUAGE Trustworthy #-}
 #endif
 {-# OPTIONS -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 -- #hide
 module Data.Time.Clock.Scale
 (
@@ -45,10 +44,7 @@ instance NFData UniversalTime where
 newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
-#if HAS_DataPico
     ,Data, Typeable
-#else
-#endif
 #endif
 #endif
     )

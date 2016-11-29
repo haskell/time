@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
 module Data.Time.Clock.TAI
 (
@@ -28,9 +27,7 @@ import Data.Data
 newtype AbsoluteTime = MkAbsoluteTime DiffTime deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
-#if HAS_DataPico
     ,Data, Typeable
-#endif
 #endif
 #endif
     )

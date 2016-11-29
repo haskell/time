@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-orphans -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 
 -- #hide
 module Data.Time.LocalTime.LocalTime
@@ -23,6 +22,8 @@ import Data.Time.Clock.UTCDiff
 import Data.Time.Clock.UTC
 import Data.Time.Clock.POSIX
 
+import Data.Fixed
+
 import Control.DeepSeq
 import Data.Typeable
 #if LANGUAGE_Rank2Types
@@ -34,14 +35,12 @@ import Data.Data
 -- Conversion of this (as local civil time) to UTC depends on the time zone.
 -- Conversion of this (as local mean time) to UT1 depends on the longitude.
 data LocalTime = LocalTime {
-    localDay    :: Day,
-    localTimeOfDay   :: TimeOfDay
+    localDay        :: !Day,
+    localTimeOfDay  :: !TimeOfDay
 } deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
-#if HAS_DataPico
     ,Data, Typeable
-#endif
 #endif
 #endif
     )
@@ -51,6 +50,19 @@ instance NFData LocalTime where
 
 instance Show LocalTime where
     show (LocalTime d t) = (showGregorian d) ++ " " ++ (show t)
+
+-- | show a 'POSIXTimeRaw' in a given time zone as a LocalTime
+posixRawToLocalTime :: TimeZone -> POSIXTimeRaw -> LocalTime
+posixRawToLocalTime (TimeZone minz _ _) raw =
+    LocalTime (fromIntegral day `addDays` unixEpochDay) tod
+  where
+    (POSIXTimeRaw s ns) = normalizeRaw raw
+    (day, s') = (s + (fromIntegral minz) * 60) `divMod` posixDayLengthRaw
+    (m, ss) = s' `divMod` 60
+    (hh, mm) = m `divMod` 60
+    tod = TimeOfDay (fromIntegral hh)
+                    (fromIntegral mm)
+                    (MkFixed (fromIntegral (ss * 1000000000000 + ns * 1000)))
 
 -- | show a UTC time in a given time zone as a LocalTime
 utcToLocalTime :: TimeZone -> UTCTime -> LocalTime
@@ -79,14 +91,12 @@ instance Show UniversalTime where
 
 -- | A local time together with a TimeZone.
 data ZonedTime = ZonedTime {
-    zonedTimeToLocalTime :: LocalTime,
-    zonedTimeZone :: TimeZone
+    zonedTimeToLocalTime :: !LocalTime,
+    zonedTimeZone :: !TimeZone
 }
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
-#if HAS_DataPico
     deriving (Data, Typeable)
-#endif
 #endif
 #endif
 
@@ -95,6 +105,9 @@ instance NFData ZonedTime where
 
 utcToZonedTime :: TimeZone -> UTCTime -> ZonedTime
 utcToZonedTime zone time = ZonedTime (utcToLocalTime zone time) zone
+
+posixRawToZonedTime :: TimeZone -> POSIXTimeRaw -> ZonedTime
+posixRawToZonedTime zone time = ZonedTime (posixRawToLocalTime zone time) zone
 
 zonedTimeToUTC :: ZonedTime -> UTCTime
 zonedTimeToUTC (ZonedTime t zone) = localTimeToUTC zone t
@@ -108,12 +121,12 @@ instance Show UTCTime where
 
 getZonedTime :: IO ZonedTime
 getZonedTime = do
-    t <- getCurrentTime
-    zone <- getTimeZone t
-    return (utcToZonedTime zone t)
+    raw <- getPOSIXTimeRaw
+    zone <- getTimeZoneRaw raw
+    return $! posixRawToZonedTime zone raw
 
--- |
+-- | convert 'UTCTime' to 'ZonedTime' using local 'TimeZone'.
 utcToLocalZonedTime :: UTCTime -> IO ZonedTime
 utcToLocalZonedTime t = do
     zone <- getTimeZone t
-    return (utcToZonedTime zone t)
+    return $! utcToZonedTime zone t

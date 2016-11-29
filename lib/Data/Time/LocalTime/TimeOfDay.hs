@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 -- #hide
 module Data.Time.LocalTime.TimeOfDay
 (
@@ -13,6 +12,7 @@ module Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
 import Data.Time.Clock.Scale
+import Data.Time.Clock.POSIX (posixDayLengthRaw)
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
@@ -23,18 +23,16 @@ import Data.Data
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay {
     -- | range 0 - 23
-    todHour    :: Int,
+    todHour    :: {-# UNPACK #-} !Int,
     -- | range 0 - 59
-    todMin     :: Int,
+    todMin     :: {-# UNPACK #-} !Int,
     -- | Note that 0 <= todSec < 61, accomodating leap seconds.
     -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
-    todSec     :: Pico
+    todSec     :: !Pico
 } deriving (Eq,Ord
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
-#if HAS_DataPico
     ,Data, Typeable
-#endif
 #endif
 #endif
     )
@@ -71,7 +69,7 @@ localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
 localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimeZone (negate (timeZoneMinutes zone)))
 
 posixDayLength :: DiffTime
-posixDayLength = fromInteger 86400
+posixDayLength = fromIntegral posixDayLengthRaw
 
 -- | Get a TimeOfDay given a time since midnight.
 -- Time more than 24h will be converted to leap-seconds.

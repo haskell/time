@@ -10,10 +10,12 @@ main :: IO ()
 main = do
     getCurrentTime >>= print
     getPOSIXTime >>= print . posixSecondsToUTCTime
+    getZonedTime >>= print
     defaultMain
         [ bgroup "time"
-            [ bench "UTCTime" $ whnfIO getCurrentTime
-            , bench "POSIXTime" $ whnfIO getPOSIXTime
+            [ bench "getCurrentTime" $ nfIO getCurrentTime
+            , bench "getPOSIXTime" $ nfIO getPOSIXTime
+            , bench "getZonedTime" $ nfIO getZonedTime
             ]
         ]
 

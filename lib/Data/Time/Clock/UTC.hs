@@ -2,7 +2,6 @@
 #if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
 #endif
-#include "HsConfigure.h"
 -- #hide
 module Data.Time.Clock.UTC
 (
@@ -32,9 +31,9 @@ import Data.Data
 -- Note that if a day has a leap second added to it, it will have 86401 seconds.
 data UTCTime = UTCTime {
     -- | the day
-    utctDay :: Day,
+    utctDay :: !Day,
     -- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
-    utctDayTime :: DiffTime
+    utctDayTime :: !DiffTime
 }
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
