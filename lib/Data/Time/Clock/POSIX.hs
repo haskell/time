@@ -98,13 +98,13 @@ getPOSIXTime = do
 
 getPOSIXTime = do
     MkCTimespec (CTime s) (CLong ns) <- getCTimespec
-    return (POSIXTime s ns)
+    return (POSIXTime (fromIntegral s) (fromIntegral ns))
 
 #else
 -- Use gettimeofday
 getPOSIXTime = do
     MkCTimeval (CLong s) (CLong us) <- getCTimeval
-    return (POSIXTime s (us * 1000))
+    return (POSIXTime (fromIntegral s) (fromIntegral us * 1000))
 
 #endif
 

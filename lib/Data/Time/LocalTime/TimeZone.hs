@@ -29,9 +29,7 @@ import Foreign.Safe
 import Foreign.C
 import Control.DeepSeq
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone {
@@ -41,16 +39,10 @@ data TimeZone = TimeZone {
     timeZoneSummerOnly :: !Bool,
     -- | The name of the zone, typically a three- or four-letter acronym.
     timeZoneName :: String
-} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-    ,Data, Typeable
-#endif
-#endif
-    )
+} deriving (Eq, Ord ,Data, Typeable)
 
 instance NFData TimeZone where
-    rnf (TimeZone m so n) = m `deepseq` so `deepseq` n `deepseq` ()
+    rnf (TimeZone _ _ n) = rnf n `seq` ()
 
 -- | Create a nameless non-summer timezone for this number of minutes
 minutesToTimeZone :: Int -> TimeZone

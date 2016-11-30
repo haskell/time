@@ -2,15 +2,20 @@
 
 -- #hide
 module Data.Time.LocalTime.LocalTime
-(
-    -- * Local Time
-    LocalTime(..),
-
-    -- converting UTC and UT1 times to LocalTime
-    posixToZonedTime,utcToLocalTime,localTimeToUTC,ut1ToLocalTime,localTimeToUT1,
-
-    ZonedTime(..),utcToZonedTime,zonedTimeToUTC,getZonedTime,utcToLocalZonedTime
-) where
+    ( -- * Local Time
+      LocalTime(..)
+      -- converting UTC and UT1 times to LocalTime
+    , posixToZonedTime
+    , utcToLocalTime
+    , localTimeToUTC
+    , ut1ToLocalTime
+    , localTimeToUT1
+    , ZonedTime(..)
+    , utcToZonedTime
+    , zonedTimeToUTC
+    , getZonedTime
+    , utcToLocalZonedTime
+    ) where
 
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
@@ -26,9 +31,7 @@ import Data.Fixed
 
 import Control.DeepSeq
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
@@ -37,13 +40,7 @@ import Data.Data
 data LocalTime = LocalTime {
     localDay        :: !Day,
     localTimeOfDay  :: !TimeOfDay
-} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-    ,Data, Typeable
-#endif
-#endif
-    )
+} deriving (Eq, Ord, Data, Typeable)
 
 instance NFData LocalTime where
     rnf (LocalTime d t) = d `deepseq` t `deepseq` ()
@@ -93,12 +90,7 @@ instance Show UniversalTime where
 data ZonedTime = ZonedTime {
     zonedTimeToLocalTime :: !LocalTime,
     zonedTimeZone :: !TimeZone
-}
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-    deriving (Data, Typeable)
-#endif
-#endif
+} deriving (Data, Typeable)
 
 instance NFData ZonedTime where
     rnf (ZonedTime lt z) = lt `deepseq` z `deepseq` ()
@@ -119,6 +111,14 @@ instance Show ZonedTime where
 instance Show UTCTime where
     show t = show (utcToZonedTime utc t)
 
+-- | Get 'ZonedTime' in local 'TimeZone'
+--
+-- Note this function and 'utcToLocalZonedTime' are quite slow,
+-- because reading system's time zone is slow on some systems.
+-- If your application can assume a stable system 'TimeZone',
+-- then cache 'getTimeZone' 's result and use 'posixToZonedTime' or
+-- 'utcToZonedTime' will be much faster(especially 'posixToZonedTime').
+--
 getZonedTime :: IO ZonedTime
 getZonedTime = do
     raw <- getPOSIXTime

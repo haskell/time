@@ -16,9 +16,7 @@ import Data.Time.Clock.POSIX (posixDayLength)
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay {
@@ -29,16 +27,10 @@ data TimeOfDay = TimeOfDay {
     -- | Note that 0 <= todSec < 61, accomodating leap seconds.
     -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
     todSec     :: !Pico
-} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-    ,Data, Typeable
-#endif
-#endif
-    )
+} deriving (Eq, Ord ,Data, Typeable)
 
 instance NFData TimeOfDay where
-    rnf (TimeOfDay h m s) = h `deepseq` m `deepseq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+    rnf (TimeOfDay _ _ s) = rnf s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 -- | Hour zero
 midnight :: TimeOfDay

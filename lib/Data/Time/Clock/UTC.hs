@@ -1,47 +1,37 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
-#if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
-#endif
+
 -- #hide
 module Data.Time.Clock.UTC
-(
-    -- * UTC
-    -- | UTC is time as measured by a clock, corrected to keep pace with the earth by adding or removing
-    -- occasional seconds, known as \"leap seconds\".
-    -- These corrections are not predictable and are announced with six month's notice.
-    -- No table of these corrections is provided, as any program compiled with it would become
-    -- out of date in six months.
-    --
-    -- If you don't care about leap seconds, use UTCTime and NominalDiffTime for your clock calculations,
-    -- and you'll be fine.
-    UTCTime(..),NominalDiffTime
-) where
+    ( -- * UTC
+      -- | UTC is time as measured by a clock, corrected to keep pace with the earth by adding or removing
+      -- occasional seconds, known as \"leap seconds\".
+      -- These corrections are not predictable and are announced with six month's notice.
+      -- No table of these corrections is provided, as any program compiled with it would become
+      -- out of date in six months.
+      --
+      -- If you don't care about leap seconds, use UTCTime and NominalDiffTime for your clock calculations,
+      -- and you'll be fine.
+      UTCTime(..)
+    , NominalDiffTime
+    ) where
 
 import Control.DeepSeq
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Scale
 import Data.Fixed
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 
 -- | This is the simplest representation of UTC.
 -- It consists of the day number, and a time offset from midnight.
 -- Note that if a day has a leap second added to it, it will have 86401 seconds.
-data UTCTime = UTCTime {
-    -- | the day
-    utctDay :: !Day,
-    -- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
-    utctDayTime :: !DiffTime
-}
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    deriving (Data, Typeable)
-#endif
-#endif
-#endif
+data UTCTime = UTCTime
+    { -- | the day
+      utctDay :: !Day
+      -- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
+    , utctDayTime :: !DiffTime
+    } deriving (Data, Typeable)
 
 instance NFData UTCTime where
     rnf (UTCTime d t) = d `deepseq` t `deepseq` ()
@@ -60,15 +50,7 @@ instance Ord UTCTime where
 -- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
-newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#endif
-#endif
-#endif
-    )
+newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq, Ord, Data, Typeable)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData NominalDiffTime where -- FIXME: Data.Fixed had no NFData instances yet at time of writing

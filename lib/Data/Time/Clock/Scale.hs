@@ -1,7 +1,6 @@
-#if __GLASGOW_HASKELL__ >= 702
-{-# LANGUAGE Trustworthy #-}
-#endif
 {-# OPTIONS -fno-warn-unused-imports #-}
+{-# LANGUAGE Trustworthy #-}
+
 -- #hide
 module Data.Time.Clock.Scale
 (
@@ -20,19 +19,13 @@ import Control.DeepSeq
 import Data.Ratio ((%))
 import Data.Fixed
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
 -- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.
-newtype UniversalTime = ModJulianDate {getModJulianDate :: Rational} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-    ,Data, Typeable
-#endif
-#endif
-    )
+newtype UniversalTime = ModJulianDate
+    { getModJulianDate :: Rational
+    } deriving (Eq, Ord, Data, Typeable)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData UniversalTime where
@@ -41,13 +34,7 @@ instance NFData UniversalTime where
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions will treat it as seconds.
 -- It has a precision of 10^-12 s.
-newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-    ,Data, Typeable
-#endif
-#endif
-    )
+newtype DiffTime = MkDiffTime Pico deriving (Eq, Ord, Data, Typeable)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData DiffTime where -- FIXME: Data.Fixed had no NFData instances yet at time of writing
