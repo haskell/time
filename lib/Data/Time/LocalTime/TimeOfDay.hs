@@ -12,7 +12,7 @@ module Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
 import Data.Time.Clock.Scale
-import Data.Time.Clock.POSIX (posixDayLengthRaw)
+import Data.Time.Clock.POSIX (posixDayLength)
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
@@ -68,13 +68,13 @@ utcToLocalTimeOfDay zone (TimeOfDay h m s) = (fromIntegral (div h' 24),TimeOfDay
 localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
 localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimeZone (negate (timeZoneMinutes zone)))
 
-posixDayLength :: DiffTime
-posixDayLength = fromIntegral posixDayLengthRaw
+posixDayDiff :: DiffTime
+posixDayDiff = fromIntegral posixDayLength
 
 -- | Get a TimeOfDay given a time since midnight.
 -- Time more than 24h will be converted to leap-seconds.
 timeToTimeOfDay :: DiffTime -> TimeOfDay
-timeToTimeOfDay dt | dt >= posixDayLength = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDayLength)))
+timeToTimeOfDay dt | dt >= posixDayDiff = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDayDiff)))
 timeToTimeOfDay dt = TimeOfDay (fromInteger h) (fromInteger m) s where
     s' = realToFrac dt
     s = mod' s' 60
@@ -92,4 +92,4 @@ dayFractionToTimeOfDay df = timeToTimeOfDay (realToFrac (df * 86400))
 
 -- | Get the fraction of a day since midnight given a TimeOfDay.
 timeOfDayToDayFraction :: TimeOfDay -> Rational
-timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod) / realToFrac posixDayLength
+timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod) / realToFrac posixDayDiff

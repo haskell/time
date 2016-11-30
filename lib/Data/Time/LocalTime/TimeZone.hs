@@ -11,8 +11,8 @@ module Data.Time.LocalTime.TimeZone
     , hoursToTimeZone
     , utc
       -- getting the locale time zone
+    , getTimeZonePosix
     , getTimeZone
-    , getTimeZoneRaw
     , getCurrentTimeZone
     ) where
 
@@ -99,8 +99,8 @@ getTimeZoneCTime ctime = with 0 (\pdst -> with nullPtr (\pcname -> do
     ))
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
-getTimeZoneRaw :: POSIXTimeRaw -> IO TimeZone
-getTimeZoneRaw raw = let (POSIXTimeRaw s _) = normalizeRaw raw
+getTimeZonePosix :: POSIXTime -> IO TimeZone
+getTimeZonePosix raw = let (POSIXTime s _) = normalizePosix raw
                      in getTimeZoneCTime (CTime s)
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
@@ -109,4 +109,4 @@ getTimeZone = getTimeZoneCTime . fromInteger . floor . utcTimeToPOSIXSeconds
 
 -- | Get the current time-zone
 getCurrentTimeZone :: IO TimeZone
-getCurrentTimeZone = getPOSIXTimeRaw >>= getTimeZoneRaw
+getCurrentTimeZone = getPOSIXTime >>= getTimeZonePosix

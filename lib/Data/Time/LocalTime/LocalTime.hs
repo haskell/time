@@ -7,7 +7,7 @@ module Data.Time.LocalTime.LocalTime
     LocalTime(..),
 
     -- converting UTC and UT1 times to LocalTime
-    utcToLocalTime,localTimeToUTC,ut1ToLocalTime,localTimeToUT1,
+    posixToZonedTime,utcToLocalTime,localTimeToUTC,ut1ToLocalTime,localTimeToUT1,
 
     ZonedTime(..),utcToZonedTime,zonedTimeToUTC,getZonedTime,utcToLocalZonedTime
 ) where
@@ -51,13 +51,13 @@ instance NFData LocalTime where
 instance Show LocalTime where
     show (LocalTime d t) = (showGregorian d) ++ " " ++ (show t)
 
--- | show a 'POSIXTimeRaw' in a given time zone as a LocalTime
-posixRawToLocalTime :: TimeZone -> POSIXTimeRaw -> LocalTime
-posixRawToLocalTime (TimeZone minz _ _) raw =
+-- | show a 'POSIXTime' in a given time zone as a LocalTime
+posixToLocalTime :: TimeZone -> POSIXTime -> LocalTime
+posixToLocalTime (TimeZone minz _ _) raw =
     LocalTime (fromIntegral day `addDays` unixEpochDay) tod
   where
-    (POSIXTimeRaw s ns) = normalizeRaw raw
-    (day, s') = (s + (fromIntegral minz) * 60) `divMod` posixDayLengthRaw
+    (POSIXTime s ns) = normalizePosix raw
+    (day, s') = (s + (fromIntegral minz) * 60) `divMod` posixDayLength
     (m, ss) = s' `divMod` 60
     (hh, mm) = m `divMod` 60
     tod = TimeOfDay (fromIntegral hh)
@@ -106,8 +106,8 @@ instance NFData ZonedTime where
 utcToZonedTime :: TimeZone -> UTCTime -> ZonedTime
 utcToZonedTime zone time = ZonedTime (utcToLocalTime zone time) zone
 
-posixRawToZonedTime :: TimeZone -> POSIXTimeRaw -> ZonedTime
-posixRawToZonedTime zone time = ZonedTime (posixRawToLocalTime zone time) zone
+posixToZonedTime :: TimeZone -> POSIXTime -> ZonedTime
+posixToZonedTime zone time = ZonedTime (posixToLocalTime zone time) zone
 
 zonedTimeToUTC :: ZonedTime -> UTCTime
 zonedTimeToUTC (ZonedTime t zone) = localTimeToUTC zone t
@@ -121,9 +121,9 @@ instance Show UTCTime where
 
 getZonedTime :: IO ZonedTime
 getZonedTime = do
-    raw <- getPOSIXTimeRaw
-    zone <- getTimeZoneRaw raw
-    return $! posixRawToZonedTime zone raw
+    raw <- getPOSIXTime
+    zone <- getTimeZonePosix raw
+    return $! posixToZonedTime zone raw
 
 -- | convert 'UTCTime' to 'ZonedTime' using local 'TimeZone'.
 utcToLocalZonedTime :: UTCTime -> IO ZonedTime
