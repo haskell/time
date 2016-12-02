@@ -20,7 +20,6 @@ extra-source-files:
     aclocal.m4
     configure.ac
     configure
-    lib/include/HsConfigure.h
     lib/include/HsTime.h
     lib/include/HsTimeConfig.h.in
     test/Test/*.c

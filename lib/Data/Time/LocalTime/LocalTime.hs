@@ -1,17 +1,21 @@
 {-# OPTIONS -fno-warn-orphans -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 
 -- #hide
 module Data.Time.LocalTime.LocalTime
-(
-    -- * Local Time
-    LocalTime(..),
-
-    -- converting UTC and UT1 times to LocalTime
-    utcToLocalTime,localTimeToUTC,ut1ToLocalTime,localTimeToUT1,
-
-    ZonedTime(..),utcToZonedTime,zonedTimeToUTC,getZonedTime,utcToLocalZonedTime
-) where
+    ( -- * Local Time
+      LocalTime(..)
+      -- converting UTC and UT1 times to LocalTime
+    , posixToZonedTime
+    , utcToLocalTime
+    , localTimeToUTC
+    , ut1ToLocalTime
+    , localTimeToUT1
+    , ZonedTime(..)
+    , utcToZonedTime
+    , zonedTimeToUTC
+    , getZonedTime
+    , utcToLocalZonedTime
+    ) where
 
 import Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
@@ -23,34 +27,39 @@ import Data.Time.Clock.UTCDiff
 import Data.Time.Clock.UTC
 import Data.Time.Clock.POSIX
 
+import Data.Fixed
+
 import Control.DeepSeq
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
 -- Conversion of this (as local civil time) to UTC depends on the time zone.
 -- Conversion of this (as local mean time) to UT1 depends on the longitude.
 data LocalTime = LocalTime {
-    localDay    :: Day,
-    localTimeOfDay   :: TimeOfDay
-} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#endif
-#endif
-#endif
-    )
+    localDay        :: Day,
+    localTimeOfDay  :: TimeOfDay
+} deriving (Eq, Ord, Data, Typeable)
 
 instance NFData LocalTime where
     rnf (LocalTime d t) = d `deepseq` t `deepseq` ()
 
 instance Show LocalTime where
     show (LocalTime d t) = (showGregorian d) ++ " " ++ (show t)
+
+-- | show a 'POSIXTime' in a given time zone as a LocalTime
+posixToLocalTime :: TimeZone -> POSIXTime -> LocalTime
+posixToLocalTime (TimeZone minz _ _) raw =
+    LocalTime (fromIntegral day `addDays` unixEpochDay) tod
+  where
+    (POSIXTime s ns) = normalizePosix raw
+    (day, s') = (s + (fromIntegral minz) * 60) `divMod` posixDayLength
+    (m, ss) = s' `divMod` 60
+    (hh, mm) = m `divMod` 60
+    tod = TimeOfDay (fromIntegral hh)
+                    (fromIntegral mm)
+                    (MkFixed (fromIntegral (ss * 1000000000000 + ns * 1000)))
 
 -- | show a UTC time in a given time zone as a LocalTime
 utcToLocalTime :: TimeZone -> UTCTime -> LocalTime
@@ -79,22 +88,18 @@ instance Show UniversalTime where
 
 -- | A local time together with a TimeZone.
 data ZonedTime = ZonedTime {
-    zonedTimeToLocalTime :: LocalTime,
-    zonedTimeZone :: TimeZone
-}
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    deriving (Data, Typeable)
-#endif
-#endif
-#endif
+    zonedTimeToLocalTime :: !LocalTime,
+    zonedTimeZone :: !TimeZone
+} deriving (Data, Typeable)
 
 instance NFData ZonedTime where
     rnf (ZonedTime lt z) = lt `deepseq` z `deepseq` ()
 
 utcToZonedTime :: TimeZone -> UTCTime -> ZonedTime
 utcToZonedTime zone time = ZonedTime (utcToLocalTime zone time) zone
+
+posixToZonedTime :: TimeZone -> POSIXTime -> ZonedTime
+posixToZonedTime zone time = ZonedTime (posixToLocalTime zone time) zone
 
 zonedTimeToUTC :: ZonedTime -> UTCTime
 zonedTimeToUTC (ZonedTime t zone) = localTimeToUTC zone t
@@ -106,14 +111,22 @@ instance Show ZonedTime where
 instance Show UTCTime where
     show t = show (utcToZonedTime utc t)
 
+-- | Get 'ZonedTime' in local 'TimeZone'
+--
+-- Note this function and 'utcToLocalZonedTime' are quite slow,
+-- because reading system's time zone is slow on some systems.
+-- If your application can assume a stable system 'TimeZone',
+-- then cache 'getTimeZone' 's result and use 'posixToZonedTime' or
+-- 'utcToZonedTime' will be much faster(especially 'posixToZonedTime').
+--
 getZonedTime :: IO ZonedTime
 getZonedTime = do
-    t <- getCurrentTime
-    zone <- getTimeZone t
-    return (utcToZonedTime zone t)
+    raw <- getPOSIXTime
+    zone <- getTimeZonePosix raw
+    return $! posixToZonedTime zone raw
 
--- |
+-- | convert 'UTCTime' to 'ZonedTime' using local 'TimeZone'.
 utcToLocalZonedTime :: UTCTime -> IO ZonedTime
 utcToLocalZonedTime t = do
     zone <- getTimeZone t
-    return (utcToZonedTime zone t)
+    return $! utcToZonedTime zone t

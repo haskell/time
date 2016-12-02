@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 -- #hide
 module Data.Time.LocalTime.TimeOfDay
 (
@@ -13,12 +12,11 @@ module Data.Time.LocalTime.TimeOfDay
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
 import Data.Time.Clock.Scale
+import Data.Time.Clock.POSIX (posixDayLength)
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay {
@@ -29,18 +27,10 @@ data TimeOfDay = TimeOfDay {
     -- | Note that 0 <= todSec < 61, accomodating leap seconds.
     -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
     todSec     :: Pico
-} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#endif
-#endif
-#endif
-    )
+} deriving (Eq, Ord ,Data, Typeable)
 
 instance NFData TimeOfDay where
-    rnf (TimeOfDay h m s) = h `deepseq` m `deepseq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+    rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` rnf s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 -- | Hour zero
 midnight :: TimeOfDay
@@ -70,13 +60,13 @@ utcToLocalTimeOfDay zone (TimeOfDay h m s) = (fromIntegral (div h' 24),TimeOfDay
 localToUTCTimeOfDay :: TimeZone -> TimeOfDay -> (Integer,TimeOfDay)
 localToUTCTimeOfDay zone = utcToLocalTimeOfDay (minutesToTimeZone (negate (timeZoneMinutes zone)))
 
-posixDayLength :: DiffTime
-posixDayLength = fromInteger 86400
+posixDayDiff :: DiffTime
+posixDayDiff = fromIntegral posixDayLength
 
 -- | Get a TimeOfDay given a time since midnight.
 -- Time more than 24h will be converted to leap-seconds.
 timeToTimeOfDay :: DiffTime -> TimeOfDay
-timeToTimeOfDay dt | dt >= posixDayLength = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDayLength)))
+timeToTimeOfDay dt | dt >= posixDayDiff = TimeOfDay 23 59 (60 + (realToFrac (dt - posixDayDiff)))
 timeToTimeOfDay dt = TimeOfDay (fromInteger h) (fromInteger m) s where
     s' = realToFrac dt
     s = mod' s' 60
@@ -94,4 +84,4 @@ dayFractionToTimeOfDay df = timeToTimeOfDay (realToFrac (df * 86400))
 
 -- | Get the fraction of a day since midnight given a TimeOfDay.
 timeOfDayToDayFraction :: TimeOfDay -> Rational
-timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod) / realToFrac posixDayLength
+timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod) / realToFrac posixDayDiff

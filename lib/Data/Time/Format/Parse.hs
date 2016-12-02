@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-orphans #-}
-#include "HsConfigure.h"
 
 -- #hide
 module Data.Time.Format.Parse
