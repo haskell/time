@@ -38,8 +38,8 @@ import Data.Data
 -- Conversion of this (as local civil time) to UTC depends on the time zone.
 -- Conversion of this (as local mean time) to UT1 depends on the longitude.
 data LocalTime = LocalTime {
-    localDay        :: !Day,
-    localTimeOfDay  :: !TimeOfDay
+    localDay        :: Day,
+    localTimeOfDay  :: TimeOfDay
 } deriving (Eq, Ord, Data, Typeable)
 
 instance NFData LocalTime where

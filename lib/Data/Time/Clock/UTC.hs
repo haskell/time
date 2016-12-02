@@ -28,9 +28,9 @@ import Data.Data
 -- Note that if a day has a leap second added to it, it will have 86401 seconds.
 data UTCTime = UTCTime
     { -- | the day
-      utctDay :: !Day
+      utctDay ::     Day
       -- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
-    , utctDayTime :: !DiffTime
+    , utctDayTime :: DiffTime
     } deriving (Data, Typeable)
 
 instance NFData UTCTime where
