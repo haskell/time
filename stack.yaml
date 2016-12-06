@@ -1,3 +1,4 @@
-resolver: lts-6.25
+resolver: lts-7.12
 packages:
 - '.'
+allow-newer: true
