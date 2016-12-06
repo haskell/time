@@ -2,18 +2,11 @@
 module Main where
 
 import  Criterion.Main
-import  Data.Time.Clock
-import  Data.Time.Calendar
+import  Data.Time
 import  Data.Time.Clock.POSIX
-import  Data.Time.LocalTime
-import  Data.Time.Format
-import  Data.Time.Clock
 
-import qualified "time" Data.Time.Clock       as O
+import qualified "time" Data.Time             as O
 import qualified "time" Data.Time.Clock.POSIX as O
-import qualified "time" Data.Time.LocalTime   as O
-import qualified "time" Data.Time.Format      as O
-import qualified "time" Data.Time.Clock       as O
 
 main :: IO ()
 main = do
@@ -24,9 +17,9 @@ main = do
     getZonedTime >>= print
     O.getZonedTime >>= print
 
-    tz <- getCurrentTimeZone
+    _tz <- getCurrentTimeZone
     ct <- getCurrentTime
-    otz <- O.getCurrentTimeZone
+    _otz <- O.getCurrentTimeZone
     oct <- O.getCurrentTime
 
     defaultMain
