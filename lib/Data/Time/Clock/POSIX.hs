@@ -36,6 +36,30 @@ data POSIXTime = POSIXTime
     , ptNanoSeconds :: {-# UNPACK #-} !Word32
     } deriving (Eq,Ord)
 
+#if 0
+-- workaround for time test stanza dependency on unix, which needs fromRational and toRational
+
+instance Show POSIXTime where
+    show = error "undefined POSIXTime function"
+
+instance Num POSIXTime where
+    (+) = error "undefined POSIXTime function"
+    (-) = error "undefined POSIXTime function"
+    (*) = error "undefined POSIXTime function"
+    negate = error "undefined POSIXTime function"
+    abs = error "undefined POSIXTime function"
+    signum = error "undefined POSIXTime function"
+    fromInteger = error "undefined POSIXTime function"
+
+instance Real POSIXTime where
+    toRational (POSIXTime xs xn) = toRational xs + (toRational xn) / 1000000000
+
+instance Fractional POSIXTime where
+    fromRational r = makePOSIXTime 0 $ floor $ r * 1000000000
+    recip = error "undefined POSIXTime function"
+    (/) = error "undefined POSIXTime function"
+#endif
+
 makePOSIXTime :: Int64 -> Word32 -> POSIXTime
 makePOSIXTime xs xn
     | xn < 0 || xn >= 1000000000 = POSIXTime (xs + fromIntegral q)  r
