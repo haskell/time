@@ -4,7 +4,8 @@ module Data.Time.Clock.POSIX
 (
     posixDayLength,POSIXTime,
     makePOSIXTime,ptSeconds,ptNanoSeconds,
-    posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime
+    posixSecondsToUTCTime,utcTimeToPOSIXSeconds,
+    posixToUTCTime,getPOSIXTime,getCurrentTime
 ) where
 
 import Data.Time.Clock.UTC
