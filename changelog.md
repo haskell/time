@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.8]
+- Change type of POSIXTime
+
 ## [1.7]
 - Data.Time.Clock.TAI: change LeapSecondTable to LeapSecondMap with Maybe type; remove parseTAIUTCDATFile
 

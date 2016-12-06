@@ -1,5 +1,5 @@
 name:           time
-version:        1.7
+version:        1.8
 stability:      stable
 license:        BSD3
 license-file:   LICENSE
@@ -100,7 +100,7 @@ test-suite ShowDefaultTZAbbreviations
     ghc-options: -Wall -fwarn-tabs
     build-depends:
         base,
-        time == 1.7
+        time == 1.8
     main-is: ShowDefaultTZAbbreviations.hs
 
 test-suite tests
@@ -122,7 +122,7 @@ test-suite tests
     build-depends:
         base,
         deepseq,
-        time == 1.7,
+        time == 1.8,
         QuickCheck >= 2.5.1,
         test-framework >= 0.8,
         test-framework-quickcheck2 >= 0.3,
