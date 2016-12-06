@@ -79,7 +79,7 @@ utc = TimeZone 0 False "UTC"
 {-# CFILES cbits/HsTime.c #-}
 foreign import ccall unsafe "HsTime.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> Ptr CInt -> Ptr CString -> IO CLong
 
-posixToCTime :: POSIXTime -> CTime
+posixToCTime :: NominalDiffTime -> CTime
 posixToCTime  = fromInteger . floor
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
