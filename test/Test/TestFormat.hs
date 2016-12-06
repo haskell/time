@@ -48,7 +48,7 @@ baseTime1 :: UTCTime
 baseTime1 = localTimeToUTC utc (LocalTime (fromGregorian 2000 01 01) midnight)
 
 getDay :: Integer -> UTCTime
-getDay day = addUTCTime ((fromInteger day) * posixDayLength) baseTime1
+getDay day = addUTCTime ((fromInteger day) * nominalDay) baseTime1
 
 getYearP1 :: Integer -> UTCTime
 getYearP1 year = localTimeToUTC utc (LocalTime (fromGregorian year 01 01) midnight)
