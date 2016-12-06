@@ -2,20 +2,22 @@
 -- Most people won't need this module.
 module Data.Time.Clock.POSIX
 (
-    posixDayLength,POSIXTime(..),posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime
+    posixDayLength,POSIXTime,
+    makePOSIXTime,ptSeconds,ptNanoSeconds,
+    posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime
 ) where
 
 import Data.Time.Clock.UTC
 import Data.Time.Clock.Scale (picosecondsToDiffTime)
 import Data.Time.Calendar.Days
 import Data.Int (Int64)
+import Data.Word
 import Data.Fixed (divMod')
 import Control.DeepSeq
 
 #include "HsTimeConfig.h"
 
 #ifdef mingw32_HOST_OS
-import Data.Word (Word64)
 import System.Win32.Time
 #elif HAVE_CLOCK_GETTIME
 import Data.Time.Clock.CTimespec
@@ -31,36 +33,22 @@ import Foreign.C.Types (CLong(..))
 --
 data POSIXTime = POSIXTime
     { ptSeconds ::     {-# UNPACK #-} !Int64
-    , ptNanoSeconds :: {-# UNPACK #-} !Int64
-    }
+    , ptNanoSeconds :: {-# UNPACK #-} !Word32
+    } deriving (Eq,Ord)
 
-normalizePosix :: POSIXTime -> POSIXTime
-normalizePosix raw@(POSIXTime xs xn)
-    | xn < 0 || xn >= 1000000000 = POSIXTime (xs + q)  r
-    | otherwise                  = raw
+makePOSIXTime :: Int64 -> Word32 -> POSIXTime
+makePOSIXTime xs xn
+    | xn < 0 || xn >= 1000000000 = POSIXTime (xs + fromIntegral q)  r
+    | otherwise                  = POSIXTime xs xn
   where (q, r) = xn `divMod` 1000000000
-
-instance Eq POSIXTime where
-    rawx == rawy =
-        let POSIXTime xs xn = normalizePosix rawx
-            POSIXTime ys yn = normalizePosix rawy
-        in xs == ys && xn == yn
-
-instance Ord POSIXTime where
-    rawx `compare` rawy =
-        let POSIXTime xs xn = normalizePosix rawx
-            POSIXTime ys yn = normalizePosix rawy
-            os = compare xs ys
-        in if os == EQ then xn `compare` yn else os
 
 instance NFData POSIXTime where
     rnf a = a `seq` ()
 
 posixToUTCTime :: POSIXTime -> UTCTime
-posixToUTCTime raw =
-    let POSIXTime s ns = normalizePosix raw
-        (d, s') = s `divMod` posixDayLength
-        ps = s' * 1000000000000 + ns * 1000 -- 'Int64' can hold ps in one day
+posixToUTCTime (POSIXTime s ns) =
+    let (d, s') = s `divMod` posixDayLength
+        ps = s' * 1000000000000 + fromIntegral (ns * 1000) -- 'Int64' can hold ps in one day
     in UTCTime (addDays (fromIntegral d) unixEpochDay)
                (picosecondsToDiffTime (fromIntegral ps))
 
