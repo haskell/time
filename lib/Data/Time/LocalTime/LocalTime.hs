@@ -47,7 +47,7 @@ data LocalTime = LocalTime {
     )
 
 instance NFData LocalTime where
-    rnf (LocalTime d t) = d `deepseq` t `deepseq` ()
+    rnf (LocalTime d t) = rnf d `seq` rnf t `seq` ()
 
 instance Show LocalTime where
     show (LocalTime d t) = (showGregorian d) ++ " " ++ (show t)
@@ -91,7 +91,7 @@ data ZonedTime = ZonedTime {
 #endif
 
 instance NFData ZonedTime where
-    rnf (ZonedTime lt z) = lt `deepseq` z `deepseq` ()
+    rnf (ZonedTime lt z) = rnf lt `seq` rnf z `seq` ()
 
 utcToZonedTime :: TimeZone -> UTCTime -> ZonedTime
 utcToZonedTime zone time = ZonedTime (utcToLocalTime zone time) zone

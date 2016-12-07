@@ -46,7 +46,7 @@ data TimeZone = TimeZone {
     )
 
 instance NFData TimeZone where
-    rnf (TimeZone m so n) = m `deepseq` so `deepseq` n `deepseq` ()
+    rnf (TimeZone m so n) = rnf m `seq` rnf so `seq` rnf n `seq` ()
 
 -- | Create a nameless non-summer timezone for this number of minutes
 minutesToTimeZone :: Int -> TimeZone

@@ -40,7 +40,7 @@ data TimeOfDay = TimeOfDay {
     )
 
 instance NFData TimeOfDay where
-    rnf (TimeOfDay h m s) = h `deepseq` m `deepseq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+    rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
 
 -- | Hour zero
 midnight :: TimeOfDay

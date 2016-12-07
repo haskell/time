@@ -45,7 +45,7 @@ data UTCTime = UTCTime {
 #endif
 
 instance NFData UTCTime where
-    rnf (UTCTime d t) = d `deepseq` t `deepseq` ()
+    rnf (UTCTime d t) = rnf d `seq` rnf t `seq` ()
 
 instance Eq UTCTime where
     (UTCTime da ta) == (UTCTime db tb) = (da == db) && (ta == tb)
