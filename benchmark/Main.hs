@@ -26,6 +26,8 @@ main = do
         [ bgroup "new"
             [ bench "getCurrentTime" $ nfIO getCurrentTime
             , bench "getPOSIXTime" $ nfIO getPOSIXTime
+            , bench "getTimeZone" $ nfIO $ getTimeZone ct
+            , bench "getCurrentTimeZone" $ nfIO getCurrentTimeZone
             , bench "getZonedTime" $ nfIO getZonedTime
             , bench "formatTime" $ nf (formatTime defaultTimeLocale "%a, %_d %b %Y %H:%M:%S %Z") ct
             ]
@@ -33,8 +35,9 @@ main = do
           bgroup "old"
             [ bench "getCurrentTime" $ nfIO O.getCurrentTime
             , bench "getPOSIXTime" $ nfIO O.getPOSIXTime
+            , bench "getTimeZone" $ nfIO $ O.getTimeZone oct
+            , bench "getCurrentTimeZone" $ nfIO O.getCurrentTimeZone
             , bench "getZonedTime" $ nfIO O.getZonedTime
             , bench "formatTime" $ nf (O.formatTime O.defaultTimeLocale "%a, %_d %b %Y %H:%M:%S %Z") oct
             ]
         ]
-
