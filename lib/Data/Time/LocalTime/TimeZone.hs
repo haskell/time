@@ -79,13 +79,9 @@ utc = TimeZone 0 False "UTC"
 {-# CFILES cbits/HsTime.c #-}
 foreign import ccall unsafe "HsTime.h get_current_timezone_seconds" get_current_timezone_seconds :: CTime -> Ptr CInt -> Ptr CString -> IO CLong
 
-posixToCTime :: NominalDiffTime -> CTime
-posixToCTime  = fromInteger . floor
-
--- | Get the local time-zone for a given time (varying as per summertime adjustments)
-getTimeZone :: UTCTime -> IO TimeZone
-getTimeZone time = with 0 (\pdst -> with nullPtr (\pcname -> do
-    secs <- get_current_timezone_seconds (posixToCTime (utcTimeToPOSIXSeconds time)) pdst pcname
+getTimeZoneCTime :: CTime -> IO TimeZone
+getTimeZoneCTime ctime = with 0 (\pdst -> with nullPtr (\pcname -> do
+    secs <- get_current_timezone_seconds ctime pdst pcname
     case secs of
         0x80000000 -> fail "localtime_r failed"
         _ -> do
@@ -95,6 +91,14 @@ getTimeZone time = with 0 (\pdst -> with nullPtr (\pcname -> do
             return (TimeZone (div (fromIntegral secs) 60) (dst == 1) name)
     ))
 
+-- | Get the local time-zone for a given time (varying as per summertime adjustments)
+getTimeZonePosix :: POSIXTime -> IO TimeZone
+getTimeZonePosix = getTimeZoneCTime . CTime . ptSeconds
+
+-- | Get the local time-zone for a given time (varying as per summertime adjustments)
+getTimeZone :: UTCTime -> IO TimeZone
+getTimeZone = getTimeZoneCTime . fromInteger . floor . utcTimeToPOSIXSeconds
+
 -- | Get the current time-zone
 getCurrentTimeZone :: IO TimeZone
-getCurrentTimeZone = getCurrentTime >>= getTimeZone
+getCurrentTimeZone = getPOSIXTime >>= getTimeZonePosix
