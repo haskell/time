@@ -6,6 +6,7 @@ import Test.AddDays
 import Test.ClipDates
 import Test.ConvertBack
 import Test.LongWeekYears
+import Test.Resolution
 import Test.TestCalendars
 import Test.TestEaster
 import Test.TestFormat
@@ -21,6 +22,7 @@ tests = [ addDaysTest
         , clipDates
         , convertBack
         , longWeekYears
+        , testResolution
         , testCalendars
         , testEaster
         , testFormat

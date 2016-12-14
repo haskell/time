@@ -43,9 +43,12 @@ diff expected found = Fail ("expected " ++ (show expected) ++ " but found " ++ (
 type TestTree = Test
 type Assertion = Either String ()
 
+assertionResult :: Assertion -> Result
+assertionResult (Right ()) = Pass
+assertionResult (Left s) = Fail s
+
 testCase :: String -> Assertion -> Test
-testCase name (Right ()) = pureTest name Pass
-testCase name (Left s) = pureTest name (Fail s)
+testCase name ass = pureTest name $ assertionResult ass
 
 assertFailure :: String -> Either String a
 assertFailure = Left

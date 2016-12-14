@@ -4,10 +4,12 @@ module Data.Time.Clock
     module Data.Time.Clock.Scale,
     module Data.Time.Clock.UTC,
     module Data.Time.Clock.UTCDiff,
-    getCurrentTime
+    getCurrentTime,
+    clockResolution
 ) where
 
 import Data.Time.Clock.Scale
+import Data.Time.Clock.GetTime
 import Data.Time.Clock.UTCDiff
 import Data.Time.Clock.UTC
 import Data.Time.Clock.POSIX

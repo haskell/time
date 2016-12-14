@@ -1,8 +1,10 @@
+{-# LANGUAGE Trustworthy #-}
 module Data.Time.Clock.GetTime where
 
 import Data.Int (Int64)
 import Data.Word
 import Control.DeepSeq
+import Data.Time.Clock.Scale
 
 #include "HsTimeConfig.h"
 
@@ -44,7 +46,9 @@ instance Real POSIXTime where
     toRational (POSIXTime xs xn) = toRational xs + (toRational xn) / 1000000000
 
 instance Fractional POSIXTime where
-    fromRational r = makePOSIXTime 0 $ floor $ r * 1000000000
+    fromRational r = let
+        (s,ns) = divMod (floor $ r * 1000000000)  1000000000
+        in POSIXTime (fromInteger s) (fromInteger ns)
     recip = error "undefined POSIXTime function"
     (/) = error "undefined POSIXTime function"
 #endif
@@ -52,7 +56,10 @@ instance Fractional POSIXTime where
 instance NFData POSIXTime where
     rnf a = a `seq` ()
 
+
 getPOSIXTime :: IO POSIXTime
+clockResolution :: DiffTime
+
 #ifdef mingw32_HOST_OS
 -- On Windows, the equlvalent of POSIX time is "file time", defined as
 -- the number of 100-nanosecond intervals that have elapsed since
@@ -66,6 +73,7 @@ getPOSIXTime = do
   where
     win32_epoch_adjust :: Word64
     win32_epoch_adjust = 116444736000000000
+clockResolution = 1E-6 -- microsecond
 
 #elif HAVE_CLOCK_GETTIME
 -- Use hi-res clock_gettime
@@ -73,11 +81,14 @@ getPOSIXTime = do
 getPOSIXTime = do
     MkCTimespec (CTime s) (CLong ns) <- clockGetTime clock_REALTIME
     return (POSIXTime (fromIntegral s) (fromIntegral ns))
+clockResolution = case realtimeRes of
+    MkCTimespec (CTime s) ns -> (fromIntegral s) + (fromIntegral ns) * 1E-9
 
 #else
 -- Use gettimeofday
 getPOSIXTime = do
     MkCTimeval (CLong s) (CLong us) <- getCTimeval
     return (POSIXTime (fromIntegral s) (fromIntegral us * 1000))
+clockResolution = 1E-6 -- microsecond
 
 #endif
