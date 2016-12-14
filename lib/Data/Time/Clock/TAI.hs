@@ -11,10 +11,13 @@ module Data.Time.Clock.TAI
 
     -- conversion between UTC and TAI with map
     utcDayLength,utcToTAITime,taiToUTCTime,
+
+    taiClock,
 ) where
 
 import Data.Time.LocalTime
 import Data.Time.Calendar.Days
+import Data.Time.Clock.GetTime
 import Data.Time.Clock
 import Control.DeepSeq
 import Data.Maybe
@@ -84,3 +87,9 @@ taiToUTCTime lsmap abstime = let
             day' = addDays (div' dtime len) day
         if day == day' then return (UTCTime day dtime) else stable day'
     in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
+
+rawToTAITime :: POSIXTime -> AbsoluteTime
+rawToTAITime (POSIXTime s ns) = MkAbsoluteTime $ (fromIntegral s) + (fromIntegral ns) * 1E-9
+
+taiClock :: Maybe (DiffTime,IO AbsoluteTime)
+taiClock = fmap (fmap (fmap rawToTAITime)) getTAIRawTime

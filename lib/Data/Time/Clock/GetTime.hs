@@ -58,7 +58,8 @@ instance NFData POSIXTime where
 
 
 getPOSIXTime :: IO POSIXTime
-clockResolution :: DiffTime
+getTime_resolution :: DiffTime
+getTAIRawTime :: Maybe (DiffTime,IO POSIXTime)
 
 #ifdef mingw32_HOST_OS
 -- On Windows, the equlvalent of POSIX time is "file time", defined as
@@ -73,7 +74,8 @@ getPOSIXTime = do
   where
     win32_epoch_adjust :: Word64
     win32_epoch_adjust = 116444736000000000
-clockResolution = 1E-6 -- microsecond
+getTime_resolution = 1E-6 -- microsecond
+getTAIRawTime = Nothing
 
 #elif HAVE_CLOCK_GETTIME
 -- Use hi-res clock_gettime
@@ -81,14 +83,16 @@ clockResolution = 1E-6 -- microsecond
 getPOSIXTime = do
     MkCTimespec (CTime s) (CLong ns) <- clockGetTime clock_REALTIME
     return (POSIXTime (fromIntegral s) (fromIntegral ns))
-clockResolution = case realtimeRes of
+getTime_resolution = case realtimeRes of
     MkCTimespec (CTime s) ns -> (fromIntegral s) + (fromIntegral ns) * 1E-9
+getTAIRawTime = Nothing
 
 #else
 -- Use gettimeofday
 getPOSIXTime = do
     MkCTimeval (CLong s) (CLong us) <- getCTimeval
     return (POSIXTime (fromIntegral s) (fromIntegral us * 1000))
-clockResolution = 1E-6 -- microsecond
+getTime_resolution = 1E-6 -- microsecond
+getTAIRawTime = Nothing
 
 #endif

@@ -5,7 +5,7 @@ module Data.Time.Clock
     module Data.Time.Clock.UTC,
     module Data.Time.Clock.UTCDiff,
     getCurrentTime,
-    clockResolution
+    getTime_resolution
 ) where
 
 import Data.Time.Clock.Scale
