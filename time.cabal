@@ -75,6 +75,7 @@ library
         Data.Time.Calendar.Gregorian,
         Data.Time.Calendar.JulianYearDay,
         Data.Time.Clock.Scale,
+        Data.Time.Clock.GetTime,
         Data.Time.Clock.UTC,
         Data.Time.Clock.CTimeval,
         Data.Time.Clock.CTimespec,

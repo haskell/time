@@ -11,6 +11,7 @@ import Foreign
 import Foreign.Safe
 #endif
 import Foreign.C
+import System.IO.Unsafe
 
 #include <time.h>
 
@@ -29,13 +30,46 @@ instance Storable CTimespec where
 
 foreign import ccall unsafe "time.h clock_gettime"
     clock_gettime :: #{type clockid_t} -> Ptr CTimespec -> IO CInt
+foreign import ccall unsafe "time.h clock_getres"
+    clock_getres :: #{type clockid_t} -> Ptr CTimespec -> IO CInt
 
--- | Get the current POSIX time from the system clock.
-getCTimespec :: IO CTimespec
-getCTimespec = alloca (\ptspec -> do
-    throwErrnoIfMinus1_ "clock_gettime" $
-        clock_gettime #{const CLOCK_REALTIME} ptspec
+-- | Get the resolution of the given clock.
+clockGetRes :: #{type clockid_t} -> IO (Either Errno CTimespec)
+clockGetRes clockid = alloca $ \ptspec -> do
+    rc <- clock_getres clockid ptspec
+    case rc of
+        0 -> do
+            res <- peek ptspec
+            return $ Right res
+        _ -> do
+            errno <- getErrno
+            return $ Left errno
+
+-- | Get the current time from the given clock.
+clockGetTime :: #{type clockid_t} -> IO CTimespec
+clockGetTime clockid = alloca (\ptspec -> do
+    throwErrnoIfMinus1_ "clock_gettime" $ clock_gettime clockid ptspec
     peek ptspec
     )
+
+clock_REALTIME :: #{type clockid_t}
+clock_REALTIME = #{const CLOCK_REALTIME}
+
+clock_TAI :: #{type clockid_t}
+clock_TAI = #{const 11}
+
+realtimeRes :: CTimespec
+realtimeRes = unsafePerformIO $ do
+    mres <- clockGetRes clock_REALTIME
+    case mres of
+        Left errno -> ioError (errnoToIOError "clock_getres" errno Nothing Nothing)
+        Right res -> return res
+
+clockResolution :: #{type clockid_t} -> Maybe CTimespec
+clockResolution clockid = unsafePerformIO $ do
+    mres <- clockGetRes clockid
+    case mres of
+        Left _ -> return Nothing
+        Right res -> return $ Just res
 
 #endif
