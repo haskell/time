@@ -28,6 +28,7 @@ import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
 #endif
+import Data.Ord (comparing)
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
@@ -82,13 +83,18 @@ data ZonedTime = ZonedTime {
     zonedTimeToLocalTime :: LocalTime,
     zonedTimeZone :: TimeZone
 }
+  deriving (Eq
 #if LANGUAGE_DeriveDataTypeable
 #if LANGUAGE_Rank2Types
 #if HAS_DataPico
-    deriving (Data, Typeable)
+    , Data, Typeable
 #endif
 #endif
 #endif
+    )
+
+instance Ord ZonedTime where
+  compare = comparing zonedTimeToUTC
 
 instance NFData ZonedTime where
     rnf (ZonedTime lt z) = rnf lt `seq` rnf z `seq` ()
