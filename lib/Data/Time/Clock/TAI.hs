@@ -88,8 +88,8 @@ taiToUTCTime lsmap abstime = let
         if day == day' then return (UTCTime day dtime) else stable day'
     in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
 
-rawToTAITime :: POSIXTime -> AbsoluteTime
-rawToTAITime (POSIXTime s ns) = MkAbsoluteTime $ (fromIntegral s) + (fromIntegral ns) * 1E-9
+rawToTAITime :: RawTime -> AbsoluteTime
+rawToTAITime (MkRawTime s ns) = MkAbsoluteTime $ (fromIntegral s) + (fromIntegral ns) * 1E-9
 
 taiClock :: Maybe (DiffTime,IO AbsoluteTime)
 taiClock = fmap (fmap (fmap rawToTAITime)) getTAIRawTime
