@@ -3,6 +3,9 @@
 ## [1.8]
 - Added RawTime
 
+## [1.7.0.1]
+- Fix bounds issue in .cabal file
+
 ## [1.7]
 - Data.Time.Clock.TAI: change LeapSecondTable to LeapSecondMap with Maybe type; remove parseTAIUTCDATFile
 
