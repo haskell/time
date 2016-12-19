@@ -1,14 +1,16 @@
 -- | Types and functions for UTC and UT1
 module Data.Time.Clock
 (
-    module Data.Time.Clock.Scale,
+    module Data.Time.Clock.UniversalTime,
+    module Data.Time.Clock.DiffTime,
     module Data.Time.Clock.UTC,
     module Data.Time.Clock.UTCDiff,
     getCurrentTime,
     getTime_resolution
 ) where
 
-import Data.Time.Clock.Scale
+import Data.Time.Clock.UniversalTime
+import Data.Time.Clock.DiffTime
 import Data.Time.Clock.GetTime
 import Data.Time.Clock.UTCDiff
 import Data.Time.Clock.UTC

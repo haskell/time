@@ -18,7 +18,8 @@ import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 
-import Data.Time.Clock.Scale
+import Data.Time.Clock.DiffTime
+import Data.Time.Clock.UniversalTime
 import Data.Time.Clock.UTCDiff
 import Data.Time.Clock.UTC
 import Data.Time.Clock.POSIX

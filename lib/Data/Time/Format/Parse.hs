@@ -15,8 +15,8 @@ module Data.Time.Format.Parse
     ) where
 
 import Text.Read(readMaybe)
+import Data.Time.Clock.UniversalTime
 import Data.Time.Clock.POSIX
-import Data.Time.Clock.Scale
 import Data.Time.Clock.UTC
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian

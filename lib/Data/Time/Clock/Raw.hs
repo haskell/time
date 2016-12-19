@@ -6,9 +6,9 @@ module Data.Time.Clock.Raw
     rawToUTCTime,getRawTime,getCurrentTime
 ) where
 
+import Data.Time.Clock.DiffTime
 import Data.Time.Clock.GetTime
 import Data.Time.Clock.UTC
-import Data.Time.Clock.Scale (picosecondsToDiffTime)
 import Data.Time.Calendar.Days
 import Data.Int (Int64)
 

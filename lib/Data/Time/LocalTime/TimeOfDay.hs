@@ -12,7 +12,7 @@ module Data.Time.LocalTime.TimeOfDay
 
 import Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
-import Data.Time.Clock.Scale
+import Data.Time.Clock.DiffTime
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed

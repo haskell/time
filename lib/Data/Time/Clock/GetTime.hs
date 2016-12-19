@@ -4,7 +4,7 @@ module Data.Time.Clock.GetTime where
 import Data.Int (Int64)
 import Data.Word
 import Control.DeepSeq
-import Data.Time.Clock.Scale
+import Data.Time.Clock.DiffTime
 
 #include "HsTimeConfig.h"
 
