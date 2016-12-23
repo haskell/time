@@ -4,7 +4,11 @@
 #endif
 #include "HsConfigure.h"
 -- #hide
-module Data.Time.Clock.NominalDiffTime where
+module Data.Time.Clock.NominalDiffTime
+    (
+    NominalDiffTime,
+    nominalDay,
+    ) where
 
 import Control.DeepSeq
 import Data.Time.Calendar.Days
@@ -84,5 +88,6 @@ instance RealFrac NominalDiffTime where
 "realToFrac/Pico->NominalDiffTime"       realToFrac = MkNominalDiffTime
   #-}
 
+-- | One day in 'NominalDiffTime'.
 nominalDay :: NominalDiffTime
 nominalDay = 86400

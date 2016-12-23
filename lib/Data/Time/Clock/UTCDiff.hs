@@ -2,6 +2,7 @@
 module Data.Time.Clock.UTCDiff where
 
 import Data.Time.Clock.POSIX
+import Data.Time.Clock.NominalDiffTime
 import Data.Time.Clock.UTC
 
 -- | addUTCTime a b = a + b

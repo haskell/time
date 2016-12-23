@@ -6,20 +6,11 @@ module Data.Time.Clock.POSIX
 ) where
 
 import Data.Time.Clock.GetTime
+import Data.Time.Clock.POSIXTime
 import Data.Time.Clock.UTC
 import Data.Time.Clock.Raw
 import Data.Time.Calendar.Days
 import Data.Fixed
-
--- | 86400 nominal seconds in every day
-posixDayLength :: NominalDiffTime
-posixDayLength = 86400
-
--- | POSIX time is the nominal time since 1970-01-01 00:00 UTC
---
--- To convert from a 'Foreign.C.CTime' or 'System.Posix.EpochTime', use 'realToFrac'.
---
-type POSIXTime = NominalDiffTime
 
 unixEpochDay :: Day
 unixEpochDay = ModifiedJulianDay 40587
@@ -33,9 +24,10 @@ utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
  (fromInteger (diffDays d unixEpochDay) * posixDayLength) + min posixDayLength (realToFrac t)
 
-rawTimeToPOSIXTime :: RawTime -> POSIXTime
-rawTimeToPOSIXTime (MkRawTime s ns) = (fromIntegral s) + (fromIntegral ns) * 1E-9
-
 -- | Get the current POSIX time from the system clock.
 getPOSIXTime :: IO POSIXTime
-getPOSIXTime = fmap rawTimeToPOSIXTime getRawTime
+getPOSIXTime = fmap rawToPOSIXTime getRawTime
+
+-- | Get the current 'UTCTime' from the system clock.
+getCurrentTime :: IO UTCTime
+getCurrentTime = rawToUTCTime `fmap` getRawTime

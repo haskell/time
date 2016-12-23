@@ -4,7 +4,14 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
 #include "HsConfigure.h"
 -- #hide
-module Data.Time.Clock.DiffTime where
+module Data.Time.Clock.DiffTime
+    (
+    -- * Absolute intervals
+    DiffTime,
+    secondsToDiffTime,
+    picosecondsToDiffTime,
+    diffTimeToPicoseconds,
+    ) where
 
 import Control.DeepSeq
 import Data.Ratio ((%))

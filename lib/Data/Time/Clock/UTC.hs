@@ -11,13 +11,12 @@ module Data.Time.Clock.UTC
     --
     -- If you don't care about leap seconds, use UTCTime and NominalDiffTime for your clock calculations,
     -- and you'll be fine.
-    UTCTime(..),NominalDiffTime,nominalDay
+    UTCTime(..),
 ) where
 
 import Control.DeepSeq
 import Data.Time.Calendar.Days
 import Data.Time.Clock.DiffTime
-import Data.Time.Clock.NominalDiffTime
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data

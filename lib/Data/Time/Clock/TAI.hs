@@ -1,10 +1,10 @@
-{-# OPTIONS -fno-warn-unused-imports #-}
+{-# OPTIONS -fno-warn-orphans #-}
 #include "HsConfigure.h"
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
 module Data.Time.Clock.TAI
 (
     -- TAI arithmetic
-    AbsoluteTime,taiEpoch,addAbsoluteTime,diffAbsoluteTime,
+    module Data.Time.Clock.AbsoluteTime,
 
     -- leap-second map type
     LeapSecondMap,
@@ -15,46 +15,17 @@ module Data.Time.Clock.TAI
     taiClock,
 ) where
 
+import Data.Time.Clock.AbsoluteTime
 import Data.Time.LocalTime
 import Data.Time.Calendar.Days
 import Data.Time.Clock.GetTime
+import Data.Time.Clock.Raw
 import Data.Time.Clock
-import Control.DeepSeq
 import Data.Maybe
-import Data.Typeable
 import Data.Fixed
-#if LANGUAGE_Rank2Types
-import Data.Data
-#endif
-
--- | AbsoluteTime is TAI, time as measured by a clock.
-newtype AbsoluteTime = MkAbsoluteTime DiffTime deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#endif
-#endif
-#endif
-    )
-
-instance NFData AbsoluteTime where
-    rnf (MkAbsoluteTime a) = rnf a
 
 instance Show AbsoluteTime where
     show t = show (utcToLocalTime utc (fromJust (taiToUTCTime (const (Just 0)) t))) ++ " TAI" -- ugly, but standard apparently
-
--- | The epoch of TAI, which is 1858-11-17 00:00:00 TAI.
-taiEpoch :: AbsoluteTime
-taiEpoch = MkAbsoluteTime 0
-
--- | addAbsoluteTime a b = a + b
-addAbsoluteTime :: DiffTime -> AbsoluteTime -> AbsoluteTime
-addAbsoluteTime t (MkAbsoluteTime a) = MkAbsoluteTime (a + t)
-
--- | diffAbsoluteTime a b = a - b
-diffAbsoluteTime :: AbsoluteTime -> AbsoluteTime -> DiffTime
-diffAbsoluteTime (MkAbsoluteTime a) (MkAbsoluteTime b) = a - b
 
 -- | TAI - UTC during this day.
 -- No table is provided, as any program compiled with it would become
@@ -87,9 +58,6 @@ taiToUTCTime lsmap abstime = let
             day' = addDays (div' dtime len) day
         if day == day' then return (UTCTime day dtime) else stable day'
     in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
-
-rawToTAITime :: RawTime -> AbsoluteTime
-rawToTAITime (MkRawTime s ns) = MkAbsoluteTime $ (fromIntegral s) + (fromIntegral ns) * 1E-9
 
 taiClock :: Maybe (DiffTime,IO AbsoluteTime)
 taiClock = fmap (fmap (fmap rawToTAITime)) getTAIRawTime

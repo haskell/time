@@ -1,6 +1,11 @@
 #include "HsConfigure.h"
 -- #hide
-module Data.Time.Clock.UniversalTime where
+module Data.Time.Clock.UniversalTime
+    (
+    -- * Universal Time
+    -- | Time as measured by the Earth.
+    UniversalTime(..),
+    ) where
 
 import Control.DeepSeq
 import Data.Typeable
