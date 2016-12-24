@@ -4,6 +4,7 @@ import Test.Framework
 
 import Test.AddDays
 import Test.ClipDates
+import Test.ClockConversion
 import Test.ConvertBack
 import Test.LongWeekYears
 import Test.Resolution
@@ -20,6 +21,7 @@ import Test.TestValid
 tests :: [Test]
 tests = [ addDaysTest
         , clipDates
+        , testClockConversion
         , convertBack
         , longWeekYears
         , testResolution

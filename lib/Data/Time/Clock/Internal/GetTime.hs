@@ -26,7 +26,7 @@ import Foreign.C.Types (CLong(..))
 data SystemTime = MkSystemTime
     { systemSeconds ::     {-# UNPACK #-} !Int64
     , systemNanoseconds :: {-# UNPACK #-} !Word32
-    } deriving (Eq,Ord)
+    } deriving (Eq,Ord,Show)
 
 instance NFData SystemTime where
     rnf a = a `seq` ()

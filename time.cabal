@@ -136,6 +136,7 @@ test-suite tests
     main-is: Test.hs
     other-modules:
         Test.Tests
+        Test.ClockConversion
         Test.TestTime
         Test.TestTimeRef
         Test.TestParseTime

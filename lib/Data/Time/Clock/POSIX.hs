@@ -2,7 +2,8 @@
 -- Most people won't need this module.
 module Data.Time.Clock.POSIX
 (
-    posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime
+    posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime,
+    systemToPOSIXTime,
 ) where
 
 import Data.Time.Clock.Internal.GetTime
@@ -12,9 +13,6 @@ import Data.Time.Clock.System
 import Data.Time.Calendar.Days
 import Data.Fixed
 
-unixEpochDay :: Day
-unixEpochDay = ModifiedJulianDay 40587
-
 posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
     (d,t) = divMod' i posixDayLength
@@ -23,6 +21,9 @@ posixSecondsToUTCTime i = let
 utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
  (fromInteger (diffDays d unixEpochDay) * posixDayLength) + min posixDayLength (realToFrac t)
+
+systemToPOSIXTime :: SystemTime -> POSIXTime
+systemToPOSIXTime (MkSystemTime s ns) = (fromIntegral s) + (fromIntegral ns) * 1E-9
 
 -- | Get the current POSIX time from the system clock.
 getPOSIXTime :: IO POSIXTime
