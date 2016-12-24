@@ -20,26 +20,26 @@ import Foreign.C.Types (CLong(..))
 
 --------------------------------------------------------------------------------
 
--- | 'RawTime' is time returned by system clock functions.
+-- | 'SystemTime' is time returned by system clock functions.
 -- Its semantics depends on the clock function.
--- Note that 'rawNanoseconds' of 1E9 to 2E9-1 can be used to represent leap seconds.
-data RawTime = MkRawTime
-    { rawSeconds ::     {-# UNPACK #-} !Int64
-    , rawNanoseconds :: {-# UNPACK #-} !Word32
+-- Note that 'systemNanoseconds' of 1E9 to 2E9-1 can be used to represent leap seconds.
+data SystemTime = MkSystemTime
+    { systemSeconds ::     {-# UNPACK #-} !Int64
+    , systemNanoseconds :: {-# UNPACK #-} !Word32
     } deriving (Eq,Ord)
 
-instance NFData RawTime where
+instance NFData SystemTime where
     rnf a = a `seq` ()
 
 -- | Get POSIX time, epoch start of 1970 UTC, leap-seconds ignored
-getRawTime :: IO RawTime
+getSystemTime :: IO SystemTime
 
--- | The resolution of 'getRawTime', 'getCurrentTime', 'getPOSIXTime'
+-- | The resolution of 'getSystemTime', 'getCurrentTime', 'getPOSIXTime'
 getTime_resolution :: DiffTime
 
 -- | If supported, get TAI time, epoch start of 1970 TAI, with resolution.
 -- This is supported only on UNIX systems, and only those with CLOCK_TAI available at run-time.
-getTAIRawTime :: Maybe (DiffTime,IO RawTime)
+getTAISystemTime :: Maybe (DiffTime,IO SystemTime)
 
 #ifdef mingw32_HOST_OS
 -- On Windows, the equlvalent of POSIX time is "file time", defined as
@@ -47,32 +47,32 @@ getTAIRawTime :: Maybe (DiffTime,IO RawTime)
 -- 12:00 A.M. January 1, 1601 (UTC).  We can convert this into a POSIX
 -- time by adjusting the offset to be relative to the POSIX epoch.
 
-getRawTime = do
+getSystemTime = do
     FILETIME ft <- System.Win32.Time.getSystemTimeAsFileTime
     let (s, us) = (ft - win32_epoch_adjust) `divMod` 10000000
-    return (MkRawTime (fromIntegral s) (fromIntegral us * 1000))
+    return (MkSystemTime (fromIntegral s) (fromIntegral us * 1000))
   where
     win32_epoch_adjust :: Word64
     win32_epoch_adjust = 116444736000000000
 getTime_resolution = 1E-6 -- microsecond
-getTAIRawTime = Nothing
+getTAISystemTime = Nothing
 
 #elif HAVE_CLOCK_GETTIME
 -- Use hi-res clock_gettime
 
-getRawTime = do
+getSystemTime = do
     MkCTimespec (CTime s) (CLong ns) <- clockGetTime clock_REALTIME
-    return (MkRawTime (fromIntegral s) (fromIntegral ns))
+    return (MkSystemTime (fromIntegral s) (fromIntegral ns))
 getTime_resolution = case realtimeRes of
     MkCTimespec (CTime s) ns -> (fromIntegral s) + (fromIntegral ns) * 1E-9
-getTAIRawTime = Nothing
+getTAISystemTime = Nothing
 
 #else
 -- Use gettimeofday
-getRawTime = do
+getSystemTime = do
     MkCTimeval (CLong s) (CLong us) <- getCTimeval
-    return (MkRawTime (fromIntegral s) (fromIntegral us * 1000))
+    return (MkSystemTime (fromIntegral s) (fromIntegral us * 1000))
 getTime_resolution = 1E-6 -- microsecond
-getTAIRawTime = Nothing
+getTAISystemTime = Nothing
 
 #endif

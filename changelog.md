@@ -1,7 +1,7 @@
 # Change Log
 
 ## [1.8]
-- Added RawTime
+- Added SystemTime
 
 ## [1.7.0.1]
 - Fix bounds issue in .cabal file

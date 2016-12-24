@@ -8,7 +8,7 @@ module Data.Time.Clock.POSIX
 import Data.Time.Clock.Internal.GetTime
 import Data.Time.Clock.Internal.POSIXTime
 import Data.Time.Clock.Internal.UTCTime
-import Data.Time.Clock.Raw
+import Data.Time.Clock.System
 import Data.Time.Calendar.Days
 import Data.Fixed
 
@@ -26,8 +26,8 @@ utcTimeToPOSIXSeconds (UTCTime d t) =
 
 -- | Get the current POSIX time from the system clock.
 getPOSIXTime :: IO POSIXTime
-getPOSIXTime = fmap rawToPOSIXTime getRawTime
+getPOSIXTime = fmap systemToPOSIXTime getSystemTime
 
 -- | Get the current 'UTCTime' from the system clock.
 getCurrentTime :: IO UTCTime
-getCurrentTime = rawToUTCTime `fmap` getRawTime
+getCurrentTime = systemToUTCTime `fmap` getSystemTime

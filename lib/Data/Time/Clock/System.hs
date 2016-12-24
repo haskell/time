@@ -1,9 +1,9 @@
-module Data.Time.Clock.Raw
+module Data.Time.Clock.System
 (
-    RawTime(..),
-    rawToUTCTime,getRawTime,
-    rawToTAITime,
-    rawToPOSIXTime,
+    SystemTime(..),
+    systemToUTCTime,getSystemTime,
+    systemToTAITime,
+    systemToPOSIXTime,
 ) where
 
 import Data.Time.Clock.Internal.AbsoluteTime
@@ -15,21 +15,21 @@ import Data.Time.Calendar.Days
 import Data.Int (Int64)
 
 
-rawToUTCTime :: RawTime -> UTCTime
-rawToUTCTime (MkRawTime s ns) = let
+systemToUTCTime :: SystemTime -> UTCTime
+systemToUTCTime (MkSystemTime s ns) = let
     (d, s') = s `divMod` 86400
     ps :: Int64
     ps = s' * 1000000000000 + (fromIntegral ns) * 1000
     in UTCTime (addDays (fromIntegral d) unixEpochDay) (picosecondsToDiffTime $ fromIntegral ps)
 
-rawToPOSIXTime :: RawTime -> POSIXTime
-rawToPOSIXTime (MkRawTime s ns) = (fromIntegral s) + (fromIntegral ns) * 1E-9
+systemToPOSIXTime :: SystemTime -> POSIXTime
+systemToPOSIXTime (MkSystemTime s ns) = (fromIntegral s) + (fromIntegral ns) * 1E-9
 
 unixEpochAbsolute :: AbsoluteTime
 unixEpochAbsolute = taiNominalDayStart unixEpochDay
 
-rawToTAITime :: RawTime -> AbsoluteTime
-rawToTAITime (MkRawTime s ns) = let
+systemToTAITime :: SystemTime -> AbsoluteTime
+systemToTAITime (MkSystemTime s ns) = let
     diff :: DiffTime
     diff = (fromIntegral s) + (fromIntegral ns) * 1E-9
     in addAbsoluteTime diff unixEpochAbsolute

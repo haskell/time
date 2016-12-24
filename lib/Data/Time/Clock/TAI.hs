@@ -19,7 +19,7 @@ import Data.Time.Clock.Internal.AbsoluteTime
 import Data.Time.LocalTime
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.GetTime
-import Data.Time.Clock.Raw
+import Data.Time.Clock.System
 import Data.Time.Clock
 import Data.Maybe
 import Data.Fixed
@@ -60,4 +60,4 @@ taiToUTCTime lsmap abstime = let
     in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
 
 taiClock :: Maybe (DiffTime,IO AbsoluteTime)
-taiClock = fmap (fmap (fmap rawToTAITime)) getTAIRawTime
+taiClock = fmap (fmap (fmap systemToTAITime)) getTAISystemTime

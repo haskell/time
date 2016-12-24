@@ -14,7 +14,7 @@ module Data.Time.LocalTime.TimeZone
 
 --import System.Time.Calendar.Format
 import Data.Time.Calendar.Private
-import Data.Time.Clock.Raw
+import Data.Time.Clock.System
 import Data.Time.Clock.POSIX
 import Data.Time.Clock.Internal.UTCTime
 
@@ -93,8 +93,8 @@ getTimeZoneCTime ctime = with 0 (\pdst -> with nullPtr (\pcname -> do
     ))
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
-getTimeZoneRaw :: RawTime -> IO TimeZone
-getTimeZoneRaw = getTimeZoneCTime . CTime . rawSeconds
+getTimeZoneSystem :: SystemTime -> IO TimeZone
+getTimeZoneSystem = getTimeZoneCTime . CTime . systemSeconds
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments)
 getTimeZone :: UTCTime -> IO TimeZone
@@ -102,4 +102,4 @@ getTimeZone = getTimeZoneCTime . fromInteger . floor . utcTimeToPOSIXSeconds
 
 -- | Get the current time-zone
 getCurrentTimeZone :: IO TimeZone
-getCurrentTimeZone = getRawTime >>= getTimeZoneRaw
+getCurrentTimeZone = getSystemTime >>= getTimeZoneSystem

@@ -62,7 +62,7 @@ library
         Data.Time.Calendar.Julian,
         Data.Time.Calendar.Easter,
         Data.Time.Clock,
-        Data.Time.Clock.Raw,
+        Data.Time.Clock.System,
         Data.Time.Clock.POSIX,
         Data.Time.Clock.TAI,
         Data.Time.LocalTime,
