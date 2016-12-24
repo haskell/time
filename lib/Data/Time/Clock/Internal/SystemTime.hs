@@ -1,5 +1,11 @@
 {-# LANGUAGE Trustworthy #-}
-module Data.Time.Clock.Internal.SystemTime where
+module Data.Time.Clock.Internal.SystemTime
+    (
+    SystemTime(..),
+    getSystemTime,
+    getTime_resolution,
+    getTAISystemTime,
+    ) where
 
 import Data.Int (Int64)
 import Data.Word
@@ -60,12 +66,18 @@ getTAISystemTime = Nothing
 #elif HAVE_CLOCK_GETTIME
 -- Use hi-res clock_gettime
 
-getSystemTime = do
-    MkCTimespec (CTime s) (CLong ns) <- clockGetTime clock_REALTIME
-    return (MkSystemTime (fromIntegral s) (fromIntegral ns))
-getTime_resolution = case realtimeRes of
-    MkCTimespec (CTime s) ns -> (fromIntegral s) + (fromIntegral ns) * 1E-9
-getTAISystemTime = Nothing
+timespecToSystemTime :: CTimespec -> SystemTime
+timespecToSystemTime (MkCTimespec (CTime s) (CLong ns)) = (MkSystemTime (fromIntegral s) (fromIntegral ns))
+
+timespecToDiffTime :: CTimespec -> DiffTime
+timespecToDiffTime (MkCTimespec (CTime s) ns) = (fromIntegral s) + (fromIntegral ns) * 1E-9
+
+clockGetSystemTime :: ClockID -> IO SystemTime
+clockGetSystemTime clock = fmap timespecToSystemTime $ clockGetTime clock
+
+getSystemTime = clockGetSystemTime clock_REALTIME
+getTime_resolution = timespecToDiffTime realtimeRes
+getTAISystemTime = fmap (\resolution -> (timespecToDiffTime resolution,clockGetSystemTime clock_TAI)) $ clockResolution clock_TAI
 
 #else
 -- Use gettimeofday

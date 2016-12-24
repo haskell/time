@@ -59,5 +59,6 @@ taiToUTCTime lsmap abstime = let
         if day == day' then return (UTCTime day dtime) else stable day'
     in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
 
+-- | TAI clock, if it exists. Note that it is unlikely to be set correctly, without due care and attention.
 taiClock :: Maybe (DiffTime,IO AbsoluteTime)
 taiClock = fmap (fmap (fmap systemToTAITime)) getTAISystemTime
