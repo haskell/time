@@ -23,9 +23,10 @@ import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.Private(clipValid)
-import Data.Time.LocalTime.TimeZone
-import Data.Time.LocalTime.TimeOfDay
-import Data.Time.LocalTime.LocalTime
+import Data.Time.LocalTime.Internal.TimeZone
+import Data.Time.LocalTime.Internal.TimeOfDay
+import Data.Time.LocalTime.Internal.LocalTime
+import Data.Time.LocalTime.Internal.ZonedTime
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$>),(<*>))

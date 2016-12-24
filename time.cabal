@@ -85,9 +85,10 @@ library
         Data.Time.Clock.Internal.CTimeval,
         Data.Time.Clock.Internal.CTimespec,
         Data.Time.Clock.Internal.UTCDiff,
-        Data.Time.LocalTime.TimeZone,
-        Data.Time.LocalTime.TimeOfDay,
-        Data.Time.LocalTime.LocalTime,
+        Data.Time.LocalTime.Internal.TimeZone,
+        Data.Time.LocalTime.Internal.TimeOfDay,
+        Data.Time.LocalTime.Internal.LocalTime,
+        Data.Time.LocalTime.Internal.ZonedTime,
         Data.Time.Format.Parse
         Data.Time.Format.Locale
     include-dirs: lib/include

@@ -11,7 +11,7 @@ module Data.Time.Format.Locale (
     )
 where
 
-import Data.Time.LocalTime.TimeZone
+import Data.Time.LocalTime.Internal.TimeZone
 
 
 data TimeLocale = TimeLocale {

@@ -1,7 +1,7 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
 #include "HsConfigure.h"
 -- #hide
-module Data.Time.LocalTime.TimeOfDay
+module Data.Time.LocalTime.Internal.TimeOfDay
 (
     -- * Time of day
     TimeOfDay(..),midnight,midday,makeTimeOfDayValid,
@@ -10,15 +10,16 @@ module Data.Time.LocalTime.TimeOfDay
     dayFractionToTimeOfDay,timeOfDayToDayFraction
 ) where
 
-import Data.Time.LocalTime.TimeZone
-import Data.Time.Calendar.Private
-import Data.Time.Clock.Internal.DiffTime
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
 #if LANGUAGE_Rank2Types
 import Data.Data
 #endif
+import Data.Time.Clock.Internal.DiffTime
+import Data.Time.Calendar.Private
+import Data.Time.LocalTime.Internal.TimeZone
+
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay {

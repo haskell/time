@@ -1,34 +1,30 @@
-{-# OPTIONS -fno-warn-orphans -fno-warn-unused-imports #-}
+{-# OPTIONS -fno-warn-orphans #-}
 #include "HsConfigure.h"
 
 -- #hide
-module Data.Time.LocalTime.LocalTime
+module Data.Time.LocalTime.Internal.LocalTime
 (
     -- * Local Time
     LocalTime(..),
 
     -- converting UTC and UT1 times to LocalTime
     utcToLocalTime,localTimeToUTC,ut1ToLocalTime,localTimeToUT1,
-
-    ZonedTime(..),utcToZonedTime,zonedTimeToUTC,getZonedTime,utcToLocalZonedTime
 ) where
 
-import Data.Time.LocalTime.TimeOfDay
-import Data.Time.LocalTime.TimeZone
-import Data.Time.Calendar.Days
-import Data.Time.Calendar.Gregorian
 
-import Data.Time.Clock.Internal.DiffTime
-import Data.Time.Clock.Internal.UniversalTime
-import Data.Time.Clock.Internal.UTCDiff
-import Data.Time.Clock.Internal.UTCTime
-import Data.Time.Clock.POSIX
 
 import Control.DeepSeq
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
 #endif
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Gregorian
+import Data.Time.Clock.Internal.UniversalTime
+import Data.Time.Clock.Internal.UTCTime
+import Data.Time.LocalTime.Internal.TimeOfDay
+import Data.Time.LocalTime.Internal.TimeZone
+
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
@@ -77,44 +73,3 @@ localTimeToUT1 long (LocalTime (ModifiedJulianDay localMJD) tod) = ModJulianDate
 -- orphan instance
 instance Show UniversalTime where
     show t = show (ut1ToLocalTime 0 t)
-
--- | A local time together with a TimeZone.
-data ZonedTime = ZonedTime {
-    zonedTimeToLocalTime :: LocalTime,
-    zonedTimeZone :: TimeZone
-}
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    deriving (Data, Typeable)
-#endif
-#endif
-#endif
-
-instance NFData ZonedTime where
-    rnf (ZonedTime lt z) = rnf lt `seq` rnf z `seq` ()
-
-utcToZonedTime :: TimeZone -> UTCTime -> ZonedTime
-utcToZonedTime zone time = ZonedTime (utcToLocalTime zone time) zone
-
-zonedTimeToUTC :: ZonedTime -> UTCTime
-zonedTimeToUTC (ZonedTime t zone) = localTimeToUTC zone t
-
-instance Show ZonedTime where
-    show (ZonedTime t zone) = show t ++ " " ++ show zone
-
--- orphan instance
-instance Show UTCTime where
-    show t = show (utcToZonedTime utc t)
-
-getZonedTime :: IO ZonedTime
-getZonedTime = do
-    t <- getCurrentTime
-    zone <- getTimeZone t
-    return (utcToZonedTime zone t)
-
--- |
-utcToLocalZonedTime :: UTCTime -> IO ZonedTime
-utcToLocalZonedTime t = do
-    zone <- getTimeZone t
-    return (utcToZonedTime zone t)

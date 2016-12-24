@@ -3,7 +3,7 @@
 #include "HsConfigure.h"
 
 -- #hide
-module Data.Time.LocalTime.TimeZone
+module Data.Time.LocalTime.Internal.TimeZone
 (
     -- * Time zones
     TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',minutesToTimeZone,hoursToTimeZone,utc,

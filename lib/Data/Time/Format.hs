@@ -5,23 +5,24 @@ module Data.Time.Format
     module Data.Time.Format.Parse
     ) where
 
-import Data.Time.Format.Parse
+import Data.Maybe
+import Data.Char
+import Data.Fixed
 
-import Data.Time.LocalTime.TimeZone
-import Data.Time.LocalTime.TimeOfDay
-import Data.Time.LocalTime.LocalTime
+import Data.Time.Clock.Internal.UniversalTime
+import Data.Time.Clock.Internal.UTCTime
+import Data.Time.Clock.POSIX
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
-import Data.Time.Clock.Internal.UniversalTime
-import Data.Time.Clock.Internal.UTCTime
-import Data.Time.Clock.POSIX
+import Data.Time.LocalTime.Internal.TimeZone
+import Data.Time.LocalTime.Internal.TimeOfDay
+import Data.Time.LocalTime.Internal.LocalTime
+import Data.Time.LocalTime.Internal.ZonedTime
+import Data.Time.Format.Parse
 
-import Data.Maybe
-import Data.Char
-import Data.Fixed
 
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
 class FormatTime t where
