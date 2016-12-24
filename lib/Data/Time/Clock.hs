@@ -12,7 +12,7 @@ module Data.Time.Clock
 
 import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.Clock.Internal.DiffTime
-import Data.Time.Clock.Internal.GetTime
+import Data.Time.Clock.Internal.SystemTime
 import Data.Time.Clock.Internal.UTCDiff
 import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.Clock.Internal.UTCTime

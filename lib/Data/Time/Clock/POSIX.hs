@@ -6,7 +6,6 @@ module Data.Time.Clock.POSIX
     systemToPOSIXTime,
 ) where
 
-import Data.Time.Clock.Internal.GetTime
 import Data.Time.Clock.Internal.POSIXTime
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.System

@@ -11,7 +11,7 @@ module Data.Time.Clock.System
 
 import Data.Time.Clock.Internal.AbsoluteTime
 import Data.Time.Clock.Internal.DiffTime
-import Data.Time.Clock.Internal.GetTime
+import Data.Time.Clock.Internal.SystemTime
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Calendar.Days
 import Data.Int (Int64)

@@ -1,5 +1,5 @@
 {-# LANGUAGE Trustworthy #-}
-module Data.Time.Clock.Internal.GetTime where
+module Data.Time.Clock.Internal.SystemTime where
 
 import Data.Int (Int64)
 import Data.Word

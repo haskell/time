@@ -80,7 +80,7 @@ library
         Data.Time.Clock.Internal.NominalDiffTime,
         Data.Time.Clock.Internal.POSIXTime,
         Data.Time.Clock.Internal.UniversalTime,
-        Data.Time.Clock.Internal.GetTime,
+        Data.Time.Clock.Internal.SystemTime,
         Data.Time.Clock.Internal.UTCTime,
         Data.Time.Clock.Internal.CTimeval,
         Data.Time.Clock.Internal.CTimespec,

@@ -18,7 +18,7 @@ module Data.Time.Clock.TAI
 import Data.Time.Clock.Internal.AbsoluteTime
 import Data.Time.LocalTime
 import Data.Time.Calendar.Days
-import Data.Time.Clock.Internal.GetTime
+import Data.Time.Clock.Internal.SystemTime
 import Data.Time.Clock.System
 import Data.Time.Clock
 import Data.Maybe
