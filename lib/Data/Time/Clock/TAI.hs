@@ -4,7 +4,7 @@
 module Data.Time.Clock.TAI
 (
     -- TAI arithmetic
-    module Data.Time.Clock.AbsoluteTime,
+    module Data.Time.Clock.Internal.AbsoluteTime,
 
     -- leap-second map type
     LeapSecondMap,
@@ -15,10 +15,10 @@ module Data.Time.Clock.TAI
     taiClock,
 ) where
 
-import Data.Time.Clock.AbsoluteTime
+import Data.Time.Clock.Internal.AbsoluteTime
 import Data.Time.LocalTime
 import Data.Time.Calendar.Days
-import Data.Time.Clock.GetTime
+import Data.Time.Clock.Internal.GetTime
 import Data.Time.Clock.Raw
 import Data.Time.Clock
 import Data.Maybe

@@ -15,8 +15,8 @@ import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
-import Data.Time.Clock.UniversalTime
-import Data.Time.Clock.UTC
+import Data.Time.Clock.Internal.UniversalTime
+import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
 
 import Data.Maybe

@@ -1,20 +1,20 @@
 {-# LANGUAGE Trustworthy #-}
-module Data.Time.Clock.GetTime where
+module Data.Time.Clock.Internal.GetTime where
 
 import Data.Int (Int64)
 import Data.Word
 import Control.DeepSeq
-import Data.Time.Clock.DiffTime
+import Data.Time.Clock.Internal.DiffTime
 
 #include "HsTimeConfig.h"
 
 #ifdef mingw32_HOST_OS
 import System.Win32.Time
 #elif HAVE_CLOCK_GETTIME
-import Data.Time.Clock.CTimespec
+import Data.Time.Clock.Internal.CTimespec
 import Foreign.C.Types (CTime(..), CLong(..))
 #else
-import Data.Time.Clock.CTimeval
+import Data.Time.Clock.Internal.CTimeval
 import Foreign.C.Types (CLong(..))
 #endif
 

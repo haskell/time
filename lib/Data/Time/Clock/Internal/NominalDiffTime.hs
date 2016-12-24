@@ -4,19 +4,20 @@
 #endif
 #include "HsConfigure.h"
 -- #hide
-module Data.Time.Clock.NominalDiffTime
+module Data.Time.Clock.Internal.NominalDiffTime
     (
     NominalDiffTime,
     nominalDay,
     ) where
 
-import Control.DeepSeq
-import Data.Time.Calendar.Days
-import Data.Fixed
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
 #endif
+import Data.Fixed
+import Data.Time.Calendar.Days
+import Control.DeepSeq
+
 
 -- | This is a length of time, as measured by UTC.
 -- Conversion functions will treat it as seconds.

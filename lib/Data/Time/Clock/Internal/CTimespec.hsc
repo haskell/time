@@ -1,5 +1,4 @@
--- #hide
-module Data.Time.Clock.CTimespec where
+module Data.Time.Clock.Internal.CTimespec where
 
 #include "HsTimeConfig.h"
 

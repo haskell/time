@@ -1,9 +1,9 @@
 -- #hide
-module Data.Time.Clock.UTCDiff where
+module Data.Time.Clock.Internal.UTCDiff where
 
+import Data.Time.Clock.Internal.NominalDiffTime
+import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
-import Data.Time.Clock.NominalDiffTime
-import Data.Time.Clock.UTC
 
 -- | addUTCTime a b = a + b
 addUTCTime :: NominalDiffTime -> UTCTime -> UTCTime

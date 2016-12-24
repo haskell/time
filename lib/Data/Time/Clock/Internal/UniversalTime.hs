@@ -1,17 +1,17 @@
 #include "HsConfigure.h"
--- #hide
-module Data.Time.Clock.UniversalTime
+module Data.Time.Clock.Internal.UniversalTime
     (
     -- * Universal Time
     -- | Time as measured by the Earth.
     UniversalTime(..),
     ) where
 
-import Control.DeepSeq
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
 #endif
+import Control.DeepSeq
+
 
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
 -- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.

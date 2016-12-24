@@ -6,11 +6,11 @@ module Data.Time.Clock.Raw
     rawToPOSIXTime,
 ) where
 
-import Data.Time.Clock.AbsoluteTime
-import Data.Time.Clock.DiffTime
-import Data.Time.Clock.GetTime
-import Data.Time.Clock.UTC
-import Data.Time.Clock.POSIXTime
+import Data.Time.Clock.Internal.AbsoluteTime
+import Data.Time.Clock.Internal.DiffTime
+import Data.Time.Clock.Internal.GetTime
+import Data.Time.Clock.Internal.UTCTime
+import Data.Time.Clock.Internal.POSIXTime
 import Data.Time.Calendar.Days
 import Data.Int (Int64)
 

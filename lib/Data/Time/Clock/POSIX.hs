@@ -5,9 +5,9 @@ module Data.Time.Clock.POSIX
     posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime
 ) where
 
-import Data.Time.Clock.GetTime
-import Data.Time.Clock.POSIXTime
-import Data.Time.Clock.UTC
+import Data.Time.Clock.Internal.GetTime
+import Data.Time.Clock.Internal.POSIXTime
+import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.Raw
 import Data.Time.Calendar.Days
 import Data.Fixed

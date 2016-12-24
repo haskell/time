@@ -1,6 +1,5 @@
 #include "HsConfigure.h"
--- #hide
-module Data.Time.Clock.UTC
+module Data.Time.Clock.Internal.UTCTime
 (
     -- * UTC
     -- | UTC is time as measured by a clock, corrected to keep pace with the earth by adding or removing
@@ -14,13 +13,14 @@ module Data.Time.Clock.UTC
     UTCTime(..),
 ) where
 
-import Control.DeepSeq
-import Data.Time.Calendar.Days
-import Data.Time.Clock.DiffTime
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
 #endif
+import Control.DeepSeq
+import Data.Time.Calendar.Days
+import Data.Time.Clock.Internal.DiffTime
+
 
 -- | This is the simplest representation of UTC.
 -- It consists of the day number, and a time offset from midnight.

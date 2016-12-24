@@ -4,7 +4,7 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
 #include "HsConfigure.h"
 -- #hide
-module Data.Time.Clock.DiffTime
+module Data.Time.Clock.Internal.DiffTime
     (
     -- * Absolute intervals
     DiffTime,
@@ -13,13 +13,13 @@ module Data.Time.Clock.DiffTime
     diffTimeToPicoseconds,
     ) where
 
-import Control.DeepSeq
-import Data.Ratio ((%))
-import Data.Fixed
 import Data.Typeable
 #if LANGUAGE_Rank2Types
 import Data.Data
 #endif
+import Data.Ratio ((%))
+import Data.Fixed
+import Control.DeepSeq
 
 
 -- | This is a length of time, as measured by a clock.

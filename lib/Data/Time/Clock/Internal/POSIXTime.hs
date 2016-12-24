@@ -1,6 +1,7 @@
-module Data.Time.Clock.POSIXTime where
+module Data.Time.Clock.Internal.POSIXTime where
 
-import Data.Time.Clock.NominalDiffTime
+import Data.Time.Clock.Internal.NominalDiffTime
+
 
 -- | 86400 nominal seconds in every day
 posixDayLength :: NominalDiffTime

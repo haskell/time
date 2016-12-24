@@ -16,7 +16,7 @@ module Data.Time.LocalTime.TimeZone
 import Data.Time.Calendar.Private
 import Data.Time.Clock.Raw
 import Data.Time.Clock.POSIX
-import Data.Time.Clock.UTC
+import Data.Time.Clock.Internal.UTCTime
 
 #if __GLASGOW_HASKELL__ >= 709 || __GLASGOW_HASKELL__ < 702
 import Foreign
