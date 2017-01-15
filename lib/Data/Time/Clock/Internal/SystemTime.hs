@@ -27,7 +27,7 @@ import Foreign.C.Types (CLong(..))
 --------------------------------------------------------------------------------
 
 -- | 'SystemTime' is time returned by system clock functions.
--- Its semantics depends on the clock function.
+-- Its semantics depends on the clock function, but the epoch is typically the beginning of 1970.
 -- Note that 'systemNanoseconds' of 1E9 to 2E9-1 can be used to represent leap seconds.
 data SystemTime = MkSystemTime
     { systemSeconds ::     {-# UNPACK #-} !Int64
