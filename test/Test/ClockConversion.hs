@@ -15,10 +15,10 @@ testClockConversion = testGroup "clock conversion" $ let
         ]
     in
     [
-        testPair (MkSystemTime 0 0,UTCTime unixEpochDay 0),
-        testPair (MkSystemTime 86399 0,UTCTime unixEpochDay 86399),
-        testPair (MkSystemTime 86399 999999999,UTCTime unixEpochDay 86399.999999999),
-        testPair (MkSystemTime 86399 1000000000,UTCTime unixEpochDay 86400),
-        testPair (MkSystemTime 86399 1999999999,UTCTime unixEpochDay 86400.999999999),
-        testPair (MkSystemTime 86400 0,UTCTime (succ unixEpochDay) 0)
+        testPair (MkSystemTime 0 0,UTCTime systemEpochDay 0),
+        testPair (MkSystemTime 86399 0,UTCTime systemEpochDay 86399),
+        testPair (MkSystemTime 86399 999999999,UTCTime systemEpochDay 86399.999999999),
+        testPair (MkSystemTime 86399 1000000000,UTCTime systemEpochDay 86400),
+        testPair (MkSystemTime 86399 1999999999,UTCTime systemEpochDay 86400.999999999),
+        testPair (MkSystemTime 86400 0,UTCTime (succ systemEpochDay) 0)
     ]

@@ -1,6 +1,6 @@
 module Data.Time.Clock.System
 (
-    unixEpochDay,
+    systemEpochDay,
     SystemTime(..),
     truncateSystemTimeLeapSecond,
     getSystemTime,
@@ -28,7 +28,7 @@ systemToUTCTime (MkSystemTime seconds nanoseconds) = let
     (days, timeSeconds) = seconds `divMod` 86400
 
     day :: Day
-    day = addDays (fromIntegral days) unixEpochDay
+    day = addDays (fromIntegral days) systemEpochDay
 
     timeNanoseconds :: Int64
     timeNanoseconds = timeSeconds * 1000000000 + (fromIntegral nanoseconds)
@@ -43,7 +43,7 @@ systemToUTCTime (MkSystemTime seconds nanoseconds) = let
 utcToSystemTime :: UTCTime -> SystemTime
 utcToSystemTime (UTCTime day time) = let
     days :: Int64
-    days = fromIntegral $ diffDays day unixEpochDay
+    days = fromIntegral $ diffDays day systemEpochDay
 
     timePicoseconds :: Int64
     timePicoseconds = fromIntegral $ diffTimeToPicoseconds time
@@ -60,14 +60,14 @@ utcToSystemTime (UTCTime day time) = let
 
     in MkSystemTime seconds $ fromIntegral nanoseconds
 
-unixEpochAbsolute :: AbsoluteTime
-unixEpochAbsolute = taiNominalDayStart unixEpochDay
+systemEpochAbsolute :: AbsoluteTime
+systemEpochAbsolute = taiNominalDayStart systemEpochDay
 
 systemToTAITime :: SystemTime -> AbsoluteTime
 systemToTAITime (MkSystemTime s ns) = let
     diff :: DiffTime
     diff = (fromIntegral s) + (fromIntegral ns) * 1E-9
-    in addAbsoluteTime diff unixEpochAbsolute
+    in addAbsoluteTime diff systemEpochAbsolute
 
-unixEpochDay :: Day
-unixEpochDay = ModifiedJulianDay 40587
+systemEpochDay :: Day
+systemEpochDay = ModifiedJulianDay 40587

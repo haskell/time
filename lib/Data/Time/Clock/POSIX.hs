@@ -15,11 +15,11 @@ import Data.Fixed
 posixSecondsToUTCTime :: POSIXTime -> UTCTime
 posixSecondsToUTCTime i = let
     (d,t) = divMod' i posixDayLength
- in UTCTime (addDays d unixEpochDay) (realToFrac t)
+ in UTCTime (addDays d systemEpochDay) (realToFrac t)
 
 utcTimeToPOSIXSeconds :: UTCTime -> POSIXTime
 utcTimeToPOSIXSeconds (UTCTime d t) =
- (fromInteger (diffDays d unixEpochDay) * posixDayLength) + min posixDayLength (realToFrac t)
+ (fromInteger (diffDays d systemEpochDay) * posixDayLength) + min posixDayLength (realToFrac t)
 
 systemToPOSIXTime :: SystemTime -> POSIXTime
 systemToPOSIXTime (MkSystemTime s ns) = (fromIntegral s) + (fromIntegral ns) * 1E-9
