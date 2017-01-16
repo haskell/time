@@ -12,7 +12,7 @@ main :: IO ()
 main = do
     getCurrentTime >>= print
     O.getCurrentTime >>= print
-    getPOSIXTime >>= print . posixToUTCTime
+    getPOSIXTime >>= print . posixSecondsToUTCTime
     O.getPOSIXTime >>= print . O.posixSecondsToUTCTime
     getZonedTime >>= print
     O.getZonedTime >>= print
