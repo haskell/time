@@ -1,4 +1,6 @@
+#if __GLASGOW_HASKELL__ >= 710
 {-# OPTIONS -fno-warn-trustworthy-safe #-}
+#endif
 {-# LANGUAGE Trustworthy #-}
 module Data.Time.Clock.Internal.SystemTime
     (
