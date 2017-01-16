@@ -4,6 +4,7 @@ module Main where
 import  Criterion.Main
 import  Data.Time
 import  Data.Time.Clock.POSIX
+import  Data.Time.Clock.System
 
 import qualified "time" Data.Time             as O
 import qualified "time" Data.Time.Clock.POSIX as O
@@ -22,22 +23,32 @@ main = do
     _otz <- O.getCurrentTimeZone
     oct <- O.getCurrentTime
 
-    defaultMain
-        [ bgroup "new"
-            [ bench "getCurrentTime" $ nfIO getCurrentTime
-            , bench "getPOSIXTime" $ nfIO getPOSIXTime
-            , bench "getTimeZone" $ nfIO $ getTimeZone ct
-            , bench "getCurrentTimeZone" $ nfIO getCurrentTimeZone
-            , bench "getZonedTime" $ nfIO getZonedTime
-            , bench "formatTime" $ nf (formatTime defaultTimeLocale "%a, %_d %b %Y %H:%M:%S %Z") ct
-            ]
-        ,
-          bgroup "old"
-            [ bench "getCurrentTime" $ nfIO O.getCurrentTime
-            , bench "getPOSIXTime" $ nfIO O.getPOSIXTime
-            , bench "getTimeZone" $ nfIO $ O.getTimeZone oct
-            , bench "getCurrentTimeZone" $ nfIO O.getCurrentTimeZone
-            , bench "getZonedTime" $ nfIO O.getZonedTime
-            , bench "formatTime" $ nf (O.formatTime O.defaultTimeLocale "%a, %_d %b %Y %H:%M:%S %Z") oct
+    defaultMain [
+        bgroup "getCurrentTime" [
+            bench "old" $ nfIO O.getCurrentTime,
+            bench "new" $ nfIO getCurrentTime
+            ],
+        bgroup "getPOSIXTime" [
+            bench "old" $ nfIO O.getPOSIXTime,
+            bench "new" $ nfIO getPOSIXTime
+            ],
+        bgroup "getSystemTime" [
+            bench "new" $ nfIO getSystemTime
+            ],
+        bgroup "getTimeZone" [
+            bench "old" $ nfIO $ O.getTimeZone oct,
+            bench "new" $ nfIO $ getTimeZone ct
+            ],
+        bgroup "getCurrentTimeZone" [
+            bench "old" $ nfIO O.getCurrentTimeZone,
+            bench "new" $ nfIO getCurrentTimeZone
+            ],
+        bgroup "getZonedTime" [
+            bench "old" $ nfIO O.getZonedTime,
+            bench "new" $ nfIO getZonedTime
+            ],
+        bgroup "formatTime" [
+            bench "old" $ nf (O.formatTime O.defaultTimeLocale "%a, %_d %b %Y %H:%M:%S %Z") oct,
+            bench "new" $ nf (formatTime defaultTimeLocale "%a, %_d %b %Y %H:%M:%S %Z") ct
             ]
         ]
