@@ -15,7 +15,7 @@ import Data.Time.Clock.Internal.DiffTime
 #include "HsTimeConfig.h"
 
 #ifdef mingw32_HOST_OS
-import System.Win32.Time
+import qualified System.Win32.Time as Win32
 #elif HAVE_CLOCK_GETTIME
 import Data.Time.Clock.Internal.CTimespec
 import Foreign.C.Types (CTime(..), CLong(..))
@@ -54,7 +54,7 @@ getTAISystemTime :: Maybe (DiffTime,IO SystemTime)
 -- time by adjusting the offset to be relative to the POSIX epoch.
 
 getSystemTime = do
-    FILETIME ft <- System.Win32.Time.getSystemTimeAsFileTime
+    FILETIME ft <- Win32.getSystemTimeAsFileTime
     let (s, us) = (ft - win32_epoch_adjust) `divMod` 10000000
     return (MkSystemTime (fromIntegral s) (fromIntegral us * 1000))
   where
