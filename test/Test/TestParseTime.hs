@@ -10,16 +10,17 @@ import Data.Time
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.POSIX
-import Test.QuickCheck hiding (Result,reason)
 import Test.QuickCheck.Property
-import Test.TestUtil hiding (Result)
+import Test.Tasty
+import Test.Tasty.HUnit
+import Test.Tasty.QuickCheck hiding (reason)
 
 ntest :: Int
 ntest = 1000
 
 type NamedProperty = (String, Property)
 
-testParseTime :: Test
+testParseTime :: TestTree
 testParseTime = testGroup "testParseTime"
     [
     readOtherTypesTest,
@@ -36,10 +37,10 @@ testParseTime = testGroup "testParseTime"
 yearDays :: Integer -> [Day]
 yearDays y = [(fromGregorian y 1 1) .. (fromGregorian y 12 31)]
 
-makeExhaustiveTest :: String -> [t] -> (t -> Test) -> Test
+makeExhaustiveTest :: String -> [t] -> (t -> TestTree) -> TestTree
 makeExhaustiveTest name cases f = testGroup name (fmap f cases)
 
-extests :: Test
+extests :: TestTree
 extests = testGroup "exhaustive" ([
     makeExhaustiveTest "parse %y" [0..99] parseYY,
     makeExhaustiveTest "parse %-C %y 1900s" [0,1,50,99] (parseCYY 19),
@@ -60,14 +61,14 @@ extests = testGroup "exhaustive" ([
     (makeExhaustiveTest "parse %Y %-m %e" (yearDays y) parseYearDayE)
     ]) [1,4,20,753,2000,2011,10001]))
 
-readTest :: (Eq a,Show a,Read a) => [(a,String)] -> String -> Test
+readTest :: (Eq a,Show a,Read a) => [(a,String)] -> String -> TestTree
 readTest expected target = let
     found = reads target
-    result = diff expected found
+    result = assertEqual "" expected found
     name = show target
-    in pureTest name result
+    in testCase name result
 
-readTestsParensSpaces :: forall a. (Eq a,Show a,Read a) => a -> String -> Test
+readTestsParensSpaces :: forall a. (Eq a,Show a,Read a) => a -> String -> TestTree
 readTestsParensSpaces expected target = testGroup target
     [
     readTest [(expected,"")] $ target,
@@ -81,14 +82,14 @@ readTestsParensSpaces expected target = testGroup target
     readTest [(expected," ")] $ "  (   (     "++target++"   )  ) "
     ] where
 
-readOtherTypesTest :: Test
+readOtherTypesTest :: TestTree
 readOtherTypesTest = testGroup "read other types"
     [
     readTestsParensSpaces 3 "3",
     readTestsParensSpaces "a" "\"a\""
     ]
 
-readTests :: Test
+readTests :: TestTree
 readTests = testGroup "read times"
     [
     readTestsParensSpaces testDay "1912-07-08",
@@ -102,7 +103,7 @@ readTests = testGroup "read times"
 epoch :: LocalTime
 epoch = LocalTime (fromGregorian 1970 0 0) midnight
 
-simpleFormatTests :: Test
+simpleFormatTests :: TestTree
 simpleFormatTests = testGroup "simple"
     [
     readsTest [(epoch,"")] "" "",
@@ -126,14 +127,14 @@ simpleFormatTests = testGroup "simple"
     readsTest [(epoch,"")] "%Q X" " X",
     readsTest [(epoch,"")] "%QX" "X"
     ] where
-    readsTest :: (Show a, Eq a, ParseTime a) => [(a,String)] -> String -> String -> Test
+    readsTest :: (Show a, Eq a, ParseTime a) => [(a,String)] -> String -> String -> TestTree
     readsTest expected formatStr target = let
         found = readSTime False defaultTimeLocale formatStr target
-        result = diff expected found
+        result = assertEqual "" expected found
         name = (show formatStr) ++ " of " ++ (show target)
-        in pureTest name result
+        in testCase name result
 
-spacingTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> Test
+spacingTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> TestTree
 spacingTests expected formatStr target = testGroup "particular"
     [
         parseTest False (Just expected) formatStr target,
@@ -146,7 +147,7 @@ spacingTests expected formatStr target = testGroup "particular"
         parseTest True (Just expected) (" " ++ formatStr) ("  " ++ target)
     ]
 
-particularParseTests :: Test
+particularParseTests :: TestTree
 particularParseTests = testGroup "particular"
     [
         spacingTests epoch "%Q" "",
@@ -159,21 +160,21 @@ particularParseTests = testGroup "particular"
         spacingTests (TimeZone (-480) False "PST") "%Z" "PST"
     ]
 
-badParseTests :: Test
+badParseTests :: TestTree
 badParseTests = testGroup "bad"
     [
         parseTest False (Nothing :: Maybe Day) "%Y" ""
     ]
 
-parseYMD :: Day -> Test
+parseYMD :: Day -> TestTree
 parseYMD day = case toGregorian day of
     (y,m,d) -> parseTest False (Just day) "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))
 
-parseYearDayD :: Day -> Test
+parseYearDayD :: Day -> TestTree
 parseYearDayD day = case toGregorian day of
     (y,m,d) -> parseTest False (Just day) "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))
 
-parseYearDayE :: Day -> Test
+parseYearDayE :: Day -> TestTree
 parseYearDayE day = case toGregorian day of
     (y,m,d) -> parseTest False (Just day) "%Y %-m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))
 
@@ -185,27 +186,26 @@ expectedYear i = 2000 + i
 show2 :: (Show n,Integral n) => n -> String
 show2 i = (show (div i 10)) ++ (show (mod i 10))
 
-parseYY :: Integer -> Test
+parseYY :: Integer -> TestTree
 parseYY i = parseTest False (Just (fromGregorian (expectedYear i) 1 1)) "%y" (show2 i)
 
-parseCYY :: Integer -> Integer -> Test
+parseCYY :: Integer -> Integer -> TestTree
 parseCYY c i = parseTest False (Just (fromGregorian ((c * 100) + i) 1 1)) "%-C %y" ((show c) ++ " " ++ (show2 i))
 
-parseCYY2 :: Integer -> Integer -> Test
+parseCYY2 :: Integer -> Integer -> TestTree
 parseCYY2 c i = parseTest False (Just (fromGregorian ((c * 100) + i) 1 1)) "%C %y" ((show2 c) ++ " " ++ (show2 i))
 
-parseCentury :: String -> Integer -> Test
+parseCentury :: String -> Integer -> TestTree
 parseCentury int c = parseTest False (Just (fromGregorian (c * 100) 1 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
 
-parseTest :: (Show t, Eq t, ParseTime t) => Bool -> Maybe t -> String -> String -> Test
-parseTest sp expected formatStr target =
-    let
-        found = parse sp formatStr target
-        result = diff expected found
-        name = (show formatStr) ++ " of " ++ (show target) ++ (if sp then " allowing spaces" else "")
-    in pureTest name result
+parseTest :: (Show t, Eq t, ParseTime t) => Bool -> Maybe t -> String -> String -> TestTree
+parseTest sp expected formatStr target = let
+    found = parse sp formatStr target
+    result = assertEqual "" expected found
+    name = (show formatStr) ++ " of " ++ (show target) ++ (if sp then " allowing spaces" else "")
+    in testCase name result
 {-
-readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> Test
+readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> TestTree
 readsTest (Just e) = readsTest' [(e,"")]
 readsTest Nothing = readsTest' ([] :: [(t,String)])
 -}
@@ -222,13 +222,13 @@ getMilZoneLetter h = enumAdd (h - 10) 'K'
 getMilZone :: Int -> TimeZone
 getMilZone hour = TimeZone (hour * 60) False [getMilZoneLetter hour]
 
-testParseTimeZone :: TimeZone -> Test
+testParseTimeZone :: TimeZone -> TestTree
 testParseTimeZone tz = parseTest False (Just tz) "%Z" (timeZoneName tz)
 
-defaultTimeZoneTests :: Test
+defaultTimeZoneTests :: TestTree
 defaultTimeZoneTests = testGroup "default time zones" (fmap testParseTimeZone (knownTimeZones defaultTimeLocale))
 
-militaryTimeZoneTests :: Test
+militaryTimeZoneTests :: TestTree
 militaryTimeZoneTests = testGroup "military time zones" (fmap (testParseTimeZone . getMilZone) [-12 .. 12])
 
 

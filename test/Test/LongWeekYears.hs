@@ -15,6 +15,6 @@ showLongYear year
   = unwords [ show year ++ ":"
             , (if isLeapYear year then "L" else " ") ++ (if longYear year then "*" else " ") ]
 
-longWeekYears :: Test
-longWeekYears = pureTest "longWeekYears" $
-    diff longWeekYearsRef $ unlines $ map showLongYear [1901 .. 2050]
+longWeekYears :: TestTree
+longWeekYears = testCase "longWeekYears" $
+    assertEqual "" longWeekYearsRef $ unlines $ map showLongYear [1901 .. 2050]

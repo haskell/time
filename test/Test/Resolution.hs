@@ -19,17 +19,17 @@ gcd' a b = gcd' b (mod' a b)
 gcdAll :: Real a => [a] -> a
 gcdAll = foldr gcd' 0
 
-testClockResolution :: Test
-testClockResolution = ioTest "getCurrentTime" $ do
+testClockResolution :: TestTree
+testClockResolution = testCase "getCurrentTime" $ do
     times <- repeatN 100 getCurrentTime
-    return $ assertionResult $ assertEqual "resolution" getTime_resolution $ gcdAll (fmap utctDayTime times)
+    assertEqual "resolution" getTime_resolution $ gcdAll (fmap utctDayTime times)
 
-testTAIResolution :: (DiffTime,IO AbsoluteTime) -> Test
-testTAIResolution (res,getTime) = ioTest "taiClock" $ do
+testTAIResolution :: (DiffTime,IO AbsoluteTime) -> TestTree
+testTAIResolution (res,getTime) = testCase "taiClock" $ do
     times <- repeatN 100 getTime
-    return $ assertionResult $ assertEqual "resolution" res $ gcdAll (fmap (\t -> diffAbsoluteTime t taiEpoch) times)
+    assertEqual "resolution" res $ gcdAll (fmap (\t -> diffAbsoluteTime t taiEpoch) times)
 
-testResolution :: Test
+testResolution :: TestTree
 testResolution = testGroup "resolution" $
     [
     testClockResolution

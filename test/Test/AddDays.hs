@@ -36,6 +36,6 @@ resultDays = do
     day <- days
     return ((showGregorian day) ++ " + " ++ (show increment) ++ " * " ++ aname ++ " = " ++ showGregorian (adder increment day))
 
-addDaysTest :: Test
-addDaysTest = pureTest "addDays" $
-    diff addDaysRef $ unlines resultDays
+addDaysTest :: TestTree
+addDaysTest = testCase "addDays" $
+    assertEqual "" addDaysRef $ unlines resultDays

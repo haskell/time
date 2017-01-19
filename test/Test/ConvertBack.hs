@@ -35,6 +35,6 @@ days :: [Day]
 days = [ModifiedJulianDay 50000 .. ModifiedJulianDay 50200] ++
     (fmap (\year -> (fromGregorian year 1 4)) [1980..2000])
 
-convertBack :: Test
-convertBack = pureTest "convertBack" $
-    diff "" $ concatMap (\ch -> concatMap ch days) checkers
+convertBack :: TestTree
+convertBack = testCase "convertBack" $
+    assertEqual "" "" $ concatMap (\ch -> concatMap ch days) checkers

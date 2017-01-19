@@ -101,6 +101,6 @@ testTimeOfDayToDayFraction
                , show $ f $ TimeOfDay 12 34 56.789123456
                , show $ f $ TimeOfDay 12 34 56.789123456789 ]
 
-testTime :: Test
-testTime = pureTest "testTime" $
-    diff testTimeRef $ unlines [testCal, testUTC, testUT1, testTimeOfDayToDayFraction]
+testTime :: TestTree
+testTime = testCase "testTime" $
+    assertEqual "times" testTimeRef $ unlines [testCal, testUTC, testUT1, testTimeOfDayToDayFraction]

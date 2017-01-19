@@ -22,9 +22,9 @@ days = [
     fromGregorian 2005 1 23
     ]
 
-testCalendars :: Test
-testCalendars = pureTest "testCalendars" $
-    diff testCalendarsRef $ unlines $ map (\d -> showShowers d) days
+testCalendars :: TestTree
+testCalendars = testCase "testCalendars" $
+    assertEqual "" testCalendarsRef $ unlines $ map (\d -> showShowers d) days
   where
     showShowers day =
         concatMap (\(nm,shower) -> unwords [" ==", nm, shower day]) showers

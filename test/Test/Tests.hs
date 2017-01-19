@@ -1,6 +1,6 @@
 module Test.Tests where
 
-import Test.Framework
+import Test.Tasty
 
 import Test.AddDays
 import Test.ClipDates
@@ -18,8 +18,8 @@ import Test.TestTime
 import Test.TestTimeZone
 import Test.TestValid
 
-tests :: [Test]
-tests = [ addDaysTest
+tests :: TestTree
+tests = testGroup "time" [ addDaysTest
         , clipDates
         , testClockConversion
         , convertBack

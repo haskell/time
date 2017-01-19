@@ -4,9 +4,9 @@ import Data.Time
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.Julian
-import Test.QuickCheck hiding (Result,reason)
+import Test.Tasty
+import Test.Tasty.QuickCheck hiding (reason)
 import Test.QuickCheck.Property
-import Test.TestUtil hiding (Result)
 
 
 validResult :: (Eq c,Show c,Eq t,Show t) =>
@@ -30,7 +30,7 @@ validResult valid toComponents fromComponents fromComponentsValid c = let
             Just _ -> rejected
 
 validTest :: (Arbitrary c,Eq c,Show c,Eq t,Show t) =>
-    String -> (t -> c) -> (c -> t) -> (c -> Maybe t) -> Test
+    String -> (t -> c) -> (c -> t) -> (c -> Maybe t) -> TestTree
 validTest name toComponents fromComponents fromComponentsValid = testGroup name
     [
     testProperty "valid" $ property $ validResult True toComponents fromComponents fromComponentsValid,
@@ -49,7 +49,7 @@ toMondayStartWeek day = let
     (m,d) = mondayStartWeek day
     in (y,m,d)
 
-testValid :: Test
+testValid :: TestTree
 testValid = testGroup "testValid"
     [
     validTest "Gregorian" toGregorian (\(y,m,d) -> fromGregorian y m d) (\(y,m,d) -> fromGregorianValid y m d),

@@ -1,5 +1,5 @@
 module Main where
-import Test.Framework
+import Test.Tasty
 import Test.Tests
 import Foreign.C.Types
 

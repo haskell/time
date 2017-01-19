@@ -130,9 +130,10 @@ test-suite tests
         base,
         deepseq,
         time,
-        QuickCheck >= 2.5.1,
-        test-framework >= 0.8,
-        test-framework-quickcheck2 >= 0.3,
+        QuickCheck,
+        tasty,
+        tasty-hunit,
+        tasty-quickcheck,
         unix
     main-is: Test.hs
     other-modules:

@@ -17,8 +17,8 @@ days = [ModifiedJulianDay 53000 .. ModifiedJulianDay 53014]
 showWithWDay :: Day -> String
 showWithWDay = formatTime defaultTimeLocale "%F %A"
 
-testEaster :: Test
-testEaster = pureTest "testEaster" $ let
+testEaster :: TestTree
+testEaster = testCase "testEaster" $ let
     ds = unlines $ map (\day ->
                    unwords [ showWithWDay day, "->"
                            , showWithWDay (sundayAfter day)]) days
@@ -33,4 +33,4 @@ testEaster = pureTest "testEaster" $ let
                           , showWithWDay (orthodoxEaster y)]
                   ++ "\n"
 
-    in diff testEasterRef $ ds ++ concatMap (\y -> f y ++ g y) [2000..2020]
+    in assertEqual "" testEasterRef $ ds ++ concatMap (\y -> f y ++ g y) [2000..2020]
