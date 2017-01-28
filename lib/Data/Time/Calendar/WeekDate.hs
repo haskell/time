@@ -4,6 +4,7 @@ module Data.Time.Calendar.WeekDate where
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
+import Data.Time.Calendar.Gregorian(fromGregorian)
 
 -- | convert to ISO 8601 Week Date format. First element of result is year, second week number (1-53), third day of week (1 for Monday to 7 for Sunday).
 -- Note that \"Week\" years are not quite the same as Gregorian years, as the first day of the year is always a Monday.
@@ -45,6 +46,16 @@ fromWeekDateValid y w d = do
     let
         k = toModifiedJulianDay (fromOrdinalDate y 6)
     return (ModifiedJulianDay (k - (mod k 7) + (toInteger ((w' * 7) + d')) - 10))
+
+ -- | convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
+-- Invalid week and day values will wrap-around
+fromWeekDateWrap :: Integer -> Int -> Int -> Day
+fromWeekDateWrap year week day = ModifiedJulianDay
+                                 $ (+) (week'*7 + day')
+                                 $ toModifiedJulianDay
+                                 $ fromGregorian year 01 01
+  where day' = fromIntegral day :: Integer
+        week' = fromIntegral week
 
 -- | show in ISO 8601 Week Date format as yyyy-Www-d (e.g. \"2006-W46-3\").
 showWeekDate :: Day -> String
