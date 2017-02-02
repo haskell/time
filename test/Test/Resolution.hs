@@ -3,7 +3,8 @@ module Test.Resolution(testResolution) where
 import Data.Fixed
 import Data.Time.Clock
 import Data.Time.Clock.TAI
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 
 repeatN :: Monad m => Int -> m a -> m [a]
 repeatN 0 _ = return []

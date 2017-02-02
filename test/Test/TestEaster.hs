@@ -1,12 +1,13 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module Test.TestEaster where
+module Test.TestEaster(testEaster) where
 
 import Data.Time.Calendar.Easter
 import Data.Time.Calendar
 import Data.Time.Format
 
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 import Test.TestEasterRef
 
 --

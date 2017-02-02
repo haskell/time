@@ -1,11 +1,12 @@
 {-# Language TupleSections #-}
 
-module Test.ClipDates where
+module Test.ClipDates(clipDates) where
 
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 import Test.ClipDatesRef
 
 yearAndDay :: (Integer,Int) -> String

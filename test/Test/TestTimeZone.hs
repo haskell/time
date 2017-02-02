@@ -1,10 +1,11 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module Test.TestTimeZone where
+module Test.TestTimeZone(testTimeZone) where
 
 import Data.Time
 import System.Posix.Env (putEnv)
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 
 testTimeZone :: TestTree
 testTimeZone = testCase "getTimeZone respects TZ env var" $ do

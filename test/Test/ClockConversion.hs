@@ -2,7 +2,8 @@ module Test.ClockConversion(testClockConversion) where
 
 import Data.Time.Clock
 import Data.Time.Clock.System
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 
 
 testClockConversion :: TestTree;

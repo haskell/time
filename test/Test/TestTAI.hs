@@ -2,6 +2,8 @@ module Test.TestTAI(testTAI) where
 
 import Data.Time
 import Data.Time.Clock.TAI
+import Test.Tasty
+import Test.Tasty.HUnit
 import Test.TestUtil
 
 

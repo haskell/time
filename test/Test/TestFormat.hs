@@ -1,6 +1,6 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 
-module Test.TestFormat where
+module Test.TestFormat(testFormat) where
 
 import Data.Time
 import Data.Time.Clock.POSIX
@@ -8,6 +8,8 @@ import Data.Char
 import Foreign
 import Foreign.C
 import Control.Exception;
+import Test.Tasty
+import Test.Tasty.HUnit
 import Test.TestUtil
 
 {-
@@ -84,12 +86,11 @@ unixWorkarounds "%_f" s = padN 2 ' ' s
 unixWorkarounds "%0f" s = padN 2 '0' s
 unixWorkarounds _ s = s
 
-compareFormat :: String -> (String -> String) -> String -> TimeZone -> UTCTime -> TestTree
-compareFormat testname modUnix fmt zone time = let
+compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Assertion
+compareFormat modUnix fmt zone time = let
     ctime = utcToZonedTime zone time
     haskellText = formatTime locale fmt ctime
-    in testCase (testname ++ ": " ++ (show fmt) ++ " of " ++ (show ctime)) $
-    do
+    in do
        unixText <- unixFormatTime fmt zone time
        let expectedText = unixWorkarounds fmt (modUnix unixText)
        assertEqual "" expectedText haskellText
@@ -119,23 +120,8 @@ somestrings = ["", " ", "-", "\n"]
 getBottom :: a -> IO (Maybe Control.Exception.SomeException);
 getBottom a = Control.Exception.catch (seq a (return Nothing)) (return . Just);
 
-safeString :: String -> IO String
-safeString s = do
- msx <- getBottom s
- case msx of
-  Just sx -> return (show sx)
-  Nothing -> case s of
-   (c:cc) -> do
-    mcx <- getBottom c
-    case mcx of
-     Just cx -> return (show cx)
-     Nothing -> do
-      ss <- safeString cc
-      return (c:ss)
-   [] -> return ""
-
 compareExpected :: (Eq t,Show t,ParseTime t) => String -> String -> String -> Maybe t -> TestTree
-compareExpected testname fmt str expected = testCase (testname ++ ": " ++ (show fmt) ++ " on " ++ (show str)) $ do
+compareExpected testname fmt str expected = testCase testname $ do
     let found = parseTimeM False defaultTimeLocale fmt str
     mex <- getBottom found
     case mex of
@@ -165,21 +151,18 @@ checkParse fmt str
              , compareExpected "TimeZone" fmt str (expectedParse fmt str :: Maybe TimeZone)
              , compareExpected "UTCTime" fmt str (expectedParse fmt str :: Maybe UTCTime) ]
 
-testCheckParse :: [TestTree]
-testCheckParse = concatMap (\fmt -> concatMap (\str -> checkParse fmt str) somestrings) formats
+testCheckParse :: TestTree
+testCheckParse = testGroup "checkParse" $ tgroup formats $ \fmt -> tgroup somestrings $ \str -> checkParse fmt str
 
-testCompareFormat :: [TestTree]
-testCompareFormat = concatMap (\fmt -> concatMap (\time -> fmap (\zone -> compareFormat "compare format" id fmt zone time) zones) times) formats
+testCompareFormat :: TestTree
+testCompareFormat = testGroup "compare format" $ tgroup formats $ \fmt -> tgroup times $ \time -> tgroup zones $ \zone -> compareFormat id fmt zone time
 
-testCompareHashFormat :: [TestTree]
-testCompareHashFormat = concatMap (\fmt -> concatMap (\time -> fmap (\zone -> compareFormat "compare hashformat" (fmap toLower) fmt zone time) zones) times) hashformats
-
-testFormats :: [TestTree]
-testFormats = [
-    testGroup "checkParse" testCheckParse,
-    testGroup "compare format" testCompareFormat,
-    testGroup "compare hashformat" testCompareHashFormat
-    ]
+testCompareHashFormat :: TestTree
+testCompareHashFormat = testGroup "compare hashformat" $ tgroup hashformats $ \fmt -> tgroup times $ \time -> tgroup zones $ \zone -> compareFormat (fmap toLower) fmt zone time
 
 testFormat :: TestTree
-testFormat = testGroup "testFormat" testFormats
+testFormat = testGroup "testFormat" $ [
+    testCheckParse,
+    testCompareFormat,
+    testCompareHashFormat
+    ]

@@ -1,10 +1,11 @@
-module Test.ConvertBack where
+module Test.ConvertBack(convertBack) where
 
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Julian
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 
 checkDay :: (Show t) => (Day -> t) -> (t -> Day) -> (t -> Maybe Day) -> Day -> String
 checkDay encodeDay decodeDay decodeDayValid day = let

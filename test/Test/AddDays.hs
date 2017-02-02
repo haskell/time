@@ -1,7 +1,8 @@
-module Test.AddDays where
+module Test.AddDays(addDaysTest) where
 
 import Data.Time.Calendar
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 import Test.AddDaysRef
 
 days ::[Day]

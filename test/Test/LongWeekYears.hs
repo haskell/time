@@ -1,8 +1,9 @@
-module Test.LongWeekYears where
+module Test.LongWeekYears(longWeekYears) where
 
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 import Test.LongWeekYearsRef
 
 longYear :: Integer -> Bool

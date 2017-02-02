@@ -1,9 +1,10 @@
-module Test.TestTime where
+module Test.TestTime(testTime) where
 
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time
-import Test.TestUtil
+import Test.Tasty
+import Test.Tasty.HUnit
 import Test.TestTimeRef
 
 showCal :: Integer -> String

@@ -1,7 +1,7 @@
-{-# OPTIONS -fno-warn-type-defaults -fno-warn-unused-binds -fno-warn-orphans #-}
+{-# OPTIONS -fno-warn-type-defaults -fno-warn-orphans #-}
 {-# LANGUAGE FlexibleInstances, ExistentialQuantification #-}
 
-module Test.TestParseTime where
+module Test.TestParseTime(testParseTime,test_parse_format) where
 
 import Control.Monad
 import Data.Char
@@ -14,11 +14,8 @@ import Test.QuickCheck.Property
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck hiding (reason)
+import Test.TestUtil
 
-ntest :: Int
-ntest = 1000
-
-type NamedProperty = (String, Property)
 
 testParseTime :: TestTree
 testParseTime = testGroup "testParseTime"
@@ -31,7 +28,7 @@ testParseTime = testGroup "testParseTime"
     badParseTests,
     defaultTimeZoneTests,
     militaryTimeZoneTests,
-    testGroup "properties" (fmap (\(n,prop) -> testProperty n prop) properties)
+    propertyTests
     ]
 
 yearDays :: Integer -> [Day]
@@ -309,7 +306,7 @@ compareParse :: forall a. (Eq a,Show a,ParseTime a) => a -> String -> String -> 
 compareParse expected fmt text = compareResult' (", parsing " ++ (show text)) (Just expected) (parse False fmt text)
 
 --
--- * tests for dbugging failing cases
+-- * tests for debugging failing cases
 --
 
 test_parse_format :: (FormatTime t,ParseTime t,Show t) => String -> t -> (String,String,Maybe t)
@@ -321,9 +318,6 @@ test_parse_format f t = let s = format f t in (show t, s, parse False f s `asTyp
 
 prop_read_show :: (Read a, Show a, Eq a) => a -> Result
 prop_read_show t = compareResult [(t,"")] (reads (show t))
-
-prop_read_show' :: (Read a, Show a, Eq a) => a -> Result
-prop_read_show' t = compareResult t (read (show t))
 
 --
 -- * special show functions
@@ -358,42 +352,21 @@ prop_fromSundayStartWeek d =
 -- * format and parse
 --
 
--- | Helper for defining named properties.
-prop_named :: (Arbitrary t, Show t, Testable a)
-           => String -> (FormatString s -> t -> a) -> String -> FormatString s -> NamedProperty
-prop_named n prop typeName f = (n ++ " " ++ typeName ++ " " ++ show f, property (prop f))
-
 prop_parse_format :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
 prop_parse_format (FormatString f) t = compareParse t f (format f t)
-
-prop_parse_format_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t)
-                           => String -> FormatString t -> NamedProperty
-prop_parse_format_named = prop_named "prop_parse_format" prop_parse_format
 
 -- Verify case-insensitivity with upper case.
 prop_parse_format_upper :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
 prop_parse_format_upper (FormatString f) t = compareParse t f (map toUpper $ format f t)
 
-prop_parse_format_upper_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t)
-                              => String -> FormatString t -> NamedProperty
-prop_parse_format_upper_named = prop_named "prop_parse_format_upper" prop_parse_format_upper
-
 -- Verify case-insensitivity with lower case.
 prop_parse_format_lower :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
 prop_parse_format_lower (FormatString f) t = compareParse t f (map toLower $ format f t)
-
-prop_parse_format_lower_named :: (Arbitrary t, Eq t, Show t, FormatTime t, ParseTime t)
-                              => String -> FormatString t -> NamedProperty
-prop_parse_format_lower_named = prop_named "prop_parse_format_lower" prop_parse_format_lower
 
 prop_format_parse_format :: (FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
 prop_format_parse_format (FormatString f) t = compareResult
     (Just (format f t))
     (fmap (format f) (parse False f (format f t) `asTypeOf` Just t))
-
-prop_format_parse_format_named :: (Arbitrary t, Show t, FormatTime t, ParseTime t)
-                                  => String -> FormatString t -> NamedProperty
-prop_format_parse_format_named = prop_named "prop_format_parse_format" prop_format_parse_format
 
 --
 -- * crashes in parse
@@ -416,10 +389,6 @@ prop_no_crash_bad_input fs@(FormatString f) (Input s) = property $
     case parse False f s of
       Nothing -> True
       Just t  -> t == t `asTypeOf` formatType fs
-  where
-prop_no_crash_bad_input_named :: (Eq t, ParseTime t)
-                                 => String -> FormatString t -> NamedProperty
-prop_no_crash_bad_input_named = prop_named "prop_no_crash_bad_input" prop_no_crash_bad_input
 
 --
 --
@@ -430,67 +399,72 @@ newtype FormatString a = FormatString String
 formatType :: FormatString t -> t
 formatType _ = undefined
 
-castFormatString :: FormatString a -> FormatString b
-castFormatString (FormatString f) = FormatString f
-
 instance Show (FormatString a) where
     show (FormatString f) = show f
 
-properties :: [NamedProperty]
-properties =
-    [("prop_fromMondayStartWeek", property prop_fromMondayStartWeek),
-     ("prop_fromSundayStartWeek", property prop_fromSundayStartWeek)]
- ++ [("prop_read_show Day", property (prop_read_show :: Day -> Result)),
-     ("prop_read_show TimeOfDay", property (prop_read_show :: TimeOfDay -> Result)),
-     ("prop_read_show LocalTime", property (prop_read_show :: LocalTime -> Result)),
-     ("prop_read_show TimeZone", property (prop_read_show :: TimeZone -> Result)),
-     ("prop_read_show ZonedTime", property (prop_read_show :: ZonedTime -> Result)),
-     ("prop_read_show UTCTime", property (prop_read_show :: UTCTime -> Result)),
-     ("prop_read_show UniversalTime", property (prop_read_show :: UniversalTime -> Result))]
- ++ [("prop_parse_showWeekDate", property prop_parse_showWeekDate),
-     ("prop_parse_showGregorian", property prop_parse_showGregorian),
-     ("prop_parse_showOrdinalDate", property prop_parse_showOrdinalDate)]
 
- ++ map (prop_parse_format_named "Day") dayFormats
- ++ map (prop_parse_format_named "TimeOfDay") timeOfDayFormats
- ++ map (prop_parse_format_named "LocalTime") localTimeFormats
- ++ map (prop_parse_format_named "TimeZone") timeZoneFormats
- ++ map (prop_parse_format_named "ZonedTime") zonedTimeFormats
- ++ map (prop_parse_format_named "UTCTime") utcTimeFormats
- ++ map (prop_parse_format_named "UniversalTime") universalTimeFormats
+typedTests :: (forall t. (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result) -> [TestTree]
+typedTests prop = [
+    nameTest "Day" $ tgroup dayFormats prop,
+    nameTest "TimeOfDay" $ tgroup timeOfDayFormats prop,
+    nameTest "LocalTime" $ tgroup localTimeFormats prop,
+    nameTest "TimeZone" $ tgroup timeZoneFormats prop,
+    nameTest "ZonedTime" $ tgroup zonedTimeFormats prop,
+    nameTest "UTCTime" $ tgroup utcTimeFormats prop,
+    nameTest "UniversalTime" $ tgroup universalTimeFormats prop
+    ]
 
- ++ map (prop_parse_format_upper_named "Day") dayFormats
- ++ map (prop_parse_format_upper_named "TimeOfDay") timeOfDayFormats
- ++ map (prop_parse_format_upper_named "LocalTime") localTimeFormats
- ++ map (prop_parse_format_upper_named "TimeZone") timeZoneFormats
- ++ map (prop_parse_format_upper_named "ZonedTime") zonedTimeFormats
- ++ map (prop_parse_format_upper_named "UTCTime") utcTimeFormats
- ++ map (prop_parse_format_upper_named "UniversalTime") universalTimeFormats
+formatParseFormatTests :: TestTree
+formatParseFormatTests = nameTest "format_parse_format" [
+    nameTest "Day" $ tgroup partialDayFormats prop_format_parse_format,
+    nameTest "TimeOfDay" $ tgroup partialTimeOfDayFormats prop_format_parse_format,
+    nameTest "LocalTime" $ tgroup partialLocalTimeFormats prop_format_parse_format,
+    nameTest "ZonedTime" $ tgroup partialZonedTimeFormats prop_format_parse_format,
+    nameTest "UTCTime" $ tgroup partialUTCTimeFormats prop_format_parse_format,
+    nameTest "UniversalTime" $ tgroup partialUniversalTimeFormats prop_format_parse_format
+    ]
 
- ++ map (prop_parse_format_lower_named "Day") dayFormats
- ++ map (prop_parse_format_lower_named "TimeOfDay") timeOfDayFormats
- ++ map (prop_parse_format_lower_named "LocalTime") localTimeFormats
- ++ map (prop_parse_format_lower_named "TimeZone") timeZoneFormats
- ++ map (prop_parse_format_lower_named "ZonedTime") zonedTimeFormats
- ++ map (prop_parse_format_lower_named "UTCTime") utcTimeFormats
- ++ map (prop_parse_format_lower_named "UniversalTime") universalTimeFormats
+badInputTests :: TestTree
+badInputTests = nameTest "no_crash_bad_input" [
+    nameTest "Day" $ tgroup (dayFormats ++ partialDayFormats ++ failingPartialDayFormats) prop_no_crash_bad_input,
+    nameTest "TimeOfDay" $ tgroup (timeOfDayFormats ++ partialTimeOfDayFormats) prop_no_crash_bad_input,
+    nameTest "LocalTime" $ tgroup (localTimeFormats ++ partialLocalTimeFormats) prop_no_crash_bad_input,
+    nameTest "TimeZone" $ tgroup (timeZoneFormats) prop_no_crash_bad_input,
+    nameTest "ZonedTime" $ tgroup (zonedTimeFormats ++ partialZonedTimeFormats) prop_no_crash_bad_input,
+    nameTest "UTCTime" $ tgroup (utcTimeFormats ++ partialUTCTimeFormats) prop_no_crash_bad_input,
+    nameTest "UniversalTime" $ tgroup (universalTimeFormats ++ partialUniversalTimeFormats) prop_no_crash_bad_input
+    ]
 
- ++ map (prop_format_parse_format_named "Day") partialDayFormats
- ++ map (prop_format_parse_format_named "TimeOfDay") partialTimeOfDayFormats
- ++ map (prop_format_parse_format_named "LocalTime") partialLocalTimeFormats
- ++ map (prop_format_parse_format_named "ZonedTime") partialZonedTimeFormats
- ++ map (prop_format_parse_format_named "UTCTime") partialUTCTimeFormats
- ++ map (prop_format_parse_format_named "UniversalTime") partialUniversalTimeFormats
+readShowTests :: TestTree
+readShowTests = nameTest "read_show" [
+    nameTest "Day" (prop_read_show :: Day -> Result),
+    nameTest "TimeOfDay" (prop_read_show :: TimeOfDay -> Result),
+    nameTest "LocalTime" (prop_read_show :: LocalTime -> Result),
+    nameTest "TimeZone" (prop_read_show :: TimeZone -> Result),
+    nameTest "ZonedTime" (prop_read_show :: ZonedTime -> Result),
+    nameTest "UTCTime" (prop_read_show :: UTCTime -> Result),
+    nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result)
+    ]
 
- ++ map (prop_no_crash_bad_input_named "Day") (dayFormats ++ partialDayFormats ++ failingPartialDayFormats)
- ++ map (prop_no_crash_bad_input_named "TimeOfDay") (timeOfDayFormats ++ partialTimeOfDayFormats)
- ++ map (prop_no_crash_bad_input_named "LocalTime") (localTimeFormats ++ partialLocalTimeFormats)
- ++ map (prop_no_crash_bad_input_named "TimeZone") (timeZoneFormats)
- ++ map (prop_no_crash_bad_input_named "ZonedTime") (zonedTimeFormats ++ partialZonedTimeFormats)
- ++ map (prop_no_crash_bad_input_named "UTCTime") (utcTimeFormats ++ partialUTCTimeFormats)
- ++ map (prop_no_crash_bad_input_named "UniversalTime") (universalTimeFormats ++ partialUniversalTimeFormats)
+parseShowTests :: TestTree
+parseShowTests = nameTest "parse_show" [
+    nameTest "showWeekDate" prop_parse_showWeekDate,
+    nameTest "showGregorian" prop_parse_showGregorian,
+    nameTest "showOrdinalDate" prop_parse_showOrdinalDate
+    ]
 
-
+propertyTests :: TestTree
+propertyTests = nameTest "properties" [
+    readShowTests,
+    parseShowTests,
+    nameTest "fromMondayStartWeek" prop_fromMondayStartWeek,
+    nameTest "fromSundayStartWeek" prop_fromSundayStartWeek,
+    nameTest "parse_format" $ typedTests prop_parse_format,
+    nameTest "parse_format_lower" $ typedTests prop_parse_format_lower,
+    nameTest "parse_format_upper" $ typedTests prop_parse_format_upper,
+    formatParseFormatTests,
+    badInputTests
+    ]
 
 dayFormats :: [FormatString Day]
 dayFormats = map FormatString
@@ -520,11 +494,6 @@ timeOfDayFormats = map FormatString
      "%I:%M:%S.%q %p","%I:%M:%S.%q %P","%l:%M:%S.%q %p","%r %q",
      "%I:%M:%S%Q %p","%I:%M:%S%Q %P","%l:%M:%S%Q %p","%r %Q"
     ]
-
-localTimeFormats' :: [FormatString LocalTime]
-localTimeFormats' = map FormatString $
-  concat [ [df ++ " " ++ tf, tf ++ " " ++ df] | FormatString df <- dayFormats,
-                                                   FormatString tf <- timeOfDayFormats]
 
 localTimeFormats :: [FormatString LocalTime]
 localTimeFormats = map FormatString [{-"%Q","%Q ","%QX"-}]
@@ -581,15 +550,6 @@ partialUTCTimeFormats = map FormatString
 partialUniversalTimeFormats :: [FormatString UniversalTime]
 partialUniversalTimeFormats = map FormatString
     [ ]
-
-
---
--- * Known failures
---
-
-knownFailures :: [NamedProperty]
-knownFailures =
-    map (prop_format_parse_format_named "Day") failingPartialDayFormats
 
 failingPartialDayFormats :: [FormatString Day]
 failingPartialDayFormats = map FormatString
