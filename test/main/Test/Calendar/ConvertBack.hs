@@ -1,4 +1,4 @@
-module Test.ConvertBack(convertBack) where
+module Test.Calendar.ConvertBack(convertBack) where
 
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Julian

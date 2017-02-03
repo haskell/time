@@ -1,4 +1,4 @@
-module Test.Resolution(testResolution) where
+module Test.Clock.Resolution(testResolution) where
 
 import Data.Fixed
 import Data.Time.Clock

@@ -1,4 +1,4 @@
-module Test.TestTimeRef where
+module Test.LocalTime.TimeRef where
 
 testTimeRef :: String
 testTimeRef =

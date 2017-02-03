@@ -1,4 +1,4 @@
-module Test.TestTAI(testTAI) where
+module Test.Clock.TAI(testTAI) where
 
 import Data.Time
 import Data.Time.Clock.TAI

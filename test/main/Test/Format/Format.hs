@@ -1,6 +1,6 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 
-module Test.TestFormat(testFormat) where
+module Test.Format.Format(testFormat) where
 
 import Data.Time
 import Data.Time.Clock.POSIX
@@ -19,7 +19,7 @@ import Test.TestUtil
     int isdst,int gmtoff,time_t t);
 -}
 
-foreign import ccall unsafe "TestFormatStuff.h format_time" format_time :: CString -> CSize -> CString -> CInt -> CInt -> CString -> CTime -> IO CSize
+foreign import ccall unsafe "FormatStuff.h format_time" format_time :: CString -> CSize -> CString -> CInt -> CInt -> CString -> CTime -> IO CSize
 
 withBuffer :: Int -> (CString -> IO CSize) -> IO String
 withBuffer n f = withArray (replicate n 0) (\buffer -> do

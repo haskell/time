@@ -1,10 +1,10 @@
-module Test.LongWeekYears(longWeekYears) where
+module Test.Calendar.LongWeekYears(longWeekYears) where
 
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.LongWeekYearsRef
+import Test.Calendar.LongWeekYearsRef
 
 longYear :: Integer -> Bool
 longYear year = case toWeekDate (fromGregorian year 12 31) of

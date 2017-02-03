@@ -1,9 +1,9 @@
-module Test.TestMonthDay(testMonthDay) where
+module Test.Calendar.MonthDay(testMonthDay) where
 
 import Data.Time.Calendar.MonthDay
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.TestMonthDayRef
+import Test.Calendar.MonthDayRef
 
 showCompare :: (Eq a,Show a) => a -> String -> a -> String
 showCompare a1 b a2 | a1 == a2 = (show a1) ++ " == " ++ b

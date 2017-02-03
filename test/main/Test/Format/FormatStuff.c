@@ -1,4 +1,4 @@
-#include "TestFormatStuff.h"
+#include "FormatStuff.h"
 
 size_t format_time (
     char* buffer, size_t maxsize,

@@ -1,6 +1,6 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module Test.TestEaster(testEaster) where
+module Test.Calendar.Easter(testEaster) where
 
 import Data.Time.Calendar.Easter
 import Data.Time.Calendar
@@ -8,7 +8,7 @@ import Data.Time.Format
 
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.TestEasterRef
+import Test.Calendar.EasterRef
 
 --
 

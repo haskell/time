@@ -1,4 +1,4 @@
-module Test.LongWeekYearsRef where
+module Test.Calendar.LongWeekYearsRef where
 
 longWeekYearsRef :: String
 longWeekYearsRef =

@@ -1,6 +1,6 @@
 {-# OPTIONS -Wall -Werror #-}
 
-module Test.TestTimeZone(testTimeZone) where
+module Test.LocalTime.TimeZone(testTimeZone) where
 
 import Data.Time
 import System.Posix.Env (putEnv)

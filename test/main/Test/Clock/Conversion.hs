@@ -1,4 +1,4 @@
-module Test.ClockConversion(testClockConversion) where
+module Test.Clock.Conversion(testClockConversion) where
 
 import Data.Time.Clock
 import Data.Time.Clock.System

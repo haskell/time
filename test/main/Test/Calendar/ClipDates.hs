@@ -1,13 +1,13 @@
 {-# Language TupleSections #-}
 
-module Test.ClipDates(clipDates) where
+module Test.Calendar.ClipDates(clipDates) where
 
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.ClipDatesRef
+import Test.Calendar.ClipDatesRef
 
 yearAndDay :: (Integer,Int) -> String
 yearAndDay (y,d) = (show y) ++ "-" ++ (show d) ++ " = " ++ (showOrdinalDate (fromOrdinalDate y d))

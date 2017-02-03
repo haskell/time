@@ -1,11 +1,11 @@
-module Test.TestCalendars(testCalendars) where
+module Test.Calendar.Calendars(testCalendars) where
 
 import Data.Time.Calendar.Julian
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.TestCalendarsRef
+import Test.Calendar.CalendarsRef
 
 showers :: [(String,Day -> String)]
 showers = [

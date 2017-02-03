@@ -1,7 +1,7 @@
 {-# OPTIONS -fno-warn-type-defaults -fno-warn-orphans #-}
 {-# LANGUAGE FlexibleInstances, ExistentialQuantification #-}
 
-module Test.TestParseTime(testParseTime,test_parse_format) where
+module Test.Format.ParseTime(testParseTime,test_parse_format) where
 
 import Control.Monad
 import Data.Char

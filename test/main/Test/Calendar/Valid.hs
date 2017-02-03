@@ -1,4 +1,4 @@
-module Test.TestValid(testValid) where
+module Test.Calendar.Valid(testValid) where
 
 import Data.Time
 import Data.Time.Calendar.OrdinalDate

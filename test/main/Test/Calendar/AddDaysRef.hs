@@ -1,4 +1,4 @@
-module Test.AddDaysRef where
+module Test.Calendar.AddDaysRef where
 
 addDaysRef :: String
 addDaysRef =
