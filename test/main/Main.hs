@@ -16,7 +16,6 @@ import Test.Clock.TAI
 import Test.Format.Format
 import Test.Format.ParseTime
 import Test.LocalTime.Time
-import Test.LocalTime.TimeZone
 
 
 tests :: TestTree
@@ -41,8 +40,7 @@ tests = testGroup "Time" [
         testParseTime
         ],
     testGroup "LocalTime" [
-        testTime,
-        testTimeZone
+        testTime
         ]
     ]
 

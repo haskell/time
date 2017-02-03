@@ -133,8 +133,7 @@ test-suite test-main
         QuickCheck,
         tasty,
         tasty-hunit,
-        tasty-quickcheck,
-        unix
+        tasty-quickcheck
     main-is: Main.hs
     other-modules:
         Test.TestUtil
@@ -159,4 +158,31 @@ test-suite test-main
         Test.Format.ParseTime
         Test.LocalTime.Time
         Test.LocalTime.TimeRef
+
+test-suite test-unix
+    type: exitcode-stdio-1.0
+    hs-source-dirs: test/unix
+    default-language: Haskell2010
+    default-extensions:
+        Rank2Types
+        CPP
+        DeriveDataTypeable
+        StandaloneDeriving
+        ExistentialQuantification
+        MultiParamTypeClasses
+        FlexibleInstances
+        UndecidableInstances
+        ScopedTypeVariables
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+        base,
+        deepseq,
+        time,
+        unix,
+        QuickCheck,
+        tasty,
+        tasty-hunit,
+        tasty-quickcheck
+    main-is: Main.hs
+    other-modules:
         Test.LocalTime.TimeZone
