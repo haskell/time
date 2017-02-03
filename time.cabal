@@ -160,6 +160,8 @@ test-suite test-main
         Test.LocalTime.TimeRef
 
 test-suite test-unix
+    if os(windows)
+        buildable: false
     type: exitcode-stdio-1.0
     hs-source-dirs: test/unix
     default-language: Haskell2010
