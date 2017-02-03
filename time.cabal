@@ -161,7 +161,7 @@ test-suite test-main
 
 test-suite test-unix
     if os(windows)
-        buildable: false
+        buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/unix
     default-language: Haskell2010
