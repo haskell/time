@@ -180,11 +180,12 @@ test-suite test-unix
         base,
         deepseq,
         time,
-        unix,
         QuickCheck,
         tasty,
         tasty-hunit,
         tasty-quickcheck
+    if !os(windows)
+        build-depends: unix
     main-is: Main.hs
     other-modules:
         Test.TestUtil
