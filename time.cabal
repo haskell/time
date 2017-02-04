@@ -23,8 +23,8 @@ extra-source-files:
     lib/include/HsConfigure.h
     lib/include/HsTime.h
     lib/include/HsTimeConfig.h.in
-    test/main/Test/Format/*.c
-    test/main/Test/Format/*.h
+    test/unix/Test/Format/*.c
+    test/unix/Test/Format/*.h
 extra-tmp-files:
     config.log
     config.status
@@ -125,7 +125,6 @@ test-suite test-main
         UndecidableInstances
         ScopedTypeVariables
     ghc-options: -Wall -fwarn-tabs
-    c-sources: test/main/Test/Format/FormatStuff.c
     build-depends:
         base,
         deepseq,
@@ -176,6 +175,7 @@ test-suite test-unix
         UndecidableInstances
         ScopedTypeVariables
     ghc-options: -Wall -fwarn-tabs
+    c-sources: test/unix/Test/Format/FormatStuff.c
     build-depends:
         base,
         deepseq,
@@ -187,4 +187,6 @@ test-suite test-unix
         tasty-quickcheck
     main-is: Main.hs
     other-modules:
+        Test.TestUtil
+        Test.Format.Format
         Test.LocalTime.TimeZone

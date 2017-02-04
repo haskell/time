@@ -2,11 +2,15 @@ module Main where
 
 import Foreign.C.Types
 import Test.Tasty
+import Test.Format.Format
 import Test.LocalTime.TimeZone
 
 
 tests :: TestTree
 tests = testGroup "Time" [
+    testGroup "Format" [
+        testFormat
+        ],
     testGroup "LocalTime" [
         testTimeZone
         ]
