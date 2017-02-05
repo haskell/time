@@ -1,5 +1,6 @@
-module Test.Clock.Resolution(testResolution) where
+module Test.Clock.Resolution(testResolutions) where
 
+import Control.Concurrent
 import Data.Fixed
 import Data.Time.Clock
 import Data.Time.Clock.TAI
@@ -20,21 +21,32 @@ gcd' a b = gcd' b (mod' a b)
 gcdAll :: Real a => [a] -> a
 gcdAll = foldr gcd' 0
 
-testClockResolution :: TestTree
-testClockResolution = testCase "getCurrentTime" $ do
-    times <- repeatN 100 getCurrentTime
-    assertEqual "resolution" getTime_resolution $ gcdAll (fmap utctDayTime times)
+testResolution :: (Show dt,Real dt) => String -> (at -> at -> dt) -> (dt,IO at) -> TestTree
+testResolution name timeDiff (res,getTime) = testCase name $ do
+    t0 <- getTime
+    times0 <- repeatN 100 $ do
+        threadDelay 0
+        getTime
+    times1 <- repeatN 100 $ do -- 100us
+        threadDelay 1 -- 1us
+        getTime
+    times2 <- repeatN 100 $ do -- 1ms
+        threadDelay 10 -- 10us
+        getTime
+    times3 <- repeatN 100 $ do -- 10ms
+        threadDelay 100 -- 100us
+        getTime
+    times4 <- repeatN 100 $ do -- 100ms
+        threadDelay 1000 -- 1ms
+        getTime
+    let times = fmap (\t -> timeDiff t t0) $ times0 ++ times1 ++ times2 ++ times3 ++ times4
+    assertEqual "resolution" res $ gcdAll times
 
-testTAIResolution :: (DiffTime,IO AbsoluteTime) -> TestTree
-testTAIResolution (res,getTime) = testCase "taiClock" $ do
-    times <- repeatN 100 getTime
-    assertEqual "resolution" res $ gcdAll (fmap (\t -> diffAbsoluteTime t taiEpoch) times)
-
-testResolution :: TestTree
-testResolution = testGroup "resolution" $
+testResolutions :: TestTree
+testResolutions = testGroup "resolution" $
     [
-    testClockResolution
+    testResolution "getCurrentTime" diffUTCTime (realToFrac getTime_resolution,getCurrentTime)
     ]
     ++ case taiClock of
-        Just clock -> [testTAIResolution clock]
+        Just clock -> [testResolution "taiClock" diffAbsoluteTime clock]
         Nothing -> []

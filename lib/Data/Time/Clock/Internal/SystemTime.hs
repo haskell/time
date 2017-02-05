@@ -59,11 +59,11 @@ getTAISystemTime :: Maybe (DiffTime,IO SystemTime)
 getSystemTime = do
     Win32.FILETIME ft <- Win32.getSystemTimeAsFileTime
     let (s, us) = (ft - win32_epoch_adjust) `divMod` 10000000
-    return (MkSystemTime (fromIntegral s) (fromIntegral us * 1000))
+    return (MkSystemTime (fromIntegral s) (fromIntegral us * 100))
   where
     win32_epoch_adjust :: Word64
     win32_epoch_adjust = 116444736000000000
-getTime_resolution = 1E-6 -- microsecond
+getTime_resolution = 100E-9 -- 100ns
 getTAISystemTime = Nothing
 
 #elif HAVE_CLOCK_GETTIME

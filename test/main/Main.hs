@@ -32,7 +32,7 @@ tests = testGroup "Time" [
         ],
     testGroup "Clock" [
         testClockConversion,
-        testResolution,
+        testResolutions,
         testTAI
         ],
     testGroup "Format" [
