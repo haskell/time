@@ -19,9 +19,12 @@ chars = "aAbBcCdDeFgGhHIjklmMnprRStTuUVwWxXyYzZ%"
 modifiers :: [Char]
 modifiers = "_-0^"
 
+widths :: [String]
+widths = ["","1","2","9","12"]
+
 formats :: [String]
-formats =  ["%G-W%V-%u","%U-%w","%W-%u"] ++ (fmap (\char -> '%':char:[]) chars)
- ++ (concat (fmap (\char -> fmap (\modifier -> '%':modifier:char:[]) modifiers) chars))
+formats =  ["%G-W%V-%u","%U-%w","%W-%u"] ++ (fmap (\char -> '%':[char]) chars)
+ ++ (concat $ fmap (\char -> concat $ fmap (\width -> fmap (\modifier -> "%" ++ [modifier] ++ width ++ [char]) modifiers) widths) chars)
 
 somestrings :: [String]
 somestrings = ["", " ", "-", "\n"]
