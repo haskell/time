@@ -7,9 +7,11 @@ import Data.Time.Clock.POSIX
 import Data.Char
 import Foreign
 import Foreign.C
+import Test.QuickCheck hiding (Result)
+import Test.QuickCheck.Property
 import Test.Tasty
-import Test.Tasty.HUnit
 import Test.TestUtil
+import System.IO.Unsafe
 
 {-
     size_t format_time (
@@ -26,8 +28,8 @@ withBuffer n f = withArray (replicate n 0) (\buffer -> do
             peekCStringLen (buffer,fromIntegral len)
         )
 
-unixFormatTime :: String -> TimeZone -> UTCTime -> IO String
-unixFormatTime fmt zone time = withCString fmt (\pfmt -> withCString (timeZoneName zone) (\pzonename ->
+unixFormatTime :: String -> TimeZone -> UTCTime -> String
+unixFormatTime fmt zone time = unsafePerformIO $ withCString fmt (\pfmt -> withCString (timeZoneName zone) (\pzonename ->
         withBuffer 100 (\buffer -> format_time buffer 100 pfmt
                 (if timeZoneSummerOnly zone then 1 else 0)
                 (fromIntegral (timeZoneMinutes zone * 60))
@@ -39,36 +41,18 @@ unixFormatTime fmt zone time = withCString fmt (\pfmt -> withCString (timeZoneNa
 locale :: TimeLocale
 locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
-zones :: [TimeZone]
-zones = [utc,TimeZone 87 True "Fenwickian Daylight Time"]
+zones :: Gen TimeZone
+zones = do
+    mins <- choose (-2000,2000)
+    dst <- arbitrary
+    name <- return "ZONE"
+    return $ TimeZone mins dst name
 
-baseTime0 :: UTCTime
-baseTime0 = localTimeToUTC utc (LocalTime (fromGregorian 1970 01 01) midnight)
-
-baseTime1 :: UTCTime
-baseTime1 = localTimeToUTC utc (LocalTime (fromGregorian 2000 01 01) midnight)
-
-getDay :: Integer -> UTCTime
-getDay day = addUTCTime ((fromInteger day) * nominalDay) baseTime1
-
-getYearP1 :: Integer -> UTCTime
-getYearP1 year = localTimeToUTC utc (LocalTime (fromGregorian year 01 01) midnight)
-
-getYearP2 :: Integer -> UTCTime
-getYearP2 year = localTimeToUTC utc (LocalTime (fromGregorian year 02 04) midnight)
-
-getYearP3 :: Integer -> UTCTime
-getYearP3 year = localTimeToUTC utc (LocalTime (fromGregorian year 03 04) midnight)
-
-getYearP4 :: Integer -> UTCTime
-getYearP4 year = localTimeToUTC utc (LocalTime (fromGregorian year 12 31) midnight)
-
-years :: [Integer]
-years = [999,1000,1899,1900,1901] ++ [1980..2000] ++ [9999,10000]
-
-times :: [UTCTime]
-times = [baseTime0] ++ (fmap getDay [0..23]) ++ (fmap getDay [0..100]) ++
-    (fmap getYearP1 years) ++ (fmap getYearP2 years) ++ (fmap getYearP3 years) ++ (fmap getYearP4 years)
+times :: Gen UTCTime
+times = do
+    day <- choose (-25000,75000)
+    time <- return midnight
+    return $ localTimeToUTC utc $ LocalTime (ModifiedJulianDay day) time
 
 padN :: Int -> Char -> String -> String
 padN n _ s | n <= (length s) = s
@@ -85,14 +69,13 @@ unixWorkarounds "%_f" s = padN 2 ' ' s
 unixWorkarounds "%0f" s = padN 2 '0' s
 unixWorkarounds _ s = s
 
-compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Assertion
+compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
 compareFormat modUnix fmt zone time = let
     ctime = utcToZonedTime zone time
     haskellText = formatTime locale fmt ctime
-    in do
-       unixText <- unixFormatTime fmt zone time
-       let expectedText = unixWorkarounds fmt (modUnix unixText)
-       assertEqual "" expectedText haskellText
+    unixText = unixFormatTime fmt zone time
+    expectedText = unixWorkarounds fmt (modUnix unixText)
+    in assertEqualQC "" expectedText haskellText
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
@@ -103,27 +86,37 @@ chars :: [Char]
 chars = "aAbBcCdDeFgGhHIjklmMnprRStTuUVwWxXyYzZ%"
 
 -- as found in "man strftime" on a glibc system. '#' is different, though
-modifiers :: [Char]
-modifiers = "_-0^"
+modifiers :: [String]
+modifiers = ["","_","-","0","^"]
 
 widths :: [String]
 widths = ["","1","2","9","12"]
 
 formats :: [String]
-formats =  ["%G-W%V-%u","%U-%w","%W-%u"] ++ (fmap (\char -> '%':[char]) chars)
- ++ (concat $ fmap (\char -> concat $ fmap (\width -> fmap (\modifier -> "%" ++ [modifier] ++ width ++ [char]) modifiers) widths) chars)
+formats =  ["%G-W%V-%u","%U-%w","%W-%u"]
+ ++ (do
+    char <- chars
+    width <- widths
+    modifier <- modifiers
+    return $ "%" ++ modifier ++ width ++ [char]
+    )
 
 hashformats :: [String]
-hashformats =  (fmap (\char -> '%':'#':char:[]) chars)
+hashformats = do
+    char <- chars
+    return $ "%#"++[char]
 
-testCompareFormat :: TestTree
-testCompareFormat = testGroup "compare format" $ tgroup formats $ \fmt -> tgroup times $ \time -> tgroup zones $ \zone -> compareFormat id fmt zone time
+testCompareFormat :: [TestTree]
+testCompareFormat = tgroup formats $ \fmt -> do
+    time <- times
+    zone <- zones
+    return $ compareFormat id fmt zone time
 
-testCompareHashFormat :: TestTree
-testCompareHashFormat = testGroup "compare hashformat" $ tgroup hashformats $ \fmt -> tgroup times $ \time -> tgroup zones $ \zone -> compareFormat (fmap toLower) fmt zone time
+testCompareHashFormat :: [TestTree]
+testCompareHashFormat = tgroup hashformats $ \fmt -> do
+    time <- times
+    zone <- zones
+    return $ compareFormat (fmap toLower) fmt zone time
 
 testFormat :: TestTree
-testFormat = testGroup "testFormat" $ [
-    testCompareFormat,
-    testCompareHashFormat
-    ]
+testFormat = testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat
