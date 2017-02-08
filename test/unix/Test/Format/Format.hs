@@ -69,6 +69,10 @@ unixWorkarounds "%_G" s = padN 4 ' ' s
 unixWorkarounds "%0G" s = padN 4 '0' s
 unixWorkarounds "%_f" s = padN 2 ' ' s
 unixWorkarounds "%0f" s = padN 2 '0' s
+unixWorkarounds fmt s | elem 'z' fmt = dropWhile isPadChar s where
+    isPadChar ' ' = True
+    isPadChar '0' = True
+    isPadChar _ = False
 unixWorkarounds _ s = s
 
 compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
