@@ -3,6 +3,8 @@
 ## [1.8]
 - Added SystemTime
 - Data.Time.Format: allow padding widths in specifiers for formatting (but not parsing)
+- Test: use tasty, general clean-up
+- Test: separate out UNIX-specific tests, so the others can be run on Windows
 
 ## [1.7.0.1]
 - Fix bounds issue in .cabal file
