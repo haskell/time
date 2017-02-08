@@ -45,7 +45,9 @@ zones :: Gen TimeZone
 zones = do
     mins <- choose (-2000,2000)
     dst <- arbitrary
-    name <- return "ZONE"
+    hasName <- arbitrary
+    let
+        name = if hasName then "ZONE" else ""
     return $ TimeZone mins dst name
 
 times :: Gen UTCTime
@@ -70,6 +72,7 @@ unixWorkarounds "%0f" s = padN 2 '0' s
 unixWorkarounds _ s = s
 
 compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
+compareFormat _modUnix fmt zone _time | last fmt == 'Z' && timeZoneName zone == "" = rejected
 compareFormat modUnix fmt zone time = let
     ctime = utcToZonedTime zone time
     haskellText = formatTime locale fmt ctime

@@ -48,5 +48,5 @@ fromWeekDateValid y w d = do
 
 -- | show in ISO 8601 Week Date format as yyyy-Www-d (e.g. \"2006-W46-3\").
 showWeekDate :: Day -> String
-showWeekDate date = (show4 (Just '0') y) ++ "-W" ++ (show2 (Just '0') w) ++ "-" ++ (show d) where
+showWeekDate date = (show4 y) ++ "-W" ++ (show2 w) ++ "-" ++ (show d) where
     (y,w,d) = toWeekDate date

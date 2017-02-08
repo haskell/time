@@ -57,17 +57,17 @@ minutesToTimeZone m = TimeZone m False ""
 hoursToTimeZone :: Int -> TimeZone
 hoursToTimeZone i = minutesToTimeZone (60 * i)
 
-showT :: NumericPadOption -> Int -> String
-showT opt t = show4 opt ((div t 60) * 100 + (mod t 60))
+showT :: PadOption -> Int -> String
+showT opt t = showPaddedNum opt ((div t 60) * 100 + (mod t 60))
 
 -- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like %z in formatTime), with arbitrary padding
-timeZoneOffsetString' :: NumericPadOption -> TimeZone -> String
+timeZoneOffsetString' :: PadOption -> TimeZone -> String
 timeZoneOffsetString' opt (TimeZone t _ _) | t < 0 = '-':(showT opt (negate t))
 timeZoneOffsetString' opt (TimeZone t _ _) = '+':(showT opt t)
 
 -- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like %z in formatTime)
 timeZoneOffsetString :: TimeZone -> String
-timeZoneOffsetString = timeZoneOffsetString' (Just '0')
+timeZoneOffsetString = timeZoneOffsetString' (Pad 4 '0')
 
 instance Show TimeZone where
     show zone@(TimeZone _ _ "") = timeZoneOffsetString zone

@@ -40,7 +40,7 @@ fromGregorianValid year month day = do
 
 -- | show in ISO 8601 format (yyyy-mm-dd)
 showGregorian :: Day -> String
-showGregorian date = (show4 (Just '0') y) ++ "-" ++ (show2 (Just '0') m) ++ "-" ++ (show2 (Just '0') d) where
+showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d) where
     (y,m,d) = toGregorian date
 
 -- | The number of days in a given month according to the proleptic Gregorian calendar. First argument is year, second is month.
