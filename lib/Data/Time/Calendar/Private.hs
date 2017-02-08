@@ -14,10 +14,6 @@ showPaddedNum NoPad i = show i
 showPaddedNum pad i | i < 0 = '-':(showPaddedNum pad (negate i))
 showPaddedNum pad i = showPadded pad $ show i
 
-showPaddedFixed :: HasResolution a => PadOption -> Fixed a -> String
-showPaddedFixed NoPad x = showFixed True x
-showPaddedFixed (Pad _ _) x = showFixed False x
-
 show2Fixed :: Pico -> String
 show2Fixed x | x < 10 = '0':(showFixed True x)
 show2Fixed x = showFixed True x

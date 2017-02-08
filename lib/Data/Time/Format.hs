@@ -7,6 +7,7 @@ module Data.Time.Format
 
 import Data.Maybe
 import Data.Char
+import Data.Fixed
 
 import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.Clock.Internal.UTCTime
@@ -26,8 +27,8 @@ import Data.Time.Format.Parse
 type NumericPadOption = Maybe Char
 
 -- the weird UNIX logic is here
-getPadOption :: Bool -> Int -> Char -> Maybe NumericPadOption -> Maybe Int -> PadOption
-getPadOption fdef idef cdef mnpad mi = let
+getPadOption :: Bool -> Bool -> Int -> Char -> Maybe NumericPadOption -> Maybe Int -> PadOption
+getPadOption trunc fdef idef cdef mnpad mi = let
     c = case mnpad of
         Just (Just c') -> c'
         Just Nothing -> ' '
@@ -35,7 +36,7 @@ getPadOption fdef idef cdef mnpad mi = let
     i = case mi of
         Just i' -> case mnpad of
             Just Nothing -> i'
-            _ -> max i' idef
+            _ -> if trunc then i' else max i' idef
         Nothing -> idef
     f = case mi of
         Just _ -> True
@@ -45,14 +46,14 @@ getPadOption fdef idef cdef mnpad mi = let
             Just (Just _) -> True
     in if f then Pad i c else NoPad
 
-padGeneral :: Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
-padGeneral fdef idef cdef ff locale mnpad mi = ff locale $ getPadOption fdef idef cdef mnpad mi
+padGeneral :: Bool -> Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+padGeneral trunc fdef idef cdef ff locale mnpad mi = ff locale $ getPadOption trunc fdef idef cdef mnpad mi
 
 padString :: (TimeLocale -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
-padString ff = padGeneral False 1 ' ' $ \locale pado -> showPadded pado . ff locale
+padString ff = padGeneral False False 1 ' ' $ \locale pado -> showPadded pado . ff locale
 
 padNum :: (Show i,Ord i,Num i) => Bool -> Int -> Char -> (t -> i) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
-padNum fdef idef cdef ff = padGeneral fdef idef cdef $ \_ pado -> showPaddedNum pado . ff
+padNum fdef idef cdef ff = padGeneral False fdef idef cdef $ \_ pado -> showPaddedNum pado . ff
 
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
 class FormatTime t where
@@ -168,10 +169,6 @@ formatChar c = case formatCharacter c of
 --
 -- [@%j@] day of year, 0-padded to three chars, @001@ - @366@
 --
--- [@%G@] year for Week Date format, no padding. Note @%0G@ and @%_G@ pad to four chars
---
--- [@%g@] year of century for Week Date format, 0-padded to two chars, @00@ - @99@
---
 -- [@%f@] century for Week Date format, no padding. Note @%0f@ and @%_f@ pad to two chars
 --
 -- [@%V@] week of year for Week Date format, 0-padded to two chars, @01@ - @53@
@@ -238,6 +235,16 @@ todAMPM locale day = let
 tod12Hour :: TimeOfDay -> Int
 tod12Hour day = (mod (todHour day - 1) 12) + 1
 
+showPaddedFixedFraction :: HasResolution a => PadOption -> Fixed a -> String
+showPaddedFixedFraction pado x = let
+    digits = dropWhile (=='.') $ dropWhile (/='.') $ showFixed True x
+    n = length digits
+    in case pado of
+        NoPad -> digits
+        Pad i c -> if i < n
+            then take i digits
+            else digits ++ replicate (i - n) c
+
 instance FormatTime TimeOfDay where
     -- Aggregate
     formatCharacter 'R' = Just $ padString $ \locale -> formatTime locale "%H:%M"
@@ -256,8 +263,8 @@ instance FormatTime TimeOfDay where
     formatCharacter 'M' = Just $ padNum True  2 '0' todMin
     -- Second
     formatCharacter 'S' = Just $ padNum True  2 '0' $ (truncate . todSec :: TimeOfDay -> Int)
-    formatCharacter 'q' = Just $ padGeneral True 12 '0' $ \_ pado -> drop 1 . dropWhile (/='.') . showPaddedFixed pado . todSec
-    formatCharacter 'Q' = Just $ padGeneral False 1 '0' $ \_ pado -> dropWhile (/='.') . showPaddedFixed pado . todSec
+    formatCharacter 'q' = Just $ padGeneral True True 12 '0' $ \_ pado -> showPaddedFixedFraction pado . todSec
+    formatCharacter 'Q' = Just $ padGeneral True False 12 '0' $ \_ pado -> ('.':) . showPaddedFixedFraction pado . todSec
 
     -- Default
     formatCharacter _   = Nothing
@@ -272,10 +279,10 @@ instance FormatTime ZonedTime where
             Nothing -> Nothing
 
 instance FormatTime TimeZone where
-    formatCharacter 'z' = Just $ padGeneral True  4 '0' $ \_ pado -> showPadded pado . timeZoneOffsetString' pado
+    formatCharacter 'z' = Just $ padGeneral False True  4 '0' $ \_ pado -> showPadded pado . timeZoneOffsetString' pado
     formatCharacter 'Z' = Just $ \locale mnpo mi z -> let
         n = timeZoneName z
-        in if null n then timeZoneOffsetString' (getPadOption True 4 '0' mnpo mi) z else padString (\_ -> timeZoneName) locale mnpo mi z
+        in if null n then timeZoneOffsetString' (getPadOption False True 4 '0' mnpo mi) z else padString (\_ -> timeZoneName) locale mnpo mi z
     formatCharacter _ = Nothing
 
 instance FormatTime Day where

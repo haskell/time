@@ -5,11 +5,13 @@ module Test.Format.Format(testFormat) where
 import Data.Time
 import Data.Time.Clock.POSIX
 import Data.Char
+import Data.Fixed
 import Foreign
 import Foreign.C
 import Test.QuickCheck hiding (Result)
 import Test.QuickCheck.Property
 import Test.Tasty
+import Test.Tasty.HUnit
 import Test.TestUtil
 import System.IO.Unsafe
 
@@ -125,5 +127,64 @@ testCompareHashFormat = tgroup hashformats $ \fmt -> do
     zone <- zones
     return $ compareFormat (fmap toLower) fmt zone time
 
+formatUnitTest :: String -> Pico -> String -> TestTree
+formatUnitTest fmt sec expected = nameTest (show fmt) $ let
+    tod = TimeOfDay 0 0 (1 + sec)
+    found = formatTime locale fmt tod
+    in assertEqual "" expected found
+
+testQs :: [TestTree]
+testQs = [
+    formatUnitTest "%q" 0 "000000000000",
+    formatUnitTest "%q" 0.37 "370000000000",
+    formatUnitTest "%0q" 0 "000000000000",
+    formatUnitTest "%0q" 0.37 "370000000000",
+    formatUnitTest "%_q" 0 "            ",
+    formatUnitTest "%_q" 0.37 "37          ",
+    formatUnitTest "%-q" 0 "",
+    formatUnitTest "%-q" 0.37 "37",
+    formatUnitTest "%1q" 0 "0",
+    formatUnitTest "%1q" 0.37 "3",
+    formatUnitTest "%01q" 0 "0",
+    formatUnitTest "%01q" 0.37 "3",
+    formatUnitTest "%_1q" 0 " ",
+    formatUnitTest "%_1q" 0.37 "3",
+    formatUnitTest "%-1q" 0 " ",
+    formatUnitTest "%-1q" 0.37 "3",
+    formatUnitTest "%5q" 0 "00000",
+    formatUnitTest "%5q" 0.37 "37000",
+    formatUnitTest "%05q" 0 "00000",
+    formatUnitTest "%05q" 0.37 "37000",
+    formatUnitTest "%_5q" 0 "     ",
+    formatUnitTest "%_5q" 0.37 "37   ",
+    formatUnitTest "%-5q" 0 "     ",
+    formatUnitTest "%-5q" 0.37 "37   ",
+
+    formatUnitTest "%Q" 0 ".",
+    formatUnitTest "%Q" 0.37 ".37",
+    formatUnitTest "%0Q" 0 ".000000000000",
+    formatUnitTest "%0Q" 0.37 ".370000000000",
+    formatUnitTest "%_Q" 0 ".            ",
+    formatUnitTest "%_Q" 0.37 ".37          ",
+    formatUnitTest "%-Q" 0 ".",
+    formatUnitTest "%-Q" 0.37 ".37",
+    formatUnitTest "%1Q" 0 ".0",
+    formatUnitTest "%1Q" 0.37 ".3",
+    formatUnitTest "%01Q" 0 ".0",
+    formatUnitTest "%01Q" 0.37 ".3",
+    formatUnitTest "%_1Q" 0 ". ",
+    formatUnitTest "%_1Q" 0.37 ".3",
+    formatUnitTest "%-1Q" 0 ". ",
+    formatUnitTest "%-1Q" 0.37 ".3",
+    formatUnitTest "%5Q" 0 ".00000",
+    formatUnitTest "%5Q" 0.37 ".37000",
+    formatUnitTest "%05Q" 0 ".00000",
+    formatUnitTest "%05Q" 0.37 ".37000",
+    formatUnitTest "%_5Q" 0 ".     ",
+    formatUnitTest "%_5Q" 0.37 ".37   ",
+    formatUnitTest "%-5Q" 0 ".     ",
+    formatUnitTest "%-5Q" 0.37 ".37   "
+    ]
+
 testFormat :: TestTree
-testFormat = testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat
+testFormat = testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat ++ testQs
