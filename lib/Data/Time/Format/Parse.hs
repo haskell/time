@@ -76,7 +76,7 @@ class ParseTime t where
 
 #if LANGUAGE_Rank2Types
 -- | Parses a time value given a format string.
--- Supports the same %-codes as 'formatTime', including @%-@, @%_@ and @%0@ modifiers.
+-- Supports the same %-codes as 'formatTime', including @%-@, @%_@ and @%0@ modifiers, however padding widths are not supported.
 -- Case is not significant.
 -- Some variations in the input are accepted:
 --

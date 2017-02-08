@@ -2,6 +2,7 @@
 
 ## [1.8]
 - Added SystemTime
+- Data.Time.Format: allow padding widths in specifiers for formatting (but not parsing)
 
 ## [1.7.0.1]
 - Fix bounds issue in .cabal file

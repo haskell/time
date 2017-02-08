@@ -54,7 +54,6 @@ padString ff = padGeneral False 1 ' ' $ \locale pado -> showPadded pado . ff loc
 padNum :: (Show i,Ord i,Num i) => Bool -> Int -> Char -> (t -> i) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
 padNum fdef idef cdef ff = padGeneral fdef idef cdef $ \_ pado -> showPaddedNum pado . ff
 
-
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
 class FormatTime t where
     formatCharacter :: Char -> Maybe (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
@@ -88,6 +87,12 @@ formatChar c = case formatCharacter c of
 -- [@%^z@] convert to upper case
 --
 -- [@%#z@] convert to lower case (consistently, unlike glibc)
+--
+-- Width digits can also be used after any modifiers and before the letter (here marked as @z@), for example:
+--
+-- [@%4z@] pad to 4 characters (with default padding character)
+--
+-- [@%_12z@] pad with spaces to 12 characters
 --
 -- For 'TimeZone' (and 'ZonedTime' and 'UTCTime'):
 --
