@@ -40,7 +40,8 @@ data SystemTime = MkSystemTime
 instance NFData SystemTime where
     rnf a = a `seq` ()
 
--- | Get POSIX time, epoch start of 1970 UTC, leap-seconds ignored
+-- | Get the system time, epoch start of 1970 UTC, leap-seconds ignored.
+-- 'getSystemTime' is typically much faster than 'getCurrentTime'.
 getSystemTime :: IO SystemTime
 
 -- | The resolution of 'getSystemTime', 'getCurrentTime', 'getPOSIXTime'

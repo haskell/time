@@ -69,15 +69,10 @@ formatChar c = case formatCharacter c of
 
 -- | Substitute various time-related information for each %-code in the string, as per 'formatCharacter'.
 --
--- For all types (note these three are done here, not by 'formatCharacter'):
+-- The general form is @%\<modifier\>\<width\>\<specifier\>@, where @\<modifier\>@ and @\<width\>@ are optional.
 --
--- [@%%@] @%@
---
--- [@%t@] tab
---
--- [@%n@] newline
---
--- glibc-style modifiers can be used before the letter (here marked as @z@):
+-- == @\<modifier\>@
+-- glibc-style modifiers can be used before the specifier (here marked as @z@):
 --
 -- [@%-z@] no padding
 --
@@ -89,22 +84,36 @@ formatChar c = case formatCharacter c of
 --
 -- [@%#z@] convert to lower case (consistently, unlike glibc)
 --
--- Width digits can also be used after any modifiers and before the letter (here marked as @z@), for example:
+-- == @\<width\>@
+-- Width digits can also be used after any modifiers and before the specifier (here marked as @z@), for example:
 --
 -- [@%4z@] pad to 4 characters (with default padding character)
 --
 -- [@%_12z@] pad with spaces to 12 characters
 --
+-- == @\<specifier\>@
+--
+-- For all types (note these three are done by 'formatTime', not by 'formatCharacter'):
+--
+-- [@%%@] @%@
+--
+-- [@%t@] tab
+--
+-- [@%n@] newline
+--
+-- === 'TimeZone'
 -- For 'TimeZone' (and 'ZonedTime' and 'UTCTime'):
 --
 -- [@%z@] timezone offset in the format @-HHMM@.
 --
 -- [@%Z@] timezone name
 --
+-- === 'LocalTime'
 -- For 'LocalTime' (and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%c@] as 'dateTimeFmt' @locale@ (e.g. @%a %b %e %H:%M:%S %Z %Y@)
 --
+-- === 'TimeOfDay'
 -- For 'TimeOfDay' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%R@] same as @%H:%M@
@@ -136,6 +145,7 @@ formatChar c = case formatCharacter c of
 -- [@%Q@] decimal point and fraction of second, up to 12 second decimals, without trailing zeros.
 -- For a whole number of seconds, @%Q@ produces the empty string.
 --
+-- === 'UTCTime' and 'ZonedTime'
 -- For 'UTCTime' and 'ZonedTime':
 --
 -- [@%s@] number of whole seconds since the Unix epoch. For times before
@@ -143,6 +153,7 @@ formatChar c = case formatCharacter c of
 -- the decimals are positive, not negative. For example, 0.9 seconds
 -- before the Unix epoch is formatted as @-1.1@ with @%s%Q@.
 --
+-- === 'Day'
 -- For 'Day' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%D@] same as @%m\/%d\/%y@
