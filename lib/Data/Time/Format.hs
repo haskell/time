@@ -290,10 +290,10 @@ instance FormatTime ZonedTime where
             Nothing -> Nothing
 
 instance FormatTime TimeZone where
-    formatCharacter 'z' = Just $ padGeneral False True  4 '0' $ \_ pado -> showPadded pado . timeZoneOffsetString' pado
+    formatCharacter 'z' = Just $ padGeneral False True  4 '0' $ \_ pado -> showPadded pado . timeZoneOffsetString'' pado
     formatCharacter 'Z' = Just $ \locale mnpo mi z -> let
         n = timeZoneName z
-        in if null n then timeZoneOffsetString' (getPadOption False True 4 '0' mnpo mi) z else padString (\_ -> timeZoneName) locale mnpo mi z
+        in if null n then timeZoneOffsetString'' (getPadOption False True 4 '0' mnpo mi) z else padString (\_ -> timeZoneName) locale mnpo mi z
     formatCharacter _ = Nothing
 
 instance FormatTime Day where

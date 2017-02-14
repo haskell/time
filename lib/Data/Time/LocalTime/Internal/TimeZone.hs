@@ -6,7 +6,7 @@
 module Data.Time.LocalTime.Internal.TimeZone
 (
     -- * Time zones
-    TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',minutesToTimeZone,hoursToTimeZone,utc,
+    TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',timeZoneOffsetString'',minutesToTimeZone,hoursToTimeZone,utc,
 
     -- getting the locale time zone
     getTimeZone,getCurrentTimeZone
@@ -60,14 +60,18 @@ hoursToTimeZone i = minutesToTimeZone (60 * i)
 showT :: PadOption -> Int -> String
 showT opt t = showPaddedNum opt ((div t 60) * 100 + (mod t 60))
 
+timeZoneOffsetString'' :: PadOption -> TimeZone -> String
+timeZoneOffsetString'' opt (TimeZone t _ _) | t < 0 = '-':(showT opt (negate t))
+timeZoneOffsetString'' opt (TimeZone t _ _) = '+':(showT opt t)
+
 -- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like @%z@ in formatTime), with arbitrary padding.
-timeZoneOffsetString' :: PadOption -> TimeZone -> String
-timeZoneOffsetString' opt (TimeZone t _ _) | t < 0 = '-':(showT opt (negate t))
-timeZoneOffsetString' opt (TimeZone t _ _) = '+':(showT opt t)
+timeZoneOffsetString' :: Maybe Char -> TimeZone -> String
+timeZoneOffsetString' Nothing = timeZoneOffsetString'' NoPad
+timeZoneOffsetString' (Just c) = timeZoneOffsetString'' $ Pad 4 c
 
 -- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like @%z@ in formatTime).
 timeZoneOffsetString :: TimeZone -> String
-timeZoneOffsetString = timeZoneOffsetString' (Pad 4 '0')
+timeZoneOffsetString = timeZoneOffsetString'' (Pad 4 '0')
 
 instance Show TimeZone where
     show zone@(TimeZone _ _ "") = timeZoneOffsetString zone
