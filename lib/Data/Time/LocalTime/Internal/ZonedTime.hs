@@ -19,7 +19,7 @@ import Data.Time.LocalTime.Internal.TimeZone
 import Data.Time.LocalTime.Internal.LocalTime
 
 
--- | A local time together with a TimeZone.
+-- | A local time together with a time zone.
 data ZonedTime = ZonedTime {
     zonedTimeToLocalTime :: LocalTime,
     zonedTimeZone :: TimeZone

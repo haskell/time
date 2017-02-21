@@ -20,27 +20,27 @@ import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
--- | convert to proleptic Gregorian calendar. First element of result is year, second month number (1-12), third day (1-31).
+-- | Convert to proleptic Gregorian calendar. First element of result is year, second month number (1-12), third day (1-31).
 toGregorian :: Day -> (Integer,Int,Int)
 toGregorian date = (year,month,day) where
     (year,yd) = toOrdinalDate date
     (month,day) = dayOfYearToMonthAndDay (isLeapYear year) yd
 
--- | convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- | Convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
 -- Invalid values will be clipped to the correct range, month first, then day.
 fromGregorian :: Integer -> Int -> Int -> Day
 fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isLeapYear year) month day)
 
--- | convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- | Convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
 -- Invalid values will return Nothing
 fromGregorianValid :: Integer -> Int -> Int -> Maybe Day
 fromGregorianValid year month day = do
     doy <- monthAndDayToDayOfYearValid (isLeapYear year) month day
     fromOrdinalDateValid year doy
 
--- | show in ISO 8601 format (yyyy-mm-dd)
+-- | Show in ISO 8601 format (yyyy-mm-dd)
 showGregorian :: Day -> String
-showGregorian date = (show4 (Just '0') y) ++ "-" ++ (show2 (Just '0') m) ++ "-" ++ (show2 (Just '0') d) where
+showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d) where
     (y,m,d) = toGregorian date
 
 -- | The number of days in a given month according to the proleptic Gregorian calendar. First argument is year, second is month.

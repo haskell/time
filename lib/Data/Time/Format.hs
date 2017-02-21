@@ -24,29 +24,55 @@ import Data.Time.LocalTime.Internal.ZonedTime
 import Data.Time.Format.Parse
 
 
+type NumericPadOption = Maybe Char
+
+-- the weird UNIX logic is here
+getPadOption :: Bool -> Bool -> Int -> Char -> Maybe NumericPadOption -> Maybe Int -> PadOption
+getPadOption trunc fdef idef cdef mnpad mi = let
+    c = case mnpad of
+        Just (Just c') -> c'
+        Just Nothing -> ' '
+        _ -> cdef
+    i = case mi of
+        Just i' -> case mnpad of
+            Just Nothing -> i'
+            _ -> if trunc then i' else max i' idef
+        Nothing -> idef
+    f = case mi of
+        Just _ -> True
+        Nothing -> case mnpad of
+            Nothing -> fdef
+            Just Nothing -> False
+            Just (Just _) -> True
+    in if f then Pad i c else NoPad
+
+padGeneral :: Bool -> Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+padGeneral trunc fdef idef cdef ff locale mnpad mi = ff locale $ getPadOption trunc fdef idef cdef mnpad mi
+
+padString :: (TimeLocale -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+padString ff = padGeneral False False 1 ' ' $ \locale pado -> showPadded pado . ff locale
+
+padNum :: (Show i,Ord i,Num i) => Bool -> Int -> Char -> (t -> i) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+padNum fdef idef cdef ff = padGeneral False fdef idef cdef $ \_ pado -> showPaddedNum pado . ff
+
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
 class FormatTime t where
-    formatCharacter :: Char -> Maybe (TimeLocale -> Maybe NumericPadOption -> t -> String)
+    formatCharacter :: Char -> Maybe (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
 
-formatChar :: (FormatTime t) => Char -> TimeLocale -> Maybe NumericPadOption -> t -> String
-formatChar '%' _ _ _ = "%"
-formatChar 't' _ _ _ = "\t"
-formatChar 'n' _ _ _ = "\n"
-formatChar c locale mpado t = case (formatCharacter c) of
-    Just f -> f locale mpado t
-    _ -> ""
+formatChar :: (FormatTime t) => Char -> TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String
+formatChar '%' = padString $ \_ _ -> "%"
+formatChar 't' = padString $ \_ _ -> "\t"
+formatChar 'n' = padString $ \_ _ -> "\n"
+formatChar c = case formatCharacter c of
+    Just f -> f
+    _ -> \_ _ _ _ -> ""
 
 -- | Substitute various time-related information for each %-code in the string, as per 'formatCharacter'.
 --
--- For all types (note these three are done here, not by 'formatCharacter'):
+-- The general form is @%\<modifier\>\<width\>\<specifier\>@, where @\<modifier\>@ and @\<width\>@ are optional.
 --
--- [@%%@] @%@
---
--- [@%t@] tab
---
--- [@%n@] newline
---
--- glibc-style modifiers can be used before the letter (here marked as @z@):
+-- == @\<modifier\>@
+-- glibc-style modifiers can be used before the specifier (here marked as @z@):
 --
 -- [@%-z@] no padding
 --
@@ -58,16 +84,36 @@ formatChar c locale mpado t = case (formatCharacter c) of
 --
 -- [@%#z@] convert to lower case (consistently, unlike glibc)
 --
+-- == @\<width\>@
+-- Width digits can also be used after any modifiers and before the specifier (here marked as @z@), for example:
+--
+-- [@%4z@] pad to 4 characters (with default padding character)
+--
+-- [@%_12z@] pad with spaces to 12 characters
+--
+-- == @\<specifier\>@
+--
+-- For all types (note these three are done by 'formatTime', not by 'formatCharacter'):
+--
+-- [@%%@] @%@
+--
+-- [@%t@] tab
+--
+-- [@%n@] newline
+--
+-- === 'TimeZone'
 -- For 'TimeZone' (and 'ZonedTime' and 'UTCTime'):
 --
 -- [@%z@] timezone offset in the format @-HHMM@.
 --
 -- [@%Z@] timezone name
 --
+-- === 'LocalTime'
 -- For 'LocalTime' (and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%c@] as 'dateTimeFmt' @locale@ (e.g. @%a %b %e %H:%M:%S %Z %Y@)
 --
+-- === 'TimeOfDay'
 -- For 'TimeOfDay' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%R@] same as @%H:%M@
@@ -99,6 +145,7 @@ formatChar c locale mpado t = case (formatCharacter c) of
 -- [@%Q@] decimal point and fraction of second, up to 12 second decimals, without trailing zeros.
 -- For a whole number of seconds, @%Q@ produces the empty string.
 --
+-- === 'UTCTime' and 'ZonedTime'
 -- For 'UTCTime' and 'ZonedTime':
 --
 -- [@%s@] number of whole seconds since the Unix epoch. For times before
@@ -106,6 +153,7 @@ formatChar c locale mpado t = case (formatCharacter c) of
 -- the decimals are positive, not negative. For example, 0.9 seconds
 -- before the Unix epoch is formatted as @-1.1@ with @%s%Q@.
 --
+-- === 'Day'
 -- For 'Day' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%D@] same as @%m\/%d\/%y@
@@ -132,10 +180,6 @@ formatChar c locale mpado t = case (formatCharacter c) of
 --
 -- [@%j@] day of year, 0-padded to three chars, @001@ - @366@
 --
--- [@%G@] year for Week Date format, no padding. Note @%0G@ and @%_G@ pad to four chars
---
--- [@%g@] year of century for Week Date format, 0-padded to two chars, @00@ - @99@
---
 -- [@%f@] century for Week Date format, no padding. Note @%0f@ and @%_f@ pad to two chars
 --
 -- [@%V@] week of year for Week Date format, 0-padded to two chars, @01@ - @53@
@@ -153,103 +197,146 @@ formatChar c locale mpado t = case (formatCharacter c) of
 -- [@%W@] week of year where weeks start on Monday (as 'mondayStartWeek'), 0-padded to two chars, @00@ - @53@
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
 formatTime _ [] _ = ""
-formatTime locale ('%':'_':c:cs) t = (formatChar c locale (Just (Just ' ')) t) ++ (formatTime locale cs t)
-formatTime locale ('%':'-':c:cs) t = (formatChar c locale (Just Nothing) t) ++ (formatTime locale cs t)
-formatTime locale ('%':'0':c:cs) t = (formatChar c locale (Just (Just '0')) t) ++ (formatTime locale cs t)
-formatTime locale ('%':'^':c:cs) t = (fmap toUpper (formatChar c locale Nothing t)) ++ (formatTime locale cs t)
-formatTime locale ('%':'#':c:cs) t = (fmap toLower (formatChar c locale Nothing t)) ++ (formatTime locale cs t)
-formatTime locale ('%':c:cs) t = (formatChar c locale Nothing t) ++ (formatTime locale cs t)
+formatTime locale ('%':cs) t = case formatTime1 locale cs t of
+    Just result -> result
+    Nothing -> '%':(formatTime locale cs t)
 formatTime locale (c:cs) t = c:(formatTime locale cs t)
 
+formatTime1 :: (FormatTime t) => TimeLocale -> String -> t -> Maybe String
+formatTime1 locale ('_':cs) t = formatTime2 locale id (Just (Just ' ')) cs t
+formatTime1 locale ('-':cs) t = formatTime2 locale id (Just Nothing) cs t
+formatTime1 locale ('0':cs) t = formatTime2 locale id (Just (Just '0')) cs t
+formatTime1 locale ('^':cs) t = formatTime2 locale (fmap toUpper) Nothing cs t
+formatTime1 locale ('#':cs) t = formatTime2 locale (fmap toLower) Nothing cs t
+formatTime1 locale cs t = formatTime2 locale id Nothing cs t
+
+getDigit :: Char -> Maybe Int
+getDigit c | c < '0' = Nothing
+getDigit c | c > '9' = Nothing
+getDigit c = Just $ (ord c) - (ord '0')
+
+pullNumber :: Maybe Int -> String -> (Maybe Int,String)
+pullNumber mx [] = (mx,[])
+pullNumber mx s@(c:cs) = case getDigit c of
+    Just i -> pullNumber (Just $ (fromMaybe 0 mx)*10+i) cs
+    Nothing -> (mx,s)
+
+formatTime2 :: (FormatTime t) => TimeLocale -> (String -> String) -> Maybe NumericPadOption -> String -> t -> Maybe String
+formatTime2 locale recase mpad cs t = let
+    (mwidth,rest) = pullNumber Nothing cs
+    in formatTime3 locale recase mpad mwidth rest t
+
+formatTime3 :: (FormatTime t) => TimeLocale -> (String -> String) -> Maybe NumericPadOption -> Maybe Int -> String -> t -> Maybe String
+formatTime3 locale recase mpad mwidth (c:cs) t = Just $ (recase (formatChar c locale mpad mwidth t)) ++ (formatTime locale cs t)
+formatTime3 _locale _recase _mpad _mwidth [] _t = Nothing
+
 instance FormatTime LocalTime where
-    formatCharacter 'c' = Just (\locale _ -> formatTime locale (dateTimeFmt locale))
-    formatCharacter c = case (formatCharacter c) of
-        Just f -> Just (\locale mpado dt -> f locale mpado (localDay dt))
-        Nothing -> case (formatCharacter c) of
-            Just f -> Just (\locale mpado dt -> f locale mpado (localTimeOfDay dt))
+    formatCharacter 'c' = Just $ \locale _ _ -> formatTime locale (dateTimeFmt locale)
+    formatCharacter c = case formatCharacter c of
+        Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (localDay dt)
+        Nothing -> case formatCharacter c of
+            Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (localTimeOfDay dt)
             Nothing -> Nothing
+
+todAMPM :: TimeLocale -> TimeOfDay -> String
+todAMPM locale day = let
+    (am,pm) = amPm locale
+    in if (todHour day) < 12 then am else pm
+
+tod12Hour :: TimeOfDay -> Int
+tod12Hour day = (mod (todHour day - 1) 12) + 1
+
+showPaddedFixedFraction :: HasResolution a => PadOption -> Fixed a -> String
+showPaddedFixedFraction pado x = let
+    digits = dropWhile (=='.') $ dropWhile (/='.') $ showFixed True x
+    n = length digits
+    in case pado of
+        NoPad -> digits
+        Pad i c -> if i < n
+            then take i digits
+            else digits ++ replicate (i - n) c
 
 instance FormatTime TimeOfDay where
     -- Aggregate
-    formatCharacter 'R' = Just (\locale _ -> formatTime locale "%H:%M")
-    formatCharacter 'T' = Just (\locale _ -> formatTime locale "%H:%M:%S")
-    formatCharacter 'X' = Just (\locale _ -> formatTime locale (timeFmt locale))
-    formatCharacter 'r' = Just (\locale _ -> formatTime locale (time12Fmt locale))
+    formatCharacter 'R' = Just $ padString $ \locale -> formatTime locale "%H:%M"
+    formatCharacter 'T' = Just $ padString $ \locale -> formatTime locale "%H:%M:%S"
+    formatCharacter 'X' = Just $ padString $ \locale -> formatTime locale (timeFmt locale)
+    formatCharacter 'r' = Just $ padString $ \locale -> formatTime locale (time12Fmt locale)
     -- AM/PM
-    formatCharacter 'P' = Just (\locale _ day -> map toLower ((if (todHour day) < 12 then fst else snd) (amPm locale)))
-    formatCharacter 'p' = Just (\locale _ day -> (if (todHour day) < 12 then fst else snd) (amPm locale))
+    formatCharacter 'P' = Just $ padString $ \locale -> map toLower . todAMPM locale
+    formatCharacter 'p' = Just $ padString $ \locale -> todAMPM locale
     -- Hour
-    formatCharacter 'H' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . todHour)
-    formatCharacter 'I' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . (\h -> (mod (h - 1) 12) + 1) . todHour)
-    formatCharacter 'k' = Just (\_ opt -> (show2 (fromMaybe (Just ' ') opt)) . todHour)
-    formatCharacter 'l' = Just (\_ opt -> (show2 (fromMaybe (Just ' ') opt)) . (\h -> (mod (h - 1) 12) + 1) . todHour)
+    formatCharacter 'H' = Just $ padNum True  2 '0' todHour
+    formatCharacter 'I' = Just $ padNum True  2 '0' tod12Hour
+    formatCharacter 'k' = Just $ padNum True  2 ' ' todHour
+    formatCharacter 'l' = Just $ padNum True  2 ' ' tod12Hour
     -- Minute
-    formatCharacter 'M' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . todMin)
+    formatCharacter 'M' = Just $ padNum True  2 '0' todMin
     -- Second
-    formatCharacter 'S' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt) :: Int -> String) . truncate . todSec)
-    formatCharacter 'q' = Just (\_ _ -> drop 1 . dropWhile (/='.') . showFixed False . todSec)
-    formatCharacter 'Q' = Just (\_ _ -> dropWhile (/='.') . showFixed True . todSec)
+    formatCharacter 'S' = Just $ padNum True  2 '0' $ (truncate . todSec :: TimeOfDay -> Int)
+    formatCharacter 'q' = Just $ padGeneral True True 12 '0' $ \_ pado -> showPaddedFixedFraction pado . todSec
+    formatCharacter 'Q' = Just $ padGeneral True False 12 '0' $ \_ pado -> ('.':) . showPaddedFixedFraction pado . todSec
 
     -- Default
     formatCharacter _   = Nothing
 
 instance FormatTime ZonedTime where
-    formatCharacter 'c' = Just (\locale _ -> formatTime locale (dateTimeFmt locale))
-    formatCharacter 's' = Just (\_ _ zt -> show (floor (utcTimeToPOSIXSeconds (zonedTimeToUTC zt)) :: Integer))
-    formatCharacter c = case (formatCharacter c) of
-        Just f -> Just (\locale mpado dt -> f locale mpado (zonedTimeToLocalTime dt))
-        Nothing -> case (formatCharacter c) of
-            Just f -> Just (\locale mpado dt -> f locale mpado (zonedTimeZone dt))
+    formatCharacter 'c' = Just $ padString $ \locale -> formatTime locale (dateTimeFmt locale)
+    formatCharacter 's' = Just $ padNum True  1 '0' $ (floor . utcTimeToPOSIXSeconds . zonedTimeToUTC :: ZonedTime -> Integer)
+    formatCharacter c = case formatCharacter c of
+        Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (zonedTimeToLocalTime dt)
+        Nothing -> case formatCharacter c of
+            Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (zonedTimeZone dt)
             Nothing -> Nothing
 
 instance FormatTime TimeZone where
-    formatCharacter 'z' = Just (\_ opt -> timeZoneOffsetString' (fromMaybe (Just '0') opt))
-    formatCharacter 'Z' =
-            Just (\_ opt z -> let n = timeZoneName z
-                           in if null n then timeZoneOffsetString' (fromMaybe (Just '0') opt) z else n)
+    formatCharacter 'z' = Just $ padGeneral False True  4 '0' $ \_ pado -> showPadded pado . timeZoneOffsetString'' pado
+    formatCharacter 'Z' = Just $ \locale mnpo mi z -> let
+        n = timeZoneName z
+        in if null n then timeZoneOffsetString'' (getPadOption False True 4 '0' mnpo mi) z else padString (\_ -> timeZoneName) locale mnpo mi z
     formatCharacter _ = Nothing
 
 instance FormatTime Day where
     -- Aggregate
-    formatCharacter 'D' = Just (\locale _ -> formatTime locale "%m/%d/%y")
-    formatCharacter 'F' = Just (\locale _ -> formatTime locale "%Y-%m-%d")
-    formatCharacter 'x' = Just (\locale _ -> formatTime locale (dateFmt locale))
+    formatCharacter 'D' = Just $ padString $ \locale -> formatTime locale "%m/%d/%y"
+    formatCharacter 'F' = Just $ padString $ \locale -> formatTime locale "%Y-%m-%d"
+    formatCharacter 'x' = Just $ padString $ \locale -> formatTime locale (dateFmt locale)
 
     -- Year Count
-    formatCharacter 'Y' = Just (\_ opt -> (show4 (fromMaybe Nothing opt)) . fst . toOrdinalDate)
-    formatCharacter 'y' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . mod100 . fst . toOrdinalDate)
-    formatCharacter 'C' = Just (\_ opt -> (show2 (fromMaybe Nothing opt)) . div100 . fst . toOrdinalDate)
+    formatCharacter 'Y' = Just $ padNum False 4 '0' $          fst . toOrdinalDate
+    formatCharacter 'y' = Just $ padNum True  2 '0' $ mod100 . fst . toOrdinalDate
+    formatCharacter 'C' = Just $ padNum False 2 '0' $ div100 . fst . toOrdinalDate
     -- Month of Year
-    formatCharacter 'B' = Just (\locale _ -> fst . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
-    formatCharacter 'b' = Just (\locale _ -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
-    formatCharacter 'h' = Just (\locale _ -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian)
-    formatCharacter 'm' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . (\(_,m,_) -> m) . toGregorian)
+    formatCharacter 'B' = Just $ padString $ \locale -> fst . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian
+    formatCharacter 'b' = Just $ padString $ \locale -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian
+    formatCharacter 'h' = Just $ padString $ \locale -> snd . (\(_,m,_) -> (months locale) !! (m - 1)) . toGregorian
+    formatCharacter 'm' = Just $ padNum True  2 '0' $ (\(_,m,_) -> m) . toGregorian
     -- Day of Month
-    formatCharacter 'd' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . (\(_,_,d) -> d) . toGregorian)
-    formatCharacter 'e' = Just (\_ opt -> (show2 (fromMaybe (Just ' ') opt)) . (\(_,_,d) -> d) . toGregorian)
+    formatCharacter 'd' = Just $ padNum True  2 '0' $ (\(_,_,d) -> d) . toGregorian
+    formatCharacter 'e' = Just $ padNum True  2 ' ' $ (\(_,_,d) -> d) . toGregorian
     -- Day of Year
-    formatCharacter 'j' = Just (\_ opt -> (show3 (fromMaybe (Just '0') opt)) . snd . toOrdinalDate)
+    formatCharacter 'j' = Just $ padNum True  3 '0' $ snd . toOrdinalDate
 
     -- ISO 8601 Week Date
-    formatCharacter 'G' = Just (\_ opt -> (show4 (fromMaybe Nothing opt)) . (\(y,_,_) -> y) . toWeekDate)
-    formatCharacter 'g' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . mod100 . (\(y,_,_) -> y) . toWeekDate)
-    formatCharacter 'f' = Just (\_ opt -> (show2 (fromMaybe Nothing opt)) . div100 . (\(y,_,_) -> y) . toWeekDate)
+    formatCharacter 'G' = Just $ padNum False 4 '0' $ (\(y,_,_) -> y) . toWeekDate
+    formatCharacter 'g' = Just $ padNum True  2 '0' $ mod100 . (\(y,_,_) -> y) . toWeekDate
+    formatCharacter 'f' = Just $ padNum False 2 '0' $ div100 . (\(y,_,_) -> y) . toWeekDate
 
-    formatCharacter 'V' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . (\(_,w,_) -> w) . toWeekDate)
-    formatCharacter 'u' = Just (\_ _ -> show . (\(_,_,d) -> d) . toWeekDate)
+    formatCharacter 'V' = Just $ padNum True  2 '0' $ (\(_,w,_) -> w) . toWeekDate
+    formatCharacter 'u' = Just $ padNum True  1 '0' $ (\(_,_,d) -> d) . toWeekDate
 
     -- Day of week
-    formatCharacter 'a' = Just (\locale _ -> snd . ((wDays locale) !!) . snd . sundayStartWeek)
-    formatCharacter 'A' = Just (\locale _ -> fst . ((wDays locale) !!) . snd . sundayStartWeek)
-    formatCharacter 'U' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . fst . sundayStartWeek)
-    formatCharacter 'w' = Just (\_ _ -> show . snd . sundayStartWeek)
-    formatCharacter 'W' = Just (\_ opt -> (show2 (fromMaybe (Just '0') opt)) . fst . mondayStartWeek)
+    formatCharacter 'a' = Just $ padString $ \locale -> snd . ((wDays locale) !!) . snd . sundayStartWeek
+    formatCharacter 'A' = Just $ padString $ \locale -> fst . ((wDays locale) !!) . snd . sundayStartWeek
+    formatCharacter 'U' = Just $ padNum True  2 '0' $ fst . sundayStartWeek
+    formatCharacter 'w' = Just $ padNum True  1 '0' $ snd . sundayStartWeek
+    formatCharacter 'W' = Just $ padNum True  2 '0' $ fst . mondayStartWeek
 
     -- Default
     formatCharacter _   = Nothing
 
 instance FormatTime UTCTime where
-    formatCharacter c = fmap (\f locale mpado t -> f locale mpado (utcToZonedTime utc t)) (formatCharacter c)
+    formatCharacter c = fmap (\f locale mpado mwidth t -> f locale mpado mwidth (utcToZonedTime utc t)) (formatCharacter c)
 
 instance FormatTime UniversalTime where
-    formatCharacter c = fmap (\f locale mpado t -> f locale mpado (ut1ToLocalTime 0 t)) (formatCharacter c)
+    formatCharacter c = fmap (\f locale mpado mwidth t -> f locale mpado mwidth (ut1ToLocalTime 0 t)) (formatCharacter c)

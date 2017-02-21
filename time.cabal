@@ -23,8 +23,8 @@ extra-source-files:
     lib/include/HsConfigure.h
     lib/include/HsTime.h
     lib/include/HsTimeConfig.h.in
-    test/Test/*.c
-    test/Test/*.h
+    test/unix/Test/Format/*.c
+    test/unix/Test/Format/*.h
 extra-tmp-files:
     config.log
     config.status
@@ -110,9 +110,9 @@ test-suite ShowDefaultTZAbbreviations
         time
     main-is: ShowDefaultTZAbbreviations.hs
 
-test-suite tests
+test-suite test-main
     type: exitcode-stdio-1.0
-    hs-source-dirs: test
+    hs-source-dirs: test/main
     default-language: Haskell2010
     default-extensions:
         Rank2Types
@@ -125,38 +125,69 @@ test-suite tests
         UndecidableInstances
         ScopedTypeVariables
     ghc-options: -Wall -fwarn-tabs
-    c-sources: test/Test/TestFormatStuff.c
     build-depends:
         base,
         deepseq,
         time,
-        QuickCheck >= 2.5.1,
-        test-framework >= 0.8,
-        test-framework-quickcheck2 >= 0.3,
-        unix
-    main-is: Test.hs
+        QuickCheck,
+        tasty,
+        tasty-hunit,
+        tasty-quickcheck
+    main-is: Main.hs
     other-modules:
-        Test.Tests
-        Test.ClockConversion
-        Test.TestTime
-        Test.TestTimeRef
-        Test.TestParseTime
-        Test.TestMonthDay
-        Test.TestMonthDayRef
-        Test.TestFormat
-        Test.TestEaster
-        Test.TestEasterRef
-        Test.TestCalendars
-        Test.TestCalendarsRef
-        Test.TestTAI
-        Test.TestTimeZone
-        Test.TestValid
-        Test.Resolution
-        Test.LongWeekYears
-        Test.LongWeekYearsRef
-        Test.ConvertBack
-        Test.ClipDates
-        Test.ClipDatesRef
-        Test.AddDays
-        Test.AddDaysRef
         Test.TestUtil
+        Test.Calendar.AddDays
+        Test.Calendar.AddDaysRef
+        Test.Calendar.Calendars
+        Test.Calendar.CalendarsRef
+        Test.Calendar.ClipDates
+        Test.Calendar.ClipDatesRef
+        Test.Calendar.ConvertBack
+        Test.Calendar.Easter
+        Test.Calendar.EasterRef
+        Test.Calendar.LongWeekYears
+        Test.Calendar.LongWeekYearsRef
+        Test.Calendar.MonthDay
+        Test.Calendar.MonthDayRef
+        Test.Calendar.Valid
+        Test.Clock.Conversion
+        Test.Clock.Resolution
+        Test.Clock.TAI
+        Test.Format.Format
+        Test.Format.ParseTime
+        Test.LocalTime.Time
+        Test.LocalTime.TimeRef
+
+test-suite test-unix
+    if os(windows)
+        buildable: False
+    type: exitcode-stdio-1.0
+    hs-source-dirs: test/unix
+    default-language: Haskell2010
+    default-extensions:
+        Rank2Types
+        CPP
+        DeriveDataTypeable
+        StandaloneDeriving
+        ExistentialQuantification
+        MultiParamTypeClasses
+        FlexibleInstances
+        UndecidableInstances
+        ScopedTypeVariables
+    ghc-options: -Wall -fwarn-tabs
+    c-sources: test/unix/Test/Format/FormatStuff.c
+    build-depends:
+        base,
+        deepseq,
+        time,
+        QuickCheck,
+        tasty,
+        tasty-hunit,
+        tasty-quickcheck
+    if !os(windows)
+        build-depends: unix
+    main-is: Main.hs
+    other-modules:
+        Test.TestUtil
+        Test.Format.Format
+        Test.LocalTime.TimeZone

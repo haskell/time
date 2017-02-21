@@ -1,3 +1,6 @@
+#if __GLASGOW_HASKELL__ >= 710
+{-# OPTIONS -fno-warn-trustworthy-safe #-}
+#endif
 {-# LANGUAGE Trustworthy #-}
 module Data.Time.Clock.Internal.SystemTime
     (
@@ -37,7 +40,8 @@ data SystemTime = MkSystemTime
 instance NFData SystemTime where
     rnf a = a `seq` ()
 
--- | Get POSIX time, epoch start of 1970 UTC, leap-seconds ignored
+-- | Get the system time, epoch start of 1970 UTC, leap-seconds ignored.
+-- 'getSystemTime' is typically much faster than 'getCurrentTime'.
 getSystemTime :: IO SystemTime
 
 -- | The resolution of 'getSystemTime', 'getCurrentTime', 'getPOSIXTime'
@@ -54,13 +58,13 @@ getTAISystemTime :: Maybe (DiffTime,IO SystemTime)
 -- time by adjusting the offset to be relative to the POSIX epoch.
 
 getSystemTime = do
-    FILETIME ft <- Win32.getSystemTimeAsFileTime
+    Win32.FILETIME ft <- Win32.getSystemTimeAsFileTime
     let (s, us) = (ft - win32_epoch_adjust) `divMod` 10000000
-    return (MkSystemTime (fromIntegral s) (fromIntegral us * 1000))
+    return (MkSystemTime (fromIntegral s) (fromIntegral us * 100))
   where
     win32_epoch_adjust :: Word64
     win32_epoch_adjust = 116444736000000000
-getTime_resolution = 1E-6 -- microsecond
+getTime_resolution = 100E-9 -- 100ns
 getTAISystemTime = Nothing
 
 #elif HAVE_CLOCK_GETTIME

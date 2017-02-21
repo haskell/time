@@ -3,35 +3,29 @@ module Data.Time.Calendar.Private where
 
 import Data.Fixed
 
-type NumericPadOption = Maybe Char
+data PadOption = Pad Int Char | NoPad
 
-pad1 :: NumericPadOption -> String -> String
-pad1 (Just c) s = c:s
-pad1 _ s = s
+showPadded :: PadOption -> String -> String
+showPadded NoPad s = s
+showPadded (Pad i c) s = replicate (i - length s) c ++ s
 
-padN :: Int -> Char -> String -> String
-padN i _ s | i <= 0 = s
-padN i c s = (replicate i c) ++ s
+showPaddedNum :: (Num t,Ord t,Show t) => PadOption -> t -> String
+showPaddedNum NoPad i = show i
+showPaddedNum pad i | i < 0 = '-':(showPaddedNum pad (negate i))
+showPaddedNum pad i = showPadded pad $ show i
 
-show2Fixed :: NumericPadOption -> Pico -> String
-show2Fixed opt x | x < 10 = pad1 opt (showFixed True x)
-show2Fixed _ x = showFixed True x
+show2Fixed :: Pico -> String
+show2Fixed x | x < 10 = '0':(showFixed True x)
+show2Fixed x = showFixed True x
 
-showPaddedMin :: (Num t,Ord t,Show t) => Int -> NumericPadOption -> t -> String
-showPaddedMin _ Nothing i = show i
-showPaddedMin pl opt i | i < 0 = '-':(showPaddedMin pl opt (negate i))
-showPaddedMin pl (Just c) i =
-  let s = show i in
-    padN (pl - (length s)) c s
+show2 :: (Num t,Ord t,Show t) => t -> String
+show2 = showPaddedNum $ Pad 2 '0'
 
-show2 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
-show2 = showPaddedMin 2
+show3 :: (Num t,Ord t,Show t) => t -> String
+show3 = showPaddedNum $ Pad 3 '0'
 
-show3 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
-show3 = showPaddedMin 3
-
-show4 :: (Num t,Ord t,Show t) => NumericPadOption -> t -> String
-show4 = showPaddedMin 4
+show4 :: (Num t,Ord t,Show t) => t -> String
+show4 = showPaddedNum $ Pad 4 '0'
 
 mod100 :: (Integral i) => i -> i
 mod100 x = mod x 100

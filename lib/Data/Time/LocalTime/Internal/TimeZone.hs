@@ -6,7 +6,7 @@
 module Data.Time.LocalTime.Internal.TimeZone
 (
     -- * Time zones
-    TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',minutesToTimeZone,hoursToTimeZone,utc,
+    TimeZone(..),timeZoneOffsetString,timeZoneOffsetString',timeZoneOffsetString'',minutesToTimeZone,hoursToTimeZone,utc,
 
     -- getting the locale time zone
     getTimeZone,getCurrentTimeZone
@@ -49,31 +49,35 @@ data TimeZone = TimeZone {
 instance NFData TimeZone where
     rnf (TimeZone m so n) = rnf m `seq` rnf so `seq` rnf n `seq` ()
 
--- | Create a nameless non-summer timezone for this number of minutes
+-- | Create a nameless non-summer timezone for this number of minutes.
 minutesToTimeZone :: Int -> TimeZone
 minutesToTimeZone m = TimeZone m False ""
 
--- | Create a nameless non-summer timezone for this number of hours
+-- | Create a nameless non-summer timezone for this number of hours.
 hoursToTimeZone :: Int -> TimeZone
 hoursToTimeZone i = minutesToTimeZone (60 * i)
 
-showT :: NumericPadOption -> Int -> String
-showT opt t = show4 opt ((div t 60) * 100 + (mod t 60))
+showT :: PadOption -> Int -> String
+showT opt t = showPaddedNum opt ((div t 60) * 100 + (mod t 60))
 
--- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like %z in formatTime), with arbitrary padding
-timeZoneOffsetString' :: NumericPadOption -> TimeZone -> String
-timeZoneOffsetString' opt (TimeZone t _ _) | t < 0 = '-':(showT opt (negate t))
-timeZoneOffsetString' opt (TimeZone t _ _) = '+':(showT opt t)
+timeZoneOffsetString'' :: PadOption -> TimeZone -> String
+timeZoneOffsetString'' opt (TimeZone t _ _) | t < 0 = '-':(showT opt (negate t))
+timeZoneOffsetString'' opt (TimeZone t _ _) = '+':(showT opt t)
 
--- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like %z in formatTime)
+-- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like @%z@ in formatTime), with arbitrary padding.
+timeZoneOffsetString' :: Maybe Char -> TimeZone -> String
+timeZoneOffsetString' Nothing = timeZoneOffsetString'' NoPad
+timeZoneOffsetString' (Just c) = timeZoneOffsetString'' $ Pad 4 c
+
+-- | Text representing the offset of this timezone, such as \"-0800\" or \"+0400\" (like @%z@ in formatTime).
 timeZoneOffsetString :: TimeZone -> String
-timeZoneOffsetString = timeZoneOffsetString' (Just '0')
+timeZoneOffsetString = timeZoneOffsetString'' (Pad 4 '0')
 
 instance Show TimeZone where
     show zone@(TimeZone _ _ "") = timeZoneOffsetString zone
     show (TimeZone _ _ name) = name
 
--- | The UTC time zone
+-- | The UTC time zone.
 utc :: TimeZone
 utc = TimeZone 0 False "UTC"
 
@@ -92,14 +96,14 @@ getTimeZoneCTime ctime = with 0 (\pdst -> with nullPtr (\pcname -> do
             return (TimeZone (div (fromIntegral secs) 60) (dst == 1) name)
     ))
 
--- | Get the local time-zone for a given time (varying as per summertime adjustments)
+-- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZoneSystem :: SystemTime -> IO TimeZone
 getTimeZoneSystem = getTimeZoneCTime . CTime . systemSeconds
 
--- | Get the local time-zone for a given time (varying as per summertime adjustments)
+-- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZone :: UTCTime -> IO TimeZone
 getTimeZone = getTimeZoneCTime . fromInteger . floor . utcTimeToPOSIXSeconds
 
--- | Get the current time-zone
+-- | Get the current time-zone.
 getCurrentTimeZone :: IO TimeZone
 getCurrentTimeZone = getSystemTime >>= getTimeZoneSystem

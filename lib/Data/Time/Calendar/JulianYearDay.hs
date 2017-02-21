@@ -8,7 +8,7 @@ module Data.Time.Calendar.JulianYearDay
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
--- | convert to proleptic Julian year and day format. First element of result is year (proleptic Julian calendar),
+-- | Convert to proleptic Julian year and day format. First element of result is year (proleptic Julian calendar),
 -- second is the day of the year, with 1 for Jan 1, and 365 (or 366 in leap years) for Dec 31.
 toJulianYearAndDay :: Day -> (Integer,Int)
 toJulianYearAndDay (ModifiedJulianDay mjd) = (year,yd) where
@@ -19,14 +19,14 @@ toJulianYearAndDay (ModifiedJulianDay mjd) = (year,yd) where
     yd = fromInteger (d - (y * 365) + 1)
     year = quad * 4 + y + 1
 
--- | convert from proleptic Julian year and day format.
+-- | Convert from proleptic Julian year and day format.
 -- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
 fromJulianYearAndDay :: Integer -> Int -> Day
 fromJulianYearAndDay year day = ModifiedJulianDay mjd where
     y = year - 1
     mjd = (fromIntegral (clip 1 (if isJulianLeapYear year then 366 else 365) day)) + (365 * y) + (div y 4) - 678578
 
--- | convert from proleptic Julian year and day format.
+-- | Convert from proleptic Julian year and day format.
 -- Invalid day numbers will return Nothing
 fromJulianYearAndDayValid :: Integer -> Int -> Maybe Day
 fromJulianYearAndDayValid year day = do
@@ -36,9 +36,9 @@ fromJulianYearAndDayValid year day = do
         mjd = (fromIntegral day') + (365 * y) + (div y 4) - 678578
     return (ModifiedJulianDay mjd)
 
--- | show in proleptic Julian year and day format (yyyy-ddd)
+-- | Show in proleptic Julian year and day format (yyyy-ddd)
 showJulianYearAndDay :: Day -> String
-showJulianYearAndDay date = (show4 (Just '0') y) ++ "-" ++ (show3 (Just '0') d) where
+showJulianYearAndDay date = (show4 y) ++ "-" ++ (show3 d) where
     (y,d) = toJulianYearAndDay date
 
 -- | Is this year a leap year according to the proleptic Julian calendar?
