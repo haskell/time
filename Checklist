@@ -59,3 +59,9 @@ Before release:
 
     git tag -a -s [TAG]
     git push --tags
+
+13. Update ghc branch
+
+    git checkout ghc
+    git merge master
+    git push
