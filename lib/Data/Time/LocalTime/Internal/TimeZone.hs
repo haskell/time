@@ -98,7 +98,13 @@ getTimeZoneCTime ctime = with 0 (\pdst -> with nullPtr (\pcname -> do
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZoneSystem :: SystemTime -> IO TimeZone
-getTimeZoneSystem = getTimeZoneCTime . CTime . systemSeconds
+getTimeZoneSystem = getTimeZoneCTime . toCTime . systemSeconds
+  where
+    toCTime t
+      | t <= fromIntegral maxCTime = CTime $ fromIntegral t
+      | otherwise = fail "Data.Time.LocalTime.Internal.TimeZone.getTimeZoneSystem: Overflow"
+    maxCTime :: CTime
+    maxCTime = maxBound
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZone :: UTCTime -> IO TimeZone
