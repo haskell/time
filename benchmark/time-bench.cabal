@@ -4,7 +4,7 @@ author:         Winter
 homepage:       https://github.com/haskell/time
 bug-reports:    https://github.com/haskell/time/issues
 cabal-version:  >=1.10
-build-type:          Simple
+build-type:     Simple
 
 
 executable time-bench

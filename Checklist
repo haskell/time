@@ -18,8 +18,8 @@ Before release:
 4. Use latest LTS resolver
 
     https://www.stackage.org/lts
-    time.cabal
-    (not necessarily benchmark/time-bench.cabal)
+    stack.yaml
+    (not necessarily benchmark/stack.yaml)
 
 5. Build & test
 
@@ -45,22 +45,28 @@ Before release:
 
     https://travis-ci.org/haskell/time
 
-10. Build and test on Windows
+10. Build and test on 32-bit Linux machine
+
+    git pull
+    stack build --pedantic --test --haddock && echo OK
+        (ignore errors)
+
+11. Build and test on Windows
 
     git pull
     stack build --pedantic --test --haddock && echo OK
 
-11. Upload to Hackage
+12. Upload to Hackage
 
     stack upload .
     http://hackage.haskell.org/package/time
 
-12. Tag commit
+13. Tag commit
 
     git tag -a -s [TAG]
     git push --tags
 
-13. Update ghc branch
+14. Update ghc branch
 
     git checkout ghc
     git merge master

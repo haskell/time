@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.8.0.1]
+- Get building on 32 bit machine
+
 ## [1.8]
 - Added SystemTime
 - Data.Time.Format: allow padding widths in specifiers for formatting (but not parsing)
