@@ -96,13 +96,24 @@ getTimeZoneCTime ctime = with 0 (\pdst -> with nullPtr (\pcname -> do
             return (TimeZone (div (fromIntegral secs) 60) (dst == 1) name)
     ))
 
+toCTime :: Int64 -> IO CTime
+toCTime t = let
+    tt = fromIntegral t
+    t' = fromIntegral tt
+    -- there's no instance Bounded CTime, so this is the easiest way to check for overflow
+    in if t' == t then return $ CTime tt else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow" where
+
 -- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZoneSystem :: SystemTime -> IO TimeZone
-getTimeZoneSystem = getTimeZoneCTime . CTime . systemSeconds
+getTimeZoneSystem t = do
+    ctime <- toCTime $ systemSeconds t
+    getTimeZoneCTime ctime
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZone :: UTCTime -> IO TimeZone
-getTimeZone = getTimeZoneCTime . fromInteger . floor . utcTimeToPOSIXSeconds
+getTimeZone t = do
+    ctime <- toCTime $ floor $ utcTimeToPOSIXSeconds t
+    getTimeZoneCTime ctime
 
 -- | Get the current time-zone.
 getCurrentTimeZone :: IO TimeZone
