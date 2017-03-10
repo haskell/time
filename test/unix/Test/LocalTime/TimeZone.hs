@@ -9,7 +9,7 @@ import Test.Tasty.HUnit
 
 testTimeZone :: TestTree
 testTimeZone = testCase "getTimeZone respects TZ env var" $ do
-    let epoch = UTCTime (ModifiedJulianDay 0) 0
+    let epoch = UTCTime (ModifiedJulianDay 57000) 0
     putEnv "TZ=UTC+0"
     zone1 <- getTimeZone epoch
     putEnv "TZ=EST+5"

@@ -101,7 +101,7 @@ toCTime t = let
     tt = fromIntegral t
     t' = fromIntegral tt
     -- there's no instance Bounded CTime, so this is the easiest way to check for overflow
-    in if t' == t then return $ CTime tt else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow" where
+    in if t' == t then return $ CTime tt else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow"
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZoneSystem :: SystemTime -> IO TimeZone
