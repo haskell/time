@@ -56,7 +56,16 @@ times :: Gen UTCTime
 times = do
     day <- choose (-25000,75000)
     time <- return midnight
-    return $ localTimeToUTC utc $ LocalTime (ModifiedJulianDay day) time
+    let
+        -- verify that the created time can fit in the local CTime
+        localT = LocalTime (ModifiedJulianDay day) time
+        utcT = localTimeToUTC utc localT
+        secondsInteger = truncate (utcTimeToPOSIXSeconds utcT)
+        CTime secondsCTime = fromInteger secondsInteger
+        secondsInteger' = toInteger secondsCTime
+    if secondsInteger == secondsInteger'
+      then return utcT
+      else times
 
 padN :: Int -> Char -> String -> String
 padN n _ s | n <= (length s) = s
