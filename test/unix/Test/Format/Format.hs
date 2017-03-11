@@ -1,11 +1,13 @@
+{-# OPTIONS -fno-warn-orphans #-}
 module Test.Format.Format(testFormat) where
 
 import Data.Time
 import Data.Time.Clock.POSIX
 import Data.Char
-import Data.Fixed
+import Data.Fixed as F
 import Foreign
 import Foreign.C
+import System.Random
 import Test.QuickCheck hiding (Result)
 import Test.QuickCheck.Property
 import Test.Tasty
@@ -34,36 +36,51 @@ unixFormatTime fmt zone time = unsafePerformIO $ withCString fmt (\pfmt -> withC
                 (if timeZoneSummerOnly zone then 1 else 0)
                 (fromIntegral (timeZoneMinutes zone * 60))
                 pzonename
-                (fromInteger (truncate (utcTimeToPOSIXSeconds time)))
+                (fromInteger (floor (utcTimeToPOSIXSeconds time)))
             )
         ))
 
 locale :: TimeLocale
 locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
-zones :: Gen TimeZone
-zones = do
-    mins <- choose (-2000,2000)
-    dst <- arbitrary
-    hasName <- arbitrary
-    let
-        name = if hasName then "ZONE" else ""
-    return $ TimeZone mins dst name
+instance Random (F.Fixed res) where
+    randomR (MkFixed lo,MkFixed hi) oldgen = let
+        (v,newgen) = randomR (lo,hi) oldgen
+        in (MkFixed v,newgen)
+    random oldgen = let
+        (v,newgen) = random oldgen
+        in (MkFixed v,newgen)
 
-times :: Gen UTCTime
-times = do
-    day <- choose (-25000,75000)
-    time <- return midnight
-    let
-        -- verify that the created time can fit in the local CTime
-        localT = LocalTime (ModifiedJulianDay day) time
-        utcT = localTimeToUTC utc localT
-        secondsInteger = truncate (utcTimeToPOSIXSeconds utcT)
-        CTime secondsCTime = fromInteger secondsInteger
-        secondsInteger' = toInteger secondsCTime
-    if secondsInteger == secondsInteger'
-      then return utcT
-      else times
+instance Arbitrary TimeZone where
+    arbitrary = do
+        mins <- choose (-2000,2000)
+        dst <- arbitrary
+        hasName <- arbitrary
+        let
+            name = if hasName then "ZONE" else ""
+        return $ TimeZone mins dst name
+
+instance Arbitrary TimeOfDay where
+    arbitrary = do
+        h <- choose (0,23)
+        m <- choose (0,59)
+        s <- choose (0,59.999999999999) -- don't allow leap-seconds
+        return $ TimeOfDay h m s
+
+instance Arbitrary UTCTime where
+    arbitrary = do
+        day <- choose (-25000,75000)
+        time <- arbitrary
+        let
+            -- verify that the created time can fit in the local CTime
+            localT = LocalTime (ModifiedJulianDay day) time
+            utcT = localTimeToUTC utc localT
+            secondsInteger = floor (utcTimeToPOSIXSeconds utcT)
+            CTime secondsCTime = fromInteger secondsInteger
+            secondsInteger' = toInteger secondsCTime
+        if secondsInteger == secondsInteger'
+          then return utcT
+          else arbitrary
 
 padN :: Int -> Char -> String -> String
 padN n _ s | n <= (length s) = s
@@ -124,14 +141,14 @@ hashformats = do
 
 testCompareFormat :: [TestTree]
 testCompareFormat = tgroup formats $ \fmt -> do
-    time <- times
-    zone <- zones
+    time <- arbitrary
+    zone <- arbitrary
     return $ compareFormat id fmt zone time
 
 testCompareHashFormat :: [TestTree]
 testCompareHashFormat = tgroup hashformats $ \fmt -> do
-    time <- times
-    zone <- zones
+    time <- arbitrary
+    zone <- arbitrary
     return $ compareFormat (fmap toLower) fmt zone time
 
 formatUnitTest :: String -> Pico -> String -> TestTree

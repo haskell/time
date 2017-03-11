@@ -510,10 +510,10 @@ instance ParseTime TimeOfDay where
                     return $ TimeOfDay h m (fromInteger a)
                 'q' -> do
                     a <- ra
-                    return $ TimeOfDay h m (mkPico (truncate s) a)
+                    return $ TimeOfDay h m (mkPico (floor s) a)
                 'Q' -> if null x then Just t else do
                     ps <- readMaybe $ take 12 $ rpad 12 '0' $ drop 1 x
-                    return $ TimeOfDay h m (mkPico (truncate s) ps)
+                    return $ TimeOfDay h m (mkPico (floor s) ps)
                 _   -> Just t
 
         in mfoldl f (Just midnight)

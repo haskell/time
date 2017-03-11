@@ -181,6 +181,7 @@ test-suite test-unix
         base,
         deepseq,
         time,
+        random,
         QuickCheck,
         tasty,
         tasty-hunit,

@@ -261,7 +261,7 @@ instance Arbitrary LocalTime where
     arbitrary = liftM2 LocalTime arbitrary arbitrary
 
 instance CoArbitrary LocalTime where
-    coarbitrary t = coarbitrary (truncate (utcTimeToPOSIXSeconds (localTimeToUTC utc t)) :: Integer)
+    coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (localTimeToUTC utc t)) :: Integer)
 
 instance Arbitrary TimeZone where
     arbitrary = liftM minutesToTimeZone $ choose (-720,720)
@@ -273,13 +273,13 @@ instance Arbitrary ZonedTime where
     arbitrary = liftM2 ZonedTime arbitrary arbitrary
 
 instance CoArbitrary ZonedTime where
-    coarbitrary t = coarbitrary (truncate (utcTimeToPOSIXSeconds (zonedTimeToUTC t)) :: Integer)
+    coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (zonedTimeToUTC t)) :: Integer)
 
 instance Arbitrary UTCTime where
     arbitrary = liftM2 UTCTime arbitrary arbitrary
 
 instance CoArbitrary UTCTime where
-    coarbitrary t = coarbitrary (truncate (utcTimeToPOSIXSeconds t) :: Integer)
+    coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds t) :: Integer)
 
 instance Arbitrary UniversalTime where
     arbitrary = liftM (\n -> ModJulianDate $ n % k) $ choose (-313698 * k, 2973483 * k) where -- 1000-01-1 to 9999-12-31

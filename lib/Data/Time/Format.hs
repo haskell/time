@@ -273,7 +273,7 @@ instance FormatTime TimeOfDay where
     -- Minute
     formatCharacter 'M' = Just $ padNum True  2 '0' todMin
     -- Second
-    formatCharacter 'S' = Just $ padNum True  2 '0' $ (truncate . todSec :: TimeOfDay -> Int)
+    formatCharacter 'S' = Just $ padNum True  2 '0' $ (floor . todSec :: TimeOfDay -> Int)
     formatCharacter 'q' = Just $ padGeneral True True 12 '0' $ \_ pado -> showPaddedFixedFraction pado . todSec
     formatCharacter 'Q' = Just $ padGeneral True False 12 '0' $ \_ pado -> ('.':) . showPaddedFixedFraction pado . todSec
 
