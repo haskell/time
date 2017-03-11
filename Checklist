@@ -49,7 +49,6 @@ Before release:
 
     git pull
     stack build --pedantic --test --haddock && echo OK
-        (ignore errors)
 
 11. Build and test on Windows
 

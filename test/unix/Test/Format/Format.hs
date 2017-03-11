@@ -12,6 +12,7 @@ import Test.QuickCheck hiding (Result)
 import Test.QuickCheck.Property
 import Test.Tasty
 import Test.Tasty.HUnit
+import Test.Tasty.QuickCheck
 import Test.TestUtil
 import System.IO.Unsafe
 
@@ -67,6 +68,13 @@ instance Arbitrary TimeOfDay where
         s <- choose (0,59.999999999999) -- don't allow leap-seconds
         return $ TimeOfDay h m s
 
+-- | The size of 'CTime' is platform-dependent.
+secondsFitInCTime :: Integer -> Bool
+secondsFitInCTime sec = let
+    CTime ct = fromInteger sec
+    sec' = toInteger ct
+    in sec == sec'
+
 instance Arbitrary UTCTime where
     arbitrary = do
         day <- choose (-25000,75000)
@@ -76,9 +84,7 @@ instance Arbitrary UTCTime where
             localT = LocalTime (ModifiedJulianDay day) time
             utcT = localTimeToUTC utc localT
             secondsInteger = floor (utcTimeToPOSIXSeconds utcT)
-            CTime secondsCTime = fromInteger secondsInteger
-            secondsInteger' = toInteger secondsCTime
-        if secondsInteger == secondsInteger'
+        if secondsFitInCTime (secondsInteger + 2*86400) && secondsFitInCTime (secondsInteger - 2*86400) -- two days slop each way
           then return utcT
           else arbitrary
 
@@ -108,7 +114,7 @@ compareFormat modUnix fmt zone time = let
     haskellText = formatTime locale fmt ctime
     unixText = unixFormatTime fmt zone time
     expectedText = unixWorkarounds fmt (modUnix unixText)
-    in assertEqualQC "" expectedText haskellText
+    in assertEqualQC (show time ++ " with " ++ show zone) expectedText haskellText
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
@@ -211,4 +217,4 @@ testQs = [
     ]
 
 testFormat :: TestTree
-testFormat = testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat ++ testQs
+testFormat = localOption (QuickCheckTests 10000) $ testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat ++ testQs
