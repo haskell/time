@@ -1,4 +1,3 @@
-{-# OPTIONS -fno-warn-overlapping-patterns #-}
 module Test.TestUtil where
 
 import Test.QuickCheck.Property

@@ -124,6 +124,7 @@ test-suite test-main
         FlexibleInstances
         UndecidableInstances
         ScopedTypeVariables
+        TupleSections
     ghc-options: -Wall -fwarn-tabs
     build-depends:
         base,

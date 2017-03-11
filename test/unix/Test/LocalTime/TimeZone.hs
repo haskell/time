@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Test.LocalTime.TimeZone(testTimeZone) where
 
 import Data.Time

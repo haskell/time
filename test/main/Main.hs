@@ -1,6 +1,5 @@
 module Main where
 
-import Foreign.C.Types
 import Test.Tasty
 import Test.Calendar.AddDays
 import Test.Calendar.Calendars

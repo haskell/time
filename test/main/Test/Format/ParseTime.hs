@@ -1,6 +1,4 @@
-{-# OPTIONS -fno-warn-type-defaults -fno-warn-orphans #-}
-{-# LANGUAGE FlexibleInstances, ExistentialQuantification #-}
-
+{-# OPTIONS -fno-warn-orphans #-}
 module Test.Format.ParseTime(testParseTime,test_parse_format) where
 
 import Control.Monad
@@ -82,7 +80,7 @@ readTestsParensSpaces expected target = testGroup target
 readOtherTypesTest :: TestTree
 readOtherTypesTest = testGroup "read other types"
     [
-    readTestsParensSpaces 3 "3",
+    readTestsParensSpaces (3 :: Integer) "3",
     readTestsParensSpaces "a" "\"a\""
     ]
 
@@ -244,11 +242,11 @@ instance CoArbitrary Day where
 instance Arbitrary DiffTime where
     arbitrary = oneof [intSecs, fracSecs] -- up to 1 leap second
         where intSecs = liftM secondsToDiffTime' $ choose (0, 86400)
-              fracSecs = liftM picosecondsToDiffTime' $ choose (0, 86400 * 10^12)
+              fracSecs = liftM picosecondsToDiffTime' $ choose (0, 86400 * 10^(12::Int))
               secondsToDiffTime' :: Integer -> DiffTime
               secondsToDiffTime' = fromInteger
               picosecondsToDiffTime' :: Integer -> DiffTime
-              picosecondsToDiffTime' x = fromRational (x % 10^12)
+              picosecondsToDiffTime' x = fromRational (x % 10^(12::Int))
 
 instance CoArbitrary DiffTime where
     coarbitrary t = coarbitrary (fromEnum t)

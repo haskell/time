@@ -1,5 +1,3 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
-
 module Test.Format.Format(testFormat) where
 
 import Data.Time

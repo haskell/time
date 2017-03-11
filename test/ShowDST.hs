@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Main where
 
 import Data.Time

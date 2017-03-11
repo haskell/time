@@ -1,5 +1,3 @@
-{-# OPTIONS -Wall -Werror #-}
-
 module Test.Calendar.Easter(testEaster) where
 
 import Data.Time.Calendar.Easter

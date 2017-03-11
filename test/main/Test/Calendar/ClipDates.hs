@@ -1,5 +1,3 @@
-{-# Language TupleSections #-}
-
 module Test.Calendar.ClipDates(clipDates) where
 
 import Data.Time.Calendar.OrdinalDate
