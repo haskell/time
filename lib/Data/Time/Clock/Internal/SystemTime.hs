@@ -19,7 +19,7 @@ import Data.Time.Clock.Internal.DiffTime
 
 #ifdef mingw32_HOST_OS
 import qualified System.Win32.Time as Win32
-#elif HAVE_CLOCK_GETTIME
+#elif defined(HAVE_CLOCK_GETTIME)
 import Data.Time.Clock.Internal.CTimespec
 import Foreign.C.Types (CTime(..), CLong(..))
 #else
@@ -67,7 +67,7 @@ getSystemTime = do
 getTime_resolution = 100E-9 -- 100ns
 getTAISystemTime = Nothing
 
-#elif HAVE_CLOCK_GETTIME
+#elif defined(HAVE_CLOCK_GETTIME)
 -- Use hi-res clock_gettime
 
 timespecToSystemTime :: CTimespec -> SystemTime
