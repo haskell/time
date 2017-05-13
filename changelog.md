@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.8.0.2]
+- Fix behaviour of %Q in format
+
 ## [1.8.0.1]
 - Get building on 32 bit machine
 
