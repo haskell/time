@@ -275,7 +275,9 @@ instance FormatTime TimeOfDay where
     -- Second
     formatCharacter 'S' = Just $ padNum True  2 '0' $ (floor . todSec :: TimeOfDay -> Int)
     formatCharacter 'q' = Just $ padGeneral True True 12 '0' $ \_ pado -> showPaddedFixedFraction pado . todSec
-    formatCharacter 'Q' = Just $ padGeneral True False 12 '0' $ \_ pado -> ('.':) . showPaddedFixedFraction pado . todSec
+    formatCharacter 'Q' = Just $ padGeneral True False 12 '0' $ \_ pado -> dotNonEmpty . showPaddedFixedFraction pado . todSec where
+        dotNonEmpty "" = ""
+        dotNonEmpty s = '.':s
 
     -- Default
     formatCharacter _   = Nothing
