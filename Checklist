@@ -20,6 +20,7 @@ Before release:
     https://www.stackage.org/lts
     stack.yaml
     (not necessarily benchmark/stack.yaml)
+    .travis.yml
 
 5. Build & test
 
