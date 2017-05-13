@@ -143,7 +143,7 @@ formatChar c = case formatCharacter c of
 -- [@%q@] picosecond of second, 0-padded to twelve chars, @000000000000@ - @999999999999@.
 --
 -- [@%Q@] decimal point and fraction of second, up to 12 second decimals, without trailing zeros.
--- For a whole number of seconds, @%Q@ produces the empty string.
+-- For a whole number of seconds, @%Q@ omits the decimal point unless padding is specified.
 --
 -- === 'UTCTime' and 'ZonedTime'
 -- For 'UTCTime' and 'ZonedTime':
