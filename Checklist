@@ -71,3 +71,7 @@ Before release:
     git checkout ghc
     git merge master
     git push
+
+15. Restore local branch for next development:
+
+    git checkout master
