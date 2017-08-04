@@ -72,6 +72,6 @@ Before release:
     git merge master
     git push
 
-15. Restore local branch for next development:
+15. Restore local branch for next development
 
     git checkout master

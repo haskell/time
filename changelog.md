@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.8.0.3]
+- Add "Quick start" documentation
+
 ## [1.8.0.2]
 - Fix behaviour of %Q in format
 
