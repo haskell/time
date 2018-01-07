@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.8.0.4]
+- Fix "show minBound" bug
+
 ## [1.8.0.3]
 - Add "Quick start" documentation
 
