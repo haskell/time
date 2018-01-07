@@ -61,7 +61,7 @@ readTest expected target = let
     found = reads target
     result = assertEqual "" expected found
     name = show target
-    in testCase name result
+    in Test.Tasty.HUnit.testCase name result
 
 readTestsParensSpaces :: forall a. (Eq a,Show a,Read a) => a -> String -> TestTree
 readTestsParensSpaces expected target = testGroup target
@@ -127,7 +127,7 @@ simpleFormatTests = testGroup "simple"
         found = readSTime False defaultTimeLocale formatStr target
         result = assertEqual "" expected found
         name = (show formatStr) ++ " of " ++ (show target)
-        in testCase name result
+        in Test.Tasty.HUnit.testCase name result
 
 spacingTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> TestTree
 spacingTests expected formatStr target = testGroup "particular"
@@ -198,7 +198,7 @@ parseTest sp expected formatStr target = let
     found = parse sp formatStr target
     result = assertEqual "" expected found
     name = (show formatStr) ++ " of " ++ (show target) ++ (if sp then " allowing spaces" else "")
-    in testCase name result
+    in Test.Tasty.HUnit.testCase name result
 {-
 readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> TestTree
 readsTest (Just e) = readsTest' [(e,"")]

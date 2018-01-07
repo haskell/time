@@ -21,7 +21,7 @@ instance NameTest [TestTree] where
     nameTest = testGroup
 
 instance NameTest Assertion where
-    nameTest = testCase
+    nameTest = Test.Tasty.HUnit.testCase
 
 instance NameTest Property where
     nameTest = testProperty
