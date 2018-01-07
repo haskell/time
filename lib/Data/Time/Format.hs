@@ -52,7 +52,7 @@ padGeneral trunc fdef idef cdef ff locale mnpad mi = ff locale $ getPadOption tr
 padString :: (TimeLocale -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
 padString ff = padGeneral False False 1 ' ' $ \locale pado -> showPadded pado . ff locale
 
-padNum :: (Show i,Ord i,Num i) => Bool -> Int -> Char -> (t -> i) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+padNum :: (ShowPadded i) => Bool -> Int -> Char -> (t -> i) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
 padNum fdef idef cdef ff = padGeneral False fdef idef cdef $ \_ pado -> showPaddedNum pado . ff
 
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
