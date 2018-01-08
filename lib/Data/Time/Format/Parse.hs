@@ -99,13 +99,6 @@ class ParseTime t where
 -- > GHCi> parseTimeM True defaultTimeLocale "%Y-%-m-%-d" "2010-3-04" :: Maybe Day
 -- > Just 2010-3-04
 -- 
--- __Caution:__ While you can use any Monad for 'parseTimeM', please be cautioned 
--- against using the 'Either' monad. When using the Either monad, if date/time parsing 
--- fails, a __runtime error__ with be thrown instead of evaluating to a 'Left' value. 
--- This is a known problem with the 'fail' implementation of 'Either' and doesn't necessarily
--- have anything to do with 'parseTimeM'. Alternatively, you may use 'Data.Aeson.Result' as the
--- base-monad for 'parseTimeM' to get back a 'Data.Aeson.Success' or 'Data.Aeson.Error' value.
--- 
 parseTimeM :: (Monad m,ParseTime t) =>
              Bool       -- ^ Accept leading and trailing whitespace?
           -> TimeLocale -- ^ Time locale.
