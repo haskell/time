@@ -2,6 +2,7 @@
 
 ## [1.8.0.4]
 - Fix "show minBound" bug
+- haddock: example for parseTimeM
 
 ## [1.8.0.3]
 - Add "Quick start" documentation
