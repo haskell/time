@@ -92,13 +92,13 @@ class ParseTime t where
 --
 -- [@%0f@] accepts exactly two digits.
 --
--- For example, to parse a date in YYYY-MM-DD format, while allowing the month 
+-- For example, to parse a date in YYYY-MM-DD format, while allowing the month
 -- and date to have optional leading zeros (notice the @-@ modifier used for @%m@
--- and @%d@:
+-- and @%d@):
 --
--- > GHCi> parseTimeM True defaultTimeLocale "%Y-%-m-%-d" "2010-3-04" :: Maybe Day
--- > Just 2010-3-04
--- 
+-- > Prelude Data.Time> parseTimeM True defaultTimeLocale "%Y-%-m-%-d" "2010-3-04" :: Maybe Day
+-- > Just 2010-03-04
+--
 parseTimeM :: (Monad m,ParseTime t) =>
              Bool       -- ^ Accept leading and trailing whitespace?
           -> TimeLocale -- ^ Time locale.
