@@ -1,7 +1,8 @@
 GNUmakefile
 autom4te.cache/
-config.*
-conftest.*
+conf*
+!configure.ac
+a.out
 configure
 dist/
 dist-install
