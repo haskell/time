@@ -1,5 +1,13 @@
 module Test.LocalTime.TimeRef where
 
+import Data.Int
+
+is64Bit :: Bool
+is64Bit =
+    if toInteger (maxBound :: Int) == toInteger (maxBound :: Int32) then False else
+    if toInteger (maxBound :: Int) == toInteger (maxBound :: Int64) then True else
+    error "unrecognised Int size"
+
 testTimeRef :: String
 testTimeRef =
   unlines [
@@ -878,5 +886,5 @@ testTimeRef =
   ,"12:34:56.789123"
   ,"12:34:56.789123456"
   ,"12:34:56.789123456789"
-  ,"-9223372036854775808:00:00"
+  ,if is64Bit then "-9223372036854775808:00:00" else "-2147483648:00:00"
   ,"" ]
