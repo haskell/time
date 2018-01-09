@@ -32,7 +32,11 @@ import Data.Time.LocalTime.Internal.ZonedTime
 import Control.Applicative ((<$>),(<*>))
 #endif
 #if LANGUAGE_Rank2Types
-import Control.Monad
+import Control.Monad hiding (fail)
+#endif
+#if MIN_VERSION_base(4,9,0)
+import Control.Monad.Fail
+import Prelude hiding (fail)
 #endif
 import Data.Char
 import Data.Fixed
@@ -99,7 +103,13 @@ class ParseTime t where
 -- > Prelude Data.Time> parseTimeM True defaultTimeLocale "%Y-%-m-%-d" "2010-3-04" :: Maybe Day
 -- > Just 2010-03-04
 --
-parseTimeM :: (Monad m,ParseTime t) =>
+parseTimeM :: (
+#if MIN_VERSION_base(4,9,0)
+    MonadFail m
+#else
+    Monad m
+#endif
+    ,ParseTime t) =>
              Bool       -- ^ Accept leading and trailing whitespace?
           -> TimeLocale -- ^ Time locale.
           -> String     -- ^ Format string.
