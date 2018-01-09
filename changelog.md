@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.9]
+- parseTimeM: use MonadFail constraint when supported
+
 ## [1.8.0.4]
 - Fix "show minBound" bug
 - haddock: example for parseTimeM
