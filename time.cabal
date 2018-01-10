@@ -56,6 +56,7 @@ library
         build-depends: Win32
     exposed-modules:
         Data.Time.Calendar,
+        Data.Time.Calendar.Week,
         Data.Time.Calendar.MonthDay,
         Data.Time.Calendar.OrdinalDate,
         Data.Time.Calendar.WeekDate,
@@ -151,6 +152,7 @@ test-suite test-main
         Test.Calendar.MonthDay
         Test.Calendar.MonthDayRef
         Test.Calendar.Valid
+        Test.Calendar.Week
         Test.Clock.Conversion
         Test.Clock.Resolution
         Test.Clock.TAI

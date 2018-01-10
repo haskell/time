@@ -9,6 +9,7 @@ import Test.Calendar.Easter
 import Test.Calendar.LongWeekYears
 import Test.Calendar.MonthDay
 import Test.Calendar.Valid
+import Test.Calendar.Week
 import Test.Clock.Conversion
 import Test.Clock.Resolution
 import Test.Clock.TAI
@@ -27,7 +28,8 @@ tests = testGroup "Time" [
         longWeekYears,
         testMonthDay,
         testEaster,
-        testValid
+        testValid,
+        testWeek
         ],
     testGroup "Clock" [
         testClockConversion,

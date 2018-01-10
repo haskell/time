@@ -1,6 +1,7 @@
 # Change Log
 
 ## [1.9]
+- new Data.Week module with DayOfWeek type
 - parseTimeM: use MonadFail constraint when supported
 
 ## [1.8.0.4]
