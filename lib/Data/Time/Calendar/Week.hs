@@ -18,7 +18,7 @@ data DayOfWeek
     deriving (Eq, Show, Read)
 
 -- | \"Circular\", so for example @[Tuesday ..]@ gives an endless sequence.
--- Also: 'toEnum' gives [1 .. 7] for [Monday .. Sunday], and 'fromEnum' performs mod 7 to give a cycle of days.
+-- Also: 'fromEnum' gives [1 .. 7] for [Monday .. Sunday], and 'toEnum' performs mod 7 to give a cycle of days.
 instance Enum DayOfWeek where
     toEnum i =
         case mod i 7 of
