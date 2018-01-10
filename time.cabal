@@ -56,7 +56,6 @@ library
         build-depends: Win32
     exposed-modules:
         Data.Time.Calendar,
-        Data.Time.Calendar.Week,
         Data.Time.Calendar.MonthDay,
         Data.Time.Calendar.OrdinalDate,
         Data.Time.Calendar.WeekDate,
@@ -75,6 +74,7 @@ library
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Days,
         Data.Time.Calendar.Gregorian,
+        Data.Time.Calendar.Week,
         Data.Time.Calendar.JulianYearDay,
         Data.Time.Clock.Internal.DiffTime,
         Data.Time.Clock.Internal.AbsoluteTime,
