@@ -3,6 +3,7 @@
 ## [1.9]
 - new Data.Week module with DayOfWeek type
 - parseTimeM: use MonadFail constraint when supported
+- parsing: reject invalid (and empty) time-zones with %z and %Z
 
 ## [1.8.0.4]
 - Fix "show minBound" bug

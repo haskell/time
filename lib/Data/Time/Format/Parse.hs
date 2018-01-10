@@ -166,8 +166,8 @@ readPOnlyTime :: ParseTime t =>
           -> String     -- ^ Format string
           -> ReadP t
 readPOnlyTime l f = do
-    mt <- liftM (buildTime l) (parseInput l (parseFormat l f))
-    case mt of
+    pairs <- parseInput l $ parseFormat l f
+    case buildTime l pairs of
         Just t -> return t
         Nothing -> pfail
 
@@ -311,8 +311,7 @@ parseValue l mpad c =
       -- time zone
       'z' -> numericTZ
       'Z' -> munch1 isAlpha <++
-             numericTZ <++
-             return "" -- produced by %Z for LocalTime
+             numericTZ
 
       -- seconds since epoch
       's' -> (char '-' >> liftM ('-':) (munch1 isDigit))
@@ -568,14 +567,16 @@ getKnownTimeZone locale x = find (\tz -> up x == timeZoneName tz) (knownTimeZone
 
 instance ParseTime TimeZone where
     buildTime l = let
-        f (TimeZone _ dst name) ('z',x) | Just offset <- readTzOffset x = TimeZone offset dst name
-        f t ('Z',"") = t
-        f _ ('Z',x) | Just zone <- getKnownTimeZone l x = zone
-        f _ ('Z',[c]) | Just zone <- getMilZone c = zone
-        f (TimeZone offset dst _) ('Z',x) | isAlpha (head x) = TimeZone offset dst (up x)
-        f (TimeZone _ dst name) ('Z',x) | Just offset <- readTzOffset x = TimeZone offset dst name
-        f t _ = t
-        in Just . foldl f (minutesToTimeZone 0)
+        f :: Char -> String -> TimeZone -> Maybe TimeZone
+        f 'z' str (TimeZone _ dst name) | Just offset <- readTzOffset str = Just $ TimeZone offset dst name
+        f 'z' _ _ = Nothing
+        f 'Z' str _ | Just offset <- readTzOffset str = Just $ TimeZone offset False ""
+        f 'Z' str _ | Just zone <- getKnownTimeZone l str = Just zone
+        f 'Z' "UTC" _ = Just utc
+        f 'Z' [c] _ | Just zone <- getMilZone c = Just zone
+        f 'Z' _ _ = Nothing
+        f _ _ tz = Just tz
+        in foldl (\mt (c,s) -> mt >>= f c s) (Just $ minutesToTimeZone 0)
 
 readTzOffset :: String -> Maybe Int
 readTzOffset str = let
