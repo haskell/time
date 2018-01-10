@@ -14,6 +14,7 @@ import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
+import Data.Time.Calendar.Week
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
@@ -153,6 +154,17 @@ formatChar c = case formatCharacter c of
 -- the decimals are positive, not negative. For example, 0.9 seconds
 -- before the Unix epoch is formatted as @-1.1@ with @%s%Q@.
 --
+-- === 'DayOfWeek'
+-- For 'DayOfWeek' (and 'Day' and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
+--
+-- [@%u@] day of week number for Week Date format, @1@ (= Monday) - @7@ (= Sunday)
+--
+-- [@%w@] day of week number, @0@ (= Sunday) - @6@ (= Saturday)
+--
+-- [@%a@] day of week, short form ('snd' from 'wDays' @locale@), @Sun@ - @Sat@
+--
+-- [@%A@] day of week, long form ('fst' from 'wDays' @locale@), @Sunday@ - @Saturday@
+--
 -- === 'Day'
 -- For 'Day' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
@@ -184,15 +196,7 @@ formatChar c = case formatCharacter c of
 --
 -- [@%V@] week of year for Week Date format, 0-padded to two chars, @01@ - @53@
 --
--- [@%u@] day of week for Week Date format, @1@ - @7@
---
--- [@%a@] day of week, short form ('snd' from 'wDays' @locale@), @Sun@ - @Sat@
---
--- [@%A@] day of week, long form ('fst' from 'wDays' @locale@), @Sunday@ - @Saturday@
---
 -- [@%U@] week of year where weeks start on Sunday (as 'sundayStartWeek'), 0-padded to two chars, @00@ - @53@
---
--- [@%w@] day of week number, @0@ (= Sunday) - @6@ (= Saturday)
 --
 -- [@%W@] week of year where weeks start on Monday (as 'mondayStartWeek'), 0-padded to two chars, @00@ - @53@
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
@@ -297,6 +301,13 @@ instance FormatTime TimeZone where
         n = timeZoneName z
         in if null n then timeZoneOffsetString'' (getPadOption False True 4 '0' mnpo mi) z else padString (\_ -> timeZoneName) locale mnpo mi z
     formatCharacter _ = Nothing
+
+instance FormatTime DayOfWeek where
+    formatCharacter 'u' = Just $ padNum True  1 '0' $ fromEnum
+    formatCharacter 'w' = Just $ padNum True  1 '0' $ \wd -> (mod (fromEnum wd) 7)
+    formatCharacter 'a' = Just $ padString $ \locale wd -> snd $ (wDays locale) !! (mod (fromEnum wd) 7)
+    formatCharacter 'A' = Just $ padString $ \locale wd -> fst $ (wDays locale) !! (mod (fromEnum wd) 7)
+    formatCharacter _   = Nothing
 
 instance FormatTime Day where
     -- Aggregate

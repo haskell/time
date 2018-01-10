@@ -67,7 +67,17 @@ checkParse fmt str = [
 testCheckParse :: TestTree
 testCheckParse = testGroup "checkParse" $ tgroup formats $ \fmt -> tgroup somestrings $ \str -> checkParse fmt str
 
+days :: [Day]
+days = [(fromGregorian 2018 1 5) .. (fromGregorian 2018 1 26)]
+
+testDayOfWeek :: TestTree
+testDayOfWeek  = testGroup "DayOfWeek" $ tgroup "uwaA" $ \fmt -> tgroup days $ \day -> let
+    dayFormat = formatTime defaultTimeLocale ['%',fmt] day
+    dowFormat = formatTime defaultTimeLocale ['%',fmt] $ dayOfWeek day
+    in assertEqual "" dayFormat dowFormat
+
 testFormat :: TestTree
 testFormat = testGroup "testFormat" $ [
-    testCheckParse
+    testCheckParse,
+    testDayOfWeek
     ]
