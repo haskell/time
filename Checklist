@@ -33,7 +33,7 @@ Before release:
 
 7. Build & test
 
-    stack build --pedantic --test --haddock && echo OK
+    stack build --pedantic --test --haddock --ta --hide-successes && echo OK
 
 8. Build benchmark
 
@@ -60,14 +60,14 @@ Before release:
     stack upgrade
     stack --version
     git pull
-    stack build --pedantic --test --haddock && echo OK
+    stack build --pedantic --test --haddock --ta --hide-successes && echo OK
 
 13. Build and test on Windows
 
     stack upgrade
     stack --version
     git pull
-    stack build --pedantic --test --haddock && echo OK
+    stack build --pedantic --test --haddock --ta --hide-successes && echo OK
 
 14. Upload to Hackage
 
