@@ -507,22 +507,28 @@ instance ParseTime TimeOfDay where
                 'P' -> getAmPm
                 'p' -> getAmPm
                 'H' -> do
-                    a <- ra
+                    raw <- ra
+                    a <- clipValid 0 23 raw
                     return $ TimeOfDay a m s
                 'I' -> do
-                    a <- ra
+                    raw <- ra
+                    a <- clipValid 1 12 raw
                     return $ TimeOfDay a m s
                 'k' -> do
-                    a <- ra
+                    raw <- ra
+                    a <- clipValid 0 23 raw
                     return $ TimeOfDay a m s
                 'l' -> do
-                    a <- ra
+                    raw <- ra
+                    a <- clipValid 1 12 raw
                     return $ TimeOfDay a m s
                 'M' -> do
-                    a <- ra
+                    raw <- ra
+                    a <- clipValid 0 59 raw
                     return $ TimeOfDay h a s
                 'S' -> do
-                    a <- ra
+                    raw <- ra
+                    a <- clipValid 0 60 raw
                     return $ TimeOfDay h m (fromInteger a)
                 'q' -> do
                     a <- ra
