@@ -2,6 +2,7 @@
 
 ## [1.9]
 - new Data.Week module with DayOfWeek type
+- formatting: %Ez and %EZ for ±HH:MM format
 - parseTimeM: use MonadFail constraint when supported
 - parsing: reject invalid (and empty) time-zones with %z and %Z
 - parsing: reject invalid hour/minute/second specifiers

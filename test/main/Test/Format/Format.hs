@@ -57,8 +57,46 @@ testDayOfWeek  = testGroup "DayOfWeek" $ tgroup "uwaA" $ \fmt -> tgroup days $ \
     dowFormat = formatTime defaultTimeLocale ['%',fmt] $ dayOfWeek day
     in assertEqual "" dayFormat dowFormat
 
+testZone :: String -> String -> Int -> TestTree
+testZone fmt expected minutes = testCase (show fmt) $ assertEqual "" expected $ formatTime defaultTimeLocale fmt $ TimeZone minutes False ""
+
+testZonePair :: String -> String -> Int -> TestTree
+testZonePair mods expected minutes = testGroup (show mods ++ " " ++ show minutes)
+    [
+        testZone ("%" ++ mods ++ "z") expected minutes,
+        testZone ("%" ++ mods ++ "Z") expected minutes
+    ]
+
+testTimeZone :: TestTree
+testTimeZone = testGroup "TimeZone"
+    [
+    testZonePair "" "+0000" 0,
+    testZonePair "E" "+00:00" 0,
+    testZonePair "" "+0500" 300,
+    testZonePair "E" "+05:00" 300,
+    testZonePair "3" "+0500" 300,
+    testZonePair "4E" "+05:00" 300,
+    testZonePair "4" "+0500" 300,
+    testZonePair "5E" "+05:00" 300,
+    testZonePair "5" "+00500" 300,
+    testZonePair "6E" "+005:00" 300,
+    testZonePair "" "-0700" (-420),
+    testZonePair "E" "-07:00" (-420),
+    testZonePair "" "+1015" 615,
+    testZonePair "E" "+10:15" 615,
+    testZonePair "3" "+1015" 615,
+    testZonePair "4E" "+10:15" 615,
+    testZonePair "4" "+1015" 615,
+    testZonePair "5E" "+10:15" 615,
+    testZonePair "5" "+01015" 615,
+    testZonePair "6E" "+010:15" 615,
+    testZonePair "" "-1130" (-690),
+    testZonePair "E" "-11:30" (-690)
+    ]
+
 testFormat :: TestTree
 testFormat = testGroup "testFormat" $ [
     testCheckParse,
-    testDayOfWeek
+    testDayOfWeek,
+    testTimeZone
     ]

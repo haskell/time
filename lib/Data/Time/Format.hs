@@ -47,30 +47,37 @@ getPadOption trunc fdef idef cdef mnpad mi = let
             Just (Just _) -> True
     in if f then Pad i c else NoPad
 
-padGeneral :: Bool -> Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
-padGeneral trunc fdef idef cdef ff locale mnpad mi = ff locale $ getPadOption trunc fdef idef cdef mnpad mi
+data FormatOptions = MkFormatOptions {
+    foLocale :: TimeLocale,
+    foPadding :: Maybe NumericPadOption,
+    foWidth :: Maybe Int,
+    foAlternate :: Bool
+}
 
-padString :: (TimeLocale -> t -> String) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+padGeneral :: Bool -> Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (FormatOptions -> t -> String)
+padGeneral trunc fdef idef cdef ff fo = ff (foLocale fo) $ getPadOption trunc fdef idef cdef (foPadding fo) (foWidth fo)
+
+padString :: (TimeLocale -> t -> String) -> (FormatOptions -> t -> String)
 padString ff = padGeneral False False 1 ' ' $ \locale pado -> showPadded pado . ff locale
 
-padNum :: (ShowPadded i) => Bool -> Int -> Char -> (t -> i) -> (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+padNum :: (ShowPadded i) => Bool -> Int -> Char -> (t -> i) -> (FormatOptions -> t -> String)
 padNum fdef idef cdef ff = padGeneral False fdef idef cdef $ \_ pado -> showPaddedNum pado . ff
 
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
 class FormatTime t where
-    formatCharacter :: Char -> Maybe (TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String)
+    formatCharacter :: Char -> Maybe (FormatOptions -> t -> String)
 
-formatChar :: (FormatTime t) => Char -> TimeLocale -> Maybe NumericPadOption -> Maybe Int -> t -> String
+formatChar :: (FormatTime t) => Char -> FormatOptions -> t -> String
 formatChar '%' = padString $ \_ _ -> "%"
 formatChar 't' = padString $ \_ _ -> "\t"
 formatChar 'n' = padString $ \_ _ -> "\n"
 formatChar c = case formatCharacter c of
     Just f -> f
-    _ -> \_ _ _ _ -> ""
+    _ -> \_ _ -> ""
 
 -- | Substitute various time-related information for each %-code in the string, as per 'formatCharacter'.
 --
--- The general form is @%\<modifier\>\<width\>\<specifier\>@, where @\<modifier\>@ and @\<width\>@ are optional.
+-- The general form is @%\<modifier\>\<width\>\<alternate\>\<specifier\>@, where @\<modifier\>@, @\<width\>@, and @\<alternate\>@ are optional.
 --
 -- == @\<modifier\>@
 -- glibc-style modifiers can be used before the specifier (here marked as @z@):
@@ -92,6 +99,11 @@ formatChar c = case formatCharacter c of
 --
 -- [@%_12z@] pad with spaces to 12 characters
 --
+-- == @\<alternate\>@
+-- An optional @E@ character indicates an alternate formatting. Currently this only affects @%Z@ and @%z@.
+--
+-- [@%Ez@] alternate formatting
+--
 -- == @\<specifier\>@
 --
 -- For all types (note these three are done by 'formatTime', not by 'formatCharacter'):
@@ -105,9 +117,13 @@ formatChar c = case formatCharacter c of
 -- === 'TimeZone'
 -- For 'TimeZone' (and 'ZonedTime' and 'UTCTime'):
 --
--- [@%z@] timezone offset in the format @-HHMM@.
+-- [@%z@] timezone offset in the format @±HHMM@
 --
--- [@%Z@] timezone name
+-- [@%Ez@] timezone offset in the format @±HH:MM@
+--
+-- [@%Z@] timezone name (or else offset in the format @±HHMM@)
+--
+-- [@%EZ@] timezone name (or else offset in the format @±HH:MM@)
 --
 -- === 'LocalTime'
 -- For 'LocalTime' (and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
@@ -231,15 +247,19 @@ formatTime2 locale recase mpad cs t = let
     in formatTime3 locale recase mpad mwidth rest t
 
 formatTime3 :: (FormatTime t) => TimeLocale -> (String -> String) -> Maybe NumericPadOption -> Maybe Int -> String -> t -> Maybe String
-formatTime3 locale recase mpad mwidth (c:cs) t = Just $ (recase (formatChar c locale mpad mwidth t)) ++ (formatTime locale cs t)
-formatTime3 _locale _recase _mpad _mwidth [] _t = Nothing
+formatTime3 locale recase mpad mwidth ('E':cs) = formatTime4 recase (MkFormatOptions locale mpad mwidth True) cs
+formatTime3 locale recase mpad mwidth cs = formatTime4 recase (MkFormatOptions locale mpad mwidth False) cs
+
+formatTime4 :: (FormatTime t) => (String -> String) -> FormatOptions -> String -> t -> Maybe String
+formatTime4 recase fo (c:cs) t = Just $ (recase (formatChar c fo t)) ++ (formatTime (foLocale fo) cs t)
+formatTime4 _recase _fo [] _t = Nothing
 
 instance FormatTime LocalTime where
-    formatCharacter 'c' = Just $ \locale _ _ -> formatTime locale (dateTimeFmt locale)
+    formatCharacter 'c' = Just $ \fo -> formatTime (foLocale fo) $ dateTimeFmt $ foLocale fo
     formatCharacter c = case formatCharacter c of
-        Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (localDay dt)
+        Just f -> Just $ \fo dt -> f fo (localDay dt)
         Nothing -> case formatCharacter c of
-            Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (localTimeOfDay dt)
+            Just f -> Just $ \fo dt -> f fo (localTimeOfDay dt)
             Nothing -> Nothing
 
 todAMPM :: TimeLocale -> TimeOfDay -> String
@@ -290,16 +310,19 @@ instance FormatTime ZonedTime where
     formatCharacter 'c' = Just $ padString $ \locale -> formatTime locale (dateTimeFmt locale)
     formatCharacter 's' = Just $ padNum True  1 '0' $ (floor . utcTimeToPOSIXSeconds . zonedTimeToUTC :: ZonedTime -> Integer)
     formatCharacter c = case formatCharacter c of
-        Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (zonedTimeToLocalTime dt)
+        Just f -> Just $ \fo dt -> f fo (zonedTimeToLocalTime dt)
         Nothing -> case formatCharacter c of
-            Just f -> Just $ \locale mpado mwidth dt -> f locale mpado mwidth (zonedTimeZone dt)
+            Just f -> Just $ \fo dt -> f fo (zonedTimeZone dt)
             Nothing -> Nothing
 
 instance FormatTime TimeZone where
-    formatCharacter 'z' = Just $ padGeneral False True  4 '0' $ \_ pado -> showPadded pado . timeZoneOffsetString'' pado
-    formatCharacter 'Z' = Just $ \locale mnpo mi z -> let
+    formatCharacter 'z' = Just $ \fo z -> let
+        alt = foAlternate fo
+        in timeZoneOffsetString'' alt (getPadOption False True (if alt then 5 else 4) '0' (foPadding fo) (foWidth fo)) z
+    formatCharacter 'Z' = Just $ \fo z -> let
         n = timeZoneName z
-        in if null n then timeZoneOffsetString'' (getPadOption False True 4 '0' mnpo mi) z else padString (\_ -> timeZoneName) locale mnpo mi z
+        alt = foAlternate fo
+        in if null n then timeZoneOffsetString'' alt (getPadOption False True (if alt then 5 else 4) '0' (foPadding fo) (foWidth fo)) z else padString (\_ -> timeZoneName) fo z
     formatCharacter _ = Nothing
 
 instance FormatTime DayOfWeek where
@@ -349,7 +372,7 @@ instance FormatTime Day where
     formatCharacter _   = Nothing
 
 instance FormatTime UTCTime where
-    formatCharacter c = fmap (\f locale mpado mwidth t -> f locale mpado mwidth (utcToZonedTime utc t)) (formatCharacter c)
+    formatCharacter c = fmap (\f fo t -> f fo (utcToZonedTime utc t)) (formatCharacter c)
 
 instance FormatTime UniversalTime where
-    formatCharacter c = fmap (\f locale mpado mwidth t -> f locale mpado mwidth (ut1ToLocalTime 0 t)) (formatCharacter c)
+    formatCharacter c = fmap (\f fo t -> f fo (ut1ToLocalTime 0 t)) (formatCharacter c)

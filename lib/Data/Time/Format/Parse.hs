@@ -84,7 +84,7 @@ class ParseTime t where
 -- Case is not significant in the input string.
 -- Some variations in the input are accepted:
 --
--- [@%z@] accepts any of @-HHMM@ or @-HH:MM@.
+-- [@%z@] accepts any of @±HHMM@ or @±HH:MM@.
 --
 -- [@%Z@] accepts any string of letters, or any of the formats accepted by @%z@.
 --
