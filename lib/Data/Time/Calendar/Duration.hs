@@ -4,15 +4,34 @@ module Data.Time.Calendar.Duration
         module Data.Time.Calendar.Duration
     ) where
 
+#if MIN_VERSION_base(4,8,0)
+#else
+import Data.Monoid
+#endif
+
+#if MIN_VERSION_base(4,9,0)
+import Data.Semigroup
+#endif
+
 data CalendarDuration = CalendarDuration
     { calendarMonths :: Integer
     , calendarDays :: Integer
     } deriving Eq
 
+#if MIN_VERSION_base(4,9,0)
+-- | Additive
+instance Semigroup CalendarDuration where
+    CalendarDuration m1 d1 <> CalendarDuration m2 d2 = CalendarDuration (m1 + m2) (d1 + d2)
+#endif
+
 -- | Additive
 instance Monoid CalendarDuration where
     mempty = CalendarDuration 0 0
+#if MIN_VERSION_base(4,9,0)
+    mappend = (<>)
+#else
     mappend (CalendarDuration m1 d1) (CalendarDuration m2 d2) = CalendarDuration (m1 + m2) (d1 + d2)
+#endif
 
 -- | Show in ISO 8601 "PyyYmmMddD" format.
 instance Show CalendarDuration where

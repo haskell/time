@@ -305,7 +305,7 @@ prop_parse_format_upper (FormatString f) t = compareParse t f (map toUpper $ for
 prop_parse_format_lower :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
 prop_parse_format_lower (FormatString f) t = compareParse t f (map toLower $ format f t)
 
-prop_format_parse_format :: (FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
+prop_format_parse_format :: (FormatTime t, ParseTime t) => FormatString t -> t -> Result
 prop_format_parse_format (FormatString f) t = compareResult
     (Just (format f t))
     (fmap (format f) (parse False f (format f t) `asTypeOf` Just t))
