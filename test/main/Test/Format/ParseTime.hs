@@ -3,16 +3,15 @@ module Test.Format.ParseTime(testParseTime,test_parse_format) where
 
 import Control.Monad
 import Data.Char
-import Data.Ratio
 import Data.Time
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
-import Data.Time.Clock.POSIX
 import Test.QuickCheck.Property
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck hiding (reason)
 import Test.TestUtil
+import Test.Arbitrary()
 
 
 testParseTime :: TestTree
@@ -232,61 +231,6 @@ parse sp f t = parseTimeM sp defaultTimeLocale f t
 
 format :: (FormatTime t) => String -> t -> String
 format f t = formatTime defaultTimeLocale f t
-
-instance Arbitrary Day where
-    arbitrary = liftM ModifiedJulianDay $ choose (-313698, 2973483) -- 1000-01-1 to 9999-12-31
-
-instance CoArbitrary Day where
-    coarbitrary (ModifiedJulianDay d) = coarbitrary d
-
-instance Arbitrary DiffTime where
-    arbitrary = oneof [intSecs, fracSecs] -- up to 1 leap second
-        where intSecs = liftM secondsToDiffTime' $ choose (0, 86400)
-              fracSecs = liftM picosecondsToDiffTime' $ choose (0, 86400 * 10^(12::Int))
-              secondsToDiffTime' :: Integer -> DiffTime
-              secondsToDiffTime' = fromInteger
-              picosecondsToDiffTime' :: Integer -> DiffTime
-              picosecondsToDiffTime' x = fromRational (x % 10^(12::Int))
-
-instance CoArbitrary DiffTime where
-    coarbitrary t = coarbitrary (fromEnum t)
-
-instance Arbitrary TimeOfDay where
-    arbitrary = liftM timeToTimeOfDay arbitrary
-
-instance CoArbitrary TimeOfDay where
-    coarbitrary t = coarbitrary (timeOfDayToTime t)
-
-instance Arbitrary LocalTime where
-    arbitrary = liftM2 LocalTime arbitrary arbitrary
-
-instance CoArbitrary LocalTime where
-    coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (localTimeToUTC utc t)) :: Integer)
-
-instance Arbitrary TimeZone where
-    arbitrary = liftM minutesToTimeZone $ choose (-720,720)
-
-instance CoArbitrary TimeZone where
-    coarbitrary tz = coarbitrary (timeZoneMinutes tz)
-
-instance Arbitrary ZonedTime where
-    arbitrary = liftM2 ZonedTime arbitrary arbitrary
-
-instance CoArbitrary ZonedTime where
-    coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (zonedTimeToUTC t)) :: Integer)
-
-instance Arbitrary UTCTime where
-    arbitrary = liftM2 UTCTime arbitrary arbitrary
-
-instance CoArbitrary UTCTime where
-    coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds t) :: Integer)
-
-instance Arbitrary UniversalTime where
-    arbitrary = liftM (\n -> ModJulianDate $ n % k) $ choose (-313698 * k, 2973483 * k) where -- 1000-01-1 to 9999-12-31
-        k = 86400
-
-instance CoArbitrary UniversalTime where
-    coarbitrary (ModJulianDate d) = coarbitrary d
 
 -- missing from the time package
 instance Eq ZonedTime where

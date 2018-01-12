@@ -74,6 +74,7 @@ library
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Days,
         Data.Time.Calendar.Gregorian,
+        Data.Time.Calendar.Duration,
         Data.Time.Calendar.Week,
         Data.Time.Calendar.JulianYearDay,
         Data.Time.Clock.Internal.DiffTime,
@@ -138,6 +139,7 @@ test-suite test-main
     main-is: Main.hs
     other-modules:
         Test.TestUtil
+        Test.Arbitrary
         Test.Calendar.AddDays
         Test.Calendar.AddDaysRef
         Test.Calendar.Calendars
@@ -145,6 +147,7 @@ test-suite test-main
         Test.Calendar.ClipDates
         Test.Calendar.ClipDatesRef
         Test.Calendar.ConvertBack
+        Test.Calendar.Duration
         Test.Calendar.Easter
         Test.Calendar.EasterRef
         Test.Calendar.LongWeekYears

@@ -5,6 +5,7 @@ import Test.Calendar.AddDays
 import Test.Calendar.Calendars
 import Test.Calendar.ClipDates
 import Test.Calendar.ConvertBack
+import Test.Calendar.Duration
 import Test.Calendar.Easter
 import Test.Calendar.LongWeekYears
 import Test.Calendar.MonthDay
@@ -29,7 +30,8 @@ tests = testGroup "Time" [
         testMonthDay,
         testEaster,
         testValid,
-        testWeek
+        testWeek,
+        testDuration
         ],
     testGroup "Clock" [
         testClockConversion,
