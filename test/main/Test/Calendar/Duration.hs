@@ -27,7 +27,7 @@ testClip :: (Integer, Int, Int) -> (Integer, Int, Int) -> (Integer, Integer) -> 
 testClip (y1,m1,d1) (y2,m2,d2) (em, ed) = let
     day1 = fromGregorian y1 m1 d1
     day2 = fromGregorian y2 m2 d2
-    expected = CalendarDuration em ed
+    expected = CalendarDiffDays em ed
     found = diffGregorianDurationClip day1 day2
     in testCase (show day1 ++ " - " ++ show day2) $ assertEqual "" expected found
 
@@ -43,4 +43,4 @@ testDiffs =
         ]
 
 testDuration :: TestTree
-testDuration = testGroup "CalendarDuration" [testAddDiff, testDiffs]
+testDuration = testGroup "CalendarDiffDays" [testAddDiff, testDiffs]

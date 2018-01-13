@@ -20,7 +20,7 @@ module Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.MonthDay
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Days
-import Data.Time.Calendar.Duration
+import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Private
 
 -- | Convert to proleptic Gregorian calendar. First element of result is year, second month number (1-12), third day (1-31).
@@ -81,15 +81,15 @@ addGregorianYearsRollOver :: Integer -> Day -> Day
 addGregorianYearsRollOver n = addGregorianMonthsRollOver (n * 12)
 
 -- | Add months (clipped to last day), then add days
-addGregorianDurationClip :: CalendarDuration -> Day -> Day
-addGregorianDurationClip (CalendarDuration m d) day = addDays d $ addGregorianMonthsClip m day
+addGregorianDurationClip :: CalendarDiffDays -> Day -> Day
+addGregorianDurationClip (CalendarDiffDays m d) day = addDays d $ addGregorianMonthsClip m day
 
 -- | Add months (rolling over to next month), then add days
-addGregorianDurationRollOver :: CalendarDuration -> Day -> Day
-addGregorianDurationRollOver (CalendarDuration m d) day = addDays d $ addGregorianMonthsRollOver m day
+addGregorianDurationRollOver :: CalendarDiffDays -> Day -> Day
+addGregorianDurationRollOver (CalendarDiffDays m d) day = addDays d $ addGregorianMonthsRollOver m day
 
 -- | Calendrical difference, with as many whole months as possible
-diffGregorianDurationClip :: Day -> Day -> CalendarDuration
+diffGregorianDurationClip :: Day -> Day -> CalendarDiffDays
 diffGregorianDurationClip day2 day1 = let
     (y1,m1,d1) = toGregorian day1
     (y2,m2,d2) = toGregorian day2
@@ -100,12 +100,12 @@ diffGregorianDurationClip day2 day1 = let
         if day2 >= day1 then
         if d2 >= d1 then ymdiff else ymdiff - 1
         else if d2 <= d1 then ymdiff else ymdiff + 1
-    dayAllowed = addGregorianDurationClip (CalendarDuration ymAllowed 0) day1
-    in CalendarDuration ymAllowed $ diffDays day2 dayAllowed
+    dayAllowed = addGregorianDurationClip (CalendarDiffDays ymAllowed 0) day1
+    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- | Calendrical difference, with as many whole months as possible.
 -- Same as 'diffGregorianDurationClip' for positive durations.
-diffGregorianDurationRollOver :: Day -> Day -> CalendarDuration
+diffGregorianDurationRollOver :: Day -> Day -> CalendarDiffDays
 diffGregorianDurationRollOver day2 day1 = let
     (y1,m1,d1) = toGregorian day1
     (y2,m2,d2) = toGregorian day2
@@ -116,8 +116,8 @@ diffGregorianDurationRollOver day2 day1 = let
         if day2 >= day1 then
         if d2 >= d1 then ymdiff else ymdiff - 1
         else if d2 <= d1 then ymdiff else ymdiff + 1
-    dayAllowed = addGregorianDurationRollOver (CalendarDuration ymAllowed 0) day1
-    in CalendarDuration ymAllowed $ diffDays day2 dayAllowed
+    dayAllowed = addGregorianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
+    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- orphan instance
 instance Show Day where
