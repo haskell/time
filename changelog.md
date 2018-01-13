@@ -3,6 +3,7 @@
 ## [1.9]
 - new DayOfWeek type
 - new CalendarDuration type
+- new addLocalTime, diffLocalTime
 - formatting: %Ez and %EZ for ±HH:MM format
 - parseTimeM: use MonadFail constraint when supported
 - parsing: reject invalid (and empty) time-zones with %z and %Z
