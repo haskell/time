@@ -1,6 +1,7 @@
 # Change Log
 
 ## [1.9]
+- new conversion functions timeToDaysAndTimeOfDay & daysAndTimeOfDayToTime
 - new DayOfWeek type
 - new CalendarDiffDays type
 - new addLocalTime, diffLocalTime

@@ -162,6 +162,7 @@ test-suite test-main
         Test.Format.Format
         Test.Format.ParseTime
         Test.LocalTime.Time
+        Test.LocalTime.TimeOfDay
         Test.LocalTime.TimeRef
 
 test-suite test-unix

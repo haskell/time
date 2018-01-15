@@ -44,6 +44,21 @@ instance Arbitrary DiffTime where
 instance CoArbitrary DiffTime where
     coarbitrary t = coarbitrary (fromEnum t)
 
+instance Arbitrary NominalDiffTime where
+    arbitrary = oneof [intSecs, fracSecs]
+      where
+        limit = 1000 * 86400
+        picofactor = 10 ^ (12 :: Int)
+        intSecs = liftM secondsToDiffTime' $ choose (negate limit, limit)
+        fracSecs = liftM picosecondsToDiffTime' $ choose (negate limit * picofactor, limit * picofactor)
+        secondsToDiffTime' :: Integer -> NominalDiffTime
+        secondsToDiffTime' = fromInteger
+        picosecondsToDiffTime' :: Integer -> NominalDiffTime
+        picosecondsToDiffTime' x = fromRational (x % 10 ^ (12 :: Int))
+
+instance CoArbitrary NominalDiffTime where
+    coarbitrary t = coarbitrary (fromEnum t)
+
 instance Arbitrary TimeOfDay where
     arbitrary = liftM timeToTimeOfDay arbitrary
 
