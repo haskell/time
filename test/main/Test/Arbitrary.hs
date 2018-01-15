@@ -31,6 +31,9 @@ instance Arbitrary Day where
 instance CoArbitrary Day where
     coarbitrary (ModifiedJulianDay d) = coarbitrary d
 
+instance Arbitrary CalendarDiffDays where
+    arbitrary = liftM2 CalendarDiffDays arbitrary arbitrary
+
 instance Arbitrary DiffTime where
     arbitrary = oneof [intSecs, fracSecs] -- up to 1 leap second
       where

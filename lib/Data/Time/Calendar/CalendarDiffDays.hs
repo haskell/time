@@ -10,8 +10,11 @@ import Data.Monoid
 #endif
 
 #if MIN_VERSION_base(4,9,0)
-import Data.Semigroup
+import Data.Semigroup hiding (option)
 #endif
+
+import Data.Char
+import Text.ParserCombinators.ReadP hiding (string)
 
 data CalendarDiffDays = CalendarDiffDays
     { calendarMonths :: Integer
@@ -41,6 +44,30 @@ instance Show CalendarDiffDays where
         ms = if my == 0 then "" else show my ++ "M"
         ds = if d == 0 then "" else show d ++ "D"
         in if dur == mempty then "P0D" else "P" ++ ys ++ ms ++ ds
+
+instance Read CalendarDiffDays where
+    readsPrec _ = readParen False $ readP_to_S $ skipSpaces >> do
+        let
+            ch :: Char -> ReadP ()
+            ch c = char c >> return ()
+
+            readInteger :: ReadP Integer
+            readInteger = do
+                neg <- option False $ ch '-' >> return True
+                digits <- many1 (satisfy isDigit)
+                return $ (if neg then negate else id) $ read digits
+
+            readItem :: Char -> ReadP Integer
+            readItem c = option 0 $ do
+                i <- readInteger
+                ch c
+                return i
+        ch 'P'
+        y <- readItem 'Y'
+        m <- readItem 'M'
+        w <- readItem 'W'
+        d <- readItem 'D'
+        return $ CalendarDiffDays (y * 12 + m) (w * 7 + d)
 
 calendarDay :: CalendarDiffDays
 calendarDay = CalendarDiffDays 0 1
