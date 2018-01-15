@@ -62,6 +62,9 @@ instance Arbitrary NominalDiffTime where
 instance CoArbitrary NominalDiffTime where
     coarbitrary t = coarbitrary (fromEnum t)
 
+instance Arbitrary CalendarDiffTime where
+    arbitrary = liftM2 CalendarDiffTime arbitrary arbitrary
+
 instance Arbitrary TimeOfDay where
     arbitrary = liftM timeToTimeOfDay arbitrary
 

@@ -3,7 +3,7 @@
 ## [1.9]
 - new conversion functions timeToDaysAndTimeOfDay & daysAndTimeOfDayToTime
 - new DayOfWeek type
-- new CalendarDiffDays type
+- new CalendarDiffDays and CalendarDiffTime types
 - new addLocalTime, diffLocalTime
 - formatting: %Ez and %EZ for ±HH:MM format
 - parseTimeM: use MonadFail constraint when supported

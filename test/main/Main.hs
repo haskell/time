@@ -18,6 +18,7 @@ import Test.Format.Format
 import Test.Format.ParseTime
 import Test.LocalTime.Time
 import Test.LocalTime.TimeOfDay
+import Test.LocalTime.CalendarDiffTime
 
 
 tests :: TestTree
@@ -45,7 +46,8 @@ tests = testGroup "Time" [
         ],
     testGroup "LocalTime" [
         testTime,
-        testTimeOfDay
+        testTimeOfDay,
+        testCalendarDiffTime
         ]
     ]
 

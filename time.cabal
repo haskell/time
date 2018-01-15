@@ -89,6 +89,7 @@ library
         Data.Time.Clock.Internal.UTCDiff,
         Data.Time.LocalTime.Internal.TimeZone,
         Data.Time.LocalTime.Internal.TimeOfDay,
+        Data.Time.LocalTime.Internal.CalendarDiffTime
         Data.Time.LocalTime.Internal.LocalTime,
         Data.Time.LocalTime.Internal.ZonedTime,
         Data.Time.Format.Parse
@@ -161,6 +162,7 @@ test-suite test-main
         Test.Clock.TAI
         Test.Format.Format
         Test.Format.ParseTime
+        Test.LocalTime.CalendarDiffTime
         Test.LocalTime.Time
         Test.LocalTime.TimeOfDay
         Test.LocalTime.TimeRef

@@ -8,11 +8,9 @@ module Data.Time.Calendar.CalendarDiffDays
 #else
 import Data.Monoid
 #endif
-
 #if MIN_VERSION_base(4,9,0)
 import Data.Semigroup hiding (option)
 #endif
-
 import Data.Char
 import Text.ParserCombinators.ReadP hiding (string)
 
