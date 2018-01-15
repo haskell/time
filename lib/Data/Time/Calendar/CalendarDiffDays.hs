@@ -36,7 +36,7 @@ instance Monoid CalendarDiffDays where
     mappend (CalendarDiffDays m1 d1) (CalendarDiffDays m2 d2) = CalendarDiffDays (m1 + m2) (d1 + d2)
 #endif
 
--- | Show in ISO 8601 "PyyYmmMddD" format.
+-- | Show in ISO 8601 "PyyYmmMddD" format. (Zero items will be omitted, except zero time will be "P0D".)
 instance Show CalendarDiffDays where
     show dur@(CalendarDiffDays m d) = let
         (y,my) = quotRem m 12
@@ -45,6 +45,7 @@ instance Show CalendarDiffDays where
         ds = if d == 0 then "" else show d ++ "D"
         in if dur == mempty then "P0D" else "P" ++ ys ++ ms ++ ds
 
+-- | Read in ISO 8601 "PyyYmmMwwWddD" format. (Items may be omitted.)
 instance Read CalendarDiffDays where
     readsPrec _ = readParen False $ readP_to_S $ skipSpaces >> do
         let
