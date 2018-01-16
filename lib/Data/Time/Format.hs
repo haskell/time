@@ -267,10 +267,10 @@ formatChar c = case formatCharacter c of
 --
 -- [@%D@] total days, not including months
 --
+-- [@%d@] days of week
+--
 -- === 'CalendarDiffTime'
 -- For 'CalendarDiffTime':
---
--- [@%d@] days of week
 --
 -- [@%H@] total hours, not including months
 --
