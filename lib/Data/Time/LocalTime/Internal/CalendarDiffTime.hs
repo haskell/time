@@ -34,7 +34,7 @@ instance Monoid CalendarDiffTime where
 #else
     mappend (CalendarDiffTime m1 d1) (CalendarDiffTime m2 d2) = CalendarDiffTime (m1 + m2) (d1 + d2)
 #endif
--- | Show in ISO 8601 "PyyYmmMddDThhHmmMssS" format.
+-- | Show in ISO 8601 \"PyyYmmMddDThhHmmMssS\" format. (Zero items will be omitted, and a zero time part with be entirely omitted, except zero time will be \"P0D\".)
 instance Show CalendarDiffTime where
     show (CalendarDiffTime months t) = let
         part :: (Eq t, Num t, Show t) => t -> String -> String
@@ -64,7 +64,7 @@ instance Show CalendarDiffTime where
                (_, "") -> dpart
                (_, _) -> dpart ++ "T" ++ tpart
 
--- | Read in ISO 8601 "PyyYmmMwwWddDThhHmmMssS" format. (Items may be omitted, and the \"T\" time section may be entirely omitted.)
+-- | Read in ISO 8601 \"PyyYmmMwwWddDThhHmmMssS\" format. (Items may be omitted, and the \"T\" time section may be entirely omitted.)
 instance Read CalendarDiffTime where
     readsPrec _ =
         readParen False $
@@ -112,6 +112,6 @@ instance Read CalendarDiffTime where
 calendarTimeDays :: CalendarDiffDays -> CalendarDiffTime
 calendarTimeDays (CalendarDiffDays m d) = CalendarDiffTime m $ fromInteger d * nominalDay
 
--- | Scale by a factor. Note that @scaleCalendarDiffDays (-1)@ will not perfectly invert a duration, due to variable month lengths.
+-- | Scale by a factor. Note that @scaleCalendarDiffTime (-1)@ will not perfectly invert a duration, due to variable month lengths.
 scaleCalendarDiffTime :: Integer -> CalendarDiffTime -> CalendarDiffTime
 scaleCalendarDiffTime k (CalendarDiffTime m d) = CalendarDiffTime (k * m) (fromInteger k * d)
