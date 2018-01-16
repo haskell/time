@@ -5,6 +5,7 @@
 - new DayOfWeek type
 - new CalendarDiffDays and CalendarDiffTime types
 - new addLocalTime, diffLocalTime
+- formatting: diff types (NominalDiffTime, DiffTime, CalendarDiffDays, CalendarDiffTime)
 - formatting: %Ez and %EZ for ±HH:MM format
 - parseTimeM: use MonadFail constraint when supported
 - parsing: reject invalid (and empty) time-zones with %z and %Z

@@ -94,9 +94,52 @@ testTimeZone = testGroup "TimeZone"
     testZonePair "E" "-11:30" (-690)
     ]
 
+testAFormat :: FormatTime t => String -> String -> t -> TestTree
+testAFormat fmt expected t = testCase fmt $ assertEqual "" expected $ formatTime defaultTimeLocale fmt t
+
+testNominalDiffTime :: TestTree
+testNominalDiffTime = testGroup "NominalDiffTime"
+    [
+        testAFormat "%Ww%dd%hh%mm%s%Qs" "3w2d2h22m8.21s" $ (fromRational $ 23 * 86400 + 8528.21 :: NominalDiffTime),
+        testAFormat "%Dd %Hh %Mm %S%Qs" "23d 554h 33262m 1995728.21s" $ (fromRational $ 23 * 86400 + 8528.21 :: NominalDiffTime),
+        testAFormat "%Ww%dd%hh%mm%s%Qs" "-3w-2d-2h-22m-8.21s" $ (fromRational $ negate $ 23 * 86400 + 8528.21 :: NominalDiffTime),
+        testAFormat "%Dd %Hh %Mm %S%Qs" "-23d -554h -33262m -1995728.21s" $ (fromRational $ negate $ 23 * 86400 + 8528.21 :: NominalDiffTime)
+    ]
+
+testDiffTime :: TestTree
+testDiffTime = testGroup "DiffTime"
+    [
+        testAFormat "%Ww%dd%hh%mm%s%Qs" "3w2d2h22m8.21s" $ (fromRational $ 23 * 86400 + 8528.21 :: DiffTime),
+        testAFormat "%Dd %Hh %Mm %S%Qs" "23d 554h 33262m 1995728.21s" $ (fromRational $ 23 * 86400 + 8528.21 :: DiffTime),
+        testAFormat "%Ww%dd%hh%mm%s%Qs" "-3w-2d-2h-22m-8.21s" $ (fromRational $ negate $ 23 * 86400 + 8528.21 :: DiffTime),
+        testAFormat "%Dd %Hh %Mm %S%Qs" "-23d -554h -33262m -1995728.21s" $ (fromRational $ negate $ 23 * 86400 + 8528.21 :: DiffTime)
+    ]
+
+testCalenderDiffDays :: TestTree
+testCalenderDiffDays = testGroup "CalenderDiffDays"
+    [
+        testAFormat "%Yy%bm%Ww%dd" "5y4m3w2d" $ CalendarDiffDays 64 23,
+        testAFormat "%Bm %Dd" "64m 23d" $ CalendarDiffDays 64 23,
+        testAFormat "%Yy%bm%Ww%dd" "-5y-4m-3w-2d" $ CalendarDiffDays (-64) (-23),
+        testAFormat "%Bm %Dd" "-64m -23d" $ CalendarDiffDays (-64) (-23)
+    ]
+
+testCalenderDiffTime :: TestTree
+testCalenderDiffTime = testGroup "CalenderDiffTime"
+    [
+        testAFormat "%Yy%bm%Ww%dd%hh%mm%s%Qs" "5y4m3w2d2h22m8.21s" $ CalendarDiffTime 64 $ 23 * 86400 + 8528.21,
+        testAFormat "%Bm %Dd %Hh %Mm %S%Qs" "64m 23d 554h 33262m 1995728.21s" $ CalendarDiffTime 64 $ 23 * 86400 + 8528.21,
+        testAFormat "%Yy%bm%Ww%dd%hh%mm%s%Qs" "-5y-4m-3w-2d-2h-22m-8.21s" $ CalendarDiffTime (-64) $ negate $ 23 * 86400 + 8528.21,
+        testAFormat "%Bm %Dd %Hh %Mm %S%Qs" "-64m -23d -554h -33262m -1995728.21s" $ CalendarDiffTime (-64) $ negate $ 23 * 86400 + 8528.21
+    ]
+
 testFormat :: TestTree
 testFormat = testGroup "testFormat" $ [
     testCheckParse,
     testDayOfWeek,
-    testTimeZone
+    testTimeZone,
+    testNominalDiffTime,
+    testDiffTime,
+    testCalenderDiffDays,
+    testCalenderDiffTime
     ]

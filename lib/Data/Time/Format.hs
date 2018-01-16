@@ -9,15 +9,19 @@ import Data.Maybe
 import Data.Char
 import Data.Fixed
 
+import Data.Time.Clock.Internal.DiffTime
+import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
 import Data.Time.Calendar.Days
+import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Week
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
+import Data.Time.LocalTime.Internal.CalendarDiffTime
 import Data.Time.LocalTime.Internal.TimeZone
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.LocalTime
@@ -215,6 +219,75 @@ formatChar c = case formatCharacter c of
 -- [@%U@] week of year where weeks start on Sunday (as 'sundayStartWeek'), 0-padded to two chars, @00@ - @53@
 --
 -- [@%W@] week of year where weeks start on Monday (as 'mondayStartWeek'), 0-padded to two chars, @00@ - @53@
+--
+-- == Duration types
+-- The specifiers for 'DiffTime', 'NominalDiffTime', 'CalendarDiffDays', and 'CalendarDiffTime' are semantically
+-- separate from the other types.
+-- Specifiers on negative time differences will generally be negative (think 'rem' rather than 'mod').
+--
+-- === 'NominalDiffTime' and 'DiffTime'
+-- Note that a "minute" of 'DiffTime' is simply 60 SI seconds, rather than a minute of civil time.
+-- Use 'NominalDiffTime' to work with civil time, ignoring any leap seconds.
+--
+-- For 'NominalDiffTime' and 'DiffTime':
+--
+-- [@%W@] total weeks
+--
+-- [@%D@] total days
+--
+-- [@%d@] days of week
+--
+-- [@%H@] total hours
+--
+-- [@%h@] hours of day
+--
+-- [@%M@] total minutes
+--
+-- [@%m@] minutes of hour
+--
+-- [@%S@] total seconds
+--
+-- [@%s@] seconds of minute
+--
+-- [@%q@] picosecond of second, 0-padded to twelve chars, @000000000000@ - @999999999999@.
+--
+-- [@%Q@] decimal point and fraction of second, up to 12 second decimals, without trailing zeros.
+-- For a whole number of seconds, @%Q@ omits the decimal point unless padding is specified.
+--
+-- === 'CalendarDiffDays'
+-- For 'CalendarDiffDays' (and 'CalendarDiffTime'):
+--
+-- [@%Y@] total years
+--
+-- [@%B@] total months
+--
+-- [@%b@] months of year
+--
+-- [@%W@] total weeks, not including months
+--
+-- [@%D@] total days, not including months
+--
+-- === 'CalendarDiffTime'
+-- For 'CalendarDiffTime':
+--
+-- [@%d@] days of week
+--
+-- [@%H@] total hours, not including months
+--
+-- [@%h@] hours of day
+--
+-- [@%M@] total minutes, not including months
+--
+-- [@%m@] minutes of hour
+--
+-- [@%S@] total seconds, not including months
+--
+-- [@%s@] seconds of minute
+--
+-- [@%q@] picosecond of second, 0-padded to twelve chars, @000000000000@ - @999999999999@.
+--
+-- [@%Q@] decimal point and fraction of second, up to 12 second decimals, without trailing zeros.
+-- For a whole number of seconds, @%Q@ omits the decimal point unless padding is specified.
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
 formatTime _ [] _ = ""
 formatTime locale ('%':cs) t = case formatTime1 locale cs t of
@@ -376,3 +449,60 @@ instance FormatTime UTCTime where
 
 instance FormatTime UniversalTime where
     formatCharacter c = fmap (\f fo t -> f fo (ut1ToLocalTime 0 t)) (formatCharacter c)
+
+padNumStd :: Int -> (t -> Integer) -> (FormatOptions -> t -> String)
+padNumStd n = padNum False n '0'
+
+quotBy :: Real t => t -> t -> Integer
+quotBy d n = truncate ((toRational n) / (toRational d))
+
+remBy :: Real t => t -> t -> t
+remBy d n = n - (fromInteger f) * d where
+    f = quotBy d n
+
+instance FormatTime NominalDiffTime where
+    formatCharacter 'W' = Just $ padNumStd 1 $ quotBy $ 7 * 86400
+    formatCharacter 'D' = Just $ padNumStd 1 $ quotBy 86400
+    formatCharacter 'd' = Just $ padNumStd 1 $ remBy 7 . quotBy 86400
+    formatCharacter 'H' = Just $ padNumStd 1 $ quotBy 3600
+    formatCharacter 'h' = Just $ padNumStd 2 $ remBy 24 . quotBy 3600
+    formatCharacter 'M' = Just $ padNumStd 1 $ quotBy 60
+    formatCharacter 'm' = Just $ padNumStd 2 $ remBy 60 . quotBy 60
+    formatCharacter 'S' = Just $ padNumStd 1 $ quotBy 1
+    formatCharacter 's' = Just $ padNumStd 2 $ remBy 60 . quotBy 1
+    formatCharacter 'q' = Just $ padGeneral True True 12 '0' $ \_ pado t -> showPaddedFixedFraction pado (realToFrac t :: Pico)
+    formatCharacter 'Q' = Just $ padGeneral True False 12 '0' $ \_ pado t -> dotNonEmpty $ showPaddedFixedFraction pado (realToFrac t :: Pico) where
+        dotNonEmpty "" = ""
+        dotNonEmpty s = '.':s
+    formatCharacter _   = Nothing
+
+instance FormatTime DiffTime where
+    formatCharacter 'W' = Just $ padNumStd 1 $ quotBy $ 7 * 86400
+    formatCharacter 'D' = Just $ padNumStd 1 $ quotBy 86400
+    formatCharacter 'd' = Just $ padNumStd 1 $ remBy 7 . quotBy 86400
+    formatCharacter 'H' = Just $ padNumStd 1 $ quotBy 3600
+    formatCharacter 'h' = Just $ padNumStd 2 $ remBy 24 . quotBy 3600
+    formatCharacter 'M' = Just $ padNumStd 1 $ quotBy 60
+    formatCharacter 'm' = Just $ padNumStd 2 $ remBy 60 . quotBy 60
+    formatCharacter 'S' = Just $ padNumStd 1 $ quotBy 1
+    formatCharacter 's' = Just $ padNumStd 2 $ remBy 60 . quotBy 1
+    formatCharacter 'q' = Just $ padGeneral True True 12 '0' $ \_ pado t -> showPaddedFixedFraction pado (realToFrac t :: Pico)
+    formatCharacter 'Q' = Just $ padGeneral True False 12 '0' $ \_ pado t -> dotNonEmpty $ showPaddedFixedFraction pado (realToFrac t :: Pico) where
+        dotNonEmpty "" = ""
+        dotNonEmpty s = '.':s
+    formatCharacter _   = Nothing
+
+instance FormatTime CalendarDiffDays where
+    formatCharacter 'Y' = Just $ padNumStd 1 $ quotBy 12 . calendarMonths
+    formatCharacter 'B' = Just $ padNumStd 1 $ calendarMonths
+    formatCharacter 'b' = Just $ padNumStd 1 $ remBy 12 . calendarMonths
+    formatCharacter 'W' = Just $ padNumStd 1 $ quotBy 7 . calendarDays
+    formatCharacter 'D' = Just $ padNumStd 1 $ calendarDays
+    formatCharacter 'd' = Just $ padNumStd 1 $ remBy 7 . calendarDays
+    formatCharacter _   = Nothing
+
+instance FormatTime CalendarDiffTime where
+    formatCharacter 'Y' = Just $ padNumStd 1 $ quotBy 12 . calendarTimeMonths
+    formatCharacter 'B' = Just $ padNumStd 1 $ calendarTimeMonths
+    formatCharacter 'b' = Just $ padNumStd 1 $ remBy 12 . calendarTimeMonths
+    formatCharacter c = fmap (\f fo t -> f fo (calendarTime t)) (formatCharacter c)
