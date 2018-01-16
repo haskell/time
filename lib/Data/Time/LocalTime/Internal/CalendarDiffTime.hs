@@ -18,8 +18,8 @@ import Data.Time.LocalTime.Internal.TimeOfDay
 import Text.ParserCombinators.ReadP hiding (string)
 
 data CalendarDiffTime = CalendarDiffTime
-    { calendarTimeMonths :: Integer
-    , calendarTime :: NominalDiffTime
+    { ctMonths :: Integer
+    , ctTime :: NominalDiffTime
     } deriving (Eq)
 #if MIN_VERSION_base(4,9,0)
 -- | Additive

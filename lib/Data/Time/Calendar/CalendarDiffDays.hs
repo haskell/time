@@ -15,8 +15,8 @@ import Data.Char
 import Text.ParserCombinators.ReadP hiding (string)
 
 data CalendarDiffDays = CalendarDiffDays
-    { calendarMonths :: Integer
-    , calendarDays :: Integer
+    { cdMonths :: Integer
+    , cdDays :: Integer
     } deriving Eq
 
 #if MIN_VERSION_base(4,9,0)

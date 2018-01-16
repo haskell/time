@@ -493,16 +493,16 @@ instance FormatTime DiffTime where
     formatCharacter _   = Nothing
 
 instance FormatTime CalendarDiffDays where
-    formatCharacter 'Y' = Just $ padNumStd 1 $ quotBy 12 . calendarMonths
-    formatCharacter 'B' = Just $ padNumStd 1 $ calendarMonths
-    formatCharacter 'b' = Just $ padNumStd 1 $ remBy 12 . calendarMonths
-    formatCharacter 'W' = Just $ padNumStd 1 $ quotBy 7 . calendarDays
-    formatCharacter 'D' = Just $ padNumStd 1 $ calendarDays
-    formatCharacter 'd' = Just $ padNumStd 1 $ remBy 7 . calendarDays
+    formatCharacter 'Y' = Just $ padNumStd 1 $ quotBy 12 . cdMonths
+    formatCharacter 'B' = Just $ padNumStd 1 $ cdMonths
+    formatCharacter 'b' = Just $ padNumStd 1 $ remBy 12 . cdMonths
+    formatCharacter 'W' = Just $ padNumStd 1 $ quotBy 7 . cdDays
+    formatCharacter 'D' = Just $ padNumStd 1 $ cdDays
+    formatCharacter 'd' = Just $ padNumStd 1 $ remBy 7 . cdDays
     formatCharacter _   = Nothing
 
 instance FormatTime CalendarDiffTime where
-    formatCharacter 'Y' = Just $ padNumStd 1 $ quotBy 12 . calendarTimeMonths
-    formatCharacter 'B' = Just $ padNumStd 1 $ calendarTimeMonths
-    formatCharacter 'b' = Just $ padNumStd 1 $ remBy 12 . calendarTimeMonths
-    formatCharacter c = fmap (\f fo t -> f fo (calendarTime t)) (formatCharacter c)
+    formatCharacter 'Y' = Just $ padNumStd 1 $ quotBy 12 . ctMonths
+    formatCharacter 'B' = Just $ padNumStd 1 $ ctMonths
+    formatCharacter 'b' = Just $ padNumStd 1 $ remBy 12 . ctMonths
+    formatCharacter c = fmap (\f fo t -> f fo (ctTime t)) (formatCharacter c)
