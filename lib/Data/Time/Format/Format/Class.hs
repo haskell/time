@@ -258,17 +258,17 @@ showPaddedFixedFraction pado x = let
 --
 -- [@%S@] total whole seconds
 --
--- [@%ES@] total seconds, with decimal point and up to <width> (default 12) decimal places, without trailing zeros.
+-- [@%ES@] total seconds, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
 -- For a whole number of seconds, @%ES@ omits the decimal point unless padding is specified.
 --
--- [@%0ES@] total seconds, with decimal point and <width> (default 12) decimal places.
+-- [@%0ES@] total seconds, with decimal point and \<width\> (default 12) decimal places.
 --
 -- [@%s@] whole seconds of minute
 --
--- [@%Es@] seconds of minute, with decimal point and up to <width> (default 12) decimal places, without trailing zeros.
+-- [@%Es@] seconds of minute, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
 -- For a whole number of seconds, @%Es@ omits the decimal point unless padding is specified.
 --
--- [@%0Es@] seconds of minute as two digits, with decimal point and <width> (default 12) decimal places.
+-- [@%0Es@] seconds of minute as two digits, with decimal point and \<width\> (default 12) decimal places.
 --
 -- === 'CalendarDiffDays'
 -- For 'CalendarDiffDays' (and 'CalendarDiffTime'):
@@ -296,14 +296,19 @@ showPaddedFixedFraction pado x = let
 --
 -- [@%m@] minutes of hour
 --
--- [@%S@] total seconds, not including months
+-- [@%S@] total whole seconds, not including months
 --
--- [@%s@] seconds of minute
+-- [@%ES@] total seconds, not including months, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
+-- For a whole number of seconds, @%ES@ omits the decimal point unless padding is specified.
 --
--- [@%q@] picosecond of second, 0-padded to twelve chars, @000000000000@ - @999999999999@.
+-- [@%0ES@] total seconds, not including months, with decimal point and \<width\> (default 12) decimal places.
 --
--- [@%Q@] decimal point and fraction of second, up to 12 second decimals, without trailing zeros.
--- For a whole number of seconds, @%Q@ omits the decimal point unless padding is specified.
+-- [@%s@] whole seconds of minute
+--
+-- [@%Es@] seconds of minute, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
+-- For a whole number of seconds, @%Es@ omits the decimal point unless padding is specified.
+--
+-- [@%0Es@] seconds of minute as two digits, with decimal point and \<width\> (default 12) decimal places.
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
 formatTime _ [] _ = ""
 formatTime locale ('%':cs) t = case formatTime1 locale cs t of
