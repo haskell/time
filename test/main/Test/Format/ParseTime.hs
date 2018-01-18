@@ -3,6 +3,7 @@ module Test.Format.ParseTime(testParseTime,test_parse_format) where
 
 import Control.Monad
 import Data.Char
+import Text.Read
 import Data.Time
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
@@ -259,7 +260,7 @@ test_parse_format f t = let s = format f t in (show t, s, parse False f s `asTyp
 --
 
 prop_read_show :: (Read a, Show a, Eq a) => a -> Result
-prop_read_show t = compareResult [(t,"")] (reads (show t))
+prop_read_show t = compareResult (Just t) (readMaybe (show t))
 
 --
 -- * special show functions
@@ -353,7 +354,11 @@ typedTests prop = [
     nameTest "TimeZone" $ tgroup timeZoneFormats prop,
     nameTest "ZonedTime" $ tgroup zonedTimeFormats prop,
     nameTest "UTCTime" $ tgroup utcTimeFormats prop,
-    nameTest "UniversalTime" $ tgroup universalTimeFormats prop
+    nameTest "UniversalTime" $ tgroup universalTimeFormats prop,
+    nameTest "CalendarDiffDays" $ tgroup calendarDiffDaysFormats prop,
+    nameTest "CalenderDiffTime" $ tgroup calendarDiffTimeFormats prop,
+    nameTest "DiffTime" $ tgroup diffTimeFormats prop,
+    nameTest "NominalDiffTime" $ tgroup nominalDiffTimeFormats prop
     ]
 
 formatParseFormatTests :: TestTree
@@ -385,7 +390,9 @@ readShowTests = nameTest "read_show" [
     nameTest "TimeZone" (prop_read_show :: TimeZone -> Result),
     nameTest "ZonedTime" (prop_read_show :: ZonedTime -> Result),
     nameTest "UTCTime" (prop_read_show :: UTCTime -> Result),
-    nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result)
+    nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result),
+    nameTest "CalendarDiffDays" (prop_read_show :: CalendarDiffDays -> Result),
+    nameTest "CalendarDiffTime" (prop_read_show :: CalendarDiffTime -> Result)
     ]
 
 parseShowTests :: TestTree
@@ -454,6 +461,18 @@ utcTimeFormats = map FormatString
 
 universalTimeFormats :: [FormatString UniversalTime]
 universalTimeFormats = map FormatString []
+
+calendarDiffDaysFormats :: [FormatString CalendarDiffDays]
+calendarDiffDaysFormats = map FormatString ["%Yy%bm%Ww%dd","%Yy%bm%Dd","%Bm%Ww%dd","%Bm%Dd"]
+
+calendarDiffTimeFormats :: [FormatString CalendarDiffTime]
+calendarDiffTimeFormats = map FormatString ["%Yy%bm%Ww%dd%hh%mm%Ess","%Bm%Ww%dd%hh%mm%Ess","%Bm%Dd%hh%mm%Ess","%Bm%Hh%mm%Ess","%Bm%Mm%Ess","%Bm%Mm%0Ess","%Bm%ESs","%Bm%0ESs"]
+
+diffTimeFormats :: [FormatString DiffTime]
+diffTimeFormats = map FormatString ["%Ww%dd%hh%mm%Ess","%Dd%hh%mm%Ess","%Hh%mm%Ess","%Mm%Ess","%Mm%0Ess","%ESs","%0ESs"]
+
+nominalDiffTimeFormats :: [FormatString NominalDiffTime]
+nominalDiffTimeFormats = map FormatString ["%Ww%dd%hh%mm%Ess","%Dd%hh%mm%Ess","%Hh%mm%Ess","%Mm%Ess","%Mm%0Ess","%ESs","%0ESs"]
 
 --
 -- * Formats that do not include all the information

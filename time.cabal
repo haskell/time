@@ -92,8 +92,12 @@ library
         Data.Time.LocalTime.Internal.CalendarDiffTime
         Data.Time.LocalTime.Internal.LocalTime,
         Data.Time.LocalTime.Internal.ZonedTime,
-        Data.Time.Format.Parse
-        Data.Time.Format.Locale
+        Data.Time.Format.Parse,
+        Data.Time.Format.Locale,
+        Data.Time.Format.Format.Class,
+        Data.Time.Format.Format.Instances,
+        Data.Time.Format.Parse.Class,
+        Data.Time.Format.Parse.Instances
     include-dirs: lib/include
     if os(windows)
         install-includes:
