@@ -331,18 +331,18 @@ instance ParseTime UniversalTime where
 buildTimeMonths :: [(Char,String)] -> Maybe Integer
 buildTimeMonths xs = do
     tt <- for xs $ \(c,s) -> case c of
-        'Y' -> fmap ((*) 12) $ readMaybe s
-        'B' -> readMaybe s
+        'y' -> fmap ((*) 12) $ readMaybe s
         'b' -> readMaybe s
+        'B' -> readMaybe s
         _ -> return 0
     return $ sum tt
 
 buildTimeDays :: [(Char,String)] -> Maybe Integer
 buildTimeDays xs = do
     tt <- for xs $ \(c,s) -> case c of
-        'W' -> fmap ((*) 7) $ readMaybe s
-        'D' -> readMaybe s
+        'w' -> fmap ((*) 7) $ readMaybe s
         'd' -> readMaybe s
+        'D' -> readMaybe s
         _ -> return 0
     return $ sum tt
 
@@ -354,12 +354,12 @@ buildTimeSeconds xs = do
             i <- readMaybe s
             return $ fromInteger $ i * t
         in case c of
-            'H' -> readInt 3600
             'h' -> readInt 3600
-            'M' -> readInt 60
+            'H' -> readInt 3600
             'm' -> readInt 60
-            'S' -> readMaybe s
+            'M' -> readInt 60
             's' -> readMaybe s
+            'S' -> readMaybe s
             _ -> return 0
     return $ sum tt
 

@@ -205,16 +205,16 @@ durationParseTimeSpecifier :: TimeLocale -> Maybe ParseNumericPadding -> Char ->
 durationParseTimeSpecifier _ mpad c = let
     padopt = parsePaddedSignedDigits $ fromMaybe NoPadding mpad
     in case c of
-        'Y' -> padopt 1
-        'B' -> padopt 1
-        'b' -> padopt 2
-        'W' -> padopt 1
-        'D' -> padopt 1
+        'y' -> padopt 1
+        'b' -> padopt 1
+        'B' -> padopt 2
+        'w' -> padopt 1
         'd' -> padopt 1
-        'H' -> padopt 1
-        'h' -> padopt 2
-        'M' -> padopt 1
-        'm' -> padopt 2
-        'S' -> parseSignedDecimal
+        'D' -> padopt 1
+        'h' -> padopt 1
+        'H' -> padopt 2
+        'm' -> padopt 1
+        'M' -> padopt 2
         's' -> parseSignedDecimal
+        'S' -> parseSignedDecimal
         _   -> fail $ "Unknown format character: " ++ show c

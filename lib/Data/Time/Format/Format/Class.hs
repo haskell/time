@@ -242,73 +242,73 @@ showPaddedFixedFraction pado x = let
 --
 -- For 'NominalDiffTime' and 'DiffTime':
 --
--- [@%W@] total whole weeks
+-- [@%w@] total whole weeks
 --
--- [@%D@] total whole days
+-- [@%d@] total whole days
 --
--- [@%d@] whole days of week
+-- [@%D@] whole days of week
 --
--- [@%H@] total whole hours
+-- [@%h@] total whole hours
 --
--- [@%h@] whole hours of day
+-- [@%H@] whole hours of day
 --
--- [@%M@] total whole minutes
+-- [@%m@] total whole minutes
 --
--- [@%m@] whole minutes of hour
+-- [@%M@] whole minutes of hour
 --
--- [@%S@] total whole seconds
+-- [@%s@] total whole seconds
 --
--- [@%ES@] total seconds, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
--- For a whole number of seconds, @%ES@ omits the decimal point unless padding is specified.
---
--- [@%0ES@] total seconds, with decimal point and \<width\> (default 12) decimal places.
---
--- [@%s@] whole seconds of minute
---
--- [@%Es@] seconds of minute, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
+-- [@%Es@] total seconds, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
 -- For a whole number of seconds, @%Es@ omits the decimal point unless padding is specified.
 --
--- [@%0Es@] seconds of minute as two digits, with decimal point and \<width\> (default 12) decimal places.
+-- [@%0Es@] total seconds, with decimal point and \<width\> (default 12) decimal places.
+--
+-- [@%S@] whole seconds of minute
+--
+-- [@%ES@] seconds of minute, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
+-- For a whole number of seconds, @%ES@ omits the decimal point unless padding is specified.
+--
+-- [@%0ES@] seconds of minute as two digits, with decimal point and \<width\> (default 12) decimal places.
 --
 -- === 'CalendarDiffDays'
 -- For 'CalendarDiffDays' (and 'CalendarDiffTime'):
 --
--- [@%Y@] total years
+-- [@%y@] total years
 --
--- [@%B@] total months
+-- [@%b@] total months
 --
--- [@%b@] months of year
+-- [@%B@] months of year
 --
--- [@%W@] total weeks, not including months
+-- [@%w@] total weeks, not including months
 --
--- [@%D@] total days, not including months
+-- [@%d@] total days, not including months
 --
--- [@%d@] days of week
+-- [@%D@] days of week
 --
 -- === 'CalendarDiffTime'
 -- For 'CalendarDiffTime':
 --
--- [@%H@] total hours, not including months
+-- [@%h@] total hours, not including months
 --
--- [@%h@] hours of day
+-- [@%H@] hours of day
 --
--- [@%M@] total minutes, not including months
+-- [@%m@] total minutes, not including months
 --
--- [@%m@] minutes of hour
+-- [@%M@] minutes of hour
 --
--- [@%S@] total whole seconds, not including months
+-- [@%s@] total whole seconds, not including months
 --
--- [@%ES@] total seconds, not including months, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
--- For a whole number of seconds, @%ES@ omits the decimal point unless padding is specified.
---
--- [@%0ES@] total seconds, not including months, with decimal point and \<width\> (default 12) decimal places.
---
--- [@%s@] whole seconds of minute
---
--- [@%Es@] seconds of minute, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
+-- [@%Es@] total seconds, not including months, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
 -- For a whole number of seconds, @%Es@ omits the decimal point unless padding is specified.
 --
--- [@%0Es@] seconds of minute as two digits, with decimal point and \<width\> (default 12) decimal places.
+-- [@%0Es@] total seconds, not including months, with decimal point and \<width\> (default 12) decimal places.
+--
+-- [@%S@] whole seconds of minute
+--
+-- [@%ES@] seconds of minute, with decimal point and up to \<width\> (default 12) decimal places, without trailing zeros.
+-- For a whole number of seconds, @%ES@ omits the decimal point unless padding is specified.
+--
+-- [@%0ES@] seconds of minute as two digits, with decimal point and \<width\> (default 12) decimal places.
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
 formatTime _ [] _ = ""
 formatTime locale ('%':cs) t = case formatTime1 locale cs t of

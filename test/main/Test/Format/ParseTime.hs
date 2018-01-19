@@ -465,16 +465,16 @@ universalTimeFormats :: [FormatString UniversalTime]
 universalTimeFormats = map FormatString []
 
 calendarDiffDaysFormats :: [FormatString CalendarDiffDays]
-calendarDiffDaysFormats = map FormatString ["%Yy%bm%Ww%dd","%Yy%bm%Dd","%Bm%Ww%dd","%Bm%Dd"]
+calendarDiffDaysFormats = map FormatString ["%yy%Bm%ww%Dd","%yy%Bm%dd","%bm%ww%Dd","%bm%dd"]
 
 calendarDiffTimeFormats :: [FormatString CalendarDiffTime]
-calendarDiffTimeFormats = map FormatString ["%Yy%bm%Ww%dd%hh%mm%Ess","%Bm%Ww%dd%hh%mm%Ess","%Bm%Dd%hh%mm%Ess","%Bm%Hh%mm%Ess","%Bm%Mm%Ess","%Bm%Mm%0Ess","%Bm%ESs","%Bm%0ESs"]
+calendarDiffTimeFormats = map FormatString ["%yy%Bm%ww%Dd%Hh%Mm%ESs","%bm%ww%Dd%Hh%Mm%ESs","%bm%dd%Hh%Mm%ESs","%bm%hh%Mm%ESs","%bm%mm%ESs","%bm%mm%0ESs","%bm%Ess","%bm%0Ess"]
 
 diffTimeFormats :: [FormatString DiffTime]
-diffTimeFormats = map FormatString ["%Ww%dd%hh%mm%Ess","%Dd%hh%mm%Ess","%Hh%mm%Ess","%Mm%Ess","%Mm%0Ess","%ESs","%0ESs"]
+diffTimeFormats = map FormatString ["%ww%Dd%Hh%Mm%ESs","%dd%Hh%Mm%ESs","%hh%Mm%ESs","%mm%ESs","%mm%0ESs","%Ess","%0Ess"]
 
 nominalDiffTimeFormats :: [FormatString NominalDiffTime]
-nominalDiffTimeFormats = map FormatString ["%Ww%dd%hh%mm%Ess","%Dd%hh%mm%Ess","%Hh%mm%Ess","%Mm%Ess","%Mm%0Ess","%ESs","%0ESs"]
+nominalDiffTimeFormats = map FormatString ["%ww%Dd%Hh%Mm%ESs","%dd%Hh%Mm%ESs","%hh%Mm%ESs","%mm%ESs","%mm%0ESs","%Ess","%0Ess"]
 
 --
 -- * Formats that do not include all the information

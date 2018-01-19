@@ -137,17 +137,17 @@ instance FormatTime UniversalTime where
     formatCharacter alt c = fmap (\f fo t -> f fo (ut1ToLocalTime 0 t)) (formatCharacter alt c)
 
 instance FormatTime NominalDiffTime where
-    formatCharacter _ 'W' = Just $ formatNumberStd 1 $ quotBy $ 7 * 86400
-    formatCharacter _ 'D' = Just $ formatNumberStd 1 $ quotBy 86400
-    formatCharacter _ 'd' = Just $ formatNumberStd 1 $ remBy 7 . quotBy 86400
-    formatCharacter _ 'H' = Just $ formatNumberStd 1 $ quotBy 3600
-    formatCharacter _ 'h' = Just $ formatNumberStd 2 $ remBy 24 . quotBy 3600
-    formatCharacter _ 'M' = Just $ formatNumberStd 1 $ quotBy 60
-    formatCharacter _ 'm' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 60
-    formatCharacter False 'S' = Just $ formatNumberStd 1 $ quotBy 1
-    formatCharacter True 'S' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
-    formatCharacter False 's' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
-    formatCharacter True 's' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> let
+    formatCharacter _ 'w' = Just $ formatNumberStd 1 $ quotBy $ 7 * 86400
+    formatCharacter _ 'd' = Just $ formatNumberStd 1 $ quotBy 86400
+    formatCharacter _ 'D' = Just $ formatNumberStd 1 $ remBy 7 . quotBy 86400
+    formatCharacter _ 'h' = Just $ formatNumberStd 1 $ quotBy 3600
+    formatCharacter _ 'H' = Just $ formatNumberStd 2 $ remBy 24 . quotBy 3600
+    formatCharacter _ 'm' = Just $ formatNumberStd 1 $ quotBy 60
+    formatCharacter _ 'M' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 60
+    formatCharacter False 's' = Just $ formatNumberStd 1 $ quotBy 1
+    formatCharacter True 's' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
+    formatCharacter False 'S' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
+    formatCharacter True 'S' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> let
         padn = case padf of
             NoPad -> NoPad
             Pad _ c -> Pad 2 c
@@ -155,17 +155,17 @@ instance FormatTime NominalDiffTime where
     formatCharacter _ _   = Nothing
 
 instance FormatTime DiffTime where
-    formatCharacter _ 'W' = Just $ formatNumberStd 1 $ quotBy $ 7 * 86400
-    formatCharacter _ 'D' = Just $ formatNumberStd 1 $ quotBy 86400
-    formatCharacter _ 'd' = Just $ formatNumberStd 1 $ remBy 7 . quotBy 86400
-    formatCharacter _ 'H' = Just $ formatNumberStd 1 $ quotBy 3600
-    formatCharacter _ 'h' = Just $ formatNumberStd 2 $ remBy 24 . quotBy 3600
-    formatCharacter _ 'M' = Just $ formatNumberStd 1 $ quotBy 60
-    formatCharacter _ 'm' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 60
-    formatCharacter False 'S' = Just $ formatNumberStd 1 $ quotBy 1
-    formatCharacter True 'S' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
-    formatCharacter False 's' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
-    formatCharacter True 's' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> let
+    formatCharacter _ 'w' = Just $ formatNumberStd 1 $ quotBy $ 7 * 86400
+    formatCharacter _ 'd' = Just $ formatNumberStd 1 $ quotBy 86400
+    formatCharacter _ 'D' = Just $ formatNumberStd 1 $ remBy 7 . quotBy 86400
+    formatCharacter _ 'h' = Just $ formatNumberStd 1 $ quotBy 3600
+    formatCharacter _ 'H' = Just $ formatNumberStd 2 $ remBy 24 . quotBy 3600
+    formatCharacter _ 'm' = Just $ formatNumberStd 1 $ quotBy 60
+    formatCharacter _ 'M' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 60
+    formatCharacter False 's' = Just $ formatNumberStd 1 $ quotBy 1
+    formatCharacter True 's' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
+    formatCharacter False 'S' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
+    formatCharacter True 'S' = Just $ formatGeneral False False 12 '0' $ \_ padf t -> let
         padn = case padf of
             NoPad -> NoPad
             Pad _ c -> Pad 2 c
@@ -173,16 +173,16 @@ instance FormatTime DiffTime where
     formatCharacter _ _   = Nothing
 
 instance FormatTime CalendarDiffDays where
-    formatCharacter _ 'Y' = Just $ formatNumberStd 1 $ quotBy 12 . cdMonths
-    formatCharacter _ 'B' = Just $ formatNumberStd 1 $ cdMonths
-    formatCharacter _ 'b' = Just $ formatNumberStd 2 $ remBy 12 . cdMonths
-    formatCharacter _ 'W' = Just $ formatNumberStd 1 $ quotBy 7 . cdDays
-    formatCharacter _ 'D' = Just $ formatNumberStd 1 $ cdDays
-    formatCharacter _ 'd' = Just $ formatNumberStd 1 $ remBy 7 . cdDays
+    formatCharacter _ 'y' = Just $ formatNumberStd 1 $ quotBy 12 . cdMonths
+    formatCharacter _ 'b' = Just $ formatNumberStd 1 $ cdMonths
+    formatCharacter _ 'B' = Just $ formatNumberStd 2 $ remBy 12 . cdMonths
+    formatCharacter _ 'w' = Just $ formatNumberStd 1 $ quotBy 7 . cdDays
+    formatCharacter _ 'd' = Just $ formatNumberStd 1 $ cdDays
+    formatCharacter _ 'D' = Just $ formatNumberStd 1 $ remBy 7 . cdDays
     formatCharacter _ _   = Nothing
 
 instance FormatTime CalendarDiffTime where
-    formatCharacter _ 'Y' = Just $ formatNumberStd 1 $ quotBy 12 . ctMonths
-    formatCharacter _ 'B' = Just $ formatNumberStd 1 $ ctMonths
-    formatCharacter _ 'b' = Just $ formatNumberStd 2 $ remBy 12 . ctMonths
+    formatCharacter _ 'y' = Just $ formatNumberStd 1 $ quotBy 12 . ctMonths
+    formatCharacter _ 'b' = Just $ formatNumberStd 1 $ ctMonths
+    formatCharacter _ 'B' = Just $ formatNumberStd 2 $ remBy 12 . ctMonths
     formatCharacter alt c = fmap (\f fo t -> f fo (ctTime t)) (formatCharacter alt c)
