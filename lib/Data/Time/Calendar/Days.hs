@@ -1,6 +1,5 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
 #include "HsConfigure.h"
--- #hide
 module Data.Time.Calendar.Days
 (
     -- * Days

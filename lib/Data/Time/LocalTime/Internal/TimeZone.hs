@@ -1,8 +1,6 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 #include "HsConfigure.h"
-
--- #hide
 module Data.Time.LocalTime.Internal.TimeZone
 (
     -- * Time zones

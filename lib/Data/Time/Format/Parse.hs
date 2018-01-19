@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-orphans #-}
--- #hide
 module Data.Time.Format.Parse
     (
     -- * UNIX-style parsing

@@ -1,6 +1,4 @@
 {-# OPTIONS -fno-warn-orphans #-}
-
--- #hide
 module Data.Time.Calendar.Gregorian
 (
     -- * Gregorian calendar

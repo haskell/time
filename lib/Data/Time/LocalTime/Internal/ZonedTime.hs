@@ -1,7 +1,5 @@
 {-# OPTIONS -fno-warn-orphans #-}
 #include "HsConfigure.h"
-
--- #hide
 module Data.Time.LocalTime.Internal.ZonedTime
 (
     ZonedTime(..),utcToZonedTime,zonedTimeToUTC,getZonedTime,utcToLocalZonedTime

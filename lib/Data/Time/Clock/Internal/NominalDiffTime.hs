@@ -3,7 +3,6 @@
 {-# LANGUAGE Trustworthy #-}
 #endif
 #include "HsConfigure.h"
--- #hide
 module Data.Time.Clock.Internal.NominalDiffTime
     (
     NominalDiffTime,

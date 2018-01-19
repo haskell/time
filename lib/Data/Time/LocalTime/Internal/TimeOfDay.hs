@@ -1,6 +1,5 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
 #include "HsConfigure.h"
--- #hide
 module Data.Time.LocalTime.Internal.TimeOfDay
 (
     -- * Time of day

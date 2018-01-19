@@ -3,7 +3,6 @@
 #endif
 {-# OPTIONS -fno-warn-unused-imports #-}
 #include "HsConfigure.h"
--- #hide
 module Data.Time.Clock.Internal.DiffTime
     (
     -- * Absolute intervals
