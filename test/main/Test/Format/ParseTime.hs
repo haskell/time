@@ -345,7 +345,6 @@ formatType _ = undefined
 instance Show (FormatString a) where
     show (FormatString f) = show f
 
-
 typedTests :: (forall t. (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result) -> [TestTree]
 typedTests prop = [
     nameTest "Day" $ tgroup dayFormats prop,
@@ -353,7 +352,8 @@ typedTests prop = [
     nameTest "LocalTime" $ tgroup localTimeFormats prop,
     nameTest "TimeZone" $ tgroup timeZoneFormats prop,
     nameTest "ZonedTime" $ tgroup zonedTimeFormats prop,
-    nameTest "UTCTime" $ tgroup utcTimeFormats prop,
+    nameTest "ZonedTime" $ tgroup zonedTimeAlmostFormats $ \fmt t -> (todSec $ localTimeOfDay $ zonedTimeToLocalTime t) < 60 ==> prop fmt t,
+    nameTest "UTCTime" $ tgroup utcTimeAlmostFormats $ \fmt t -> utctDayTime t < 86400 ==> prop fmt t,
     nameTest "UniversalTime" $ tgroup universalTimeFormats prop,
     nameTest "CalendarDiffDays" $ tgroup calendarDiffDaysFormats prop,
     nameTest "CalenderDiffTime" $ tgroup calendarDiffTimeFormats prop,
@@ -377,8 +377,8 @@ badInputTests = nameTest "no_crash_bad_input" [
     nameTest "TimeOfDay" $ tgroup (timeOfDayFormats ++ partialTimeOfDayFormats) prop_no_crash_bad_input,
     nameTest "LocalTime" $ tgroup (localTimeFormats ++ partialLocalTimeFormats) prop_no_crash_bad_input,
     nameTest "TimeZone" $ tgroup (timeZoneFormats) prop_no_crash_bad_input,
-    nameTest "ZonedTime" $ tgroup (zonedTimeFormats ++ partialZonedTimeFormats) prop_no_crash_bad_input,
-    nameTest "UTCTime" $ tgroup (utcTimeFormats ++ partialUTCTimeFormats) prop_no_crash_bad_input,
+    nameTest "ZonedTime" $ tgroup (zonedTimeFormats ++ zonedTimeAlmostFormats ++ partialZonedTimeFormats) prop_no_crash_bad_input,
+    nameTest "UTCTime" $ tgroup (utcTimeAlmostFormats ++ partialUTCTimeFormats) prop_no_crash_bad_input,
     nameTest "UniversalTime" $ tgroup (universalTimeFormats ++ partialUniversalTimeFormats) prop_no_crash_bad_input
     ]
 
@@ -452,12 +452,14 @@ timeZoneFormats = map FormatString ["%z","%z%Z","%Z%z","%Z"]
 
 zonedTimeFormats :: [FormatString ZonedTime]
 zonedTimeFormats = map FormatString
-  ["%a, %d %b %Y %H:%M:%S.%q %z", "%a, %d %b %Y %H:%M:%S%Q %z", "%s.%q %z", "%s%Q %z",
-   "%a, %d %b %Y %H:%M:%S.%q %Z", "%a, %d %b %Y %H:%M:%S%Q %Z", "%s.%q %Z", "%s%Q %Z"]
+  ["%a, %d %b %Y %H:%M:%S.%q %z", "%a, %d %b %Y %H:%M:%S%Q %z",
+   "%a, %d %b %Y %H:%M:%S.%q %Z", "%a, %d %b %Y %H:%M:%S%Q %Z"]
 
-utcTimeFormats :: [FormatString UTCTime]
-utcTimeFormats = map FormatString
-  ["%s.%q","%s%Q"]
+zonedTimeAlmostFormats :: [FormatString ZonedTime]
+zonedTimeAlmostFormats = map FormatString  ["%s.%q %z", "%s%Q %z", "%s.%q %Z", "%s%Q %Z"]
+
+utcTimeAlmostFormats :: [FormatString UTCTime]
+utcTimeAlmostFormats = map FormatString  ["%s.%q","%s%Q"]
 
 universalTimeFormats :: [FormatString UniversalTime]
 universalTimeFormats = map FormatString []
