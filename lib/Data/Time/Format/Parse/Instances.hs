@@ -1,7 +1,9 @@
 {-# OPTIONS -fno-warn-orphans #-}
--- #include "HsConfigure.h"
 module Data.Time.Format.Parse.Instances() where
 
+#if !MIN_VERSION_base(4,8,0)
+import Control.Applicative ((<$>),(<*>))
+#endif
 import Data.Char
 import Data.Fixed
 import Data.List
@@ -172,7 +174,7 @@ instance ParseTime Day where
             in rest cs
 
         in \pairs -> do
-            components <- mapM (uncurry f) pairs
+            components <- for pairs $ \(c,x) -> f c x
             buildDay $ concat components
 
 mfoldl :: (Monad m) => (a -> b -> m a) -> m a -> [b] -> m a

@@ -1,6 +1,4 @@
 {-# OPTIONS -fno-warn-orphans #-}
--- #include "HsConfigure.h"
-
 -- #hide
 module Data.Time.Format.Parse
     (
@@ -13,9 +11,6 @@ module Data.Time.Format.Parse
     ) where
 
 import Data.Proxy
-#if !MIN_VERSION_base(4,8,0)
-import Control.Applicative ((<$>),(<*>))
-#endif
 import Control.Monad hiding (fail)
 #if MIN_VERSION_base(4,9,0)
 import Control.Monad.Fail
@@ -27,7 +22,6 @@ import Text.ParserCombinators.ReadP hiding (char, string)
 import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Calendar.Days
---import Data.Time.LocalTime.Internal.CalendarDiffTime
 import Data.Time.LocalTime.Internal.TimeZone
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.LocalTime
