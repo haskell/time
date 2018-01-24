@@ -85,18 +85,39 @@ testReadShowFormat = nameTest "read-show format"
         nameTest "recurringIntervalFormat" $ readShowProperties $ \fe -> recurringIntervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
     ]
 
-testShowFormat :: TestTree
-testShowFormat = nameTest "show format"
+testShowFormat :: String -> Format t -> String -> t -> TestTree
+testShowFormat name fmt str t = nameTest (name ++ ": " ++ str) $
+    assertEqual "" (Just str) $ formatShowM fmt t
+
+testShowFormats :: TestTree
+testShowFormats = nameTest "show format"
     [
-        nameTest "alternativeDurationDaysFormat" $
-            assertEqual "" (Just "P0001-00-00") $ formatShowM (alternativeDurationDaysFormat ExtendedFormat) $ CalendarDiffDays 12 0,
-        nameTest "alternativeDurationTimeFormat" $
-            assertEqual "" (Just "P0000-00-01T00:00:00") $ formatShowM (alternativeDurationTimeFormat ExtendedFormat) $ CalendarDiffTime 0 86400
+        testShowFormat "durationDaysFormat" durationDaysFormat "P0D" $ CalendarDiffDays 0 0,
+        testShowFormat "durationDaysFormat" durationDaysFormat "P4Y" $ CalendarDiffDays 48 0,
+        testShowFormat "durationDaysFormat" durationDaysFormat "P7M" $ CalendarDiffDays 7 0,
+        testShowFormat "durationDaysFormat" durationDaysFormat "P5D" $ CalendarDiffDays 0 5,
+        testShowFormat "durationDaysFormat" durationDaysFormat "P2Y3M81D" $ CalendarDiffDays 27 81,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P0D" $ CalendarDiffTime 0 0,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P4Y" $ CalendarDiffTime 48 0,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P7M" $ CalendarDiffTime 7 0,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P5D" $ CalendarDiffTime 0 $ 5 * nominalDay,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P2Y3M81D" $ CalendarDiffTime 27 $ 81 * nominalDay,
+        testShowFormat "durationTimeFormat" durationTimeFormat "PT2H" $ CalendarDiffTime 0 $ 7200,
+        testShowFormat "durationTimeFormat" durationTimeFormat "PT3M" $ CalendarDiffTime 0 $ 180,
+        testShowFormat "durationTimeFormat" durationTimeFormat "PT12S" $ CalendarDiffTime 0 $ 12,
+        testShowFormat "durationTimeFormat" durationTimeFormat "PT1M18.77634S" $ CalendarDiffTime 0 $ 78.77634,
+        testShowFormat "durationTimeFormat" durationTimeFormat "PT2H1M18.77634S" $ CalendarDiffTime 0 $ 7278.77634,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P5DT2H1M18.77634S" $ CalendarDiffTime 0 $ 5 * nominalDay + 7278.77634,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P7Y10M5DT2H1M18.77634S" $ CalendarDiffTime 94 $ 5 * nominalDay + 7278.77634,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P7Y10MT2H1M18.77634S" $ CalendarDiffTime 94 $ 7278.77634,
+        testShowFormat "durationTimeFormat" durationTimeFormat "P8YT2H1M18.77634S" $ CalendarDiffTime 96 $ 7278.77634,
+        testShowFormat "alternativeDurationDaysFormat" (alternativeDurationDaysFormat ExtendedFormat) "P0001-00-00" $ CalendarDiffDays 12 0,
+        testShowFormat "alternativeDurationTimeFormat" (alternativeDurationTimeFormat ExtendedFormat) "P0000-00-01T00:00:00" $ CalendarDiffTime 0 86400
     ]
 
 testISO8601 :: TestTree
 testISO8601 = nameTest "ISO8601"
     [
-        testShowFormat,
+        testShowFormats,
         testReadShowFormat
     ]

@@ -286,8 +286,8 @@ durationTimeFormat = let
     fromCT (CalendarDiffTime mm t) = let
         (d,TimeOfDay h m s) = timeToDaysAndTimeOfDay t
         in (CalendarDiffDays mm d,(h,(m,s)))
-    in (**>) (literalFormat "P") $ specialCaseShowFormat (mempty,"0S") $ isoMap toCT fromCT $
-        daysDesigs <**> literalFormat "T" **> intDesignator 'H' <**> intDesignator 'M' <**> decDesignator 'S'
+    in (**>) (literalFormat "P") $ specialCaseShowFormat (mempty,"0D") $ isoMap toCT fromCT $
+        (<**>) daysDesigs $ optionalFormat (0,(0,0)) $ literalFormat "T" **> intDesignator 'H' <**> intDesignator 'M' <**> decDesignator 'S'
 
 -- | ISO 8601:2004(E) sec. 4.4.3.3
 alternativeDurationDaysFormat :: FormatExtension -> Format CalendarDiffDays

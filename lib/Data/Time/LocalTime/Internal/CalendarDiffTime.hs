@@ -33,7 +33,7 @@ instance Monoid CalendarDiffTime where
 #endif
 
 instance Show CalendarDiffTime where
-    show (CalendarDiffTime m t) = "P" ++ show m ++ "M" ++ showFixed True (realToFrac t :: Pico) ++ "S"
+    show (CalendarDiffTime m t) = "P" ++ show m ++ "MT" ++ showFixed True (realToFrac t :: Pico) ++ "S"
 
 calendarTimeDays :: CalendarDiffDays -> CalendarDiffTime
 calendarTimeDays (CalendarDiffDays m d) = CalendarDiffTime m $ fromInteger d * nominalDay
