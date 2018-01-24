@@ -10,7 +10,6 @@ module Data.Time.Format.Parse
     ) where
 
 import Data.Proxy
-import Control.Monad hiding (fail)
 #if MIN_VERSION_base(4,9,0)
 import Control.Monad.Fail
 import Prelude hiding (fail)
