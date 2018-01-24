@@ -6,7 +6,11 @@ module Data.Time.Format.ISO8601
         formatShow,
         formatReadP,
         formatParseM,
-        -- * ISO 8601
+        -- * Common formats
+        ISO8601(..),
+        iso8601Show,
+        iso8601ParseM,
+        -- * All formats
         FormatExtension(..),
         formatReadPExtension,
         parseFormatExtension,
@@ -334,3 +338,36 @@ intervalFormat = sepFormat "/"
 -- | ISO 8601:2004(E) sec. 4.5
 recurringIntervalFormat :: Format a -> Format b -> Format (Int,a,b)
 recurringIntervalFormat fa fb = isoMap (\(r,(a,b)) -> (r,a,b)) (\(r,a,b) -> (r,(a,b))) $ sepFormat "/" (literalFormat "R" **> integerFormat NoSign Nothing) $ intervalFormat fa fb
+
+class ISO8601 t where
+    -- | The most commonly used ISO 8601 format for this type.
+    iso8601Format :: Format t
+
+iso8601Show :: ISO8601 t => t -> String
+iso8601Show = formatShow iso8601Format
+
+iso8601ParseM :: (
+#if MIN_VERSION_base(4,9,0)
+    MonadFail m
+#else
+    Monad m
+#endif
+    ,ISO8601 t) => String -> m t
+iso8601ParseM = formatParseM iso8601Format
+
+instance ISO8601 Day where
+    iso8601Format = calendarFormat ExtendedFormat
+instance ISO8601 TimeOfDay where
+    iso8601Format = timeOfDayFormat ExtendedFormat
+instance ISO8601 TimeZone where
+    iso8601Format = timeOffsetFormat ExtendedFormat
+instance ISO8601 LocalTime where
+    iso8601Format = localTimeFormat iso8601Format iso8601Format
+instance ISO8601 ZonedTime where
+    iso8601Format = zonedTimeFormat iso8601Format iso8601Format ExtendedFormat
+instance ISO8601 UTCTime where
+    iso8601Format = utcTimeFormat iso8601Format iso8601Format
+instance ISO8601 CalendarDiffDays where
+    iso8601Format = durationDaysFormat
+instance ISO8601 CalendarDiffTime where
+    iso8601Format = durationTimeFormat
