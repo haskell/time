@@ -32,7 +32,7 @@ import Text.ParserCombinators.ReadP
 
 #if MIN_VERSION_base(4,8,0)
 #else
-newtype Void = Void Void
+data Void
 absurd :: Void -> a
 absurd v = seq v $ error "absurd"
 #endif

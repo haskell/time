@@ -46,6 +46,10 @@ module Data.Time.Format.ISO8601
 import Control.Monad.Fail
 import Prelude hiding (fail)
 #endif
+#if MIN_VERSION_base(4,8,0)
+#else
+import Data.Monoid
+#endif
 import Data.Ratio
 import Data.Fixed
 import Text.ParserCombinators.ReadP
