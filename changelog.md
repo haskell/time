@@ -4,6 +4,7 @@
 - new conversion functions timeToDaysAndTimeOfDay & daysAndTimeOfDayToTime
 - new DayOfWeek type
 - new CalendarDiffDays and CalendarDiffTime types
+- new ISO8601 module for ISO 8601 formatting
 - new addLocalTime, diffLocalTime
 - hide members of FormatTime and ParseTime classes
 - formatting & parsing for diff types (NominalDiffTime, DiffTime, CalendarDiffDays, CalendarDiffTime)
