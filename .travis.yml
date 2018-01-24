@@ -53,7 +53,7 @@ script:
 # no tests for now
 # - cabal install . 'QuickCheck >= 2.5.1' 'test-framework >= 0.8' 'test-framework-quickcheck2' --force-reinstalls
  - cabal configure --disable-tests -v2  # -v2 provides useful information for debugging
- - cabal build   # this builds all libraries and executables (including tests/benchmarks)
+ - cabal build --ghc-options="-Werror"   # this builds all libraries and executables (including tests/benchmarks)
 # - cabal test
  - cabal check
  - cabal sdist   # tests that a source-distribution can be generated
