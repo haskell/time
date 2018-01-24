@@ -32,6 +32,8 @@ module Data.Time.Format.ISO8601
         timeOffsetFormat,
         timeOfDayAndOffsetFormat,
         localTimeFormat,
+        zonedTimeFormat,
+        utcTimeFormat,
         dayAndTimeFormat,
         timeAndOffsetFormat,
         durationDaysFormat,
@@ -257,6 +259,14 @@ timeOfDayAndOffsetFormat fe = timeOfDayFormat fe <**> timeOffsetFormat fe
 -- | ISO 8601:2004(E) sec. 4.3.2
 localTimeFormat :: Format Day -> Format TimeOfDay -> Format LocalTime
 localTimeFormat fday ftod = isoMap (\(day,tod) -> LocalTime day tod) (\(LocalTime day tod) -> (day,tod)) $ fday <**> withTimeDesignator ftod
+
+-- | ISO 8601:2004(E) sec. 4.3.2
+zonedTimeFormat :: Format Day -> Format TimeOfDay -> FormatExtension -> Format ZonedTime
+zonedTimeFormat fday ftod fe = isoMap (\(lt,tz) -> ZonedTime lt tz) (\(ZonedTime lt tz) -> (lt,tz)) $ timeAndOffsetFormat (localTimeFormat fday ftod) fe
+
+-- | ISO 8601:2004(E) sec. 4.3.2
+utcTimeFormat :: Format Day -> Format TimeOfDay -> Format UTCTime
+utcTimeFormat fday ftod = isoMap (localTimeToUTC utc) (utcToLocalTime utc) $ withUTCDesignator $ localTimeFormat fday ftod
 
 -- | ISO 8601:2004(E) sec. 4.3.3
 dayAndTimeFormat :: Format Day -> Format time -> Format (Day,time)

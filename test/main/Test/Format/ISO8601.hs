@@ -1,3 +1,4 @@
+{-# OPTIONS -fno-warn-orphans #-}
 module Test.Format.ISO8601(testISO8601) where
 
 import Data.Ratio
@@ -10,6 +11,8 @@ import Test.Tasty.QuickCheck hiding (reason)
 import Test.TestUtil
 import Test.Arbitrary()
 
+
+deriving instance Eq ZonedTime
 
 readShowProperty :: (Eq a,Show a) => Format a -> a -> Property
 readShowProperty fmt val = case formatShowM fmt val of
@@ -75,6 +78,8 @@ testReadShowFormat = nameTest "read-show format"
         nameTest "timeOffsetFormat" $ readShowProperties $ timeOffsetFormat,
         nameTest "timeOfDayAndOffsetFormat" $ readShowProperties $ timeOfDayAndOffsetFormat,
         nameTest "localTimeFormat" $ readShowProperties $ \fe -> localTimeFormat (calendarFormat fe) (timeOfDayFormat fe),
+        nameTest "zonedTimeFormat" $ readShowProperties $ \fe -> zonedTimeFormat (calendarFormat fe) (timeOfDayFormat fe) fe,
+        nameTest "utcTimeFormat" $ readShowProperties $ \fe -> utcTimeFormat (calendarFormat fe) (timeOfDayFormat fe),
         nameTest "dayAndTimeFormat" $ readShowProperties $ \fe -> dayAndTimeFormat (calendarFormat fe) (timeOfDayFormat fe),
         nameTest "timeAndOffsetFormat" $ readShowProperties $ \fe -> timeAndOffsetFormat (timeOfDayFormat fe) fe,
         nameTest "durationDaysFormat" $ readShowProperty $ durationDaysFormat,
@@ -112,7 +117,15 @@ testShowFormats = nameTest "show format"
         testShowFormat "durationTimeFormat" durationTimeFormat "P7Y10MT2H1M18.77634S" $ CalendarDiffTime 94 $ 7278.77634,
         testShowFormat "durationTimeFormat" durationTimeFormat "P8YT2H1M18.77634S" $ CalendarDiffTime 96 $ 7278.77634,
         testShowFormat "alternativeDurationDaysFormat" (alternativeDurationDaysFormat ExtendedFormat) "P0001-00-00" $ CalendarDiffDays 12 0,
-        testShowFormat "alternativeDurationTimeFormat" (alternativeDurationTimeFormat ExtendedFormat) "P0000-00-01T00:00:00" $ CalendarDiffTime 0 86400
+        testShowFormat "alternativeDurationTimeFormat" (alternativeDurationTimeFormat ExtendedFormat) "P0000-00-01T00:00:00" $ CalendarDiffTime 0 86400,
+        testShowFormat "recurringIntervalFormat etc."
+            (recurringIntervalFormat (localTimeFormat (calendarFormat ExtendedFormat) (timeOfDayFormat ExtendedFormat)) durationTimeFormat)
+            "R74/2015-06-13T21:13:56/P1Y2M7DT5H33M2.34S"
+            (74,LocalTime (fromGregorian 2015 6 13) (TimeOfDay 21 13 56),CalendarDiffTime 14 $ 7 * nominalDay + 5 * 3600 + 33 * 60 + 2.34),
+        testShowFormat "recurringIntervalFormat etc."
+            (recurringIntervalFormat (calendarFormat ExtendedFormat) durationDaysFormat)
+            "R74/2015-06-13/P1Y2M7D"
+            (74,fromGregorian 2015 6 13,CalendarDiffDays 14 7)
     ]
 
 testISO8601 :: TestTree
