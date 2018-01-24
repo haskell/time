@@ -73,12 +73,12 @@ parseReader readp s = case [ t | (t,"") <- readP_to_S readp s] of
 -- | A text format for a type
 data Format t = MkFormat
     { formatShowM :: t -> Maybe String
-        -- ^ Show a value in the format, if valid
+        -- ^ Show a value in the format, if representable
     , formatReadP :: ReadP t
         -- ^ Read a value in the format
     }
 
--- | Show a value in the format, or error if invalid
+-- | Show a value in the format, or error if unrepresentable
 formatShow :: Format t -> t -> String
 formatShow fmt t = case formatShowM fmt t of
     Just str -> str
