@@ -50,3 +50,15 @@ clipValid :: (Ord t) => t -> t -> t -> Maybe t
 clipValid a _ x | x < a = Nothing
 clipValid _ b x | x > b = Nothing
 clipValid _ _ x = Just x
+
+quotBy :: (Real a,Integral b) => a -> a -> b
+quotBy d n = truncate ((toRational n) / (toRational d))
+
+remBy :: Real a => a -> a -> a
+remBy d n = n - (fromInteger f) * d where
+    f = quotBy d n
+
+quotRemBy :: (Real a,Integral b) => a -> a -> (b,a)
+quotRemBy d n = let
+    f = quotBy d n
+    in (f,n - (fromIntegral f) * d)

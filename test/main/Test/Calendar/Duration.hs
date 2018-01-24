@@ -42,8 +42,5 @@ testDiffs =
         , testClip (2017, 02, 01) (2017, 04, 07) (-2, -6)
         ]
 
-testReadShow :: TestTree
-testReadShow = testProperty "read . show" $ \(t :: CalendarDiffDays) -> read (show t) == t
-
 testDuration :: TestTree
-testDuration = testGroup "CalendarDiffDays" [testAddDiff, testDiffs, testReadShow]
+testDuration = testGroup "CalendarDiffDays" [testAddDiff, testDiffs]

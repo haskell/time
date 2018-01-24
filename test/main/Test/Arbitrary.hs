@@ -8,6 +8,9 @@ import Data.Time
 import Data.Time.Clock.POSIX
 import Test.Tasty.QuickCheck hiding (reason)
 
+instance Arbitrary DayOfWeek where
+    arbitrary = fmap toEnum $ choose (1,7)
+
 instance Arbitrary Day where
     arbitrary = liftM ModifiedJulianDay $ choose (-313698, 2973483) -- 1000-01-1 to 9999-12-31
     shrink day = let

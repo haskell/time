@@ -1,4 +1,3 @@
-{-# OPTIONS -fno-warn-orphans #-}
 module Data.Time.Format
     (
     -- * UNIX-style formatting

@@ -67,10 +67,12 @@ library
         Data.Time.Clock.TAI,
         Data.Time.LocalTime,
         Data.Time.Format,
+        Data.Time.Format.ISO8601,
         Data.Time
     default-extensions:    CPP
     c-sources: lib/cbits/HsTime.c
     other-modules:
+        Data.Format
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Days,
         Data.Time.Calendar.Gregorian,
@@ -166,6 +168,7 @@ test-suite test-main
         Test.Clock.TAI
         Test.Format.Format
         Test.Format.ParseTime
+        Test.Format.ISO8601
         Test.LocalTime.CalendarDiffTime
         Test.LocalTime.Time
         Test.LocalTime.TimeOfDay

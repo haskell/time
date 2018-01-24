@@ -16,6 +16,7 @@ import Test.Clock.Resolution
 import Test.Clock.TAI
 import Test.Format.Format
 import Test.Format.ParseTime
+import Test.Format.ISO8601
 import Test.LocalTime.Time
 import Test.LocalTime.TimeOfDay
 import Test.LocalTime.CalendarDiffTime
@@ -42,7 +43,8 @@ tests = testGroup "Time" [
         ],
     testGroup "Format" [
         testFormat,
-        testParseTime
+        testParseTime,
+        testISO8601
         ],
     testGroup "LocalTime" [
         testTime,

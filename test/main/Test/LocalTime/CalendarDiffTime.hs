@@ -2,17 +2,17 @@ module Test.LocalTime.CalendarDiffTime
     ( testCalendarDiffTime
     ) where
 
-import Data.Time.LocalTime
+--import Data.Time.LocalTime
 import Test.Arbitrary ()
 import Test.Tasty
-import Test.Tasty.QuickCheck hiding (reason)
+--import Test.Tasty.QuickCheck hiding (reason)
 
-testReadShow :: TestTree
-testReadShow = testProperty "read . show" $ \(t :: CalendarDiffTime) -> read (show t) == t
+--testReadShow :: TestTree
+--testReadShow = testProperty "read . show" $ \(t :: CalendarDiffTime) -> read (show t) == t
 
 testCalendarDiffTime :: TestTree
 testCalendarDiffTime =
     testGroup
         "CalendarDiffTime"
-        [ testReadShow
+        [ --testReadShow
         ]

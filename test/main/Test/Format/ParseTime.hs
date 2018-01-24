@@ -390,9 +390,9 @@ readShowTests = nameTest "read_show" [
     nameTest "TimeZone" (prop_read_show :: TimeZone -> Result),
     nameTest "ZonedTime" (prop_read_show :: ZonedTime -> Result),
     nameTest "UTCTime" (prop_read_show :: UTCTime -> Result),
-    nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result),
-    nameTest "CalendarDiffDays" (prop_read_show :: CalendarDiffDays -> Result),
-    nameTest "CalendarDiffTime" (prop_read_show :: CalendarDiffTime -> Result)
+    nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result)
+    --nameTest "CalendarDiffDays" (prop_read_show :: CalendarDiffDays -> Result),
+    --nameTest "CalendarDiffTime" (prop_read_show :: CalendarDiffTime -> Result)
     ]
 
 parseShowTests :: TestTree

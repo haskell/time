@@ -63,14 +63,6 @@ formatNumber fdef idef cdef ff = formatGeneral False fdef idef cdef $ \_ pado ->
 formatNumberStd :: Int -> (t -> Integer) -> (FormatOptions -> t -> String)
 formatNumberStd n = formatNumber False n '0'
 
-quotBy :: Real t => t -> t -> Integer
-quotBy d n = truncate ((toRational n) / (toRational d))
-
-remBy :: Real t => t -> t -> t
-remBy d n = n - (fromInteger f) * d where
-    f = quotBy d n
-
-
 showPaddedFixed :: HasResolution a => PadOption -> PadOption -> Fixed a -> String
 showPaddedFixed padn padf x | x < 0 = '-' : showPaddedFixed padn padf (negate x)
 showPaddedFixed padn padf x = let
