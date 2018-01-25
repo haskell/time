@@ -14,6 +14,9 @@ module Data.Format
     , specialCaseShowFormat
     , specialCaseFormat
     , optionalFormat
+    , casesFormat
+    , optionalSignFormat
+    , mandatorySignFormat
     , SignOption(..)
     , integerFormat
     , decimalFormat
@@ -169,6 +172,30 @@ specialCaseFormat (val,str) (MkFormat s r) = let
 
 optionalFormat :: Eq a => a -> Format a -> Format a
 optionalFormat val = specialCaseFormat (val,"")
+
+casesFormat :: Eq a => [(a,String)] -> Format a
+casesFormat pairs = let
+    s t = lookup t pairs
+    r [] = pfail
+    r ((v,str):pp) = (string str >> return v) <++ r pp
+    in MkFormat s $ r pairs
+
+optionalSignFormat :: (Eq t,Num t) => Format t
+optionalSignFormat = casesFormat
+    [
+        (1,""),
+        (1,"+"),
+        (0,""),
+        (-1,"-")
+    ]
+
+mandatorySignFormat :: (Eq t,Num t) => Format t
+mandatorySignFormat = casesFormat
+    [
+        (1,"+"),
+        (0,"+"),
+        (-1,"-")
+    ]
 
 data SignOption
     = NoSign

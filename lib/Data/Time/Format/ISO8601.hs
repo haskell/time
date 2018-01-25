@@ -253,8 +253,14 @@ withUTCDesignator f = f <** literalFormat "Z"
 
 -- | ISO 8601:2004(E) sec. 4.2.5.1
 timeOffsetFormat :: FormatExtension -> Format TimeZone
-timeOffsetFormat fe = isoMap (\(h,m) -> minutesToTimeZone $ h * 60 + m) (\tz -> (\m -> quotRem m 60) $ timeZoneMinutes tz) $
-    extColonFormat fe (integerFormat PosNegSign (Just 2)) (integerFormat NoSign (Just 2))
+timeOffsetFormat fe = let
+    toTimeZone (sign,(h,m)) = minutesToTimeZone $ sign * (h * 60 + m)
+    fromTimeZone tz = let
+        mm = timeZoneMinutes tz
+        hm = quotRem (abs mm) 60
+        in (signum mm,hm)
+    in isoMap toTimeZone fromTimeZone $
+        mandatorySignFormat <**> extColonFormat fe (integerFormat NoSign (Just 2)) (integerFormat NoSign (Just 2))
 
 -- | ISO 8601:2004(E) sec. 4.2.5.2
 timeOfDayAndOffsetFormat :: FormatExtension -> Format (TimeOfDay,TimeZone)
@@ -340,7 +346,7 @@ recurringIntervalFormat :: Format a -> Format b -> Format (Int,a,b)
 recurringIntervalFormat fa fb = isoMap (\(r,(a,b)) -> (r,a,b)) (\(r,a,b) -> (r,(a,b))) $ sepFormat "/" (literalFormat "R" **> integerFormat NoSign Nothing) $ intervalFormat fa fb
 
 class ISO8601 t where
-    -- | The most commonly used ISO 8601 format for this type.
+    -- | The most commonly used ISO 8601 format for this type, always "extended" rather than "basic" where applicable.
     iso8601Format :: Format t
 
 iso8601Show :: ISO8601 t => t -> String

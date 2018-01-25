@@ -118,6 +118,10 @@ testShowFormats = nameTest "show format"
         testShowFormat "durationTimeFormat" durationTimeFormat "P8YT2H1M18.77634S" $ CalendarDiffTime 96 $ 7278.77634,
         testShowFormat "alternativeDurationDaysFormat" (alternativeDurationDaysFormat ExtendedFormat) "P0001-00-00" $ CalendarDiffDays 12 0,
         testShowFormat "alternativeDurationTimeFormat" (alternativeDurationTimeFormat ExtendedFormat) "P0000-00-01T00:00:00" $ CalendarDiffTime 0 86400,
+        testShowFormat "intervalFormat etc."
+            (intervalFormat (localTimeFormat (calendarFormat ExtendedFormat) (timeOfDayFormat ExtendedFormat)) durationTimeFormat)
+            "2015-06-13T21:13:56/P1Y2M7DT5H33M2.34S"
+            (LocalTime (fromGregorian 2015 6 13) (TimeOfDay 21 13 56),CalendarDiffTime 14 $ 7 * nominalDay + 5 * 3600 + 33 * 60 + 2.34),
         testShowFormat "recurringIntervalFormat etc."
             (recurringIntervalFormat (localTimeFormat (calendarFormat ExtendedFormat) (timeOfDayFormat ExtendedFormat)) durationTimeFormat)
             "R74/2015-06-13T21:13:56/P1Y2M7DT5H33M2.34S"
@@ -125,7 +129,115 @@ testShowFormats = nameTest "show format"
         testShowFormat "recurringIntervalFormat etc."
             (recurringIntervalFormat (calendarFormat ExtendedFormat) durationDaysFormat)
             "R74/2015-06-13/P1Y2M7D"
-            (74,fromGregorian 2015 6 13,CalendarDiffDays 14 7)
+            (74,fromGregorian 2015 6 13,CalendarDiffDays 14 7),
+        testShowFormat "timeOffsetFormat"
+            iso8601Format
+            "-06:30"
+            (minutesToTimeZone (-390)),
+        testShowFormat "timeOffsetFormat"
+            iso8601Format
+            "+00:00"
+            (minutesToTimeZone 0),
+        testShowFormat "timeOffsetFormat"
+            (timeOffsetFormat BasicFormat)
+            "+0000"
+            (minutesToTimeZone 0),
+        testShowFormat "timeOffsetFormat"
+            iso8601Format
+            "+00:10"
+            (minutesToTimeZone 10),
+        testShowFormat "timeOffsetFormat"
+            iso8601Format
+            "-00:10"
+            (minutesToTimeZone (-10)),
+        testShowFormat "timeOffsetFormat"
+            iso8601Format
+            "+01:35"
+            (minutesToTimeZone 95),
+        testShowFormat "timeOffsetFormat"
+            iso8601Format
+            "-01:35"
+            (minutesToTimeZone (-95)),
+        testShowFormat "timeOffsetFormat"
+            (timeOffsetFormat BasicFormat)
+            "+0135"
+            (minutesToTimeZone 95),
+        testShowFormat "timeOffsetFormat"
+            (timeOffsetFormat BasicFormat)
+            "-0135"
+            (minutesToTimeZone (-95)),
+        testShowFormat "zonedTimeFormat"
+            iso8601Format
+            "2024-07-06T08:45:56.553-06:30"
+            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone (-390))),
+        testShowFormat "zonedTimeFormat"
+            iso8601Format
+            "2024-07-06T08:45:56.553+06:30"
+            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 390)),
+        testShowFormat "utcTimeFormat"
+            iso8601Format
+            "2024-07-06T08:45:56.553Z"
+            (UTCTime (fromGregorian 2024 07 06) (timeOfDayToTime $ TimeOfDay 8 45 56.553)),
+        testShowFormat "utcTimeFormat"
+            iso8601Format
+            "2028-12-31T23:59:60.9Z"
+            (UTCTime (fromGregorian 2028 12 31) (timeOfDayToTime $ TimeOfDay 23 59 60.9)),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat ExtendedFormat)
+            "1994-W52-7"
+            (fromGregorian 1995 1 1),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat ExtendedFormat)
+            "1995-W01-1"
+            (fromGregorian 1995 1 2),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat ExtendedFormat)
+            "1996-W52-7"
+            (fromGregorian 1996 12 29),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat ExtendedFormat)
+            "1997-W01-2"
+            (fromGregorian 1996 12 31),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat ExtendedFormat)
+            "1997-W01-3"
+            (fromGregorian 1997 1 1),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat ExtendedFormat)
+            "1974-W32-6"
+            (fromGregorian 1974 8 10),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat BasicFormat)
+            "1974W326"
+            (fromGregorian 1974 8 10),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat ExtendedFormat)
+            "1995-W05-6"
+            (fromGregorian 1995 2 4),
+        testShowFormat "weekDateFormat"
+            (weekDateFormat BasicFormat)
+            "1995W056"
+            (fromGregorian 1995 2 4),
+        testShowFormat "weekDateFormat"
+            (expandedWeekDateFormat 6 ExtendedFormat)
+            "+001995-W05-6"
+            (fromGregorian 1995 2 4),
+        testShowFormat "weekDateFormat"
+            (expandedWeekDateFormat 6 BasicFormat)
+            "+001995W056"
+            (fromGregorian 1995 2 4),
+        testShowFormat "ordinalDateFormat"
+            (ordinalDateFormat ExtendedFormat)
+            "1846-235"
+            (fromGregorian 1846 8 23),
+        testShowFormat "ordinalDateFormat"
+            (ordinalDateFormat BasicFormat)
+            "1844236"
+            (fromGregorian 1844 8 23),
+        testShowFormat "ordinalDateFormat"
+            (expandedOrdinalDateFormat 5 ExtendedFormat)
+            "+01846-235"
+            (fromGregorian 1846 8 23)
     ]
 
 testISO8601 :: TestTree
