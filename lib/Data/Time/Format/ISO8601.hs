@@ -65,11 +65,10 @@ import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.Private
 
--- | You probably want 'ExtendedFormat'.
 data FormatExtension =
-    -- | ISO 8601:2004(E) sec. 2.3.4
+    -- | ISO 8601:2004(E) sec. 2.3.4. Use hyphens and colons.
     ExtendedFormat |
-    -- | ISO 8601:2004(E) sec. 2.3.3 "The basic format should be avoided in plain text."
+    -- | ISO 8601:2004(E) sec. 2.3.3. Omit hyphens and colons. "The basic format should be avoided in plain text."
     BasicFormat
 
 -- | Read a value in either extended or basic format
@@ -346,12 +345,14 @@ recurringIntervalFormat :: Format a -> Format b -> Format (Int,a,b)
 recurringIntervalFormat fa fb = isoMap (\(r,(a,b)) -> (r,a,b)) (\(r,a,b) -> (r,(a,b))) $ sepFormat "/" (literalFormat "R" **> integerFormat NoSign Nothing) $ intervalFormat fa fb
 
 class ISO8601 t where
-    -- | The most commonly used ISO 8601 format for this type, always "extended" rather than "basic" where applicable.
+    -- | The most commonly used ISO 8601 format for this type.
     iso8601Format :: Format t
 
+-- | Show in the most commonly used ISO 8601 format.
 iso8601Show :: ISO8601 t => t -> String
 iso8601Show = formatShow iso8601Format
 
+-- | Parse the most commonly used ISO 8601 format.
 iso8601ParseM :: (
 #if MIN_VERSION_base(4,9,0)
     MonadFail m
@@ -361,19 +362,27 @@ iso8601ParseM :: (
     ,ISO8601 t) => String -> m t
 iso8601ParseM = formatParseM iso8601Format
 
+-- | @yyyy-mm-dd@ (ISO 8601:2004(E) sec. 4.1.2.2 extended format)
 instance ISO8601 Day where
     iso8601Format = calendarFormat ExtendedFormat
+-- | @hh:mm:ss[.sss]@ (ISO 8601:2004(E) sec. 4.2.2.2, 4.2.2.4(a) extended format)
 instance ISO8601 TimeOfDay where
     iso8601Format = timeOfDayFormat ExtendedFormat
+-- | @±hh:mm@ (ISO 8601:2004(E) sec. 4.2.5.1 extended format)
 instance ISO8601 TimeZone where
     iso8601Format = timeOffsetFormat ExtendedFormat
+-- | @yyyy-mm-ddThh:mm:ss[.sss]@ (ISO 8601:2004(E) sec. 4.3.2 extended format)
 instance ISO8601 LocalTime where
     iso8601Format = localTimeFormat iso8601Format iso8601Format
+-- | @yyyy-mm-ddThh:mm:ss[.sss]±hh:mm@ (ISO 8601:2004(E) sec. 4.3.2 extended format)
 instance ISO8601 ZonedTime where
     iso8601Format = zonedTimeFormat iso8601Format iso8601Format ExtendedFormat
+-- | @yyyy-mm-ddThh:mm:ss[.sss]Z@ (ISO 8601:2004(E) sec. 4.3.2 extended format)
 instance ISO8601 UTCTime where
     iso8601Format = utcTimeFormat iso8601Format iso8601Format
+-- | @PyYmMdD@ (ISO 8601:2004(E) sec. 4.4.3.2)
 instance ISO8601 CalendarDiffDays where
     iso8601Format = durationDaysFormat
+-- | @PyYmMdDThHmMs[.sss]S@ (ISO 8601:2004(E) sec. 4.4.3.2)
 instance ISO8601 CalendarDiffTime where
     iso8601Format = durationTimeFormat
