@@ -24,7 +24,7 @@ Before release:
     https://www.stackage.org/lts
     stack.yaml
     (not necessarily benchmark/stack.yaml)
-    .travis.yml
+    .travis.yml (if present)
 
 6. Use latest stack
 
