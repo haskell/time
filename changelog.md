@@ -1,6 +1,8 @@
 # Change Log
 
 ## [1.9.1]
+- new functions secondsToNominalDiffTime & nominalDiffTimeToSeconds
+- expose FormatTime and ParseTime in Data.Time.Format.Internal
 
 ## [1.9]
 - new conversion functions timeToDaysAndTimeOfDay & daysAndTimeOfDayToTime
