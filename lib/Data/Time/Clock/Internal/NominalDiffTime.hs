@@ -3,6 +3,8 @@
 module Data.Time.Clock.Internal.NominalDiffTime
     (
     NominalDiffTime,
+    secondsToNominalDiffTime,
+    nominalDiffTimeToSeconds,
     nominalDay,
     ) where
 
@@ -20,6 +22,14 @@ import Control.DeepSeq
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
 newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord,Data,Typeable)
+
+-- | Create a 'NominalDiffTime' from a number of seconds.
+secondsToNominalDiffTime :: Pico -> NominalDiffTime
+secondsToNominalDiffTime = MkNominalDiffTime
+
+-- | Get the seconds in a 'NominalDiffTime'.
+nominalDiffTimeToSeconds :: NominalDiffTime -> Pico
+nominalDiffTimeToSeconds (MkNominalDiffTime t) = t
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData NominalDiffTime where -- FIXME: Data.Fixed had no NFData instances yet at time of writing
