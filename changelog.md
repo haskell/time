@@ -1,5 +1,7 @@
 # Change Log
 
+## [1.9.1]
+
 ## [1.9]
 - new conversion functions timeToDaysAndTimeOfDay & daysAndTimeOfDayToTime
 - new DayOfWeek type
