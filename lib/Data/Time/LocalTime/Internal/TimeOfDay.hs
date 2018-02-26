@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 module Data.Time.LocalTime.Internal.TimeOfDay
 (
     -- * Time of day
@@ -13,9 +12,7 @@ module Data.Time.LocalTime.Internal.TimeOfDay
 import Control.DeepSeq
 import Data.Typeable
 import Data.Fixed
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.Calendar.Private
@@ -31,15 +28,7 @@ data TimeOfDay = TimeOfDay {
     -- | Note that 0 <= 'todSec' < 61, accomodating leap seconds.
     -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
     todSec     :: Pico
-} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#endif
-#endif
-#endif
-    )
+} deriving (Eq,Ord,Data, Typeable)
 
 instance NFData TimeOfDay where
     rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing

@@ -1,8 +1,5 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
-#if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
-#endif
-#include "HsConfigure.h"
 module Data.Time.Clock.Internal.NominalDiffTime
     (
     NominalDiffTime,
@@ -10,9 +7,7 @@ module Data.Time.Clock.Internal.NominalDiffTime
     ) where
 
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 import Data.Fixed
 import Data.Time.Calendar.Days
 import Control.DeepSeq
@@ -24,15 +19,7 @@ import Control.DeepSeq
 -- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
-newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#endif
-#endif
-#endif
-    )
+newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord,Data,Typeable)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData NominalDiffTime where -- FIXME: Data.Fixed had no NFData instances yet at time of writing

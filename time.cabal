@@ -20,7 +20,6 @@ extra-source-files:
     aclocal.m4
     configure.ac
     configure
-    lib/include/HsConfigure.h
     lib/include/HsTime.h
     lib/include/HsTimeConfig.h.in
     test/unix/Test/Format/*.c
@@ -38,17 +37,13 @@ source-repository head
 library
     hs-source-dirs: lib
     default-language: Haskell2010
-    if impl(ghc)
-        default-extensions:
-            Rank2Types
-            DeriveDataTypeable
-            StandaloneDeriving
-        cpp-options: -DLANGUAGE_Rank2Types -DLANGUAGE_DeriveDataTypeable -DLANGUAGE_StandaloneDeriving
-    else
-        if impl(hugs)
-            default-extensions: Rank2Types
-            cpp-options: -DLANGUAGE_Rank2Types
+    default-extensions:
+        Rank2Types
+        DeriveDataTypeable
+        StandaloneDeriving
+        CPP
     ghc-options: -Wall -fwarn-tabs
+    c-sources: lib/cbits/HsTime.c
     build-depends:
         base >= 4.7 && < 5,
         deepseq >= 1.1
@@ -69,8 +64,6 @@ library
         Data.Time.Format,
         Data.Time.Format.ISO8601,
         Data.Time
-    default-extensions:    CPP
-    c-sources: lib/cbits/HsTime.c
     other-modules:
         Data.Format
         Data.Time.Calendar.Private,

@@ -1,8 +1,5 @@
-#if __GLASGOW_HASKELL__ >= 702
 {-# LANGUAGE Trustworthy #-}
-#endif
 {-# OPTIONS -fno-warn-unused-imports #-}
-#include "HsConfigure.h"
 module Data.Time.Clock.Internal.DiffTime
     (
     -- * Absolute intervals
@@ -13,9 +10,7 @@ module Data.Time.Clock.Internal.DiffTime
     ) where
 
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 import Data.Ratio ((%))
 import Data.Fixed
 import Control.DeepSeq
@@ -24,16 +19,7 @@ import Control.DeepSeq
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions will treat it as seconds.
 -- It has a precision of 10^-12 s.
-newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#else
-#endif
-#endif
-#endif
-    )
+newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord,Data, Typeable)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData DiffTime where -- FIXME: Data.Fixed had no NFData instances yet at time of writing

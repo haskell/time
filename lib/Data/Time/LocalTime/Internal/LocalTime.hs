@@ -1,5 +1,4 @@
 {-# OPTIONS -fno-warn-orphans #-}
-#include "HsConfigure.h"
 module Data.Time.LocalTime.Internal.LocalTime
 (
     -- * Local Time
@@ -15,9 +14,7 @@ module Data.Time.LocalTime.Internal.LocalTime
 
 import Control.DeepSeq
 import Data.Typeable
-#if LANGUAGE_Rank2Types
 import Data.Data
-#endif
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Clock.Internal.NominalDiffTime
@@ -35,15 +32,7 @@ import Data.Time.LocalTime.Internal.TimeZone
 data LocalTime = LocalTime {
     localDay    :: Day,
     localTimeOfDay   :: TimeOfDay
-} deriving (Eq,Ord
-#if LANGUAGE_DeriveDataTypeable
-#if LANGUAGE_Rank2Types
-#if HAS_DataPico
-    ,Data, Typeable
-#endif
-#endif
-#endif
-    )
+} deriving (Eq,Ord,Data, Typeable)
 
 instance NFData LocalTime where
     rnf (LocalTime d t) = rnf d `seq` rnf t `seq` ()
