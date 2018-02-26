@@ -42,7 +42,7 @@ Before release:
         (ignore missing modules warning)
     stack exec -- time-bench
 
-9. Read through generated haddock
+9. Inspect generated haddock
 
     .stack-work/install/[PLATFORM]/[RESOLVER]/[COMPILER]/doc/index.html
 
@@ -88,3 +88,7 @@ Before release:
 17. Restore local branch for next development
 
     git checkout master
+
+18. Delete completed milestone
+
+    https://github.com/haskell/time/milestones
