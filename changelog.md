@@ -1,5 +1,8 @@
 # Change Log
 
+## (next)
+- add Data and Typeable instance for CalendarDiffDays and CalendarDiffTime
+
 ## [1.9.1]
 - new functions secondsToNominalDiffTime & nominalDiffTimeToSeconds
 - expose FormatTime and ParseTime in Data.Time.Format.Internal
