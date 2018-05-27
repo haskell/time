@@ -11,11 +11,13 @@ import Data.Monoid
 #if MIN_VERSION_base(4,9,0)
 import Data.Semigroup hiding (option)
 #endif
+import Data.Typeable
+import Data.Data
 
 data CalendarDiffDays = CalendarDiffDays
     { cdMonths :: Integer
     , cdDays :: Integer
-    } deriving Eq
+    } deriving (Eq,Data,Typeable)
 
 #if MIN_VERSION_base(4,9,0)
 -- | Additive
