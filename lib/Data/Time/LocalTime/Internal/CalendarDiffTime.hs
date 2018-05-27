@@ -11,13 +11,15 @@ import Data.Monoid
 import Data.Semigroup hiding (option)
 #endif
 import Data.Fixed
+import Data.Typeable
+import Data.Data
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Clock.Internal.NominalDiffTime
 
 data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer
     , ctTime :: NominalDiffTime
-    } deriving (Eq)
+    } deriving (Eq,Data,Typeable)
 #if MIN_VERSION_base(4,9,0)
 -- | Additive
 instance Semigroup CalendarDiffTime where
