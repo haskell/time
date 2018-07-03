@@ -119,4 +119,4 @@ diffGregorianDurationRollOver day2 day1 = let
 
 -- orphan instance
 instance Show Day where
-    show = showGregorian
+    show = show . showGregorian
