@@ -24,10 +24,14 @@ import Control.DeepSeq
 newtype NominalDiffTime = MkNominalDiffTime Pico deriving (Eq,Ord,Data,Typeable)
 
 -- | Create a 'NominalDiffTime' from a number of seconds.
+--
+-- @since 1.9.1
 secondsToNominalDiffTime :: Pico -> NominalDiffTime
 secondsToNominalDiffTime = MkNominalDiffTime
 
 -- | Get the seconds in a 'NominalDiffTime'.
+--
+-- @since 1.9.1
 nominalDiffTimeToSeconds :: NominalDiffTime -> Pico
 nominalDiffTimeToSeconds (MkNominalDiffTime t) = t
 
