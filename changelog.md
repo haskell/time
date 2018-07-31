@@ -1,6 +1,6 @@
 # Change Log
 
-## (next)
+## [1.9.2]
 - add Data and Typeable instance for CalendarDiffDays and CalendarDiffTime
 
 ## [1.9.1]
