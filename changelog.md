@@ -2,6 +2,7 @@
 
 ## [1.9.2]
 - add Data and Typeable instance for CalendarDiffDays and CalendarDiffTime
+- "@since" annotations for everything after 1.9
 
 ## [1.9.1]
 - new functions secondsToNominalDiffTime & nominalDiffTimeToSeconds

@@ -28,6 +28,7 @@ data FormatOptions = MkFormatOptions {
 
 -- <http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html>
 class FormatTime t where
+    -- | @since 1.9.1
     formatCharacter :: Bool -> Char -> Maybe (FormatOptions -> t -> String)
 
 

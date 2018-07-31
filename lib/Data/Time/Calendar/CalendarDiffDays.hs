@@ -17,7 +17,10 @@ import Data.Data
 data CalendarDiffDays = CalendarDiffDays
     { cdMonths :: Integer
     , cdDays :: Integer
-    } deriving (Eq,Data,Typeable)
+    } deriving (Eq,
+    Data -- ^ @since 1.9.2
+    ,Typeable -- ^ @since 1.9.2
+    )
 
 #if MIN_VERSION_base(4,9,0)
 -- | Additive

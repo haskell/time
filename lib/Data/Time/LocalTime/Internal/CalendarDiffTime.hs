@@ -19,7 +19,10 @@ import Data.Time.Clock.Internal.NominalDiffTime
 data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer
     , ctTime :: NominalDiffTime
-    } deriving (Eq,Data,Typeable)
+    } deriving (Eq,
+    Data -- ^ @since 1.9.2
+    ,Typeable -- ^ @since 1.9.2
+    )
 #if MIN_VERSION_base(4,9,0)
 -- | Additive
 instance Semigroup CalendarDiffTime where

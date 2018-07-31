@@ -21,15 +21,20 @@ data ParseNumericPadding = NoPadding | SpacePadding | ZeroPadding
 -- | The class of types which can be parsed given a UNIX-style time format
 -- string.
 class ParseTime t where
+    -- | @since 1.9.1
     substituteTimeSpecifier :: proxy t -> TimeLocale -> Char -> Maybe String
     substituteTimeSpecifier _ _ _ = Nothing
     -- | Get the string corresponding to the given format specifier.
+    --
+    -- @since 1.9.1
     parseTimeSpecifier :: proxy t -> TimeLocale -> Maybe ParseNumericPadding -> Char -> ReadP String
     -- | Builds a time value from a parsed input string.
     -- If the input does not include all the information needed to
     -- construct a complete value, any missing parts should be taken
     -- from 1970-01-01 00:00:00 +0000 (which was a Thursday).
     -- In the absence of @%C@ or @%Y@, century is 1969 - 2068.
+    --
+    -- @since 1.9.1
     buildTime :: TimeLocale -- ^ The time locale.
               -> [(Char,String)] -- ^ Pairs of format characters and the
                                  -- corresponding part of the input.
