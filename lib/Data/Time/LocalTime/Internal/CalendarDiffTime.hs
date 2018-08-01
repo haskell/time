@@ -20,9 +20,16 @@ data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer
     , ctTime :: NominalDiffTime
     } deriving (Eq,
-    Data -- ^ @since 1.9.2
-    ,Typeable -- ^ @since 1.9.2
+    Data
+#if __GLASGOW_HASKELL__ >= 820
+    -- ^ @since 1.9.2
+#endif
+    ,Typeable
+#if __GLASGOW_HASKELL__ >= 820
+    -- ^ @since 1.9.2
+#endif
     )
+
 #if MIN_VERSION_base(4,9,0)
 -- | Additive
 instance Semigroup CalendarDiffTime where
