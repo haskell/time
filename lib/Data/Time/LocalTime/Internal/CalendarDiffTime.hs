@@ -21,11 +21,11 @@ data CalendarDiffTime = CalendarDiffTime
     , ctTime :: NominalDiffTime
     } deriving (Eq,
     Data
-#if __GLASGOW_HASKELL__ >= 820
+#if __GLASGOW_HASKELL__ >= 802
     -- ^ @since 1.9.2
 #endif
     ,Typeable
-#if __GLASGOW_HASKELL__ >= 820
+#if __GLASGOW_HASKELL__ >= 802
     -- ^ @since 1.9.2
 #endif
     )
