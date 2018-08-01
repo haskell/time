@@ -23,6 +23,7 @@ Before release:
 
     https://www.stackage.org/lts
     stack.yaml
+    fullcheck
     (not necessarily benchmark/stack.yaml)
     .travis.yml (if present)
 
@@ -33,7 +34,7 @@ Before release:
 
 7. Build & test
 
-    stack build && echo OK
+    ./fullcheck
 
 8. Build benchmark
 
@@ -60,14 +61,14 @@ Before release:
     stack upgrade
     stack --version
     git pull
-    stack build && echo OK
+    ./fullcheck
 
 13. Build and test on Windows
 
     stack upgrade
     stack --version
     git pull
-    stack build && echo OK
+    ./fullcheck
 
 14. Upload to Hackage
 
