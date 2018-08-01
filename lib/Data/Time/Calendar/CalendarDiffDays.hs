@@ -8,7 +8,7 @@ module Data.Time.Calendar.CalendarDiffDays
 #else
 import Data.Monoid
 #endif
-#if MIN_VERSION_base(4,9,0) && !MIN_VERSION_base(4,12,0)
+#if MIN_VERSION_base(4,9,0) && !MIN_VERSION_base(4,11,0)
 import Data.Semigroup hiding (option)
 #endif
 import Data.Typeable

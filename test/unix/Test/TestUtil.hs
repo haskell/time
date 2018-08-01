@@ -7,7 +7,7 @@ import Test.Tasty.QuickCheck hiding (reason)
 
 assertFailure' :: String -> IO a
 assertFailure' s = do
-    assertFailure s
+    _ <- assertFailure s -- returns () in some versions
     return undefined
 
 assertJust :: Maybe a -> IO a
