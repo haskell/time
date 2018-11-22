@@ -1,5 +1,21 @@
 -- | POSIX time, if you need to deal with timestamps and the like.
 -- Most people won't need this module.
+--
+-- If you want to convert POSIX time to integer/word timestamps,
+-- consider the following example:
+--
+-- > import           Data.Time.Clock (UTCTime, getCurrentTime, nominalDiffTimeToSeconds)
+-- > import           Data.Time.Clock.POSIX (utcTimeToPOSIXSeconds)
+-- > import           Data.Int (Int64)
+-- >
+-- > nanosSinceEpoch :: UTCTime -> Int64
+-- > nanosSinceEpoch =
+-- >   floor . (1e9 *) . nominalDiffTimeToSeconds . utcTimeToPOSIXSeconds
+-- >
+-- > main :: IO ()
+-- > main = do
+-- >   u <- getCurrentTime :: IO UTCTime
+-- >   print (nanosSinceEpoch u)
 module Data.Time.Clock.POSIX
 (
     posixDayLength,POSIXTime,posixSecondsToUTCTime,utcTimeToPOSIXSeconds,getPOSIXTime,getCurrentTime,
