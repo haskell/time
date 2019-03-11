@@ -1,3 +1,4 @@
+{-# LANGUAGE PolyKinds #-}
 module Data.Time.Format.Format.Class
     (
         -- * Formatting
