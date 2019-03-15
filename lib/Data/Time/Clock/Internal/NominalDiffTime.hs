@@ -16,9 +16,11 @@ import Control.DeepSeq
 
 
 -- | This is a length of time, as measured by UTC.
+-- It has a precision of 10^-12 s.
+--
 -- Conversion functions will treat it as seconds.
 -- For example, @(0.010 :: NominalDiffTime)@ corresponds to 10 milliseconds.
--- It has a precision of 10^-12 s.
+--
 -- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
