@@ -67,6 +67,7 @@ timeZoneOffsetString' (Just c) = timeZoneOffsetString'' False $ Pad 4 c
 timeZoneOffsetString :: TimeZone -> String
 timeZoneOffsetString = timeZoneOffsetString'' False (Pad 4 '0')
 
+-- | This only shows the time zone name, or offset if the name is empty.
 instance Show TimeZone where
     show zone@(TimeZone _ _ "") = timeZoneOffsetString zone
     show (TimeZone _ _ name) = name

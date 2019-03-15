@@ -157,9 +157,15 @@ instance Read TimeOfDay where
 instance Read LocalTime where
     readsPrec _ = readParen False $ readSTime True defaultTimeLocale "%Y-%m-%d %H:%M:%S%Q"
 
+-- | This only works for @±HHMM@ format,
+-- single-letter military time-zones,
+-- and these time-zones: \"UTC\", \"UT\", \"GMT\", \"EST\", \"EDT\", \"CST\", \"CDT\", \"MST\", \"MDT\", \"PST\", \"PDT\".
 instance Read TimeZone where
     readsPrec _ = readParen False $ readSTime True defaultTimeLocale "%Z"
 
+-- | This only works for a 'zonedTimeZone' in @±HHMM@ format,
+-- single-letter military time-zones,
+-- and these time-zones: \"UTC\", \"UT\", \"GMT\", \"EST\", \"EDT\", \"CST\", \"CDT\", \"MST\", \"MDT\", \"PST\", \"PDT\".
 instance Read ZonedTime where
     readsPrec n = readParen False $ \s ->
         [(ZonedTime t z, r2) | (t,r1) <- readsPrec n s, (z,r2) <- readsPrec n r1]
