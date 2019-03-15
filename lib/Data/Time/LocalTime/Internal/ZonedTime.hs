@@ -14,6 +14,10 @@ import Data.Time.LocalTime.Internal.LocalTime
 
 
 -- | A local time together with a time zone.
+--
+-- There is no 'Eq' instance for @ZonedTime@.
+-- If you want to compare local times, use 'zonedTimeToLocalTime'.
+-- If you want to compare absolute times, use 'zonedTimeToUTC'.
 data ZonedTime = ZonedTime {
     zonedTimeToLocalTime :: LocalTime,
     zonedTimeZone :: TimeZone
