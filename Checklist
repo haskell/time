@@ -45,7 +45,7 @@ Before release:
 
 9. Inspect generated haddock
 
-    .stack-work/install/[PLATFORM]/[RESOLVER]/[COMPILER]/doc/index.html
+    `stack path --local-doc-root`/index.html
 
 10. Commit and push changes to repo
 
