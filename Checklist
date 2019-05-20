@@ -42,6 +42,7 @@ Before release:
     stack build
         (ignore missing modules warning)
     stack exec -- time-bench
+    cd ..
 
 9. Inspect generated haddock
 
@@ -77,7 +78,7 @@ Before release:
 
 15. Tag commit
 
-    git tag -a -s [TAG]
+    git tag -a -s VERSION -m "Version VERSION"
     git push --tags
 
 16. Update ghc branch
@@ -90,6 +91,6 @@ Before release:
 
     git checkout master
 
-18. Delete completed milestone
+18. Close completed milestone
 
     https://github.com/haskell/time/milestones
