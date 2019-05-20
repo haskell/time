@@ -12,7 +12,7 @@ description:    Time, clocks and calendars
 category:       Time
 build-type:     Configure
 cabal-version:  >=1.10
-tested-with:    GHC == 8.0.1, GHC == 7.10.3, GHC == 7.8.4
+tested-with:    GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.5
 x-follows-version-policy:
 
 extra-source-files:
@@ -45,7 +45,7 @@ library
     ghc-options: -Wall -fwarn-tabs
     c-sources: lib/cbits/HsTime.c
     build-depends:
-        base >= 4.7 && < 5,
+        base >= 4.9 && < 5,
         deepseq >= 1.1
     if os(windows)
         build-depends: Win32
