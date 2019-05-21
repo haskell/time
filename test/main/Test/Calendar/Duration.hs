@@ -24,7 +24,7 @@ testAddDiff =
         ]
 
 testClip :: (Integer, Int, Int) -> (Integer, Int, Int) -> (Integer, Integer) -> TestTree
-testClip (y1,m1,d1) (y2,m2,d2) (em, ed) = let
+testClip (y1, m1, d1) (y2, m2, d2) (em, ed) = let
     day1 = fromGregorian y1 m1 d1
     day2 = fromGregorian y2 m2 d2
     expected = CalendarDiffDays em ed

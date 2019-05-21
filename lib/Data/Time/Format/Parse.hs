@@ -1,31 +1,35 @@
 {-# OPTIONS -fno-warn-orphans #-}
+
 module Data.Time.Format.Parse
     (
     -- * UNIX-style parsing
-    parseTimeM, parseTimeOrError, readSTime, readPTime,
-    parseTime, readTime, readsTime,
-    ParseTime(),
+      parseTimeM
+    , parseTimeOrError
+    , readSTime
+    , readPTime
+    , parseTime
+    , readTime
+    , readsTime
+    , ParseTime()
     -- * Locale
-    module Data.Time.Format.Locale
+    , module Data.Time.Format.Locale
     ) where
 
-import Data.Proxy
-#if MIN_VERSION_base(4,9,0)
 import Control.Monad.Fail
-import Prelude hiding (fail)
-#endif
 import Data.Char
-import Data.Time.Format.Locale
-import Text.ParserCombinators.ReadP hiding (char, string)
-import Data.Time.Clock.Internal.UniversalTime
-import Data.Time.Clock.Internal.UTCTime
+import Data.Proxy
 import Data.Time.Calendar.Days
-import Data.Time.LocalTime.Internal.TimeZone
-import Data.Time.LocalTime.Internal.TimeOfDay
-import Data.Time.LocalTime.Internal.LocalTime
-import Data.Time.LocalTime.Internal.ZonedTime
+import Data.Time.Clock.Internal.UTCTime
+import Data.Time.Clock.Internal.UniversalTime
+import Data.Time.Format.Locale
 import Data.Time.Format.Parse.Class
-import Data.Time.Format.Parse.Instances()
+import Data.Time.Format.Parse.Instances ()
+import Data.Time.LocalTime.Internal.LocalTime
+import Data.Time.LocalTime.Internal.TimeOfDay
+import Data.Time.LocalTime.Internal.TimeZone
+import Data.Time.LocalTime.Internal.ZonedTime
+import Prelude hiding (fail)
+import Text.ParserCombinators.ReadP hiding (char, string)
 
 -- | Parses a time value given a format string.
 -- Supports the same %-codes as 'formatTime', including @%-@, @%_@ and @%0@ modifiers, however padding widths are not supported.
@@ -51,60 +55,61 @@ import Data.Time.Format.Parse.Instances()
 -- > Prelude Data.Time> parseTimeM True defaultTimeLocale "%Y-%-m-%-d" "2010-3-04" :: Maybe Day
 -- > Just 2010-03-04
 --
-parseTimeM :: (
-#if MIN_VERSION_base(4,9,0)
-    MonadFail m
-#else
-    Monad m
-#endif
-    ,ParseTime t) =>
-             Bool       -- ^ Accept leading and trailing whitespace?
-          -> TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string.
-          -> String     -- ^ Input string.
-          -> m t    -- ^ Return the time value, or fail if the input could
+parseTimeM ::
+       (MonadFail m, ParseTime t)
+    => Bool -- ^ Accept leading and trailing whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string.
+    -> String -- ^ Input string.
+    -> m t -- ^ Return the time value, or fail if the input could
                         -- not be parsed using the given format.
-parseTimeM acceptWS l fmt s = case parseTimeList acceptWS l fmt s of
-    [t] -> return t
-    []  -> fail $ "parseTimeM: no parse of " ++ show s
-    _   -> fail $ "parseTimeM: multiple parses of " ++ show s
+parseTimeM acceptWS l fmt s =
+    case parseTimeList acceptWS l fmt s of
+        [t] -> return t
+        [] -> fail $ "parseTimeM: no parse of " ++ show s
+        _ -> fail $ "parseTimeM: multiple parses of " ++ show s
 
 -- | Parse a time value given a format string. Fails if the input could
 -- not be parsed using the given format. See 'parseTimeM' for details.
-parseTimeOrError :: ParseTime t =>
-             Bool       -- ^ Accept leading and trailing whitespace?
-          -> TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string.
-          -> String     -- ^ Input string.
-          -> t          -- ^ The time value.
-parseTimeOrError acceptWS l fmt s = case parseTimeList acceptWS l fmt s of
-    [t] -> t
-    []  -> error $ "parseTimeOrError: no parse of " ++ show s
-    _   -> error $ "parseTimeOrError: multiple parses of " ++ show s
+parseTimeOrError ::
+       ParseTime t
+    => Bool -- ^ Accept leading and trailing whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string.
+    -> String -- ^ Input string.
+    -> t -- ^ The time value.
+parseTimeOrError acceptWS l fmt s =
+    case parseTimeList acceptWS l fmt s of
+        [t] -> t
+        [] -> error $ "parseTimeOrError: no parse of " ++ show s
+        _ -> error $ "parseTimeOrError: multiple parses of " ++ show s
 
-parseTimeList :: ParseTime t =>
-             Bool       -- ^ Accept leading and trailing whitespace?
-          -> TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string
-          -> String     -- ^ Input string.
-          -> [t]
-parseTimeList False l fmt s = [t | (t,"") <- readSTime False l fmt s]
-parseTimeList True l fmt s = [t | (t,r) <- readSTime True l fmt s, all isSpace r]
+parseTimeList ::
+       ParseTime t
+    => Bool -- ^ Accept leading and trailing whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> String -- ^ Input string.
+    -> [t]
+parseTimeList False l fmt s = [t | (t, "") <- readSTime False l fmt s]
+parseTimeList True l fmt s = [t | (t, r) <- readSTime True l fmt s, all isSpace r]
 
 -- | Parse a time value given a format string.  See 'parseTimeM' for details.
-readSTime :: ParseTime t =>
-             Bool       -- ^ Accept leading whitespace?
-          -> TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string
-          -> ReadS t
+readSTime ::
+       ParseTime t
+    => Bool -- ^ Accept leading whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> ReadS t
 readSTime acceptWS l f = readP_to_S (readPTime acceptWS l f)
 
 -- | Parse a time value given a format string.  See 'parseTimeM' for details.
-readPTime :: ParseTime t =>
-             Bool       -- ^ Accept leading whitespace?
-          -> TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string
-          -> ReadP t
+readPTime ::
+       ParseTime t
+    => Bool -- ^ Accept leading whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> ReadP t
 readPTime False l f = readPOnlyTime l f
 readPTime True l f = (skipSpaces >> readPOnlyTime l f) <++ readPOnlyTime l f
 
@@ -116,38 +121,50 @@ readPOnlyTime' pt l f = do
         Nothing -> pfail
 
 -- | Parse a time value given a format string (without allowing leading whitespace).  See 'parseTimeM' for details.
-readPOnlyTime :: ParseTime t =>
-             TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string
-          -> ReadP t
+readPOnlyTime ::
+       ParseTime t
+    => TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> ReadP t
 readPOnlyTime = readPOnlyTime' Proxy
 
-{-# DEPRECATED parseTime "use \"parseTimeM True\" instead" #-}
-parseTime :: ParseTime t =>
-             TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string.
-          -> String     -- ^ Input string.
-          -> Maybe t    -- ^ The time value, or 'Nothing' if the input could
+{-# DEPRECATED
+parseTime "use \"parseTimeM True\" instead"
+ #-}
+
+parseTime ::
+       ParseTime t
+    => TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string.
+    -> String -- ^ Input string.
+    -> Maybe t -- ^ The time value, or 'Nothing' if the input could
                         -- not be parsed using the given format.
 parseTime = parseTimeM True
 
-{-# DEPRECATED readTime "use \"parseTimeOrError True\" instead" #-}
-readTime :: ParseTime t =>
-            TimeLocale -- ^ Time locale.
-         -> String     -- ^ Format string.
-         -> String     -- ^ Input string.
-         -> t          -- ^ The time value.
+{-# DEPRECATED
+readTime "use \"parseTimeOrError True\" instead"
+ #-}
+
+readTime ::
+       ParseTime t
+    => TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string.
+    -> String -- ^ Input string.
+    -> t -- ^ The time value.
 readTime = parseTimeOrError True
 
-{-# DEPRECATED readsTime "use \"readSTime True\" instead" #-}
-readsTime :: ParseTime t =>
-             TimeLocale -- ^ Time locale.
-          -> String     -- ^ Format string
-          -> ReadS t
+{-# DEPRECATED
+readsTime "use \"readSTime True\" instead"
+ #-}
+
+readsTime ::
+       ParseTime t
+    => TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> ReadS t
 readsTime = readSTime True
 
 -- * Read instances for time package types
-
 instance Read Day where
     readsPrec _ = readParen False $ readSTime True defaultTimeLocale "%Y-%m-%d"
 
@@ -167,11 +184,10 @@ instance Read TimeZone where
 -- single-letter military time-zones,
 -- and these time-zones: \"UTC\", \"UT\", \"GMT\", \"EST\", \"EDT\", \"CST\", \"CDT\", \"MST\", \"MDT\", \"PST\", \"PDT\".
 instance Read ZonedTime where
-    readsPrec n = readParen False $ \s ->
-        [(ZonedTime t z, r2) | (t,r1) <- readsPrec n s, (z,r2) <- readsPrec n r1]
+    readsPrec n = readParen False $ \s -> [(ZonedTime t z, r2) | (t, r1) <- readsPrec n s, (z, r2) <- readsPrec n r1]
 
 instance Read UTCTime where
-    readsPrec n s = [ (zonedTimeToUTC t, r) | (t,r) <- readsPrec n s ]
+    readsPrec n s = [(zonedTimeToUTC t, r) | (t, r) <- readsPrec n s]
 
 instance Read UniversalTime where
-    readsPrec n s = [ (localTimeToUT1 0 t, r) | (t,r) <- readsPrec n s ]
+    readsPrec n s = [(localTimeToUT1 0 t, r) | (t, r) <- readsPrec n s]

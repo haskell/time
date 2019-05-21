@@ -29,16 +29,17 @@ instance NameTest Property where
 instance NameTest Result where
     nameTest name = nameTest name . property
 
-instance (Arbitrary a,Show a,Testable b) => NameTest (a -> b) where
+instance (Arbitrary a, Show a, Testable b) => NameTest (a -> b) where
     nameTest name = nameTest name . property
 
 instance (Testable a) => NameTest (Gen a) where
     nameTest name = nameTest name . property
 
-tgroup :: (Show a,NameTest t) => [a] -> (a -> t) -> [TestTree]
+tgroup :: (Show a, NameTest t) => [a] -> (a -> t) -> [TestTree]
 tgroup aa f = fmap (\a -> nameTest (show a) $ f a) aa
 
-assertEqualQC :: (Show a,Eq a) => String -> a -> a -> Result
-assertEqualQC _name expected found | expected == found = succeeded
-assertEqualQC "" expected found = failed{reason="expected "++show expected++", found "++show found}
-assertEqualQC name expected found = failed{reason=name++": expected "++show expected++", found "++show found}
+assertEqualQC :: (Show a, Eq a) => String -> a -> a -> Result
+assertEqualQC _name expected found
+    | expected == found = succeeded
+assertEqualQC "" expected found = failed {reason = "expected " ++ show expected ++ ", found " ++ show found}
+assertEqualQC name expected found = failed {reason = name ++ ": expected " ++ show expected ++ ", found " ++ show found}

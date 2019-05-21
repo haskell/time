@@ -1,28 +1,29 @@
 {-# OPTIONS -fno-warn-orphans #-}
+
 module Data.Time.LocalTime.Internal.ZonedTime
-(
-    ZonedTime(..),utcToZonedTime,zonedTimeToUTC,getZonedTime,utcToLocalZonedTime
-) where
+    ( ZonedTime(..)
+    , utcToZonedTime
+    , zonedTimeToUTC
+    , getZonedTime
+    , utcToLocalZonedTime
+    ) where
 
 import Control.DeepSeq
-import Data.Typeable
 import Data.Data
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
-import Data.Time.LocalTime.Internal.TimeZone
 import Data.Time.LocalTime.Internal.LocalTime
-
+import Data.Time.LocalTime.Internal.TimeZone
 
 -- | A local time together with a time zone.
 --
 -- There is no 'Eq' instance for @ZonedTime@.
 -- If you want to compare local times, use 'zonedTimeToLocalTime'.
 -- If you want to compare absolute times, use 'zonedTimeToUTC'.
-data ZonedTime = ZonedTime {
-    zonedTimeToLocalTime :: LocalTime,
-    zonedTimeZone :: TimeZone
-}
-    deriving (Data, Typeable)
+data ZonedTime = ZonedTime
+    { zonedTimeToLocalTime :: LocalTime
+    , zonedTimeZone :: TimeZone
+    } deriving (Data, Typeable)
 
 instance NFData ZonedTime where
     rnf (ZonedTime lt z) = rnf lt `seq` rnf z `seq` ()

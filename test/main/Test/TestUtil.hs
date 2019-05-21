@@ -29,8 +29,8 @@ instance NameTest Property where
 instance NameTest Result where
     nameTest name = nameTest name . property
 
-instance (Arbitrary a,Show a,Testable b) => NameTest (a -> b) where
+instance (Arbitrary a, Show a, Testable b) => NameTest (a -> b) where
     nameTest name = nameTest name . property
 
-tgroup :: (Show a,NameTest t) => [a] -> (a -> t) -> [TestTree]
+tgroup :: (Show a, NameTest t) => [a] -> (a -> t) -> [TestTree]
 tgroup aa f = fmap (\a -> nameTest (show a) $ f a) aa

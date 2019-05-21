@@ -3,11 +3,7 @@ module Data.Time.LocalTime.Internal.CalendarDiffTime
         -- * Calendar Duration
         module Data.Time.LocalTime.Internal.CalendarDiffTime
     ) where
-#if MIN_VERSION_base(4,8,0)
-#else
-import Data.Monoid
-#endif
-#if MIN_VERSION_base(4,9,0) && !MIN_VERSION_base(4,11,0)
+#if !MIN_VERSION_base(4,11,0)
 import Data.Semigroup hiding (option)
 #endif
 import Data.Fixed
@@ -30,19 +26,14 @@ data CalendarDiffTime = CalendarDiffTime
 #endif
     )
 
-#if MIN_VERSION_base(4,9,0)
 -- | Additive
 instance Semigroup CalendarDiffTime where
     CalendarDiffTime m1 d1 <> CalendarDiffTime m2 d2 = CalendarDiffTime (m1 + m2) (d1 + d2)
-#endif
+
 -- | Additive
 instance Monoid CalendarDiffTime where
     mempty = CalendarDiffTime 0 0
-#if MIN_VERSION_base(4,9,0)
     mappend = (<>)
-#else
-    mappend (CalendarDiffTime m1 d1) (CalendarDiffTime m2 d2) = CalendarDiffTime (m1 + m2) (d1 + d2)
-#endif
 
 instance Show CalendarDiffTime where
     show (CalendarDiffTime m t) = "P" ++ show m ++ "MT" ++ showFixed True (realToFrac t :: Pico) ++ "S"

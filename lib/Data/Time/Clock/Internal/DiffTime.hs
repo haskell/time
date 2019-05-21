@@ -1,29 +1,32 @@
 {-# LANGUAGE Trustworthy #-}
 {-# OPTIONS -fno-warn-unused-imports #-}
+
 module Data.Time.Clock.Internal.DiffTime
     (
     -- * Absolute intervals
-    DiffTime,
-    secondsToDiffTime,
-    picosecondsToDiffTime,
-    diffTimeToPicoseconds,
+      DiffTime
+    , secondsToDiffTime
+    , picosecondsToDiffTime
+    , diffTimeToPicoseconds
     ) where
 
-import Data.Typeable
-import Data.Data
-import Data.Ratio ((%))
-import Data.Fixed
 import Control.DeepSeq
-
+import Data.Data
+import Data.Fixed
+import Data.Ratio ((%))
+import Data.Typeable
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions will treat it as seconds.
 -- It has a precision of 10^-12 s.
-newtype DiffTime = MkDiffTime Pico deriving (Eq,Ord,Data, Typeable)
+newtype DiffTime =
+    MkDiffTime Pico
+    deriving (Eq, Ord, Data, Typeable)
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
-instance NFData DiffTime where -- FIXME: Data.Fixed had no NFData instances yet at time of writing
-        rnf dt = seq dt ()
+instance NFData DiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+                                                                                             where
+    rnf dt = seq dt ()
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum DiffTime where
@@ -61,7 +64,9 @@ instance Fractional DiffTime where
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance RealFrac DiffTime where
-    properFraction (MkDiffTime a) = let (b',a') = properFraction a in (b',MkDiffTime a')
+    properFraction (MkDiffTime a) = let
+        (b', a') = properFraction a
+        in (b', MkDiffTime a')
     truncate (MkDiffTime a) = truncate a
     round (MkDiffTime a) = round a
     ceiling (MkDiffTime a) = ceiling a
@@ -80,6 +85,6 @@ diffTimeToPicoseconds :: DiffTime -> Integer
 diffTimeToPicoseconds (MkDiffTime (MkFixed x)) = x
 
 {-# RULES
-"realToFrac/DiffTime->Pico"              realToFrac = \ (MkDiffTime ps) -> ps
-"realToFrac/Pico->DiffTime"              realToFrac = MkDiffTime
-  #-}
+"realToFrac/DiffTime->Pico" realToFrac = \ (MkDiffTime ps) -> ps
+"realToFrac/Pico->DiffTime" realToFrac = MkDiffTime
+ #-}

@@ -4,11 +4,8 @@ module Data.Time.Calendar.CalendarDiffDays
         module Data.Time.Calendar.CalendarDiffDays
     ) where
 
-#if MIN_VERSION_base(4,8,0)
+#if MIN_VERSION_base(4,11,0)
 #else
-import Data.Monoid
-#endif
-#if MIN_VERSION_base(4,9,0) && !MIN_VERSION_base(4,11,0)
 import Data.Semigroup hiding (option)
 #endif
 import Data.Typeable
@@ -28,20 +25,14 @@ data CalendarDiffDays = CalendarDiffDays
 #endif
     )
 
-#if MIN_VERSION_base(4,9,0)
 -- | Additive
 instance Semigroup CalendarDiffDays where
     CalendarDiffDays m1 d1 <> CalendarDiffDays m2 d2 = CalendarDiffDays (m1 + m2) (d1 + d2)
-#endif
 
 -- | Additive
 instance Monoid CalendarDiffDays where
     mempty = CalendarDiffDays 0 0
-#if MIN_VERSION_base(4,9,0)
     mappend = (<>)
-#else
-    mappend (CalendarDiffDays m1 d1) (CalendarDiffDays m2 d2) = CalendarDiffDays (m1 + m2) (d1 + d2)
-#endif
 
 instance Show CalendarDiffDays where
     show (CalendarDiffDays m d) = "P" ++ show m ++ "M" ++ show d ++ "D"

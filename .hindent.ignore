@@ -1,0 +1,2 @@
+./lib/Data/Time/Calendar/CalendarDiffDays.hs
+./lib/Data/Time/LocalTime/Internal/CalendarDiffTime.hs

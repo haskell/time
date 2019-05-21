@@ -9,5 +9,11 @@ build:
     test-arguments:
         additional-args: [--hide-successes]
 
+extra-deps:
+- git: https://github.com/AshleyYakeley/haskell-src-exts.git
+  commit: 31e1466e35cee9a91fa6678d73c938f0f44759eb
+- git: https://github.com/AshleyYakeley/hindent.git
+  commit: ad88fc51f813a748d46c6bcd801047ec66b6b9c8
+
 ghc-options:
     "$locals": -Werror -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints -Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances

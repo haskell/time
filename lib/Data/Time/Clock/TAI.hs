@@ -1,27 +1,27 @@
 {-# OPTIONS -fno-warn-orphans #-}
+
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
 module Data.Time.Clock.TAI
-(
+    (
     -- TAI arithmetic
-    module Data.Time.Clock.Internal.AbsoluteTime,
-
+      module Data.Time.Clock.Internal.AbsoluteTime
     -- leap-second map type
-    LeapSecondMap,
-
+    , LeapSecondMap
     -- conversion between UTC and TAI with map
-    utcDayLength,utcToTAITime,taiToUTCTime,
+    , utcDayLength
+    , utcToTAITime
+    , taiToUTCTime
+    , taiClock
+    ) where
 
-    taiClock,
-) where
-
-import Data.Time.Clock.Internal.AbsoluteTime
-import Data.Time.LocalTime
+import Data.Fixed
+import Data.Maybe
 import Data.Time.Calendar.Days
+import Data.Time.Clock
+import Data.Time.Clock.Internal.AbsoluteTime
 import Data.Time.Clock.Internal.SystemTime
 import Data.Time.Clock.System
-import Data.Time.Clock
-import Data.Maybe
-import Data.Fixed
+import Data.Time.LocalTime
 
 instance Show AbsoluteTime where
     show t = show (utcToLocalTime utc (fromJust (taiToUTCTime (const (Just 0)) t))) ++ " TAI" -- ugly, but standard apparently
@@ -55,9 +55,11 @@ taiToUTCTime lsmap abstime = let
         let
             dtime = diffAbsoluteTime abstime dayt
             day' = addDays (div' dtime len) day
-        if day == day' then return (UTCTime day dtime) else stable day'
+        if day == day'
+            then return (UTCTime day dtime)
+            else stable day'
     in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
 
 -- | TAI clock, if it exists. Note that it is unlikely to be set correctly, without due care and attention.
-taiClock :: Maybe (DiffTime,IO AbsoluteTime)
+taiClock :: Maybe (DiffTime, IO AbsoluteTime)
 taiClock = fmap (fmap (fmap systemToTAITime)) getTAISystemTime

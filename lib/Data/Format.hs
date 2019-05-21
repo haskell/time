@@ -22,56 +22,40 @@ module Data.Format
     , decimalFormat
     ) where
 
-#if MIN_VERSION_base(4,9,0)
 import Control.Monad.Fail
-import Prelude hiding (fail)
-#endif
-#if MIN_VERSION_base(4,8,0)
-import Data.Void
-#endif
 import Data.Char
+import Data.Void
+import Prelude hiding (fail)
 import Text.ParserCombinators.ReadP
-
-
-#if MIN_VERSION_base(4,8,0)
-#else
-data Void
-absurd :: Void -> a
-absurd v = seq v $ error "absurd"
-#endif
 
 class IsoVariant f where
     isoMap :: (a -> b) -> (b -> a) -> f a -> f b
 
-enumMap :: (IsoVariant f,Enum a) => f Int -> f a
+enumMap :: (IsoVariant f, Enum a) => f Int -> f a
 enumMap = isoMap toEnum fromEnum
 
 infixr 3 <**>, **>, <**
+
 class IsoVariant f => Productish f where
     pUnit :: f ()
-    (<**>) :: f a -> f b -> f (a,b)
-    (**>) ::  f () -> f a -> f a
-    fu **> fa = isoMap (\((),a) -> a) (\a -> ((),a)) $ fu <**> fa
-    (<**) ::  f a -> f () -> f a
-    fa <** fu = isoMap (\(a,()) -> a) (\a -> (a,())) $ fa <**> fu
+    (<**>) :: f a -> f b -> f (a, b)
+    (**>) :: f () -> f a -> f a
+    fu **> fa = isoMap (\((), a) -> a) (\a -> ((), a)) $ fu <**> fa
+    (<**) :: f a -> f () -> f a
+    fa <** fu = isoMap (\(a, ()) -> a) (\a -> (a, ())) $ fa <**> fu
 
 infixr 2 <++>
+
 class IsoVariant f => Summish f where
     pVoid :: f Void
     (<++>) :: f a -> f b -> f (Either a b)
 
-
-parseReader :: (
-#if MIN_VERSION_base(4,9,0)
-    MonadFail m
-#else
-    Monad m
-#endif
-    ) => ReadP t -> String -> m t
-parseReader readp s = case [ t | (t,"") <- readP_to_S readp s] of
-    [t] -> return t
-    []  -> fail $ "no parse of " ++ show s
-    _   -> fail $ "multiple parses of " ++ show s
+parseReader :: (MonadFail m) => ReadP t -> String -> m t
+parseReader readp s =
+    case [t | (t, "") <- readP_to_S readp s] of
+        [t] -> return t
+        [] -> fail $ "no parse of " ++ show s
+        _ -> fail $ "multiple parses of " ++ show s
 
 -- | A text format for a type
 data Format t = MkFormat
@@ -83,36 +67,41 @@ data Format t = MkFormat
 
 -- | Show a value in the format, or error if unrepresentable
 formatShow :: Format t -> t -> String
-formatShow fmt t = case formatShowM fmt t of
-    Just str -> str
-    Nothing -> error "formatShow: bad value"
+formatShow fmt t =
+    case formatShowM fmt t of
+        Just str -> str
+        Nothing -> error "formatShow: bad value"
 
 -- | Parse a value in the format
-formatParseM :: (
-#if MIN_VERSION_base(4,9,0)
-    MonadFail m
-#else
-    Monad m
-#endif
-    ) => Format t -> String -> m t
+formatParseM :: (MonadFail m) => Format t -> String -> m t
 formatParseM format = parseReader $ formatReadP format
 
 instance IsoVariant Format where
     isoMap ab ba (MkFormat sa ra) = MkFormat (\b -> sa $ ba b) (fmap ab ra)
 
 mapMFormat :: (a -> Maybe b) -> (b -> Maybe a) -> Format a -> Format b
-mapMFormat amb bma (MkFormat sa ra) = MkFormat (\b -> bma b >>= sa) $ do
-    a <- ra
-    case amb a of
-        Just b -> return b
-        Nothing -> pfail
+mapMFormat amb bma (MkFormat sa ra) =
+    MkFormat (\b -> bma b >>= sa) $ do
+        a <- ra
+        case amb a of
+            Just b -> return b
+            Nothing -> pfail
 
 filterFormat :: (a -> Bool) -> Format a -> Format a
-filterFormat test = mapMFormat (\a -> if test a then Just a else Nothing) (\a -> if test a then Just a else Nothing)
+filterFormat test =
+    mapMFormat
+        (\a ->
+             if test a
+                 then Just a
+                 else Nothing)
+        (\a ->
+             if test a
+                 then Just a
+                 else Nothing)
 
 -- | Limits are inclusive
-clipFormat :: Ord a => (a,a) -> Format a -> Format a
-clipFormat (lo,hi) = filterFormat (\a -> a >= lo && a <= hi)
+clipFormat :: Ord a => (a, a) -> Format a -> Format a
+clipFormat (lo, hi) = filterFormat (\a -> a >= lo && a <= hi)
 
 instance Productish Format where
     pUnit = MkFormat {formatShowM = \_ -> Just "", formatReadP = return ()}
@@ -157,45 +146,36 @@ instance Summish Format where
 literalFormat :: String -> Format ()
 literalFormat s = MkFormat {formatShowM = \_ -> Just s, formatReadP = string s >> return ()}
 
-specialCaseShowFormat :: Eq a => (a,String) -> Format a -> Format a
-specialCaseShowFormat (val,str) (MkFormat s r) = let
-    s' t | t == val = Just str
+specialCaseShowFormat :: Eq a => (a, String) -> Format a -> Format a
+specialCaseShowFormat (val, str) (MkFormat s r) = let
+    s' t
+        | t == val = Just str
     s' t = s t
     in MkFormat s' r
 
-specialCaseFormat :: Eq a => (a,String) -> Format a -> Format a
-specialCaseFormat (val,str) (MkFormat s r) = let
-    s' t | t == val = Just str
+specialCaseFormat :: Eq a => (a, String) -> Format a -> Format a
+specialCaseFormat (val, str) (MkFormat s r) = let
+    s' t
+        | t == val = Just str
     s' t = s t
     r' = (string str >> return val) +++ r
     in MkFormat s' r'
 
 optionalFormat :: Eq a => a -> Format a -> Format a
-optionalFormat val = specialCaseFormat (val,"")
+optionalFormat val = specialCaseFormat (val, "")
 
-casesFormat :: Eq a => [(a,String)] -> Format a
+casesFormat :: Eq a => [(a, String)] -> Format a
 casesFormat pairs = let
     s t = lookup t pairs
     r [] = pfail
-    r ((v,str):pp) = (string str >> return v) <++ r pp
+    r ((v, str):pp) = (string str >> return v) <++ r pp
     in MkFormat s $ r pairs
 
-optionalSignFormat :: (Eq t,Num t) => Format t
-optionalSignFormat = casesFormat
-    [
-        (1,""),
-        (1,"+"),
-        (0,""),
-        (-1,"-")
-    ]
+optionalSignFormat :: (Eq t, Num t) => Format t
+optionalSignFormat = casesFormat [(1, ""), (1, "+"), (0, ""), (-1, "-")]
 
-mandatorySignFormat :: (Eq t,Num t) => Format t
-mandatorySignFormat = casesFormat
-    [
-        (1,"+"),
-        (0,"+"),
-        (-1,"-")
-    ]
+mandatorySignFormat :: (Eq t, Num t) => Format t
+mandatorySignFormat = casesFormat [(1, "+"), (0, "+"), (-1, "-")]
 
 data SignOption
     = NoSign
@@ -231,7 +211,8 @@ zeroPad (Just i) s = replicate (i - length s) '0' ++ s
 trimTrailing :: String -> String
 trimTrailing "" = ""
 trimTrailing "." = ""
-trimTrailing s | last s == '0' = trimTrailing $ init s
+trimTrailing s
+    | last s == '0' = trimTrailing $ init s
 trimTrailing s = s
 
 showNumber :: Show t => SignOption -> Maybe Int -> t -> Maybe String
@@ -245,12 +226,13 @@ showNumber signOpt mdigitcount t = let
                    NoSign -> Nothing
                    _ -> Just $ '-' : showIt str
            str ->
-               Just $ case signOpt of
+               Just $
+               case signOpt of
                    PosNegSign -> '+' : showIt str
                    _ -> showIt str
 
-integerFormat :: (Show t,Read t,Num t) => SignOption -> Maybe Int -> Format t
+integerFormat :: (Show t, Read t, Num t) => SignOption -> Maybe Int -> Format t
 integerFormat signOpt mdigitcount = MkFormat (showNumber signOpt mdigitcount) (readNumber signOpt mdigitcount False)
 
-decimalFormat :: (Show t,Read t,Num t) => SignOption -> Maybe Int -> Format t
+decimalFormat :: (Show t, Read t, Num t) => SignOption -> Maybe Int -> Format t
 decimalFormat signOpt mdigitcount = MkFormat (showNumber signOpt mdigitcount) (readNumber signOpt mdigitcount True)

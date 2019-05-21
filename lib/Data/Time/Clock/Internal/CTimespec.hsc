@@ -4,11 +4,7 @@ module Data.Time.Clock.Internal.CTimespec where
 
 #if !defined(mingw32_HOST_OS) && HAVE_CLOCK_GETTIME
 
-#if __GLASGOW_HASKELL__ >= 709
 import Foreign
-#else
-import Foreign.Safe
-#endif
 import Foreign.C
 import System.IO.Unsafe
 
