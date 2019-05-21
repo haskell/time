@@ -1,3 +1,3 @@
 #!/bin/bash -e
-stack install --no-test hindent
+#stack install --no-test hindent
 for f in `find -name '*.hs' -not -path '*.stack-work/*' | grep -xvf .hindent.ignore`; do `stack path --local-bin`/hindent $f || exit; done

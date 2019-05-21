@@ -18,7 +18,6 @@ module Data.Time.LocalTime.Internal.TimeZone
 
 import Control.DeepSeq
 import Data.Data
---import System.Time.Calendar.Format
 import Data.Time.Calendar.Private
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
