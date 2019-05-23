@@ -1,5 +1,7 @@
 # Change Log
 
+## [1.10]
+
 ## [1.9.3]
 - documentation fixes
 
