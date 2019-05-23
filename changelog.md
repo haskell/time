@@ -1,6 +1,8 @@
 # Change Log
 
 ## [1.10]
+- remove deprecated functions parseTime, readTime, readsTime
+- deprecate iso8601DateFormat
 
 ## [1.9.3]
 - documentation fixes

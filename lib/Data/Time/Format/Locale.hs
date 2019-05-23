@@ -71,6 +71,10 @@ defaultTimeLocale =
               ]
         }
 
+{-# DEPRECATED
+iso8601DateFormat "use \"Data.Time.Format.ISO8601\" functions instead"
+ #-}
+
 {- | Construct format string according to <http://en.wikipedia.org/wiki/ISO_8601 ISO-8601>.
 
 The @Maybe String@ argument allows to supply an optional time specification. E.g.:
