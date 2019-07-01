@@ -10,6 +10,9 @@ build:
         additional-args: [--hide-successes]
 
 extra-deps:
+- process-1.6.5.1
+- unix-2.7.2.2
+- directory-1.3.3.2
 - git: https://github.com/AshleyYakeley/haskell-src-exts.git
   commit: 31e1466e35cee9a91fa6678d73c938f0f44759eb
 - git: https://github.com/AshleyYakeley/hindent.git
