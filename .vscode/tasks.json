@@ -1,8 +1,12 @@
 {
   "version": "2.0.0",
   "presentation": {
-    "reveal": "silent",
-    "panel": "new"
+    "echo": true,
+    "reveal": "always",
+    "focus": false,
+    "panel": "shared",
+    "showReuseMessage": false,
+    "clear": true
   },
   "tasks": [
     {
