@@ -127,6 +127,12 @@ testNominalDiffTime =
           (fromRational $ negate $ 23 * 86400 + 8520.21 :: NominalDiffTime)
         , testAFormat "%dd %hh %mm %Ess" "-23d -554h -33262m -1995728.21s" $
           (fromRational $ negate $ 23 * 86400 + 8528.21 :: NominalDiffTime)
+        , testAFormat "%3Es" "1.200" (1.2 :: NominalDiffTime)
+        , testAFormat "%3ES" "01.200" (1.2 :: NominalDiffTime)
+        , testAFormat "%3ES" "01.200" (61.2 :: NominalDiffTime)
+        , testAFormat "%3Es" "1.245" (1.24582 :: NominalDiffTime)
+        , testAFormat "%3ES" "01.245" (1.24582 :: NominalDiffTime)
+        , testAFormat "%3ES" "01.245" (61.24582 :: NominalDiffTime)
         ]
 
 testDiffTime :: TestTree
@@ -146,6 +152,12 @@ testDiffTime =
           (fromRational $ negate $ 23 * 86400 + 8520.21 :: DiffTime)
         , testAFormat "%dd %hh %mm %Ess" "-23d -554h -33262m -1995728.21s" $
           (fromRational $ negate $ 23 * 86400 + 8528.21 :: DiffTime)
+        , testAFormat "%3Es" "1.200" (1.2 :: DiffTime)
+        , testAFormat "%3ES" "01.200" (1.2 :: DiffTime)
+        , testAFormat "%3ES" "01.200" (61.2 :: DiffTime)
+        , testAFormat "%3Es" "1.245" (1.24582 :: DiffTime)
+        , testAFormat "%3ES" "01.245" (1.24582 :: DiffTime)
+        , testAFormat "%3ES" "01.245" (61.24582 :: DiffTime)
         ]
 
 testCalenderDiffDays :: TestTree

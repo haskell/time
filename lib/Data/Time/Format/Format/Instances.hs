@@ -160,11 +160,11 @@ instance FormatTime NominalDiffTime where
     formatCharacter _ 'M' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 60
     formatCharacter False 's' = Just $ formatNumberStd 1 $ quotBy 1
     formatCharacter True 's' =
-        Just $ formatGeneral False False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
+        Just $ formatGeneral True False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
     formatCharacter False 'S' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
     formatCharacter True 'S' =
         Just $
-        formatGeneral False False 12 '0' $ \_ padf t -> let
+        formatGeneral True False 12 '0' $ \_ padf t -> let
             padn =
                 case padf of
                     NoPad -> NoPad
@@ -182,11 +182,11 @@ instance FormatTime DiffTime where
     formatCharacter _ 'M' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 60
     formatCharacter False 's' = Just $ formatNumberStd 1 $ quotBy 1
     formatCharacter True 's' =
-        Just $ formatGeneral False False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
+        Just $ formatGeneral True False 12 '0' $ \_ padf t -> showPaddedFixed NoPad padf (realToFrac t :: Pico)
     formatCharacter False 'S' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
     formatCharacter True 'S' =
         Just $
-        formatGeneral False False 12 '0' $ \_ padf t -> let
+        formatGeneral True False 12 '0' $ \_ padf t -> let
             padn =
                 case padf of
                     NoPad -> NoPad
