@@ -35,11 +35,11 @@ formats =
 somestrings :: [String]
 somestrings = ["", " ", "-", "\n"]
 
-compareExpected :: (Eq t, Show t, ParseTime t) => String -> String -> String -> proxy t -> TestTree
+compareExpected :: (Eq t, Show t, ParseTime t) => String -> String -> String -> Proxy t -> TestTree
 compareExpected testname fmt str proxy =
     testCase testname $ do
         let
-            found :: ParseTime t => proxy t -> Maybe t
+            found :: ParseTime t => Proxy t -> Maybe t
             found _ = parseTimeM False defaultTimeLocale fmt str
         assertEqual "" Nothing $ found proxy
 

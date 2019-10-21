@@ -5,6 +5,7 @@
 - deprecate iso8601DateFormat
 - parsing: fix %_Q %-Q %_q %-q
 - formatting: fix %3ES %3Es
+- change internal members of ParseTime to allow newtype-deriving
 
 ## [1.9.3]
 - documentation fixes

@@ -11,6 +11,7 @@ module Data.Time.Format.Parse.Class
 
 import Data.Char
 import Data.Maybe
+import Data.Proxy
 import Data.Time.Format.Locale
 import Text.ParserCombinators.ReadP
 
@@ -23,12 +24,12 @@ data ParseNumericPadding
 -- string.
 class ParseTime t where
     -- | @since 1.9.1
-    substituteTimeSpecifier :: proxy t -> TimeLocale -> Char -> Maybe String
+    substituteTimeSpecifier :: Proxy t -> TimeLocale -> Char -> Maybe String
     substituteTimeSpecifier _ _ _ = Nothing
     -- | Get the string corresponding to the given format specifier.
     --
     -- @since 1.9.1
-    parseTimeSpecifier :: proxy t -> TimeLocale -> Maybe ParseNumericPadding -> Char -> ReadP String
+    parseTimeSpecifier :: Proxy t -> TimeLocale -> Maybe ParseNumericPadding -> Char -> ReadP String
     -- | Builds a time value from a parsed input string.
     -- If the input does not include all the information needed to
     -- construct a complete value, any missing parts should be taken
@@ -59,7 +60,7 @@ stringCI this = do
     s <- look
     scan this s
 
-parseSpecifiers :: ParseTime t => proxy t -> TimeLocale -> String -> ReadP [(Char, String)]
+parseSpecifiers :: ParseTime t => Proxy t -> TimeLocale -> String -> ReadP [(Char, String)]
 parseSpecifiers pt locale = let
     parse :: String -> ReadP [(Char, String)]
     parse [] = return []

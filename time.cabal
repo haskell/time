@@ -160,6 +160,7 @@ test-suite test-main
         Test.Clock.Conversion
         Test.Clock.Resolution
         Test.Clock.TAI
+        Test.Format.Compile
         Test.Format.Format
         Test.Format.ParseTime
         Test.Format.ISO8601

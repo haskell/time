@@ -110,7 +110,7 @@ readPTime ::
 readPTime False l f = readPOnlyTime l f
 readPTime True l f = (skipSpaces >> readPOnlyTime l f) <++ readPOnlyTime l f
 
-readPOnlyTime' :: ParseTime t => proxy t -> TimeLocale -> String -> ReadP t
+readPOnlyTime' :: ParseTime t => Proxy t -> TimeLocale -> String -> ReadP t
 readPOnlyTime' pt l f = do
     pairs <- parseSpecifiers pt l f
     case buildTime l pairs of
