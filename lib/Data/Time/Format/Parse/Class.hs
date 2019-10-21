@@ -9,7 +9,6 @@ module Data.Time.Format.Parse.Class
     , durationParseTimeSpecifier
     ) where
 
-import Control.Applicative hiding (many, optional)
 import Data.Char
 import Data.Maybe
 import Data.Time.Format.Locale
@@ -97,15 +96,28 @@ parseSpecifiers pt locale = let
     parse3 _ _ [] = return []
     in parse
 
-parsePaddedDigits :: ParseNumericPadding -> Int -> ReadP String
-parsePaddedDigits ZeroPadding n = count n (satisfy isDigit)
-parsePaddedDigits SpacePadding _n = skipSpaces >> many1 (satisfy isDigit)
-parsePaddedDigits NoPadding _n = many1 (satisfy isDigit)
+data PaddingSide
+    = PrePadding
+    | PostPadding
+
+allowEmptyParser :: Bool -> ReadP String
+allowEmptyParser False = many1 (satisfy isDigit)
+allowEmptyParser True = many (satisfy isDigit)
+
+parsePaddedDigits :: PaddingSide -> ParseNumericPadding -> Bool -> Int -> ReadP String
+parsePaddedDigits _ ZeroPadding _ n = count n (satisfy isDigit)
+parsePaddedDigits PrePadding SpacePadding allowEmpty _n = skipSpaces >> allowEmptyParser allowEmpty
+parsePaddedDigits PostPadding SpacePadding allowEmpty _n = do
+    r <- allowEmptyParser allowEmpty
+    skipSpaces
+    return r
+parsePaddedDigits _ NoPadding False _n = many1 (satisfy isDigit)
+parsePaddedDigits _ NoPadding True _n = many (satisfy isDigit)
 
 parsePaddedSignedDigits :: ParseNumericPadding -> Int -> ReadP String
 parsePaddedSignedDigits pad n = do
     sign <- option "" $ char '-' >> return "-"
-    digits <- parsePaddedDigits pad n
+    digits <- parsePaddedDigits PrePadding pad False n
     return $ sign ++ digits
 
 parseSignedDecimal :: ReadP String
@@ -122,13 +134,14 @@ parseSignedDecimal = do
 
 timeParseTimeSpecifier :: TimeLocale -> Maybe ParseNumericPadding -> Char -> ReadP String
 timeParseTimeSpecifier l mpad c = let
-    digits pad = parsePaddedDigits (fromMaybe pad mpad)
+    digits' ps pad = parsePaddedDigits ps (fromMaybe pad mpad)
+    digits pad = digits' PrePadding pad False
     oneOf = choice . map stringCI
     numericTZ = do
         s <- choice [char '+', char '-']
-        h <- parsePaddedDigits ZeroPadding 2
+        h <- parsePaddedDigits PrePadding ZeroPadding False 2
         optional (char ':')
-        m <- parsePaddedDigits ZeroPadding 2
+        m <- parsePaddedDigits PrePadding ZeroPadding False 2
         return (s : h ++ m)
     in case c of
         -- century
@@ -180,8 +193,8 @@ timeParseTimeSpecifier l mpad c = let
         -- second of minute
            'S' -> digits ZeroPadding 2
         -- picosecond of second
-           'q' -> digits ZeroPadding 12
-           'Q' -> liftA2 (:) (char '.') (munch isDigit) <++ return ""
+           'q' -> digits' PostPadding ZeroPadding True 12
+           'Q' -> (char '.' >> digits' PostPadding NoPadding True 12) <++ return ""
         -- time zone
            'z' -> numericTZ
            'Z' -> munch1 isAlpha <++ numericTZ

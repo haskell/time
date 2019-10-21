@@ -4,7 +4,7 @@ module Data.Time.Format.Parse.Instances
     (
     ) where
 
-import Control.Applicative ((<$>), (<*>))
+import Control.Applicative ((<$>), (<*>), (<|>))
 import Data.Char
 import Data.Fixed
 import Data.List
@@ -249,13 +249,13 @@ instance ParseTime TimeOfDay where
                        a <- clipValid 0 60 raw
                        return $ TimeOfDay h m (fromInteger a)
                    'q' -> do
-                       a <- ra
-                       return $ TimeOfDay h m (mkPico (floor s) a)
+                       ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
+                       return $ TimeOfDay h m (mkPico (floor s) ps)
                    'Q' ->
                        if null x
                            then Just t
                            else do
-                               ps <- readMaybe $ take 12 $ rpad 12 '0' $ drop 1 x
+                               ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
                                return $ TimeOfDay h m (mkPico (floor s) ps)
                    _ -> Just t
         in mfoldl f (Just midnight)

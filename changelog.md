@@ -3,6 +3,7 @@
 ## [1.10]
 - remove deprecated functions parseTime, readTime, readsTime
 - deprecate iso8601DateFormat
+- parsing: fix %_Q %-Q %_q %-q
 
 ## [1.9.3]
 - documentation fixes

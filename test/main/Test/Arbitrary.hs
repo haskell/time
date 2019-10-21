@@ -3,6 +3,7 @@
 module Test.Arbitrary where
 
 import Control.Monad
+import Data.Fixed
 import Data.Ratio
 import Data.Time
 import Data.Time.Clock.POSIX
@@ -68,32 +69,59 @@ instance CoArbitrary NominalDiffTime where
 instance Arbitrary CalendarDiffTime where
     arbitrary = liftM2 CalendarDiffTime arbitrary arbitrary
 
+reduceDigits :: Int -> Pico -> Maybe Pico
+reduceDigits (-1) _ = Nothing
+reduceDigits n x = let
+    d :: Pico
+    d = 10 ^^ (negate n)
+    r = mod' x d
+    in case r of
+           0 -> reduceDigits (n - 1) x
+           _ -> Just $ x - r
+
 instance Arbitrary TimeOfDay where
     arbitrary = liftM timeToTimeOfDay arbitrary
+    shrink (TimeOfDay h m s) = let
+        shrinkInt 0 = []
+        shrinkInt 1 = [0]
+        shrinkInt _ = [0, 1]
+        shrinkPico 0 = []
+        shrinkPico 1 = [0]
+        shrinkPico p =
+            case reduceDigits 12 p of
+                Just p' -> [0, 1, p']
+                Nothing -> [0, 1]
+        in [TimeOfDay h' m s | h' <- shrinkInt h] ++
+           [TimeOfDay h m' s | m' <- shrinkInt m] ++ [TimeOfDay h m s' | s' <- shrinkPico s]
 
 instance CoArbitrary TimeOfDay where
     coarbitrary t = coarbitrary (timeOfDayToTime t)
 
 instance Arbitrary LocalTime where
     arbitrary = liftM2 LocalTime arbitrary arbitrary
+    shrink (LocalTime d tod) = [LocalTime d' tod | d' <- shrink d] ++ [LocalTime d tod' | tod' <- shrink tod]
 
 instance CoArbitrary LocalTime where
     coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (localTimeToUTC utc t)) :: Integer)
 
 instance Arbitrary TimeZone where
     arbitrary = liftM minutesToTimeZone $ choose (-720, 720)
+    shrink (TimeZone 0 _ _) = []
+    shrink (TimeZone _ s n) = [TimeZone 0 s n]
 
 instance CoArbitrary TimeZone where
     coarbitrary tz = coarbitrary (timeZoneMinutes tz)
 
 instance Arbitrary ZonedTime where
     arbitrary = liftM2 ZonedTime arbitrary arbitrary
+    shrink (ZonedTime d tz) = [ZonedTime d' tz | d' <- shrink d] ++ [ZonedTime d tz' | tz' <- shrink tz]
 
 instance CoArbitrary ZonedTime where
     coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (zonedTimeToUTC t)) :: Integer)
 
 instance Arbitrary UTCTime where
     arbitrary = liftM2 UTCTime arbitrary arbitrary
+    shrink t = fmap (localTimeToUTC utc) $ shrink $ utcToLocalTime utc t
 
 instance CoArbitrary UTCTime where
     coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds t) :: Integer)
@@ -102,6 +130,7 @@ instance Arbitrary UniversalTime where
     arbitrary = liftM (\n -> ModJulianDate $ n % k) $ choose (-313698 * k, 2973483 * k) -- 1000-01-1 to 9999-12-31
       where
         k = 86400
+    shrink t = fmap (localTimeToUT1 0) $ shrink $ ut1ToLocalTime 0 t
 
 instance CoArbitrary UniversalTime where
     coarbitrary (ModJulianDate d) = coarbitrary d
