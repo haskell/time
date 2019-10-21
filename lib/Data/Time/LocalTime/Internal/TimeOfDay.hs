@@ -12,7 +12,9 @@ module Data.Time.LocalTime.Internal.TimeOfDay
     , utcToLocalTimeOfDay
     , localToUTCTimeOfDay
     , timeToTimeOfDay
+    , pastMidnight
     , timeOfDayToTime
+    , sinceMidnight
     , dayFractionToTimeOfDay
     , timeOfDayToDayFraction
     ) where
@@ -100,9 +102,17 @@ timeToTimeOfDay dt = TimeOfDay (fromInteger h) (fromInteger m) s
     m = mod' m' 60
     h = div' m' 60
 
+-- | Same as 'timeToTimeOfDay'.
+pastMidnight :: DiffTime -> TimeOfDay
+pastMidnight = timeToTimeOfDay
+
 -- | Get the time since midnight for a given time of day.
 timeOfDayToTime :: TimeOfDay -> DiffTime
 timeOfDayToTime (TimeOfDay h m s) = ((fromIntegral h) * 60 + (fromIntegral m)) * 60 + (realToFrac s)
+
+-- | Same as 'timeOfDayToTime'.
+sinceMidnight :: TimeOfDay -> DiffTime
+sinceMidnight = timeOfDayToTime
 
 -- | Get the time of day given the fraction of a day since midnight.
 dayFractionToTimeOfDay :: Rational -> TimeOfDay
