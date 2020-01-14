@@ -131,6 +131,8 @@ extests =
          , makeExhaustiveTest "parse %-C %y 1400s" [0, 1, 50, 99] (parseCYY 14)
          , makeExhaustiveTest "parse %C %y 0700s" [0, 1, 50, 99] (parseCYY2 7)
          , makeExhaustiveTest "parse %-C %y 700s" [0, 1, 50, 99] (parseCYY 7)
+         , makeExhaustiveTest "parse %-C %y -700s" [0, 1, 50, 99] (parseCYY (-7))
+         , makeExhaustiveTest "parse %-C %y -70000s" [0, 1, 50, 99] (parseCYY (-70000))
          , makeExhaustiveTest "parse %-C %y 10000s" [0, 1, 50, 99] (parseCYY 100)
          , makeExhaustiveTest "parse %-C centuries" [20 .. 100] (parseCentury " ")
          , makeExhaustiveTest "parse %-C century X" [1, 10, 20, 100] (parseCentury "X")
@@ -144,7 +146,7 @@ extests =
                    , (makeExhaustiveTest "parse %Y %m %d" (yearDays y) parseYearDayD)
                    , (makeExhaustiveTest "parse %Y %-m %e" (yearDays y) parseYearDayE)
                    ])
-              [1, 4, 20, 753, 2000, 2011, 10001]))
+              [1, 4, 20, 753, 2000, 2011, 10001, (-1166)]))
 
 readTest :: (Eq a, Show a, Read a) => [(a, String)] -> String -> TestTree
 readTest expected target = let
