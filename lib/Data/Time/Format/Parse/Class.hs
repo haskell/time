@@ -146,10 +146,10 @@ timeParseTimeSpecifier l mpad c = let
         return (s : h ++ m)
     in case c of
         -- century
-           'C' -> digits SpacePadding 2
+           'C' -> (char '-' >> fmap ('-' :) (digits SpacePadding 2)) <++ digits SpacePadding 2
            'f' -> digits SpacePadding 2
         -- year
-           'Y' -> digits SpacePadding 4
+           'Y' -> (char '-' >> fmap ('-' :) (digits SpacePadding 4)) <++ digits SpacePadding 4
            'G' -> digits SpacePadding 4
         -- year of century
            'y' -> digits ZeroPadding 2
