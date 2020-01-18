@@ -25,6 +25,9 @@ matrix:
     - env: CABALVER=2.0 GHCVER=8.6.5
       compiler: ": #GHC 8.6.5" # released 2019-04-23
       addons: {apt: {packages: [cabal-install-2.0,ghc-8.6.5], sources: [hvr-ghc]}}
+    - env: CABALVER=2.0 GHCVER=8.8.2
+      compiler: ": #GHC 8.8.2" # released 2020-01-16
+      addons: {apt: {packages: [cabal-install-2.0,ghc-8.8.2], sources: [hvr-ghc]}}
 
 before_install:
  - unset CC

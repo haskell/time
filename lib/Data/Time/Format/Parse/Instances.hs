@@ -4,7 +4,11 @@ module Data.Time.Format.Parse.Instances
     (
     ) where
 
+#if MIN_VERSION_base(4,13,0)
+import Control.Applicative ((<|>))
+#else
 import Control.Applicative ((<$>), (<*>), (<|>))
+#endif
 import Data.Char
 import Data.Fixed
 import Data.List
