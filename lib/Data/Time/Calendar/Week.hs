@@ -5,6 +5,7 @@ module Data.Time.Calendar.Week
     , dayOfWeek
     ) where
 
+import Data.Data
 import Data.Time.Calendar.Days
 
 data DayOfWeek
@@ -15,7 +16,7 @@ data DayOfWeek
     | Friday
     | Saturday
     | Sunday
-    deriving (Eq, Show, Read)
+    deriving (Eq, Show, Read, Data, Typeable)
 
 -- | \"Circular\", so for example @[Tuesday ..]@ gives an endless sequence.
 -- Also: 'fromEnum' gives [1 .. 7] for [Monday .. Sunday], and 'toEnum' performs mod 7 to give a cycle of days.

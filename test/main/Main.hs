@@ -1,5 +1,6 @@
 module Main where
 
+import Test.Types()
 import Test.Calendar.AddDays
 import Test.Calendar.Calendars
 import Test.Calendar.ClipDates

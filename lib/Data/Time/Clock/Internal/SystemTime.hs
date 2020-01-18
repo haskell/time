@@ -8,6 +8,7 @@ module Data.Time.Clock.Internal.SystemTime
     , getTAISystemTime
     ) where
 
+import Data.Data
 import Control.DeepSeq
 import Data.Int (Int64)
 import Data.Time.Clock.Internal.DiffTime
@@ -31,7 +32,7 @@ import Foreign.C.Types (CLong(..))
 data SystemTime = MkSystemTime
     { systemSeconds :: {-# UNPACK #-}!Int64
     , systemNanoseconds :: {-# UNPACK #-}!Word32
-    } deriving (Eq, Ord, Show)
+    } deriving (Eq, Ord, Show, Data, Typeable)
 
 instance NFData SystemTime where
     rnf a = a `seq` ()

@@ -139,6 +139,7 @@ test-suite test-main
         tasty-quickcheck
     main-is: Main.hs
     other-modules:
+        Test.Types
         Test.TestUtil
         Test.Arbitrary
         Test.Calendar.AddDays
