@@ -4,6 +4,7 @@
 - remove deprecated functions parseTime, readTime, readsTime
 - deprecate iso8601DateFormat
 - parsing: fix %_Q %-Q %_q %-q
+- parsing: fix parsing of BCE years
 - formatting: fix %3ES %3Es
 - change internal members of ParseTime to allow newtype-deriving
 - new functions (aliases) pastMidnight & sinceMidnight
