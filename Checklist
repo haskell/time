@@ -24,6 +24,7 @@ Before release:
     https://www.stackage.org/lts
     stack.yaml
     fullcheck
+    fullcheck.ps1
     (not necessarily benchmark/stack.yaml)
     .travis.yml (if present)
 
@@ -66,10 +67,12 @@ Before release:
 
 13. Build and test on Windows
 
+    (in PowerShell)
+    Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
     stack upgrade
     stack --version
     git pull
-    ./fullcheck
+    .\fullcheck
 
 14. Upload to Hackage
 
