@@ -33,9 +33,9 @@ import Text.ParserCombinators.ReadP hiding (char, string)
 -- Case is not significant in the input string.
 -- Some variations in the input are accepted:
 --
--- [@%z@] accepts any of @±HHMM@ or @±HH:MM@.
+-- [@%z@ @%Ez@] accepts any of @±HHMM@ or @±HH:MM@.
 --
--- [@%Z@] accepts any string of letters, or any of the formats accepted by @%z@.
+-- [@%Z@ @%EZ@] accepts any string of letters, or any of the formats accepted by @%z@.
 --
 -- [@%0Y@] accepts exactly four digits.
 --

@@ -677,7 +677,7 @@ localTimeFormats :: [FormatString LocalTime]
 localTimeFormats = map FormatString [] {-"%Q","%Q ","%QX"-}
 
 timeZoneFormats :: [FormatString TimeZone]
-timeZoneFormats = map FormatString ["%z", "%z%Z", "%Z%z", "%Z"]
+timeZoneFormats = map FormatString ["%z", "%z%Z", "%Z%z", "%Z", "%Ez", "%EZ"]
 
 zonedTimeFormats :: [FormatString ZonedTime]
 zonedTimeFormats =
