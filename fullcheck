@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # latest LTS resolver for each GHC x.y version
-for r in lts-9 lts-11 lts-12 lts-14 nightly
+for r in lts-9 lts-11 lts-12 lts-14 lts-15 nightly
 do
 stack --resolver $r build
 done
