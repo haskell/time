@@ -76,6 +76,8 @@ Before release:
 
 14. Upload to Hackage
 
+    ./configure
+        (this is a workaround for https://github.com/commercialhaskell/stack/issues/5222)
     stack upload .
     http://hackage.haskell.org/package/time
 
