@@ -17,8 +17,10 @@ import Data.Ratio ((%))
 import Data.Typeable
 
 -- | This is a length of time, as measured by a clock.
--- Conversion functions will treat it as seconds.
--- It has a precision of 10^-12 s.
+-- Conversion functions such as 'fromInteger' and 'realToFrac' will treat it as seconds.
+-- For example, @(0.010 :: DiffTime)@ corresponds to 10 milliseconds.
+--
+-- It has a precision of one picosecond (= 10^-12 s). Enumeration functions will treat it as picoseconds.
 newtype DiffTime =
     MkDiffTime Pico
     deriving (Eq, Ord, Data, Typeable)
