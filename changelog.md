@@ -1,5 +1,7 @@
 # Change Log
 
+## [1.11]
+
 ## [1.10]
 - remove deprecated functions parseTime, readTime, readsTime
 - deprecate iso8601DateFormat
