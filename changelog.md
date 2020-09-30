@@ -1,6 +1,7 @@
 # Change Log
 
 ## [1.11]
+- add instance Ord DayOfWeek
 
 ## [1.10]
 - remove deprecated functions parseTime, readTime, readsTime
