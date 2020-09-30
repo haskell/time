@@ -16,7 +16,7 @@ data DayOfWeek
     | Friday
     | Saturday
     | Sunday
-    deriving (Eq, Show, Read, Data, Typeable)
+    deriving (Eq, Show, Read, Data, Typeable, Ord)
 
 -- | \"Circular\", so for example @[Tuesday ..]@ gives an endless sequence.
 -- Also: 'fromEnum' gives [1 .. 7] for [Monday .. Sunday], and 'toEnum' performs mod 7 to give a cycle of days.
