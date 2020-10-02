@@ -2,6 +2,7 @@
 
 ## [1.11]
 - add instance Ord DayOfWeek
+- add instance Read DiffTime (and NominalDiffTime)
 
 ## [1.10]
 - remove deprecated functions parseTime, readTime, readsTime
