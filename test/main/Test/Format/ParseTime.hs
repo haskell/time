@@ -573,6 +573,8 @@ readShowTests =
         , nameTest "ZonedTime" (prop_read_show :: ZonedTime -> Result)
         , nameTest "UTCTime" (prop_read_show :: UTCTime -> Result)
         , nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result)
+        , nameTest "NominalDiffTime" (prop_read_show :: NominalDiffTime -> Result)
+        , nameTest "DiffTime" (prop_read_show :: DiffTime -> Result)
     --nameTest "CalendarDiffDays" (prop_read_show :: CalendarDiffDays -> Result),
     --nameTest "CalendarDiffTime" (prop_read_show :: CalendarDiffTime -> Result)
         ]

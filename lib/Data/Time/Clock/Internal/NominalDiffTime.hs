@@ -13,6 +13,9 @@ import Data.Data
 import Data.Fixed
 import Data.Time.Calendar.Days
 import Data.Typeable
+import Text.ParserCombinators.ReadP
+import Text.ParserCombinators.ReadPrec
+import GHC.Read
 
 -- | This is a length of time, as measured by UTC.
 -- It has a precision of 10^-12 s.
@@ -59,6 +62,12 @@ instance Enum NominalDiffTime where
 
 instance Show NominalDiffTime where
     show (MkNominalDiffTime t) = (showFixed True t) ++ "s"
+
+instance Read NominalDiffTime where
+    readPrec = do
+        t <- readPrec
+        _ <- lift $ char 's'
+        return $ MkNominalDiffTime t
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Num NominalDiffTime where

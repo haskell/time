@@ -15,6 +15,9 @@ import Data.Data
 import Data.Fixed
 import Data.Ratio ((%))
 import Data.Typeable
+import Text.ParserCombinators.ReadP
+import Text.ParserCombinators.ReadPrec
+import GHC.Read
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions such as 'fromInteger' and 'realToFrac' will treat it as seconds.
@@ -43,6 +46,12 @@ instance Enum DiffTime where
 
 instance Show DiffTime where
     show (MkDiffTime t) = (showFixed True t) ++ "s"
+
+instance Read DiffTime where
+    readPrec = do
+        t <- readPrec
+        _ <- lift $ char 's'
+        return $ MkDiffTime t
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Num DiffTime where
