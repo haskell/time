@@ -376,6 +376,12 @@ test_parse_format f t = let
 prop_read_show :: (Read a, Show a, Eq a) => a -> Result
 prop_read_show t = compareResult (Just t) (readMaybe (show t))
 
+prop_read_show_ZonedUTC :: ZonedTime -> Result
+prop_read_show_ZonedUTC t = compareResult (Just $ zonedTimeToUTC t) (readMaybe (show t))
+
+prop_read_show_LocalUTC :: LocalTime -> Result
+prop_read_show_LocalUTC t = compareResult (Just $ localTimeToUTC utc t) (readMaybe (show t))
+
 --
 -- * special show functions
 --
@@ -572,6 +578,8 @@ readShowTests =
         , nameTest "TimeZone" (prop_read_show :: TimeZone -> Result)
         , nameTest "ZonedTime" (prop_read_show :: ZonedTime -> Result)
         , nameTest "UTCTime" (prop_read_show :: UTCTime -> Result)
+        , nameTest "UTCTime (zoned)" prop_read_show_ZonedUTC
+        , nameTest "UTCTime (local)" prop_read_show_LocalUTC
         , nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result)
         , nameTest "NominalDiffTime" (prop_read_show :: NominalDiffTime -> Result)
         , nameTest "DiffTime" (prop_read_show :: DiffTime -> Result)
