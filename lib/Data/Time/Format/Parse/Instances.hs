@@ -11,7 +11,7 @@ import Control.Applicative ((<$>), (<*>), (<|>))
 #endif
 import Data.Char
 import Data.Fixed
-import Data.List
+import Data.List (elemIndex,find)
 import Data.Ratio
 import Data.Time.Calendar.Types
 import Data.Time.Calendar.CalendarDiffDays

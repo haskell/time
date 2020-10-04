@@ -26,9 +26,6 @@ packages:
   original:
     hackage: directory-1.3.3.2
 - completed:
-    cabal-file:
-      size: 4428
-      sha256: e9cd03672627da8e85225a8c855356df9ecaa7141e61b7d97860b511bfb6c7f0
     name: haskell-src-exts
     version: 1.21.1
     git: https://github.com/AshleyYakeley/haskell-src-exts.git
@@ -40,9 +37,6 @@ packages:
     git: https://github.com/AshleyYakeley/haskell-src-exts.git
     commit: 31e1466e35cee9a91fa6678d73c938f0f44759eb
 - completed:
-    cabal-file:
-      size: 3609
-      sha256: f264293c32b704c623d98df85f873e322124e2c0058b9062798f891472f48ad4
     name: hindent
     version: 5.3.0
     git: https://github.com/AshleyYakeley/hindent.git
@@ -55,7 +49,7 @@ packages:
     commit: d240eb7334cd08c7e377b59fcb1977bdf95527d6
 snapshots:
 - completed:
-    size: 491373
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/15/3.yaml
-    sha256: 29e9ff61b8bf4b4fcff55cde3ac106ebb971f0d21331dccac9eee63374fa6ca8
-  original: lts-15.3
+    size: 532380
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/16.yaml
+    sha256: d6b004b095fe2a0b8b14fbc30014ee97e58843b9c9362ddb9244273dda62649e
+  original: lts-16.16
