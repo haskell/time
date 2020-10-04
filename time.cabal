@@ -67,6 +67,7 @@ library
         Data.Time
     other-modules:
         Data.Format
+        Data.Time.Calendar.Types,
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Days,
         Data.Time.Calendar.Gregorian,

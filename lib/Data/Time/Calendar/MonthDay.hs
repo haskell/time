@@ -1,15 +1,17 @@
 module Data.Time.Calendar.MonthDay
-    ( monthAndDayToDayOfYear
+    ( MonthOfYear, DayOfMonth, DayOfYear
+    , monthAndDayToDayOfYear
     , monthAndDayToDayOfYearValid
     , dayOfYearToMonthAndDay
     , monthLength
     ) where
 
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.Private
 
 -- | Convert month and day in the Gregorian or Julian calendars to day of year.
 -- First arg is leap year flag.
-monthAndDayToDayOfYear :: Bool -> Int -> Int -> Int
+monthAndDayToDayOfYear :: Bool -> MonthOfYear -> DayOfMonth -> DayOfYear
 monthAndDayToDayOfYear isLeap month day = (div (367 * month'' - 362) 12) + k + day'
   where
     month' = clip 1 12 month
@@ -24,7 +26,7 @@ monthAndDayToDayOfYear isLeap month day = (div (367 * month'' - 362) 12) + k + d
 
 -- | Convert month and day in the Gregorian or Julian calendars to day of year.
 -- First arg is leap year flag.
-monthAndDayToDayOfYearValid :: Bool -> Int -> Int -> Maybe Int
+monthAndDayToDayOfYearValid :: Bool -> MonthOfYear -> DayOfMonth -> Maybe DayOfYear
 monthAndDayToDayOfYearValid isLeap month day = do
     month' <- clipValid 1 12 month
     day' <- clipValid 1 (monthLength' isLeap month') day
@@ -41,7 +43,7 @@ monthAndDayToDayOfYearValid isLeap month day = do
 
 -- | Convert day of year in the Gregorian or Julian calendars to month and day.
 -- First arg is leap year flag.
-dayOfYearToMonthAndDay :: Bool -> Int -> (Int, Int)
+dayOfYearToMonthAndDay :: Bool -> DayOfYear -> (MonthOfYear, DayOfMonth)
 dayOfYearToMonthAndDay isLeap yd =
     findMonthDay
         (monthLengths isLeap)
@@ -59,13 +61,13 @@ findMonthDay _ yd = (1, yd)
 
 -- | The length of a given month in the Gregorian or Julian calendars.
 -- First arg is leap year flag.
-monthLength :: Bool -> Int -> Int
+monthLength :: Bool -> MonthOfYear -> DayOfMonth
 monthLength isLeap month' = monthLength' isLeap (clip 1 12 month')
 
-monthLength' :: Bool -> Int -> Int
+monthLength' :: Bool -> MonthOfYear -> DayOfMonth
 monthLength' isLeap month' = (monthLengths isLeap) !! (month' - 1)
 
-monthLengths :: Bool -> [Int]
+monthLengths :: Bool -> [DayOfMonth]
 monthLengths isleap =
     [ 31
     , if isleap

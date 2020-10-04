@@ -1,10 +1,16 @@
+{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 {-# OPTIONS -fno-warn-orphans #-}
 
 module Data.Time.Calendar.Gregorian
     (
+    -- * Year, month and day
+      Year
+    , MonthOfYear
+    , DayOfMonth
     -- * Gregorian calendar
-      toGregorian
+    , toGregorian
     , fromGregorian
+    , pattern YearMonthDay
     , fromGregorianValid
     , showGregorian
     , gregorianMonthLength
@@ -22,27 +28,38 @@ module Data.Time.Calendar.Gregorian
     , isLeapYear
     ) where
 
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.MonthDay
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 
--- | Convert to proleptic Gregorian calendar. First element of result is year, second month number (1-12), third day (1-31).
-toGregorian :: Day -> (Integer, Int, Int)
+-- | Convert to proleptic Gregorian calendar.
+toGregorian :: Day -> (Year, MonthOfYear, DayOfMonth)
 toGregorian date = (year, month, day)
   where
     (year, yd) = toOrdinalDate date
     (month, day) = dayOfYearToMonthAndDay (isLeapYear year) yd
 
--- | Convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- | Convert from proleptic Gregorian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
-fromGregorian :: Integer -> Int -> Int -> Day
+fromGregorian :: Year -> MonthOfYear -> DayOfMonth -> Day
 fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isLeapYear year) month day)
 
--- | Convert from proleptic Gregorian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- | Abstract constructor for the proleptic Gregorian calendar.
+-- Invalid values will be clipped to the correct range, month first, then day.
+pattern YearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
+pattern YearMonthDay y m d <- (toGregorian -> (y,m,d)) where
+    YearMonthDay y m d = fromGregorian y m d
+
+#if __GLASGOW_HASKELL__ >= 822
+{-# COMPLETE YearMonthDay #-}
+#endif
+
+-- | Convert from proleptic Gregorian calendar.
 -- Invalid values will return Nothing
-fromGregorianValid :: Integer -> Int -> Int -> Maybe Day
+fromGregorianValid :: Year -> MonthOfYear -> DayOfMonth -> Maybe Day
 fromGregorianValid year month day = do
     doy <- monthAndDayToDayOfYearValid (isLeapYear year) month day
     fromOrdinalDateValid year doy
@@ -53,14 +70,14 @@ showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
   where
     (y, m, d) = toGregorian date
 
--- | The number of days in a given month according to the proleptic Gregorian calendar. First argument is year, second is month.
-gregorianMonthLength :: Integer -> Int -> Int
+-- | The number of days in a given month according to the proleptic Gregorian calendar.
+gregorianMonthLength :: Year -> MonthOfYear -> DayOfMonth
 gregorianMonthLength year = monthLength (isLeapYear year)
 
-rolloverMonths :: (Integer, Integer) -> (Integer, Int)
+rolloverMonths :: (Year, Integer) -> (Year, MonthOfYear)
 rolloverMonths (y, m) = (y + (div (m - 1) 12), fromIntegral (mod (m - 1) 12) + 1)
 
-addGregorianMonths :: Integer -> Day -> (Integer, Int, Int)
+addGregorianMonths :: Integer -> Day -> (Year, MonthOfYear, DayOfMonth)
 addGregorianMonths n day = (y', m', d)
   where
     (y, m, d) = toGregorian day

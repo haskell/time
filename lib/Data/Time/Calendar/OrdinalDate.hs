@@ -1,12 +1,13 @@
 -- | ISO 8601 Ordinal Date format
-module Data.Time.Calendar.OrdinalDate where
+{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
+module Data.Time.Calendar.OrdinalDate (Day, Year, DayOfYear, WeekOfYear, module Data.Time.Calendar.OrdinalDate) where
 
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
--- | Convert to ISO 8601 Ordinal Date format. First element of result is year (proleptic Gregoran calendar),
--- second is the day of the year, with 1 for Jan 1, and 365 (or 366 in leap years) for Dec 31.
-toOrdinalDate :: Day -> (Integer, Int)
+-- | Convert to ISO 8601 Ordinal Date format.
+toOrdinalDate :: Day -> (Year, DayOfYear)
 toOrdinalDate (ModifiedJulianDay mjd) = (year, yd)
   where
     a = mjd + 678575
@@ -22,7 +23,7 @@ toOrdinalDate (ModifiedJulianDay mjd) = (year, yd)
 
 -- | Convert from ISO 8601 Ordinal Date format.
 -- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
-fromOrdinalDate :: Integer -> Int -> Day
+fromOrdinalDate :: Year -> DayOfYear -> Day
 fromOrdinalDate year day = ModifiedJulianDay mjd
   where
     y = year - 1
@@ -40,9 +41,19 @@ fromOrdinalDate year day = ModifiedJulianDay mjd
         (div y 400) -
         678576
 
+-- | Abstract constructor for ISO 8601 Ordinal Date format.
+-- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
+pattern YearDay :: Year -> DayOfYear -> Day
+pattern YearDay y d <- (toOrdinalDate -> (y,d)) where
+    YearDay y d = fromOrdinalDate y d
+
+#if __GLASGOW_HASKELL__ >= 822
+{-# COMPLETE YearDay #-}
+#endif
+
 -- | Convert from ISO 8601 Ordinal Date format.
 -- Invalid day numbers return 'Nothing'
-fromOrdinalDateValid :: Integer -> Int -> Maybe Day
+fromOrdinalDateValid :: Year -> DayOfYear -> Maybe Day
 fromOrdinalDateValid year day = do
     day' <-
         clipValid
@@ -63,13 +74,13 @@ showOrdinalDate date = (show4 y) ++ "-" ++ (show3 d)
     (y, d) = toOrdinalDate date
 
 -- | Is this year a leap year according to the proleptic Gregorian calendar?
-isLeapYear :: Integer -> Bool
+isLeapYear :: Year -> Bool
 isLeapYear year = (mod year 4 == 0) && ((mod year 400 == 0) || not (mod year 100 == 0))
 
 -- | Get the number of the Monday-starting week in the year and the day of the week.
 -- The first Monday is the first day of week 1, any earlier days in the year are week 0 (as @%W@ in 'Data.Time.Format.formatTime').
 -- Monday is 1, Sunday is 7 (as @%u@ in 'Data.Time.Format.formatTime').
-mondayStartWeek :: Day -> (Int, Int)
+mondayStartWeek :: Day -> (WeekOfYear, Int)
 mondayStartWeek date = (fromInteger ((div d 7) - (div k 7)), fromInteger (mod d 7) + 1)
   where
     yd = snd (toOrdinalDate date)
@@ -79,7 +90,7 @@ mondayStartWeek date = (fromInteger ((div d 7) - (div k 7)), fromInteger (mod d 
 -- | Get the number of the Sunday-starting week in the year and the day of the week.
 -- The first Sunday is the first day of week 1, any earlier days in the year are week 0 (as @%U@ in 'Data.Time.Format.formatTime').
 -- Sunday is 0, Saturday is 6 (as @%w@ in 'Data.Time.Format.formatTime').
-sundayStartWeek :: Day -> (Int, Int)
+sundayStartWeek :: Day -> (WeekOfYear, Int)
 sundayStartWeek date = (fromInteger ((div d 7) - (div k 7)), fromInteger (mod d 7))
   where
     yd = snd (toOrdinalDate date)
@@ -91,8 +102,8 @@ sundayStartWeek date = (fromInteger ((div d 7) - (div k 7)), fromInteger (mod d 
 -- The first Monday is the first day of week 1, any earlier days in the year
 -- are week 0 (as @%W@ in 'Data.Time.Format.formatTime').
 fromMondayStartWeek ::
-       Integer -- ^ Year.
-    -> Int -- ^ Monday-starting week number (as @%W@ in 'Data.Time.Format.formatTime').
+       Year -- ^ Year.
+    -> WeekOfYear -- ^ Monday-starting week number (as @%W@ in 'Data.Time.Format.formatTime').
     -> Int -- ^ Day of week.
                                -- Monday is 1, Sunday is 7 (as @%u@ in 'Data.Time.Format.formatTime').
     -> Day
@@ -110,8 +121,8 @@ fromMondayStartWeek year w d = let
     in addDays zbYearDay firstDay
 
 fromMondayStartWeekValid ::
-       Integer -- ^ Year.
-    -> Int -- ^ Monday-starting week number (as @%W@ in 'Data.Time.Format.formatTime').
+       Year -- ^ Year.
+    -> WeekOfYear -- ^ Monday-starting week number (as @%W@ in 'Data.Time.Format.formatTime').
     -> Int -- ^ Day of week.
                                -- Monday is 1, Sunday is 7 (as @%u@ in 'Data.Time.Format.formatTime').
     -> Maybe Day
@@ -142,8 +153,8 @@ fromMondayStartWeekValid year w d = do
 -- The first Sunday is the first day of week 1, any earlier days in the
 -- year are week 0 (as @%U@ in 'Data.Time.Format.formatTime').
 fromSundayStartWeek ::
-       Integer -- ^ Year.
-    -> Int -- ^ Sunday-starting week number (as @%U@ in 'Data.Time.Format.formatTime').
+       Year -- ^ Year.
+    -> WeekOfYear -- ^ Sunday-starting week number (as @%U@ in 'Data.Time.Format.formatTime').
     -> Int -- ^ Day of week
                                -- Sunday is 0, Saturday is 6 (as @%w@ in 'Data.Time.Format.formatTime').
     -> Day
@@ -161,8 +172,8 @@ fromSundayStartWeek year w d = let
     in addDays zbYearDay firstDay
 
 fromSundayStartWeekValid ::
-       Integer -- ^ Year.
-    -> Int -- ^ Sunday-starting week number (as @%U@ in 'Data.Time.Format.formatTime').
+       Year -- ^ Year.
+    -> WeekOfYear -- ^ Sunday-starting week number (as @%U@ in 'Data.Time.Format.formatTime').
     -> Int -- ^ Day of week.
                                -- Sunday is 0, Saturday is 6 (as @%w@ in 'Data.Time.Format.formatTime').
     -> Maybe Day

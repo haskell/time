@@ -1,6 +1,7 @@
 # Change Log
 
 ## [1.11]
+- new calendrical type synonyms and abstract constructors
 - add instance Ord DayOfWeek
 - add instance Read DiffTime (and NominalDiffTime)
 - change instance Read UTCTime to allow omitted timezone

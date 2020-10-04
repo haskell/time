@@ -1,7 +1,13 @@
+{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 module Data.Time.Calendar.Julian
-    ( module Data.Time.Calendar.JulianYearDay
+    ( Year
+    , MonthOfYear
+    , DayOfMonth
+    , DayOfYear
+    , module Data.Time.Calendar.JulianYearDay
     , toJulian
     , fromJulian
+    , pattern JulianYearMonthDay
     , fromJulianValid
     , showJulian
     , julianMonthLength
@@ -17,27 +23,38 @@ module Data.Time.Calendar.Julian
     , diffJulianDurationRollOver
     ) where
 
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.JulianYearDay
 import Data.Time.Calendar.MonthDay
 import Data.Time.Calendar.Private
 
--- | Convert to proleptic Julian calendar. First element of result is year, second month number (1-12), third day (1-31).
-toJulian :: Day -> (Integer, Int, Int)
+-- | Convert to proleptic Julian calendar.
+toJulian :: Day -> (Year, MonthOfYear, DayOfMonth)
 toJulian date = (year, month, day)
   where
     (year, yd) = toJulianYearAndDay date
     (month, day) = dayOfYearToMonthAndDay (isJulianLeapYear year) yd
 
--- | Convert from proleptic Julian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- | Convert from proleptic Julian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
-fromJulian :: Integer -> Int -> Int -> Day
+fromJulian :: Year -> MonthOfYear -> DayOfMonth -> Day
 fromJulian year month day = fromJulianYearAndDay year (monthAndDayToDayOfYear (isJulianLeapYear year) month day)
 
--- | Convert from proleptic Julian calendar. First argument is year, second month number (1-12), third day (1-31).
+-- | Abstract constructor for the proleptic Julian calendar.
+-- Invalid values will be clipped to the correct range, month first, then day.
+pattern JulianYearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
+pattern JulianYearMonthDay y m d <- (toJulian -> (y,m,d)) where
+    JulianYearMonthDay y m d = fromJulian y m d
+
+#if __GLASGOW_HASKELL__ >= 822
+{-# COMPLETE JulianYearMonthDay #-}
+#endif
+
+-- | Convert from proleptic Julian calendar.
 -- Invalid values will return Nothing.
-fromJulianValid :: Integer -> Int -> Int -> Maybe Day
+fromJulianValid :: Year -> MonthOfYear -> DayOfMonth -> Maybe Day
 fromJulianValid year month day = do
     doy <- monthAndDayToDayOfYearValid (isJulianLeapYear year) month day
     fromJulianYearAndDayValid year doy
@@ -48,14 +65,14 @@ showJulian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
   where
     (y, m, d) = toJulian date
 
--- | The number of days in a given month according to the proleptic Julian calendar. First argument is year, second is month.
-julianMonthLength :: Integer -> Int -> Int
+-- | The number of days in a given month according to the proleptic Julian calendar.
+julianMonthLength :: Year -> MonthOfYear -> DayOfMonth
 julianMonthLength year = monthLength (isJulianLeapYear year)
 
-rolloverMonths :: (Integer, Integer) -> (Integer, Int)
+rolloverMonths :: (Year, Integer) -> (Year, MonthOfYear)
 rolloverMonths (y, m) = (y + (div (m - 1) 12), fromIntegral (mod (m - 1) 12) + 1)
 
-addJulianMonths :: Integer -> Day -> (Integer, Int, Int)
+addJulianMonths :: Integer -> Day -> (Year, MonthOfYear, DayOfMonth)
 addJulianMonths n day = (y', m', d)
   where
     (y, m, d) = toJulian day

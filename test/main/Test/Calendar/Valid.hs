@@ -63,56 +63,56 @@ toMondayStartWeek day = let
     (w, d) = mondayStartWeek day
     in (y, w, d)
 
-newtype Year =
-    MkYear Integer
+newtype WYear =
+    MkWYear Year
     deriving (Eq, Show)
 
-instance Arbitrary Year where
-    arbitrary = fmap MkYear $ choose (-1000, 3000)
+instance Arbitrary WYear where
+    arbitrary = fmap MkWYear $ choose (-1000, 3000)
 
-newtype YearMonth =
-    MkYearMonth Int
+newtype WMonthOfYear =
+    MkWMonthOfYear MonthOfYear
     deriving (Eq, Show)
 
-instance Arbitrary YearMonth where
-    arbitrary = fmap MkYearMonth $ choose (-5, 17)
+instance Arbitrary WMonthOfYear where
+    arbitrary = fmap MkWMonthOfYear $ choose (-5, 17)
 
-newtype MonthDay =
-    MkMonthDay Int
+newtype WDayOfMonth =
+    MkWDayOfMonth DayOfMonth
     deriving (Eq, Show)
 
-instance Arbitrary MonthDay where
-    arbitrary = fmap MkMonthDay $ choose (-5, 35)
+instance Arbitrary WDayOfMonth where
+    arbitrary = fmap MkWDayOfMonth $ choose (-5, 35)
 
-newtype YearDay =
-    MkYearDay Int
+newtype WDayOfYear =
+    MkWDayOfYear DayOfYear
     deriving (Eq, Show)
 
-instance Arbitrary YearDay where
-    arbitrary = fmap MkYearDay $ choose (-20, 400)
+instance Arbitrary WDayOfYear where
+    arbitrary = fmap MkWDayOfYear $ choose (-20, 400)
 
-newtype YearWeek =
-    MkYearWeek Int
+newtype WWeekOfYear =
+    MkWWeekOfYear WeekOfYear
     deriving (Eq, Show)
 
-instance Arbitrary YearWeek where
-    arbitrary = fmap MkYearWeek $ choose (-5, 60)
+instance Arbitrary WWeekOfYear where
+    arbitrary = fmap MkWWeekOfYear $ choose (-5, 60)
 
-newtype WeekDay =
-    MkWeekDay Int
+newtype WDayOfWeek =
+    MkWDayOfWeek Int
     deriving (Eq, Show)
 
-instance Arbitrary WeekDay where
-    arbitrary = fmap MkWeekDay $ choose (-5, 15)
+instance Arbitrary WDayOfWeek where
+    arbitrary = fmap MkWDayOfWeek $ choose (-5, 15)
 
-fromYMD :: (Year, YearMonth, MonthDay) -> (Integer, Int, Int)
-fromYMD (MkYear y, MkYearMonth ym, MkMonthDay md) = (y, ym, md)
+fromYMD :: (WYear, WMonthOfYear, WDayOfMonth) -> (Year, MonthOfYear, DayOfMonth)
+fromYMD (MkWYear y, MkWMonthOfYear ym, MkWDayOfMonth md) = (y, ym, md)
 
-fromYD :: (Year, YearDay) -> (Integer, Int)
-fromYD (MkYear y, MkYearDay yd) = (y, yd)
+fromYD :: (WYear, WDayOfYear) -> (Year, DayOfYear)
+fromYD (MkWYear y, MkWDayOfYear yd) = (y, yd)
 
-fromYWD :: (Year, YearWeek, WeekDay) -> (Integer, Int, Int)
-fromYWD (MkYear y, MkYearWeek yw, MkWeekDay wd) = (y, yw, wd)
+fromYWD :: (WYear, WWeekOfYear, WDayOfWeek) -> (Year, WeekOfYear, Int)
+fromYWD (MkWYear y, MkWWeekOfYear yw, MkWDayOfWeek wd) = (y, yw, wd)
 
 testValid :: TestTree
 testValid =

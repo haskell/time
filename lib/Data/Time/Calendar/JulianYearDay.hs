@@ -4,12 +4,12 @@ module Data.Time.Calendar.JulianYearDay
       module Data.Time.Calendar.JulianYearDay
     ) where
 
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
 
--- | Convert to proleptic Julian year and day format. First element of result is year (proleptic Julian calendar),
--- second is the day of the year, with 1 for Jan 1, and 365 (or 366 in leap years) for Dec 31.
-toJulianYearAndDay :: Day -> (Integer, Int)
+-- | Convert to proleptic Julian year and day format.
+toJulianYearAndDay :: Day -> (Year, DayOfYear)
 toJulianYearAndDay (ModifiedJulianDay mjd) = (year, yd)
   where
     a = mjd + 678577
@@ -21,7 +21,7 @@ toJulianYearAndDay (ModifiedJulianDay mjd) = (year, yd)
 
 -- | Convert from proleptic Julian year and day format.
 -- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
-fromJulianYearAndDay :: Integer -> Int -> Day
+fromJulianYearAndDay :: Year -> DayOfYear -> Day
 fromJulianYearAndDay year day = ModifiedJulianDay mjd
   where
     y = year - 1
@@ -39,7 +39,7 @@ fromJulianYearAndDay year day = ModifiedJulianDay mjd
 
 -- | Convert from proleptic Julian year and day format.
 -- Invalid day numbers will return Nothing
-fromJulianYearAndDayValid :: Integer -> Int -> Maybe Day
+fromJulianYearAndDayValid :: Year -> DayOfYear -> Maybe Day
 fromJulianYearAndDayValid year day = do
     day' <-
         clipValid
@@ -60,5 +60,5 @@ showJulianYearAndDay date = (show4 y) ++ "-" ++ (show3 d)
     (y, d) = toJulianYearAndDay date
 
 -- | Is this year a leap year according to the proleptic Julian calendar?
-isJulianLeapYear :: Integer -> Bool
+isJulianLeapYear :: Year -> Bool
 isJulianLeapYear year = (mod year 4 == 0)

@@ -1,14 +1,21 @@
 -- | ISO 8601 Week Date format
-module Data.Time.Calendar.WeekDate where
+{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
+module Data.Time.Calendar.WeekDate
+    (Year, WeekOfYear, DayOfWeek,
+    toWeekDate, fromWeekDate, pattern YearWeekDay,
+    fromWeekDateValid, showWeekDate
+    ) where
 
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.Days
+import Data.Time.Calendar.Week
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 
 -- | Convert to ISO 8601 Week Date format. First element of result is year, second week number (1-53), third day of week (1 for Monday to 7 for Sunday).
 -- Note that \"Week\" years are not quite the same as Gregorian years, as the first day of the year is always a Monday.
 -- The first week of a year is the first week to contain at least four days in the corresponding Gregorian year.
-toWeekDate :: Day -> (Integer, Int, Int)
+toWeekDate :: Day -> (Year, WeekOfYear, Int)
 toWeekDate date@(ModifiedJulianDay mjd) = (y1, fromInteger (w1 + 1), fromInteger d_mod_7 + 1)
   where
     (d_div_7, d_mod_7) = d `divMod` 7
@@ -28,7 +35,7 @@ toWeekDate date@(ModifiedJulianDay mjd) = (y1, fromInteger (w1 + 1), fromInteger
 
 -- | Convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will be clipped to the correct range.
-fromWeekDate :: Integer -> Int -> Int -> Day
+fromWeekDate :: Year -> WeekOfYear -> Int -> Day
 fromWeekDate y w d =
     ModifiedJulianDay
         (k - (mod k 7) +
@@ -49,9 +56,19 @@ fromWeekDate y w d =
             (_, 53, _) -> True
             _ -> False
 
+-- | Abstract constructor for ISO 8601 Week Date format.
+-- Invalid week values will be clipped to the correct range.
+pattern YearWeekDay :: Year -> WeekOfYear -> DayOfWeek -> Day
+pattern YearWeekDay y m d <- (toWeekDate -> (y,m,toEnum -> d)) where
+    YearWeekDay y m d = fromWeekDate y m (fromEnum d)
+
+#if __GLASGOW_HASKELL__ >= 822
+{-# COMPLETE YearWeekDay #-}
+#endif
+
 -- | Convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will return Nothing.
-fromWeekDateValid :: Integer -> Int -> Int -> Maybe Day
+fromWeekDateValid :: Year -> WeekOfYear -> Int -> Maybe Day
 fromWeekDateValid y w d = do
     d' <- clipValid 1 7 d
     let
