@@ -40,7 +40,8 @@ instance NFData SystemTime where
 -- | Get the system time, epoch start of 1970 UTC, leap-seconds ignored.
 -- 'getSystemTime' is typically much faster than 'getCurrentTime'.
 getSystemTime :: IO SystemTime
--- | The resolution of 'getSystemTime', 'getCurrentTime', 'getPOSIXTime'
+-- | The resolution of 'getSystemTime', 'getCurrentTime', 'getPOSIXTime'.
+-- On UNIX systems this uses @clock_getres@, which may be <https://github.com/microsoft/WSL/issues/6029 wrong on WSL2>.
 getTime_resolution :: DiffTime
 -- | If supported, get TAI time, epoch start of 1970 TAI, with resolution.
 -- This is supported only on UNIX systems, and only those with CLOCK_TAI available at run-time.
