@@ -2,6 +2,7 @@
 
 ## [1.11]
 - new calendrical type synonyms and abstract constructors
+- new functions for working with week-based years
 - add instance Ord DayOfWeek
 - add instance Read DiffTime (and NominalDiffTime)
 - change instance Read UTCTime to allow omitted timezone
