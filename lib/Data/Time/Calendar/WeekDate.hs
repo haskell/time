@@ -1,9 +1,12 @@
--- | ISO 8601 Week Date format
+-- | Week-based calendars
 {-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 module Data.Time.Calendar.WeekDate
-    (Year, WeekOfYear, DayOfWeek,
-    toWeekDate, fromWeekDate, pattern YearWeekDay,
-    fromWeekDateValid, showWeekDate
+    (
+        Year, WeekOfYear, DayOfWeek(..), dayOfWeek,
+        FirstWeekType (..),toWeekCalendar,fromWeekCalendar,fromWeekCalendarValid,
+        -- * ISO 8601 Week Date format
+        toWeekDate, fromWeekDate, pattern YearWeekDay,
+        fromWeekDateValid, showWeekDate
     ) where
 
 import Data.Time.Calendar.Types
@@ -12,55 +15,89 @@ import Data.Time.Calendar.Week
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 
+
+data FirstWeekType
+    = FirstWholeWeek
+    -- ^ first week is the first whole week of the year
+    | FirstMostWeek
+    -- ^ first week is the first week with four days in the year
+    deriving Eq
+
+firstDayOfWeekCalendar :: FirstWeekType -> DayOfWeek -> Year -> Day
+firstDayOfWeekCalendar wt dow year = let
+    jan1st = fromOrdinalDate year 1
+    in case wt of
+        FirstWholeWeek -> firstDayOfWeekOnAfter dow jan1st
+        FirstMostWeek -> firstDayOfWeekOnAfter dow $ addDays (-3) jan1st
+
+-- | Convert to the given kind of "week calendar".
+-- Note that the year number matches the weeks, and so is not always the same as the Gregorian year number.
+toWeekCalendar ::
+    -- | how to reckon the first week of the year
+    FirstWeekType ->
+    -- | the first day of each week
+    DayOfWeek ->
+    Day ->
+    (Year, WeekOfYear, DayOfWeek)
+toWeekCalendar wt ws d = let
+    dw = dayOfWeek d
+    (y0,_) = toOrdinalDate d
+    j1p = firstDayOfWeekCalendar wt ws $ pred y0
+    j1 = firstDayOfWeekCalendar wt ws y0
+    j1s = firstDayOfWeekCalendar wt ws $ succ y0
+    in if d < j1
+        then (pred y0,succ $ div (fromInteger $ diffDays d j1p) 7,dw)
+        else if d < j1s then (y0,succ $ div (fromInteger $ diffDays d j1) 7,dw)
+        else (succ y0,succ $ div (fromInteger $ diffDays d j1s) 7,dw)
+
+-- | Convert from the given kind of "week calendar".
+-- Invalid week and day values will be clipped to the correct range.
+fromWeekCalendar ::
+    -- | how to reckon the first week of the year
+    FirstWeekType ->
+    -- | the first day of each week
+    DayOfWeek ->
+    Year -> WeekOfYear -> DayOfWeek -> Day
+fromWeekCalendar wt ws y wy dw = let
+    d1 :: Day
+    d1 = firstDayOfWeekCalendar wt ws y
+    wy' = clip 1 53 wy
+    getday :: WeekOfYear -> Day
+    getday wy'' = addDays (toInteger $ (pred wy'' * 7) + (dayOfWeekDiff dw ws)) d1
+    d1s = firstDayOfWeekCalendar wt ws $ succ y
+    day = getday wy'
+    in if wy' == 53 then if day >= d1s then getday 52 else day else day
+
+-- | Convert from the given kind of "week calendar".
+-- Invalid week and day values will return Nothing.
+fromWeekCalendarValid ::
+    -- | how to reckon the first week of the year
+    FirstWeekType ->
+    -- | the first day of each week
+    DayOfWeek ->
+    Year -> WeekOfYear -> DayOfWeek -> Maybe Day
+fromWeekCalendarValid wt ws y wy dw = let
+    d = fromWeekCalendar wt ws y wy dw
+    in if toWeekCalendar wt ws d == (y,wy,dw) then Just d else Nothing
+
 -- | Convert to ISO 8601 Week Date format. First element of result is year, second week number (1-53), third day of week (1 for Monday to 7 for Sunday).
 -- Note that \"Week\" years are not quite the same as Gregorian years, as the first day of the year is always a Monday.
 -- The first week of a year is the first week to contain at least four days in the corresponding Gregorian year.
 toWeekDate :: Day -> (Year, WeekOfYear, Int)
-toWeekDate date@(ModifiedJulianDay mjd) = (y1, fromInteger (w1 + 1), fromInteger d_mod_7 + 1)
-  where
-    (d_div_7, d_mod_7) = d `divMod` 7
-    (y0, yd) = toOrdinalDate date
-    d = mjd + 2
-    foo :: Integer -> Integer
-    foo y = bar (toModifiedJulianDay (fromOrdinalDate y 6))
-    bar k = d_div_7 - k `div` 7
-    (y1, w1) =
-        case bar (d - toInteger yd + 4) of
-            -1 -> (y0 - 1, foo (y0 - 1))
-            52 ->
-                if foo (y0 + 1) == 0
-                    then (y0 + 1, 0)
-                    else (y0, 52)
-            w0 -> (y0, w0)
+toWeekDate d = let
+    (y,wy,dw) = toWeekCalendar FirstMostWeek Monday d
+    in (y,wy,fromEnum dw)
 
 -- | Convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will be clipped to the correct range.
 fromWeekDate :: Year -> WeekOfYear -> Int -> Day
-fromWeekDate y w d =
-    ModifiedJulianDay
-        (k - (mod k 7) +
-         (toInteger
-              (((clip
-                     1
-                     (if longYear
-                          then 53
-                          else 52)
-                     w) *
-                7) +
-               (clip 1 7 d))) -
-         10)
-  where
-    k = toModifiedJulianDay (fromOrdinalDate y 6)
-    longYear =
-        case toWeekDate (fromOrdinalDate y 365) of
-            (_, 53, _) -> True
-            _ -> False
+fromWeekDate y wy dw = fromWeekCalendar FirstMostWeek Monday y wy (toEnum $ clip 1 7 dw)
 
 -- | Abstract constructor for ISO 8601 Week Date format.
 -- Invalid week values will be clipped to the correct range.
 pattern YearWeekDay :: Year -> WeekOfYear -> DayOfWeek -> Day
-pattern YearWeekDay y m d <- (toWeekDate -> (y,m,toEnum -> d)) where
-    YearWeekDay y m d = fromWeekDate y m (fromEnum d)
+pattern YearWeekDay y wy dw <- (toWeekDate -> (y,wy,toEnum -> dw)) where
+    YearWeekDay y wy dw = fromWeekDate y wy (fromEnum dw)
 
 #if __GLASGOW_HASKELL__ >= 822
 {-# COMPLETE YearWeekDay #-}
@@ -69,22 +106,9 @@ pattern YearWeekDay y m d <- (toWeekDate -> (y,m,toEnum -> d)) where
 -- | Convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will return Nothing.
 fromWeekDateValid :: Year -> WeekOfYear -> Int -> Maybe Day
-fromWeekDateValid y w d = do
-    d' <- clipValid 1 7 d
-    let
-        longYear =
-            case toWeekDate (fromOrdinalDate y 365) of
-                (_, 53, _) -> True
-                _ -> False
-    w' <-
-        clipValid
-            1
-            (if longYear
-                 then 53
-                 else 52)
-            w
-    let k = toModifiedJulianDay (fromOrdinalDate y 6)
-    return (ModifiedJulianDay (k - (mod k 7) + (toInteger ((w' * 7) + d')) - 10))
+fromWeekDateValid y wy dwr = do
+    dw <- clipValid 1 7 dwr
+    fromWeekCalendarValid FirstMostWeek Monday y wy (toEnum dw)
 
 -- | Show in ISO 8601 Week Date format as yyyy-Www-d (e.g. \"2006-W46-3\").
 showWeekDate :: Day -> String

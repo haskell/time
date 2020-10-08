@@ -27,17 +27,17 @@ tupleUp3 l1 l2 l3 = let
     ts = tupleUp2 l2 l3
     in concatMap (\e -> map (\(f, g) -> (e, f, g)) ts) l1
 
+testPairs :: String -> [String] -> [String] -> TestTree
+testPairs name expected found = testGroup name $ fmap (\(e,f) -> testCase e $ assertEqual "" e f) $ zip expected found
+
 --
 clipDates :: TestTree
 clipDates =
-    testCase "clipDates" $ let
-        yad = unlines $ map yearAndDay $ tupleUp2 [1968, 1969, 1971] [-4, 0, 1, 200, 364, 365, 366, 367, 700]
-        greg =
-            unlines $
-            map gregorian $
-            tupleUp3 [1968, 1969, 1971] [-20, -1, 0, 1, 2, 12, 13, 17] [-7, -1, 0, 1, 2, 27, 28, 29, 30, 31, 32, 40]
-        iso =
-            unlines $
-            map iSOWeekDay $
-            tupleUp3 [1968, 1969, 2004] [-20, -1, 0, 1, 20, 51, 52, 53, 54] [-2, -1, 0, 1, 4, 6, 7, 8, 9]
-        in assertEqual "" clipDatesRef $ concat ["YearAndDay\n", yad, "Gregorian\n", greg, "ISOWeekDay\n", iso]
+    testGroup "clipDates"
+        [
+            testPairs "YearAndDay" clipDatesYearAndDayRef $ map yearAndDay $ tupleUp2 [1968, 1969, 1971] [-4, 0, 1, 200, 364, 365, 366, 367, 700],
+            testPairs "Gregorian" clipDatesGregorianDayRef $ map gregorian $
+                tupleUp3 [1968, 1969, 1971] [-20, -1, 0, 1, 2, 12, 13, 17] [-7, -1, 0, 1, 2, 27, 28, 29, 30, 31, 32, 40],
+            testPairs "ISOWeekDay" clipDatesISOWeekDayRef $ map iSOWeekDay $
+                tupleUp3 [1968, 1969, 2004] [-20, -1, 0, 1, 20, 51, 52, 53, 54] [-2, -1, 0, 1, 4, 6, 7, 8, 9]
+        ]

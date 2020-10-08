@@ -1,10 +1,8 @@
 module Test.Calendar.ClipDatesRef where
 
-clipDatesRef :: String
-clipDatesRef =
-    unlines
-        [ "YearAndDay"
-        , "1968--4 = 1968-001"
+clipDatesYearAndDayRef :: [String]
+clipDatesYearAndDayRef =
+        [ "1968--4 = 1968-001"
         , "1968-0 = 1968-001"
         , "1968-1 = 1968-001"
         , "1968-200 = 1968-200"
@@ -31,8 +29,11 @@ clipDatesRef =
         , "1971-366 = 1971-365"
         , "1971-367 = 1971-365"
         , "1971-700 = 1971-365"
-        , "Gregorian"
-        , "1968--20--7 = 1968-01-01"
+        ]
+
+clipDatesGregorianDayRef :: [String]
+clipDatesGregorianDayRef =
+        [ "1968--20--7 = 1968-01-01"
         , "1968--20--1 = 1968-01-01"
         , "1968--20-0 = 1968-01-01"
         , "1968--20-1 = 1968-01-01"
@@ -320,8 +321,11 @@ clipDatesRef =
         , "1971-17-31 = 1971-12-31"
         , "1971-17-32 = 1971-12-31"
         , "1971-17-40 = 1971-12-31"
-        , "ISOWeekDay"
-        , "1968-W-20--2 = 1968-W01-1"
+        ]
+
+clipDatesISOWeekDayRef :: [String]
+clipDatesISOWeekDayRef =
+        [ "1968-W-20--2 = 1968-W01-1"
         , "1968-W-20--1 = 1968-W01-1"
         , "1968-W-20-0 = 1968-W01-1"
         , "1968-W-20-1 = 1968-W01-1"
