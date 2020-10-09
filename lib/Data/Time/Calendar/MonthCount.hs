@@ -1,8 +1,9 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 #if __GLASGOW_HASKELL__ < 802
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
 #endif
+
 module Data.Time.Calendar.MonthCount
     (
         IntegerAdditive(..),
@@ -11,7 +12,9 @@ module Data.Time.Calendar.MonthCount
         pattern MonthDay
     ) where
 
-import Data.Time.Calendar
+import Data.Time.Calendar.Types
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Private
 import Data.IntegerAdditive
 import Data.Data

@@ -1,5 +1,5 @@
 #if __GLASGOW_HASKELL__ < 802
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
 #endif
 module Test.Calendar.CalendarProps
     ( testCalendarProps

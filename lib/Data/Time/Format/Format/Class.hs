@@ -209,14 +209,8 @@ showPaddedFixedFraction pado x = let
 --
 -- [@%A@] day of week, long form ('fst' from 'wDays' @locale@), @Sunday@ - @Saturday@
 --
--- === 'Day'
--- For 'Day' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
---
--- [@%D@] same as @%m\/%d\/%y@
---
--- [@%F@] same as @%Y-%m-%d@
---
--- [@%x@] as 'dateFmt' @locale@ (e.g. @%m\/%d\/%y@)
+-- === 'Month'
+-- For 'Month' (and 'Day' and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%Y@] year, no padding. Note @%0Y@ and @%_Y@ pad to four chars
 --
@@ -229,6 +223,15 @@ showPaddedFixedFraction pado x = let
 -- [@%b@, @%h@] month name, short form ('snd' from 'months' @locale@), @Jan@ - @Dec@
 --
 -- [@%m@] month of year, 0-padded to two chars, @01@ - @12@
+--
+-- === 'Day'
+-- For 'Day' (and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
+--
+-- [@%D@] same as @%m\/%d\/%y@
+--
+-- [@%F@] same as @%Y-%m-%d@
+--
+-- [@%x@] as 'dateFmt' @locale@ (e.g. @%m\/%d\/%y@)
 --
 -- [@%d@] day of month, 0-padded to two chars, @01@ - @31@
 --

@@ -1,15 +1,20 @@
 {-# OPTIONS -fno-warn-orphans #-}
+#if __GLASGOW_HASKELL__ < 802
+{-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
+#endif
 
 module Data.Time.Format.Format.Instances
     (
     ) where
 
+import Control.Applicative ((<|>))
 import Data.Char
 import Data.Fixed
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.OrdinalDate
+import Data.Time.Calendar.MonthCount
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Week
 import Data.Time.Calendar.WeekDate
@@ -26,15 +31,14 @@ import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.TimeZone
 import Data.Time.LocalTime.Internal.ZonedTime
 
+mapFormatCharacter :: (b -> a) -> Maybe (FormatOptions -> a -> String) -> Maybe (FormatOptions -> b -> String)
+mapFormatCharacter ba = fmap $ fmap $ \as -> as . ba
+
 instance FormatTime LocalTime where
     formatCharacter _ 'c' = Just $ \fo -> formatTime (foLocale fo) $ dateTimeFmt $ foLocale fo
     formatCharacter alt c =
-        case formatCharacter alt c of
-            Just f -> Just $ \fo dt -> f fo (localDay dt)
-            Nothing ->
-                case formatCharacter alt c of
-                    Just f -> Just $ \fo dt -> f fo (localTimeOfDay dt)
-                    Nothing -> Nothing
+        mapFormatCharacter localDay (formatCharacter alt c) <|>
+        mapFormatCharacter localTimeOfDay (formatCharacter alt c)
 
 todAMPM :: TimeLocale -> TimeOfDay -> String
 todAMPM locale day = let
@@ -78,12 +82,8 @@ instance FormatTime ZonedTime where
     formatCharacter _ 's' =
         Just $ formatNumber True 1 '0' $ (floor . utcTimeToPOSIXSeconds . zonedTimeToUTC :: ZonedTime -> Integer)
     formatCharacter alt c =
-        case formatCharacter alt c of
-            Just f -> Just $ \fo dt -> f fo (zonedTimeToLocalTime dt)
-            Nothing ->
-                case formatCharacter alt c of
-                    Just f -> Just $ \fo dt -> f fo (zonedTimeZone dt)
-                    Nothing -> Nothing
+        mapFormatCharacter zonedTimeToLocalTime (formatCharacter alt c) <|>
+        mapFormatCharacter zonedTimeZone (formatCharacter alt c)
 
 instance FormatTime TimeZone where
     formatCharacter False 'z' = Just $ formatGeneral False True 4 '0' $ \_ -> timeZoneOffsetString'' False
@@ -107,34 +107,38 @@ instance FormatTime DayOfWeek where
     formatCharacter _ 'A' = Just $ formatString $ \locale wd -> fst $ (wDays locale) !! (mod (fromEnum wd) 7)
     formatCharacter _ _ = Nothing
 
+instance FormatTime Month where
+    -- Year Count
+    formatCharacter _ 'Y' = Just $ formatNumber False 4 '0' $ \(YearMonth y _) -> y
+    formatCharacter _ 'y' = Just $ formatNumber True 2 '0' $ \(YearMonth y _) -> mod100 y
+    formatCharacter _ 'C' = Just $ formatNumber False 2 '0' $ \(YearMonth y _) -> div100 y
+    -- Month of Year
+    formatCharacter _ 'B' =
+        Just $ formatString $ \locale (YearMonth _ my) -> fst $ (months locale) !! (my - 1)
+    formatCharacter _ 'b' =
+        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (my - 1)
+    formatCharacter _ 'h' =
+        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (my - 1)
+    formatCharacter _ 'm' = Just $ formatNumber True 2 '0' $ \(YearMonth _ m) -> m
+    -- Default
+    formatCharacter _ _ = Nothing
+
 instance FormatTime Day where
     -- Aggregate
     formatCharacter _ 'D' = Just $ formatString $ \locale -> formatTime locale "%m/%d/%y"
     formatCharacter _ 'F' = Just $ formatString $ \locale -> formatTime locale "%Y-%m-%d"
     formatCharacter _ 'x' = Just $ formatString $ \locale -> formatTime locale (dateFmt locale)
-    -- Year Count
-    formatCharacter _ 'Y' = Just $ formatNumber False 4 '0' $ fst . toOrdinalDate
-    formatCharacter _ 'y' = Just $ formatNumber True 2 '0' $ mod100 . fst . toOrdinalDate
-    formatCharacter _ 'C' = Just $ formatNumber False 2 '0' $ div100 . fst . toOrdinalDate
-    -- Month of Year
-    formatCharacter _ 'B' =
-        Just $ formatString $ \locale -> fst . (\(_, m, _) -> (months locale) !! (m - 1)) . toGregorian
-    formatCharacter _ 'b' =
-        Just $ formatString $ \locale -> snd . (\(_, m, _) -> (months locale) !! (m - 1)) . toGregorian
-    formatCharacter _ 'h' =
-        Just $ formatString $ \locale -> snd . (\(_, m, _) -> (months locale) !! (m - 1)) . toGregorian
-    formatCharacter _ 'm' = Just $ formatNumber True 2 '0' $ (\(_, m, _) -> m) . toGregorian
     -- Day of Month
-    formatCharacter _ 'd' = Just $ formatNumber True 2 '0' $ (\(_, _, d) -> d) . toGregorian
-    formatCharacter _ 'e' = Just $ formatNumber True 2 ' ' $ (\(_, _, d) -> d) . toGregorian
+    formatCharacter _ 'd' = Just $ formatNumber True 2 '0' $ \(YearMonthDay _ _ dm) -> dm
+    formatCharacter _ 'e' = Just $ formatNumber True 2 ' ' $ \(YearMonthDay _ _ dm) -> dm
     -- Day of Year
-    formatCharacter _ 'j' = Just $ formatNumber True 3 '0' $ snd . toOrdinalDate
+    formatCharacter _ 'j' = Just $ formatNumber True 3 '0' $ \(YearDay _ dy) -> dy
     -- ISO 8601 Week Date
-    formatCharacter _ 'G' = Just $ formatNumber False 4 '0' $ (\(y, _, _) -> y) . toWeekDate
-    formatCharacter _ 'g' = Just $ formatNumber True 2 '0' $ mod100 . (\(y, _, _) -> y) . toWeekDate
-    formatCharacter _ 'f' = Just $ formatNumber False 2 '0' $ div100 . (\(y, _, _) -> y) . toWeekDate
-    formatCharacter _ 'V' = Just $ formatNumber True 2 '0' $ (\(_, w, _) -> w) . toWeekDate
-    formatCharacter _ 'u' = Just $ formatNumber True 1 '0' $ (\(_, _, d) -> d) . toWeekDate
+    formatCharacter _ 'G' = Just $ formatNumber False 4 '0' $ \(YearWeekDay y _ _) -> y
+    formatCharacter _ 'g' = Just $ formatNumber True 2 '0' $ \(YearWeekDay y _ _) -> mod100 y
+    formatCharacter _ 'f' = Just $ formatNumber False 2 '0' $ \(YearWeekDay y _ _) -> div100 y
+    formatCharacter _ 'V' = Just $ formatNumber True 2 '0' $ \(YearWeekDay _ wy _) -> wy
+    formatCharacter _ 'u' = Just $ formatNumber True 1 '0' $ \(YearWeekDay _ _ dw) -> fromEnum dw
     -- Day of week
     formatCharacter _ 'a' = Just $ formatString $ \locale -> snd . ((wDays locale) !!) . snd . sundayStartWeek
     formatCharacter _ 'A' = Just $ formatString $ \locale -> fst . ((wDays locale) !!) . snd . sundayStartWeek
@@ -142,13 +146,13 @@ instance FormatTime Day where
     formatCharacter _ 'w' = Just $ formatNumber True 1 '0' $ snd . sundayStartWeek
     formatCharacter _ 'W' = Just $ formatNumber True 2 '0' $ fst . mondayStartWeek
     -- Default
-    formatCharacter _ _ = Nothing
+    formatCharacter alt c = mapFormatCharacter (\(MonthDay m _) -> m) $ formatCharacter alt c
 
 instance FormatTime UTCTime where
-    formatCharacter alt c = fmap (\f fo t -> f fo (utcToZonedTime utc t)) (formatCharacter alt c)
+    formatCharacter alt c = mapFormatCharacter (utcToZonedTime utc) $ formatCharacter alt c
 
 instance FormatTime UniversalTime where
-    formatCharacter alt c = fmap (\f fo t -> f fo (ut1ToLocalTime 0 t)) (formatCharacter alt c)
+    formatCharacter alt c = mapFormatCharacter (ut1ToLocalTime 0) $ formatCharacter alt c
 
 instance FormatTime NominalDiffTime where
     formatCharacter _ 'w' = Just $ formatNumberStd 1 $ quotBy $ 7 * 86400
@@ -207,4 +211,4 @@ instance FormatTime CalendarDiffTime where
     formatCharacter _ 'y' = Just $ formatNumberStd 1 $ quotBy 12 . ctMonths
     formatCharacter _ 'b' = Just $ formatNumberStd 1 $ ctMonths
     formatCharacter _ 'B' = Just $ formatNumberStd 2 $ remBy 12 . ctMonths
-    formatCharacter alt c = fmap (\f fo t -> f fo (ctTime t)) (formatCharacter alt c)
+    formatCharacter alt c = mapFormatCharacter ctTime $ formatCharacter alt c
