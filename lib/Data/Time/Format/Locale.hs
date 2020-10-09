@@ -23,7 +23,7 @@ data TimeLocale = TimeLocale
 
 -- | Locale representing American usage.
 --
--- 'knownTimeZones' contains only the ten time-zones mentioned in RFC 822 sec. 5:
+-- 'knownTimeZones' contains only the ten time-zones mentioned in RFC 802 sec. 5:
 -- \"UT\", \"GMT\", \"EST\", \"EDT\", \"CST\", \"CDT\", \"MST\", \"MDT\", \"PST\", \"PDT\".
 -- Note that the parsing functions will regardless parse \"UTC\", single-letter military time-zones, and +HHMM format.
 defaultTimeLocale :: TimeLocale

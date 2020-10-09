@@ -47,7 +47,7 @@ pattern YearDay :: Year -> DayOfYear -> Day
 pattern YearDay y d <- (toOrdinalDate -> (y,d)) where
     YearDay y d = fromOrdinalDate y d
 
-#if __GLASGOW_HASKELL__ >= 822
+#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearDay #-}
 #endif
 

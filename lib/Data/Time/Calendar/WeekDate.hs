@@ -33,12 +33,12 @@ firstDayOfWeekCalendar wt dow year = let
 -- | Convert to the given kind of "week calendar".
 -- Note that the year number matches the weeks, and so is not always the same as the Gregorian year number.
 toWeekCalendar ::
-    -- | how to reckon the first week of the year
-    FirstWeekType ->
-    -- | the first day of each week
-    DayOfWeek ->
-    Day ->
-    (Year, WeekOfYear, DayOfWeek)
+    FirstWeekType
+    -- ^ how to reckon the first week of the year
+    -> DayOfWeek
+    -- ^ the first day of each week
+    -> Day
+    -> (Year, WeekOfYear, DayOfWeek)
 toWeekCalendar wt ws d = let
     dw = dayOfWeek d
     (y0,_) = toOrdinalDate d
@@ -53,11 +53,11 @@ toWeekCalendar wt ws d = let
 -- | Convert from the given kind of "week calendar".
 -- Invalid week and day values will be clipped to the correct range.
 fromWeekCalendar ::
-    -- | how to reckon the first week of the year
-    FirstWeekType ->
-    -- | the first day of each week
-    DayOfWeek ->
-    Year -> WeekOfYear -> DayOfWeek -> Day
+    FirstWeekType
+    -- ^ how to reckon the first week of the year
+    -> DayOfWeek
+    -- ^ the first day of each week
+    -> Year -> WeekOfYear -> DayOfWeek -> Day
 fromWeekCalendar wt ws y wy dw = let
     d1 :: Day
     d1 = firstDayOfWeekCalendar wt ws y
@@ -71,11 +71,11 @@ fromWeekCalendar wt ws y wy dw = let
 -- | Convert from the given kind of "week calendar".
 -- Invalid week and day values will return Nothing.
 fromWeekCalendarValid ::
-    -- | how to reckon the first week of the year
-    FirstWeekType ->
-    -- | the first day of each week
-    DayOfWeek ->
-    Year -> WeekOfYear -> DayOfWeek -> Maybe Day
+     FirstWeekType
+    -- ^ how to reckon the first week of the year
+    -> DayOfWeek
+    -- ^ the first day of each week
+    -> Year -> WeekOfYear -> DayOfWeek -> Maybe Day
 fromWeekCalendarValid wt ws y wy dw = let
     d = fromWeekCalendar wt ws y wy dw
     in if toWeekCalendar wt ws d == (y,wy,dw) then Just d else Nothing
@@ -99,7 +99,7 @@ pattern YearWeekDay :: Year -> WeekOfYear -> DayOfWeek -> Day
 pattern YearWeekDay y wy dw <- (toWeekDate -> (y,wy,toEnum -> dw)) where
     YearWeekDay y wy dw = fromWeekDate y wy (fromEnum dw)
 
-#if __GLASGOW_HASKELL__ >= 822
+#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearWeekDay #-}
 #endif
 
