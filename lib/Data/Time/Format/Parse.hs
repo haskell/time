@@ -4,6 +4,7 @@ module Data.Time.Format.Parse
     (
     -- * UNIX-style parsing
       parseTimeM
+    , parseTimeMultipleM
     , parseTimeOrError
     , readSTime
     , readPTime
@@ -16,6 +17,7 @@ import Control.Applicative ((<|>))
 import Control.Monad.Fail
 import Data.Char
 import Data.Proxy
+import Data.Traversable
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.Internal.UniversalTime
@@ -30,6 +32,7 @@ import Prelude hiding (fail)
 import Text.ParserCombinators.ReadP hiding (char, string)
 
 -- | Parses a time value given a format string.
+-- Missing information will be derived from 1970-01-01 00:00 UTC (which was a Thursday).
 -- Supports the same %-codes as 'formatTime', including @%-@, @%_@ and @%0@ modifiers, however padding widths are not supported.
 -- Case is not significant in the input string.
 -- Some variations in the input are accepted:
@@ -59,13 +62,33 @@ parseTimeM ::
     -> TimeLocale -- ^ Time locale.
     -> String -- ^ Format string.
     -> String -- ^ Input string.
-    -> m t -- ^ Return the time value, or fail if the input could
-                        -- not be parsed using the given format.
-parseTimeM acceptWS l fmt s =
-    case parseTimeList acceptWS l fmt s of
-        [t] -> return t
-        [] -> fail $ "parseTimeM: no parse of " ++ show s
-        _ -> fail $ "parseTimeM: multiple parses of " ++ show s
+    -> m t -- ^ Return the time value, or fail if the input could not be parsed using the given format.
+parseTimeM acceptWS l fmt s = parseTimeMultipleM acceptWS l [(fmt, s)]
+
+-- | Parses a time value given a list of pairs of format and input.
+-- Resulting value is constructed from all provided specifiers.
+parseTimeMultipleM' ::
+       (MonadFail m, ParseTime t)
+    => Proxy t
+    -> Bool -- ^ Accept leading and trailing whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> [(String, String)] -- ^ Pairs of (format string, input string).
+    -> m t -- ^ Return the time value, or fail if the input could not be parsed using the given format.
+parseTimeMultipleM' pt acceptWS l fmts = do
+    specss <- for fmts $ \(fmt,s) -> parseTimeSpecifiersM pt acceptWS l fmt s
+    case buildTime l $ mconcat specss of
+        Just t -> return t
+        Nothing -> fail "parseTimeM: cannot construct"
+
+-- | Parses a time value given a list of pairs of format and input.
+-- Resulting value is constructed from all provided specifiers.
+parseTimeMultipleM ::
+       (MonadFail m, ParseTime t)
+    => Bool -- ^ Accept leading and trailing whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> [(String, String)] -- ^ Pairs of (format string, input string).
+    -> m t -- ^ Return the time value, or fail if the input could not be parsed using the given format.
+parseTimeMultipleM = parseTimeMultipleM' Proxy
 
 -- | Parse a time value given a format string. Fails if the input could
 -- not be parsed using the given format. See 'parseTimeM' for details.
@@ -77,20 +100,35 @@ parseTimeOrError ::
     -> String -- ^ Input string.
     -> t -- ^ The time value.
 parseTimeOrError acceptWS l fmt s =
-    case parseTimeList acceptWS l fmt s of
+    case parseTimeM acceptWS l fmt s of
         [t] -> t
         [] -> error $ "parseTimeOrError: no parse of " ++ show s
         _ -> error $ "parseTimeOrError: multiple parses of " ++ show s
 
-parseTimeList ::
-       ParseTime t
-    => Bool -- ^ Accept leading and trailing whitespace?
+parseTimeSpecifiersM ::
+       (MonadFail m, ParseTime t)
+    => Proxy t
+    -> Bool -- ^ Accept leading and trailing whitespace?
     -> TimeLocale -- ^ Time locale.
     -> String -- ^ Format string
     -> String -- ^ Input string.
-    -> [t]
-parseTimeList False l fmt s = [t | (t, "") <- readSTime False l fmt s]
-parseTimeList True l fmt s = [t | (t, r) <- readSTime True l fmt s, all isSpace r]
+    -> m [(Char, String)]
+parseTimeSpecifiersM pt acceptWS l fmt s =
+    case parseTimeSpecifiers pt acceptWS l fmt s of
+        [t] -> return t
+        [] -> fail $ "parseTimeM: no parse of " ++ show s
+        _ -> fail $ "parseTimeM: multiple parses of " ++ show s
+
+parseTimeSpecifiers ::
+       ParseTime t
+    => Proxy t
+    -> Bool -- ^ Accept leading and trailing whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> String -- ^ Input string.
+    -> [[(Char, String)]]
+parseTimeSpecifiers pt False l fmt s = [t | (t, "") <- readP_to_S (readPSpecifiers pt False l fmt) s]
+parseTimeSpecifiers pt True l fmt s = [t | (t, r) <- readP_to_S (readPSpecifiers pt True l fmt) s, all isSpace r]
 
 -- | Parse a time value given a format string.  See 'parseTimeM' for details.
 readSTime ::
@@ -99,7 +137,31 @@ readSTime ::
     -> TimeLocale -- ^ Time locale.
     -> String -- ^ Format string
     -> ReadS t
-readSTime acceptWS l f = readP_to_S (readPTime acceptWS l f)
+readSTime acceptWS l f = readP_to_S $ readPTime acceptWS l f
+
+readPSpecifiers ::
+       ParseTime t
+    => Proxy t
+    -> Bool -- ^ Accept leading whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> ReadP [(Char, String)]
+readPSpecifiers pt False l f = parseSpecifiers pt l f
+readPSpecifiers pt True l f = (skipSpaces >> parseSpecifiers pt l f) <++ parseSpecifiers pt l f
+
+-- | Parse a time value given a format string.  See 'parseTimeM' for details.
+readPTime' ::
+       ParseTime t
+    => Proxy t
+    -> Bool -- ^ Accept leading whitespace?
+    -> TimeLocale -- ^ Time locale.
+    -> String -- ^ Format string
+    -> ReadP t
+readPTime' pt ws l f = do
+    pairs <- readPSpecifiers pt ws l f
+    case buildTime l pairs of
+        Just t -> return t
+        Nothing -> pfail
 
 -- | Parse a time value given a format string.  See 'parseTimeM' for details.
 readPTime ::
@@ -108,23 +170,7 @@ readPTime ::
     -> TimeLocale -- ^ Time locale.
     -> String -- ^ Format string
     -> ReadP t
-readPTime False l f = readPOnlyTime l f
-readPTime True l f = (skipSpaces >> readPOnlyTime l f) <++ readPOnlyTime l f
-
-readPOnlyTime' :: ParseTime t => Proxy t -> TimeLocale -> String -> ReadP t
-readPOnlyTime' pt l f = do
-    pairs <- parseSpecifiers pt l f
-    case buildTime l pairs of
-        Just t -> return t
-        Nothing -> pfail
-
--- | Parse a time value given a format string (without allowing leading whitespace).  See 'parseTimeM' for details.
-readPOnlyTime ::
-       ParseTime t
-    => TimeLocale -- ^ Time locale.
-    -> String -- ^ Format string
-    -> ReadP t
-readPOnlyTime = readPOnlyTime' Proxy
+readPTime = readPTime' Proxy
 
 -- * Read instances for time package types
 instance Read Day where
