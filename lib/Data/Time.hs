@@ -11,6 +11,7 @@ Use these types for the ways people refer to time and time differences:
 
 * 'Day' for something like June 27th 2017
 * 'DayOfWeek' for something like Tuesday
+* 'Month' for something like August 2021
 * 'TimeOfDay' for something like 5pm
 * 'LocalTime' for a 'Day' with a 'TimeOfDay'
 * 'TimeZone' for a time zone offset (not actually the time zone itself) like -0700

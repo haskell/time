@@ -56,6 +56,7 @@ library
         Data.Time.Calendar.WeekDate,
         Data.Time.Calendar.Julian,
         Data.Time.Calendar.Easter,
+        Data.Time.Calendar.MonthCount,
         Data.Time.Clock,
         Data.Time.Clock.System,
         Data.Time.Clock.POSIX,
@@ -66,6 +67,7 @@ library
         Data.Time.Format.ISO8601,
         Data.Time
     other-modules:
+        Data.IntegerAdditive
         Data.Format
         Data.Time.Calendar.Types,
         Data.Time.Calendar.Private,
@@ -145,6 +147,7 @@ test-suite test-main
         Test.Arbitrary
         Test.Calendar.AddDays
         Test.Calendar.AddDaysRef
+        Test.Calendar.CalendarProps
         Test.Calendar.Calendars
         Test.Calendar.CalendarsRef
         Test.Calendar.ClipDates

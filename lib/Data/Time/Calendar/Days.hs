@@ -1,4 +1,6 @@
 {-# OPTIONS -fno-warn-unused-imports #-}
+{-# LANGUAGE Trustworthy #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Data.Time.Calendar.Days
     (
@@ -12,11 +14,12 @@ import Control.DeepSeq
 import Data.Data
 import Data.Ix
 import Data.Typeable
+import Data.IntegerAdditive
 
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
 newtype Day = ModifiedJulianDay
     { toModifiedJulianDay :: Integer
-    } deriving (Eq, Ord, Data, Typeable)
+    } deriving (Eq, Ord, IntegerAdditive, Data, Typeable)
 
 instance NFData Day where
     rnf (ModifiedJulianDay a) = rnf a

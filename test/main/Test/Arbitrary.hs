@@ -7,6 +7,7 @@ import Data.Fixed
 import Data.Ratio
 import Data.Time
 import Data.Time.Calendar.WeekDate
+import Data.Time.Calendar.MonthCount
 import Data.Time.Clock.POSIX
 import Test.Tasty.QuickCheck hiding (reason)
 
@@ -19,6 +20,9 @@ instance Arbitrary FirstWeekType where
         return $ if b then FirstWholeWeek else FirstMostWeek
 
 deriving instance Show FirstWeekType
+
+instance Arbitrary Month where
+    arbitrary = liftM MkMonth $ choose (-30000, 200000)
 
 instance Arbitrary Day where
     arbitrary = liftM ModifiedJulianDay $ choose (-313698, 2973483) -- 1000-01-1 to 9999-12-31

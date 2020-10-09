@@ -2,6 +2,7 @@ module Main where
 
 import Test.Types()
 import Test.Calendar.AddDays
+import Test.Calendar.CalendarProps
 import Test.Calendar.Calendars
 import Test.Calendar.ClipDates
 import Test.Calendar.ConvertBack
@@ -30,6 +31,7 @@ tests =
         [ testGroup
               "Calendar"
               [ addDaysTest
+              , testCalendarProps
               , testCalendars
               , clipDates
               , convertBack
