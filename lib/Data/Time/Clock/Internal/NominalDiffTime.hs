@@ -1,4 +1,3 @@
-{-# OPTIONS -fno-warn-unused-imports #-}
 {-# LANGUAGE Trustworthy #-}
 
 module Data.Time.Clock.Internal.NominalDiffTime
@@ -11,8 +10,6 @@ module Data.Time.Clock.Internal.NominalDiffTime
 import Control.DeepSeq
 import Data.Data
 import Data.Fixed
-import Data.Time.Calendar.Days
-import Data.Typeable
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
 import GHC.Read

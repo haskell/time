@@ -1,5 +1,3 @@
-{-# OPTIONS -fno-warn-unused-imports #-}
-
 module Data.Time.LocalTime.Internal.TimeOfDay
     (
     -- * Time of day
@@ -26,7 +24,6 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.LocalTime.Internal.TimeZone
-import Data.Typeable
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay

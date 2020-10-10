@@ -1,4 +1,3 @@
-{-# OPTIONS -fno-warn-trustworthy-safe #-}
 {-# LANGUAGE Trustworthy #-}
 
 module Data.Time.Clock.Internal.SystemTime

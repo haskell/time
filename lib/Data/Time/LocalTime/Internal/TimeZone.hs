@@ -1,4 +1,3 @@
-{-# OPTIONS -fno-warn-unused-imports #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 
 module Data.Time.LocalTime.Internal.TimeZone
@@ -22,7 +21,6 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
 import Data.Time.Clock.System
-import Data.Typeable
 import Foreign
 import Foreign.C
 

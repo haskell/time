@@ -1,4 +1,3 @@
-{-# OPTIONS -fno-warn-unused-imports #-}
 {-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
@@ -13,7 +12,6 @@ module Data.Time.Calendar.Days
 import Control.DeepSeq
 import Data.Data
 import Data.Ix
-import Data.Typeable
 import Data.IntegerAdditive
 
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.

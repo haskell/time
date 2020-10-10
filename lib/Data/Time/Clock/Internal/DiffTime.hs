@@ -1,5 +1,4 @@
 {-# LANGUAGE Trustworthy #-}
-{-# OPTIONS -fno-warn-unused-imports #-}
 
 module Data.Time.Clock.Internal.DiffTime
     (
@@ -13,8 +12,6 @@ module Data.Time.Clock.Internal.DiffTime
 import Control.DeepSeq
 import Data.Data
 import Data.Fixed
-import Data.Ratio ((%))
-import Data.Typeable
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
 import GHC.Read
