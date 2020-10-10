@@ -539,6 +539,27 @@ allTypes f =
     , f "UniversalTime" (Proxy :: Proxy UniversalTime)
     ]
 
+allLeapSecondTypes ::
+       (forall t. (Eq t, Show t, Arbitrary t, FormatTime t, ParseTime t, HasFormatCodes t) => String -> t -> r)
+    -> [r]
+allLeapSecondTypes f = let
+    day :: Day
+    day = fromGregorian 2000 01 01
+    lsTimeOfDay :: TimeOfDay
+    lsTimeOfDay = TimeOfDay 23 59 60.5
+    lsLocalTime :: LocalTime
+    lsLocalTime = LocalTime day lsTimeOfDay
+    lsZonedTime :: ZonedTime
+    lsZonedTime = ZonedTime lsLocalTime utc
+    lsUTCTime :: UTCTime
+    lsUTCTime = UTCTime day 86400.5
+    in
+    [ f "TimeOfDay" lsTimeOfDay
+    , f "LocalTime" lsLocalTime
+    , f "ZonedTime" lsZonedTime
+    , f "UTCTime" lsUTCTime
+    ]
+
 parseEmptyTest ::
        forall t. ParseTime t
     => Proxy t
@@ -552,9 +573,12 @@ parseEmptyTests :: TestTree
 parseEmptyTests = nameTest "parse empty" $ allTypes $ \name p -> nameTest name $ parseEmptyTest p
 
 formatParseFormatTests :: TestTree
-formatParseFormatTests =
-    localOption (QuickCheckTests 50000) $
-    nameTest "format_parse_format" $ allTypes $ \name p -> nameTest name $ prop_format_parse_format p
+formatParseFormatTests = nameTest "format_parse_format"
+    [
+        localOption (QuickCheckTests 50000) $
+        nameTest "general" $ allTypes $ \name p -> nameTest name $ prop_format_parse_format p,
+        nameTest "leapsecond" $ allLeapSecondTypes $ \name t -> nameTest name $ \fc -> prop_format_parse_format Proxy fc t
+    ]
 
 badInputTests :: TestTree
 badInputTests =
