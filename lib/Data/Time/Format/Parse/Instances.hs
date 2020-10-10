@@ -18,6 +18,7 @@ import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.OrdinalDate
+import Data.Time.Calendar.MonthCount
 import Data.Time.Calendar.Private (clipValid)
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.Internal.DiffTime
@@ -50,128 +51,136 @@ data WeekType
     | SundayWeek
     | MondayWeek
 
+makeDayComponent :: TimeLocale -> Char -> String -> Maybe [DayComponent]
+makeDayComponent l c x = let
+    ra :: (Read a) => Maybe a
+    ra = readMaybe x
+    zeroBasedListIndex :: [String] -> Maybe Int
+    zeroBasedListIndex ss = elemIndex (map toUpper x) $ fmap (map toUpper) ss
+    oneBasedListIndex :: [String] -> Maybe Int
+    oneBasedListIndex ss = do
+        index <- zeroBasedListIndex ss
+        return $ 1 + index
+    in case c of
+    -- %C: century (all but the last two digits of the year), 00 - 99
+            'C' -> do
+                a <- ra
+                return [DCCentury a]
+    -- %f century (all but the last two digits of the year), 00 - 99
+            'f' -> do
+                a <- ra
+                return [DCCentury a]
+    -- %Y: year
+            'Y' -> do
+                a <- ra
+                return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
+    -- %G: year for Week Date format
+            'G' -> do
+                a <- ra
+                return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
+    -- %y: last two digits of year, 00 - 99
+            'y' -> do
+                a <- ra
+                return [DCCenturyYear a]
+    -- %g: last two digits of year for Week Date format, 00 - 99
+            'g' -> do
+                a <- ra
+                return [DCCenturyYear a]
+    -- %B: month name, long form (fst from months locale), January - December
+            'B' -> do
+                a <- oneBasedListIndex $ fmap fst $ months l
+                return [DCYearMonth a]
+    -- %b: month name, short form (snd from months locale), Jan - Dec
+            'b' -> do
+                a <- oneBasedListIndex $ fmap snd $ months l
+                return [DCYearMonth a]
+    -- %m: month of year, leading 0 as needed, 01 - 12
+            'm' -> do
+                raw <- ra
+                a <- clipValid 1 12 raw
+                return [DCYearMonth a]
+    -- %d: day of month, leading 0 as needed, 01 - 31
+            'd' -> do
+                raw <- ra
+                a <- clipValid 1 31 raw
+                return [DCMonthDay a]
+    -- %e: day of month, leading space as needed, 1 - 31
+            'e' -> do
+                raw <- ra
+                a <- clipValid 1 31 raw
+                return [DCMonthDay a]
+    -- %V: week for Week Date format, 01 - 53
+            'V' -> do
+                raw <- ra
+                a <- clipValid 1 53 raw
+                return [DCYearWeek ISOWeek a]
+    -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 00 - 53
+            'U' -> do
+                raw <- ra
+                a <- clipValid 0 53 raw
+                return [DCYearWeek SundayWeek a]
+    -- %W: week number of year, where weeks start on Monday (as mondayStartWeek), 00 - 53
+            'W' -> do
+                raw <- ra
+                a <- clipValid 0 53 raw
+                return [DCYearWeek MondayWeek a]
+    -- %u: day for Week Date format, 1 - 7
+            'u' -> do
+                raw <- ra
+                a <- clipValid 1 7 raw
+                return [DCWeekDay a]
+    -- %a: day of week, short form (snd from wDays locale), Sun - Sat
+            'a' -> do
+                a' <- zeroBasedListIndex $ fmap snd $ wDays l
+                let
+                    a =
+                        if a' == 0
+                            then 7
+                            else a'
+                return [DCWeekDay a]
+    -- %A: day of week, long form (fst from wDays locale), Sunday - Saturday
+            'A' -> do
+                a' <- zeroBasedListIndex $ fmap fst $ wDays l
+                let
+                    a =
+                        if a' == 0
+                            then 7
+                            else a'
+                return [DCWeekDay a]
+    -- %w: day of week number, 0 (= Sunday) - 6 (= Saturday)
+            'w' -> do
+                raw <- ra
+                a' <- clipValid 0 6 raw
+                let
+                    a =
+                        if a' == 0
+                            then 7
+                            else a'
+                return [DCWeekDay a]
+    -- %j: day of year for Ordinal Date format, 001 - 366
+            'j' -> do
+                raw <- ra
+                a <- clipValid 1 366 raw
+                return [DCYearDay a]
+    -- unrecognised, pass on to other parsers
+            _ -> return []
+
+makeDayComponents :: TimeLocale -> [(Char,String)] -> Maybe [DayComponent]
+makeDayComponents l pairs =  do
+    components <- for pairs $ \(c, x) -> makeDayComponent l c x
+    return $ concat components
+
+safeLast :: a -> [a] -> a
+safeLast x xs = last (x : xs)
+
 instance ParseTime Day where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
-    buildTime l = let
+    buildTime l pairs = do
+        cs <- makeDayComponents l pairs
         -- 'Nothing' indicates a parse failure,
         -- while 'Just []' means no information
-        f :: Char -> String -> Maybe [DayComponent]
-        f c x = let
-            ra :: (Read a) => Maybe a
-            ra = readMaybe x
-            zeroBasedListIndex :: [String] -> Maybe Int
-            zeroBasedListIndex ss = elemIndex (map toUpper x) $ fmap (map toUpper) ss
-            oneBasedListIndex :: [String] -> Maybe Int
-            oneBasedListIndex ss = do
-                index <- zeroBasedListIndex ss
-                return $ 1 + index
-            in case c of
-            -- %C: century (all but the last two digits of the year), 00 - 99
-                   'C' -> do
-                       a <- ra
-                       return [DCCentury a]
-            -- %f century (all but the last two digits of the year), 00 - 99
-                   'f' -> do
-                       a <- ra
-                       return [DCCentury a]
-            -- %Y: year
-                   'Y' -> do
-                       a <- ra
-                       return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
-            -- %G: year for Week Date format
-                   'G' -> do
-                       a <- ra
-                       return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
-            -- %y: last two digits of year, 00 - 99
-                   'y' -> do
-                       a <- ra
-                       return [DCCenturyYear a]
-            -- %g: last two digits of year for Week Date format, 00 - 99
-                   'g' -> do
-                       a <- ra
-                       return [DCCenturyYear a]
-            -- %B: month name, long form (fst from months locale), January - December
-                   'B' -> do
-                       a <- oneBasedListIndex $ fmap fst $ months l
-                       return [DCYearMonth a]
-            -- %b: month name, short form (snd from months locale), Jan - Dec
-                   'b' -> do
-                       a <- oneBasedListIndex $ fmap snd $ months l
-                       return [DCYearMonth a]
-            -- %m: month of year, leading 0 as needed, 01 - 12
-                   'm' -> do
-                       raw <- ra
-                       a <- clipValid 1 12 raw
-                       return [DCYearMonth a]
-            -- %d: day of month, leading 0 as needed, 01 - 31
-                   'd' -> do
-                       raw <- ra
-                       a <- clipValid 1 31 raw
-                       return [DCMonthDay a]
-            -- %e: day of month, leading space as needed, 1 - 31
-                   'e' -> do
-                       raw <- ra
-                       a <- clipValid 1 31 raw
-                       return [DCMonthDay a]
-            -- %V: week for Week Date format, 01 - 53
-                   'V' -> do
-                       raw <- ra
-                       a <- clipValid 1 53 raw
-                       return [DCYearWeek ISOWeek a]
-            -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 00 - 53
-                   'U' -> do
-                       raw <- ra
-                       a <- clipValid 0 53 raw
-                       return [DCYearWeek SundayWeek a]
-            -- %W: week number of year, where weeks start on Monday (as mondayStartWeek), 00 - 53
-                   'W' -> do
-                       raw <- ra
-                       a <- clipValid 0 53 raw
-                       return [DCYearWeek MondayWeek a]
-            -- %u: day for Week Date format, 1 - 7
-                   'u' -> do
-                       raw <- ra
-                       a <- clipValid 1 7 raw
-                       return [DCWeekDay a]
-            -- %a: day of week, short form (snd from wDays locale), Sun - Sat
-                   'a' -> do
-                       a' <- zeroBasedListIndex $ fmap snd $ wDays l
-                       let
-                           a =
-                               if a' == 0
-                                   then 7
-                                   else a'
-                       return [DCWeekDay a]
-            -- %A: day of week, long form (fst from wDays locale), Sunday - Saturday
-                   'A' -> do
-                       a' <- zeroBasedListIndex $ fmap fst $ wDays l
-                       let
-                           a =
-                               if a' == 0
-                                   then 7
-                                   else a'
-                       return [DCWeekDay a]
-            -- %w: day of week number, 0 (= Sunday) - 6 (= Saturday)
-                   'w' -> do
-                       raw <- ra
-                       a' <- clipValid 0 6 raw
-                       let
-                           a =
-                               if a' == 0
-                                   then 7
-                                   else a'
-                       return [DCWeekDay a]
-            -- %j: day of year for Ordinal Date format, 001 - 366
-                   'j' -> do
-                       raw <- ra
-                       a <- clipValid 1 366 raw
-                       return [DCYearDay a]
-            -- unrecognised, pass on to other parsers
-                   _ -> return []
-        buildDay :: [DayComponent] -> Maybe Day
-        buildDay cs = let
-            safeLast x xs = last (x : xs)
+        let
             y = let
                 d = safeLast 70 [x | DCCenturyYear x <- cs]
                 c =
@@ -193,10 +202,29 @@ instance ParseTime Day where
                        MondayWeek -> fromMondayStartWeekValid y w d
             rest (_:xs) = rest xs
             rest [] = rest [DCYearMonth 1]
-            in rest cs
-        in \pairs -> do
-               components <- for pairs $ \(c, x) -> f c x
-               buildDay $ concat components
+        rest cs
+
+instance ParseTime Month where
+    substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
+    parseTimeSpecifier _ = timeParseTimeSpecifier
+    buildTime l pairs = do
+        cs <- makeDayComponents l pairs
+        -- 'Nothing' indicates a parse failure,
+        -- while 'Just []' means no information
+        let
+            y = let
+                d = safeLast 70 [x | DCCenturyYear x <- cs]
+                c =
+                    safeLast
+                        (if d >= 69
+                             then 19
+                             else 20)
+                        [x | DCCentury x <- cs]
+                in 100 * c + d
+            rest (DCYearMonth m:_) = fromYearMonthValid y m
+            rest (_:xs) = rest xs
+            rest [] = fromYearMonthValid y 1
+        rest cs
 
 mfoldl :: (Monad m) => (a -> b -> m a) -> m a -> [b] -> m a
 mfoldl f = let

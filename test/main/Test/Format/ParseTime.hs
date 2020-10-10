@@ -510,6 +510,7 @@ instance Show (FormatString a) where
 typedTests :: (forall t. (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result) -> [TestTree]
 typedTests prop =
     [ nameTest "Day" $ tgroup dayFormats prop
+    , nameTest "Month" $ tgroup monthFormats prop
     , nameTest "TimeOfDay" $ tgroup timeOfDayFormats prop
     , nameTest "LocalTime" $ tgroup localTimeFormats prop
     , nameTest "TimeZone" $ tgroup timeZoneFormats prop
@@ -632,8 +633,12 @@ dayFormats =
         , "%Y-%B-%d"
         , "%Y-%b-%d"
         , "%Y-%h-%d"
+        , "%C-%y-%B-%d"
+        , "%C-%y-%b-%d"
+        , "%C-%y-%h-%d"
      -- ordinal dates
         , "%Y-%j"
+        , "%C-%y-%j"
      -- ISO week dates
         , "%G-%V-%u"
         , "%G-%V-%a"
@@ -656,6 +661,27 @@ dayFormats =
         , "%Y-%A-w%W"
         , "%A week %U, %Y"
         , "%A week %W, %Y"
+        ]
+
+monthFormats :: [FormatString Month]
+monthFormats =
+    map FormatString
+     -- numeric year, month
+        [ "%Y-%m"
+        , "%Y%m"
+        , "%C%y%m"
+        , "%Y %m"
+        , "%m/%Y"
+        , "%m/%Y"
+        , "%Y/%m"
+        , "%C %y %m"
+     -- month names
+        , "%Y-%B"
+        , "%Y-%b"
+        , "%Y-%h"
+        , "%C-%y-%B"
+        , "%C-%y-%b"
+        , "%C-%y-%h"
         ]
 
 timeOfDayFormats :: [FormatString TimeOfDay]

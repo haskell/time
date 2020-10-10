@@ -9,7 +9,9 @@ module Data.Time.Calendar.MonthCount
         IntegerAdditive(..),
         Month(..),
         pattern YearMonth,
-        pattern MonthDay
+        fromYearMonthValid,
+        pattern MonthDay,
+        fromMonthDayValid
     ) where
 
 import Data.Time.Calendar.Types
@@ -44,6 +46,11 @@ pattern YearMonth :: Year -> MonthOfYear -> Month
 pattern YearMonth y my <- MkMonth ((\m -> divMod' m 12) -> (y,succ . fromInteger -> my)) where
     YearMonth y my = MkMonth $ (y * 12) + toInteger (pred $ clip 1 12 my)
 
+fromYearMonthValid :: Year -> MonthOfYear -> Maybe Month
+fromYearMonthValid y my = do
+    my' <- clipValid 1 12 my
+    return $ YearMonth y my'
+
 #if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearMonth #-}
 #endif
@@ -56,6 +63,9 @@ toMonthDay (YearMonthDay y my dm) = (YearMonth y my, dm)
 pattern MonthDay :: Month -> DayOfMonth -> Day
 pattern MonthDay m dm <- (toMonthDay -> (m,dm)) where
     MonthDay (YearMonth y my) dm = YearMonthDay y my dm
+
+fromMonthDayValid :: Month -> DayOfMonth -> Maybe Day
+fromMonthDayValid (YearMonth y my) dm = fromGregorianValid y my dm
 
 #if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE MonthDay #-}
