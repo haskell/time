@@ -1,5 +1,4 @@
 -- | Week-based calendars
-{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 module Data.Time.Calendar.WeekDate
     (
         Year, WeekOfYear, DayOfWeek(..), dayOfWeek,

@@ -1,4 +1,3 @@
-{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 module Data.Time.Calendar.Julian
     ( Year
     , MonthOfYear

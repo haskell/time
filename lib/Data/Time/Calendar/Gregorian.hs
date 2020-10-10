@@ -1,4 +1,3 @@
-{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 {-# OPTIONS -fno-warn-orphans #-}
 
 module Data.Time.Calendar.Gregorian

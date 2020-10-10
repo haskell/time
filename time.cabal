@@ -41,6 +41,8 @@ library
         Rank2Types
         DeriveDataTypeable
         StandaloneDeriving
+        PatternSynonyms
+        ViewPatterns
         CPP
     ghc-options: -Wall -fwarn-tabs
     c-sources: lib/cbits/HsTime.c

@@ -1,5 +1,4 @@
 -- | ISO 8601 Ordinal Date format
-{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
 module Data.Time.Calendar.OrdinalDate (Day, Year, DayOfYear, WeekOfYear, module Data.Time.Calendar.OrdinalDate) where
 
 import Data.Time.Calendar.Types
