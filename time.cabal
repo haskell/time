@@ -12,7 +12,13 @@ description:    Time, clocks and calendars
 category:       Time
 build-type:     Configure
 cabal-version:  >=1.10
-tested-with:    GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.5
+tested-with:
+    GHC == 8.0.2,
+    GHC == 8.2.2,
+    GHC == 8.4.4,
+    GHC == 8.6.5,
+    GHC == 8.8.4,
+    GHC == 8.10.2
 x-follows-version-policy:
 
 extra-source-files:
