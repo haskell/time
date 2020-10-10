@@ -17,6 +17,7 @@ import Data.Time
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.MonthCount
+import Data.Time.Calendar.Quarter
 import Test.Arbitrary ()
 import Test.QuickCheck.Property
 import Test.Tasty
@@ -576,6 +577,8 @@ readShowTests =
         "read_show"
         [ nameTest "Day" (prop_read_show :: Day -> Result)
         , nameTest "Month" (prop_read_show :: Month -> Result)
+        , nameTest "QuarterOfYear" (prop_read_show :: QuarterOfYear -> Result)
+        , nameTest "Quarter" (prop_read_show :: Quarter -> Result)
         , nameTest "TimeOfDay" (prop_read_show :: TimeOfDay -> Result)
         , nameTest "LocalTime" (prop_read_show :: LocalTime -> Result)
         , nameTest "TimeZone" (prop_read_show :: TimeZone -> Result)

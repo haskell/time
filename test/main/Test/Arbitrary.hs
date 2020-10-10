@@ -8,6 +8,7 @@ import Data.Ratio
 import Data.Time
 import Data.Time.Calendar.WeekDate
 import Data.Time.Calendar.MonthCount
+import Data.Time.Calendar.Quarter
 import Data.Time.Clock.POSIX
 import Test.Tasty.QuickCheck hiding (reason)
 
@@ -23,6 +24,12 @@ deriving instance Show FirstWeekType
 
 instance Arbitrary Month where
     arbitrary = liftM MkMonth $ choose (-30000, 200000)
+
+instance Arbitrary Quarter where
+    arbitrary = liftM MkQuarter $ choose (-30000, 200000)
+
+instance Arbitrary QuarterOfYear where
+    arbitrary = liftM toEnum $ choose (1, 4)
 
 instance Arbitrary Day where
     arbitrary = liftM ModifiedJulianDay $ choose (-313698, 2973483) -- 1000-01-1 to 9999-12-31

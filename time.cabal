@@ -57,6 +57,7 @@ library
         Data.Time.Calendar.Julian,
         Data.Time.Calendar.Easter,
         Data.Time.Calendar.MonthCount,
+        Data.Time.Calendar.Quarter,
         Data.Time.Clock,
         Data.Time.Clock.System,
         Data.Time.Clock.POSIX,

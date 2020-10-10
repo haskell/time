@@ -2,7 +2,8 @@
 
 ## [1.11]
 - new calendrical type synonyms and abstract constructors
-- new absolute Month type, with appropriate functions
+- new Month type, with appropriate functions
+- new QuarterOfYear and Quarter type, with appropriate functions
 - new functions for working with week-based years
 - new parseTimeMultipleM function for a list of (format, input) pairs
 - add instance Ord DayOfWeek
