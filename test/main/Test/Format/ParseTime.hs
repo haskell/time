@@ -62,6 +62,8 @@ parseCode fc = parse False $ show fc
 
 class HasFormatCodes t where
     allFormatCodes :: Proxy t -> [(Bool, Char)]
+    incompleteS :: Maybe t
+    incompleteS = Nothing
 
 minCodeWidth :: Char -> Int
 minCodeWidth _ = 0
@@ -424,25 +426,23 @@ prop_parse_format_lower :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatSt
 prop_parse_format_lower (FormatString f) t = compareParse t f (map toLower $ format f t)
 
 -- Default time is 1970-01-01 00:00:00 +0000 (which was a Thursday)
-in1970 :: Char -> String -> Bool
-in1970 'j' "366" = False -- 1970 was not a leap year
-in1970 'U' "53" = False -- last day of 1970 was Sunday-start-week 52
-in1970 'W' "53" = False -- last day of 1970 was Monday-start-week 52
-in1970 _ _ = True
+in1970 :: Maybe String -> Char -> String -> Maybe String
+in1970 _ 'j' "366" = Nothing -- 1970 was not a leap year
+in1970 _ 'U' "53" = Nothing -- last day of 1970 was Sunday-start-week 52
+in1970 _ 'W' "53" = Nothing -- last day of 1970 was Monday-start-week 52
+in1970 (Just s) 'S' "60" = Just s -- no leap second without other data
+in1970 _ _ s = Just s
 
 -- format t == format (parse (format t))
 prop_format_parse_format ::
-       forall t. (FormatTime t, ParseTime t)
+       forall t. (HasFormatCodes t, FormatTime t, ParseTime t)
     => Proxy t
     -> FormatCode ParseAndFormat t
     -> t
     -> Result
 prop_format_parse_format _ fc v = let
     s1 = formatCode fc v
-    ms1 =
-        if in1970 (fcSpecifier fc) s1
-            then Just s1
-            else Nothing
+    ms1 = in1970 (fmap (formatCode fc) (incompleteS :: Maybe t)) (fcSpecifier fc) s1
     mv2 :: Maybe t
     mv2 = parseCode fc s1
     ms2 = fmap (formatCode fc) mv2
@@ -467,6 +467,7 @@ instance HasFormatCodes ZonedTime where
 
 instance HasFormatCodes UTCTime where
     allFormatCodes _ = [(False, s) | s <- "cs"] ++ allFormatCodes (Proxy :: Proxy LocalTime)
+    incompleteS = Just $ UTCTime (fromGregorian 2000 1 1) 0
 
 instance HasFormatCodes UniversalTime where
     allFormatCodes _ = allFormatCodes (Proxy :: Proxy LocalTime)
