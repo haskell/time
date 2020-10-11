@@ -64,7 +64,7 @@ library
         Data.Time.Calendar.WeekDate,
         Data.Time.Calendar.Julian,
         Data.Time.Calendar.Easter,
-        Data.Time.Calendar.MonthCount,
+        Data.Time.Calendar.Month,
         Data.Time.Calendar.Quarter,
         Data.Time.Clock,
         Data.Time.Clock.System,

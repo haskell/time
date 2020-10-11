@@ -5,7 +5,7 @@ module Test.Calendar.CalendarProps
     ( testCalendarProps
     ) where
 
-import Data.Time.Calendar.MonthCount
+import Data.Time.Calendar.Month
 import Data.Time.Calendar.Quarter
 import Test.TestUtil
 import Test.Tasty

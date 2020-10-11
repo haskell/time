@@ -16,7 +16,7 @@ import Data.Proxy
 import Data.Time
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
-import Data.Time.Calendar.MonthCount
+import Data.Time.Calendar.Month
 import Data.Time.Calendar.Quarter
 import Test.Arbitrary ()
 import Test.QuickCheck.Property

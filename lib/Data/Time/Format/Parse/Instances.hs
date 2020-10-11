@@ -18,7 +18,7 @@ import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.OrdinalDate
-import Data.Time.Calendar.MonthCount
+import Data.Time.Calendar.Month
 import Data.Time.Calendar.Private (clipValid)
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.Internal.DiffTime

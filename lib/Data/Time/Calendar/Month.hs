@@ -3,7 +3,8 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
 #endif
 
-module Data.Time.Calendar.MonthCount
+-- | An absolute count of common calendar months.
+module Data.Time.Calendar.Month
     (
         IntegerAdditive(..),
         Month(..),

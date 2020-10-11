@@ -7,7 +7,7 @@ import Data.Fixed
 import Data.Ratio
 import Data.Time
 import Data.Time.Calendar.WeekDate
-import Data.Time.Calendar.MonthCount
+import Data.Time.Calendar.Month
 import Data.Time.Calendar.Quarter
 import Data.Time.Clock.POSIX
 import Test.Tasty.QuickCheck hiding (reason)

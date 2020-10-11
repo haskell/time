@@ -3,6 +3,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
 #endif
 
+-- | Year quarters.
 module Data.Time.Calendar.Quarter
     (
         QuarterOfYear(..),
@@ -17,7 +18,7 @@ module Data.Time.Calendar.Quarter
 import Data.Time.Calendar.Types
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Days
-import Data.Time.Calendar.MonthCount
+import Data.Time.Calendar.Month
 import Data.Data
 import Data.Fixed
 import Text.Read
@@ -29,7 +30,7 @@ data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Data, Typeable, Read, 
 -- | maps Q1..Q4 to 1..4
 instance Enum QuarterOfYear where
     toEnum i =
-        case mod i 4 of
+        case mod' i 4 of
             1 -> Q1
             2 -> Q2
             3 -> Q3
