@@ -76,7 +76,6 @@ library
         Data.Time.Format.ISO8601,
         Data.Time
     other-modules:
-        Data.IntegerAdditive
         Data.Format
         Data.Time.Calendar.Types,
         Data.Time.Calendar.Private,

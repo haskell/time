@@ -6,8 +6,7 @@
 -- | An absolute count of common calendar months.
 module Data.Time.Calendar.Month
     (
-        IntegerAdditive(..),
-        Month(..),
+        Month(..), addMonths, diffMonths,
         pattern YearMonth,
         fromYearMonthValid,
         pattern MonthDay,
@@ -18,7 +17,6 @@ import Data.Time.Calendar.Types
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Private
-import Data.IntegerAdditive
 import Data.Data
 import Data.Fixed
 import Text.Read
@@ -26,7 +24,7 @@ import Text.ParserCombinators.ReadP
 
 -- | An absolute count of common calendar months.
 -- Number is equal to @(year * 12) + (monthOfYear - 1)@.
-newtype Month = MkMonth Integer deriving (Eq, Ord, IntegerAdditive, Data, Typeable)
+newtype Month = MkMonth Integer deriving (Eq, Ord, Data, Typeable)
 
 -- | Show as @yyyy-mm@.
 instance Show Month where
@@ -39,6 +37,12 @@ instance Read Month where
         _ <- lift $ char '-'
         m <- readPrec
         return $ YearMonth y m
+
+addMonths :: Integer -> Month -> Month
+addMonths n (MkMonth a) = MkMonth $ a + n
+
+diffMonths :: Month -> Month -> Integer
+diffMonths (MkMonth a) (MkMonth b) = a - b
 
 -- | Bidirectional abstract constructor.
 -- Invalid months of year will be clipped to the correct range.

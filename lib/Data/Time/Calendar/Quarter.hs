@@ -6,8 +6,7 @@
 -- | Year quarters.
 module Data.Time.Calendar.Quarter
     (
-        QuarterOfYear(..),
-        IntegerAdditive(..),
+        QuarterOfYear(..), addQuarters, diffQuarters,
         Quarter(..),
         pattern YearQuarter,
         monthOfYearQuarter,
@@ -46,7 +45,7 @@ instance Bounded QuarterOfYear where
 
 -- | An absolute count of year quarters.
 -- Number is equal to @(year * 4) + (quarterOfYear - 1)@.
-newtype Quarter = MkQuarter Integer deriving (Eq, Ord, IntegerAdditive, Data, Typeable)
+newtype Quarter = MkQuarter Integer deriving (Eq, Ord, Data, Typeable)
 
 -- | Show as @yyyy-Qn@.
 instance Show Quarter where
@@ -59,6 +58,12 @@ instance Read Quarter where
         _ <- lift $ char '-'
         m <- readPrec
         return $ YearQuarter y m
+
+addQuarters :: Integer -> Quarter -> Quarter
+addQuarters n (MkQuarter a) = MkQuarter $ a + n
+
+diffQuarters :: Quarter -> Quarter -> Integer
+diffQuarters (MkQuarter a) (MkQuarter b) = a - b
 
 -- | Bidirectional abstract constructor.
 pattern YearQuarter :: Year -> QuarterOfYear -> Quarter
