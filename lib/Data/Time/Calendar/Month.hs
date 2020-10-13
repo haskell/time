@@ -40,7 +40,7 @@ instance Read Month where
         m <- readPrec
         return $ YearMonth y m
 
--- | Abstract constructor.
+-- | Bidirectional abstract constructor.
 -- Invalid months of year will be clipped to the correct range.
 pattern YearMonth :: Year -> MonthOfYear -> Month
 pattern YearMonth y my <- MkMonth ((\m -> divMod' m 12) -> (y,succ . fromInteger -> my)) where
@@ -58,7 +58,7 @@ fromYearMonthValid y my = do
 toMonthDay :: Day -> (Month,DayOfMonth)
 toMonthDay (YearMonthDay y my dm) = (YearMonth y my, dm)
 
--- | Abstract constructor.
+-- | Bidirectional abstract constructor.
 -- Invalid days of month will be clipped to the correct range.
 pattern MonthDay :: Month -> DayOfMonth -> Day
 pattern MonthDay m dm <- (toMonthDay -> (m,dm)) where

@@ -41,7 +41,7 @@ toJulian date = (year, month, day)
 fromJulian :: Year -> MonthOfYear -> DayOfMonth -> Day
 fromJulian year month day = fromJulianYearAndDay year (monthAndDayToDayOfYear (isJulianLeapYear year) month day)
 
--- | Abstract constructor for the proleptic Julian calendar.
+-- | Bidirectional abstract constructor for the proleptic Julian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
 pattern JulianYearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
 pattern JulianYearMonthDay y m d <- (toJulian -> (y,m,d)) where

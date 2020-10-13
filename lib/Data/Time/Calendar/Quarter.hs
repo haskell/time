@@ -60,7 +60,7 @@ instance Read Quarter where
         m <- readPrec
         return $ YearQuarter y m
 
--- | Abstract constructor.
+-- | Bidirectional abstract constructor.
 pattern YearQuarter :: Year -> QuarterOfYear -> Quarter
 pattern YearQuarter y qy <- MkQuarter ((\q -> divMod' q 4) -> (y,toEnum . succ . fromInteger -> qy)) where
     YearQuarter y qy = MkQuarter $ (y * 4) + toInteger (pred $ fromEnum qy)

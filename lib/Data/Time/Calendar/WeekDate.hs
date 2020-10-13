@@ -92,7 +92,7 @@ toWeekDate d = let
 fromWeekDate :: Year -> WeekOfYear -> Int -> Day
 fromWeekDate y wy dw = fromWeekCalendar FirstMostWeek Monday y wy (toEnum $ clip 1 7 dw)
 
--- | Abstract constructor for ISO 8601 Week Date format.
+-- | Bidirectional abstract constructor for ISO 8601 Week Date format.
 -- Invalid week values will be clipped to the correct range.
 pattern YearWeekDay :: Year -> WeekOfYear -> DayOfWeek -> Day
 pattern YearWeekDay y wy dw <- (toWeekDate -> (y,wy,toEnum -> dw)) where

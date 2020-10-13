@@ -46,7 +46,7 @@ toGregorian date = (year, month, day)
 fromGregorian :: Year -> MonthOfYear -> DayOfMonth -> Day
 fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isLeapYear year) month day)
 
--- | Abstract constructor for the proleptic Gregorian calendar.
+-- | Bidirectional abstract constructor for the proleptic Gregorian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
 pattern YearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
 pattern YearMonthDay y m d <- (toGregorian -> (y,m,d)) where

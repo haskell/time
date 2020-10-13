@@ -40,7 +40,7 @@ fromOrdinalDate year day = ModifiedJulianDay mjd
         (div y 400) -
         678576
 
--- | Abstract constructor for ISO 8601 Ordinal Date format.
+-- | Bidirectional abstract constructor for ISO 8601 Ordinal Date format.
 -- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
 pattern YearDay :: Year -> DayOfYear -> Day
 pattern YearDay y d <- (toOrdinalDate -> (y,d)) where
