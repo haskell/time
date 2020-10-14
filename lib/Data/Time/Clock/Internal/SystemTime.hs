@@ -1,4 +1,8 @@
+#ifdef mingw32_HOST_OS
+{-# LANGUAGE Safe #-}
+#else
 {-# LANGUAGE Trustworthy #-}
+#endif
 
 module Data.Time.Clock.Internal.SystemTime
     ( SystemTime(..)
