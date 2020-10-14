@@ -216,3 +216,15 @@ test-suite test-unix
         Test.TestUtil
         Test.Format.Format
         Test.LocalTime.TimeZone
+
+benchmark time-bench
+    type: exitcode-stdio-1.0
+    hs-source-dirs: benchmark
+    default-language: Haskell2010
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+        base,
+        deepseq,
+        time,
+        criterion
+    main-is: Main.hs

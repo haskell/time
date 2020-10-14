@@ -37,13 +37,9 @@ Before release:
 
     ./fullcheck
 
-8. Build benchmark
+8. Run benchmarks
 
-    cd benchmark
-    stack build
-        (ignore missing modules warning)
-    stack exec -- time-bench
-    cd ..
+    stack bench
 
 9. Inspect generated haddock
 
