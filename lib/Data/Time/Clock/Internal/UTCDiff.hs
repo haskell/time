@@ -8,6 +8,10 @@ import Data.Time.Clock.POSIX
 addUTCTime :: NominalDiffTime -> UTCTime -> UTCTime
 addUTCTime x t = posixSecondsToUTCTime (x + (utcTimeToPOSIXSeconds t))
 
+-- | subUTCTime a b = a - b
+subUTCTime :: UTCTime -> NominalDiffTime -> UTCTime
+subUTCTime t x = posixSecondsToUTCTime ((utcTimeToPOSIXSeconds t) - x)
+
 -- | diffUTCTime a b = a - b
 diffUTCTime :: UTCTime -> UTCTime -> NominalDiffTime
 diffUTCTime a b = (utcTimeToPOSIXSeconds a) - (utcTimeToPOSIXSeconds b)
