@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.11.1]
+- add Ix, Enum and NFData instance to Month, Quarter and QuarterOfYear types
+
 ## [1.11]
 - new calendrical type synonyms and abstract constructors
 - new Month type, with appropriate functions
