@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.Calendar.Private where
 
 import Data.Fixed

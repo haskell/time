@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 -- | Types and functions for UTC and UT1
 module Data.Time.Clock
     ( module Data.Time.Clock.Internal.UniversalTime

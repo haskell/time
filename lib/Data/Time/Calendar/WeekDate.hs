@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 -- | Week-based calendars
 module Data.Time.Calendar.WeekDate
     (

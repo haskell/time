@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 {-|
 
 = Quick Start

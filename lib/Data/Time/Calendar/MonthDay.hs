@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.Calendar.MonthDay
     ( MonthOfYear, DayOfMonth, DayOfYear
     , monthAndDayToDayOfYear

@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.Format.Format.Class
     (
         -- * Formatting
