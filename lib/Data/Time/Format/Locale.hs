@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 -- Note: this file derives from old-locale:System.Locale.hs, which is copyright (c) The University of Glasgow 2001
 module Data.Time.Format.Locale
     ( TimeLocale(..)

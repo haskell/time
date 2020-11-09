@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 {-# OPTIONS -fno-warn-orphans #-}
 
 module Data.Time.LocalTime.Internal.LocalTime

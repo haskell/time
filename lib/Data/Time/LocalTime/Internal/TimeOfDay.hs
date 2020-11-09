@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.LocalTime.Internal.TimeOfDay
     (
     -- * Time of day

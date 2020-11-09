@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.Calendar.CalendarDiffDays
     (
         -- * Calendar Duration

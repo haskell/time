@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.Calendar
     ( module Data.Time.Calendar.Days
     , module Data.Time.Calendar.CalendarDiffDays

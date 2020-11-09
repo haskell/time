@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Format
     ( Productish(..)
     , Summish(..)

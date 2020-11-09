@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 
 module Data.Time.LocalTime.Internal.TimeZone
