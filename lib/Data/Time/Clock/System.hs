@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 -- | Fast access to the system clock.
 module Data.Time.Clock.System
     ( systemEpochDay

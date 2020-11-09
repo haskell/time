@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.Clock.Internal.UniversalTime
     (
     -- * Universal Time

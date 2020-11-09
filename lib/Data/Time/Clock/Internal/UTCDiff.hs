@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Data.Time.Clock.Internal.UTCDiff where
 
 import Data.Time.Clock.Internal.NominalDiffTime

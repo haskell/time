@@ -1,5 +1,4 @@
-{-# LANGUAGE Trustworthy #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.Days
     (
