@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.11.1]
+- All modules Safe or Trustworthy
+
 ## [1.11]
 - new calendrical type synonyms and abstract constructors
 - new Month type, with appropriate functions
