@@ -1,26 +1,36 @@
-module Test.Types(CheckInstances) where
+module Test.Types() where
 
+import Control.DeepSeq
 import Data.Data
+import Data.Ix
 import Data.Time
+import Data.Time.Calendar.Month
+import Data.Time.Calendar.Quarter
 import Data.Time.Clock.System
 import Data.Time.Clock.TAI
 
-class (Typeable t, Data t) => CheckDataInstances t
-class (Typeable t, Data t, Eq t) => CheckInstances t
+class (Typeable t, Data t, NFData t) => CheckDataInstances t
+class (Typeable t, Data t, NFData t, Eq t) => CheckEqInstances t
+class (Typeable t, Data t, NFData t, Eq t, Ord t) => CheckOrdInstances t
+class (Typeable t, Data t, NFData t, Eq t, Ord t, Ix t, Enum t) => CheckEnumInstances t
+class (Typeable t, Data t, NFData t, Eq t, Ord t, Ix t, Enum t, Bounded t) => CheckBoundedInstances t
 
-instance CheckInstances UTCTime
-instance CheckInstances NominalDiffTime
+instance CheckOrdInstances UTCTime
+instance CheckOrdInstances NominalDiffTime
 
-instance CheckInstances Day
-instance CheckInstances DayOfWeek
-instance CheckInstances TimeOfDay
-instance CheckInstances LocalTime
-instance CheckInstances TimeZone
+instance CheckEnumInstances Day
+instance CheckEnumInstances DayOfWeek
+instance CheckOrdInstances TimeOfDay
+instance CheckOrdInstances LocalTime
+instance CheckOrdInstances TimeZone
 instance CheckDataInstances ZonedTime
-instance CheckInstances CalendarDiffDays
-instance CheckInstances CalendarDiffTime
+instance CheckEqInstances CalendarDiffDays
+instance CheckEqInstances CalendarDiffTime
+instance CheckEnumInstances Month
+instance CheckEnumInstances Quarter
+instance CheckBoundedInstances QuarterOfYear
 
-instance CheckInstances SystemTime
+instance CheckOrdInstances SystemTime
 
-instance CheckInstances AbsoluteTime
-instance CheckInstances UniversalTime
+instance CheckOrdInstances AbsoluteTime
+instance CheckOrdInstances UniversalTime
