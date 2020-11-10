@@ -21,10 +21,32 @@ import Data.Data
 import Data.Fixed
 import Text.Read
 import Text.ParserCombinators.ReadP
+import Control.DeepSeq
+import Data.Ix
 
 -- | An absolute count of common calendar months.
 -- Number is equal to @(year * 12) + (monthOfYear - 1)@.
 newtype Month = MkMonth Integer deriving (Eq, Ord, Data, Typeable)
+
+instance NFData Month where
+    rnf (MkMonth m) = rnf m
+
+instance Enum Month where
+    succ (MkMonth a) = MkMonth (succ a)
+    pred (MkMonth a) = MkMonth (pred a)
+    toEnum = MkMonth . toEnum
+    fromEnum (MkMonth a) = fromEnum a
+    enumFrom (MkMonth a) = fmap MkMonth (enumFrom a)
+    enumFromThen (MkMonth a) (MkMonth b) = fmap MkMonth (enumFromThen a b)
+    enumFromTo (MkMonth a) (MkMonth b) = fmap MkMonth (enumFromTo a b)
+    enumFromThenTo (MkMonth a) (MkMonth b) (MkMonth c) =
+        fmap MkMonth (enumFromThenTo a b c)
+
+instance Ix Month where
+    range (MkMonth a, MkMonth b) = fmap MkMonth (range (a, b))
+    index (MkMonth a, MkMonth b) (MkMonth c) = index (a, b) c
+    inRange (MkMonth a, MkMonth b) (MkMonth c) = inRange (a, b) c
+    rangeSize (MkMonth a, MkMonth b) = rangeSize (a, b)
 
 -- | Show as @yyyy-mm@.
 instance Show Month where

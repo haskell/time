@@ -3,6 +3,7 @@
 ## [1.11.1]
 - all modules Safe or Trustworthy
 - fix NFData instances for DiffTime, NominalDiffTime, TimeOfDay
+- add Ix, Enum and NFData instance to Month, Quarter and QuarterOfYear types
 
 ## [1.11]
 - new calendrical type synonyms and abstract constructors
