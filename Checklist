@@ -25,7 +25,6 @@ Before release:
     stack.yaml
     fullcheck
     fullcheck.ps1
-    (not necessarily benchmark/stack.yaml)
     .travis.yml (if present)
 
 6. Use latest stack
