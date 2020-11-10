@@ -39,7 +39,7 @@ data TimeOfDay = TimeOfDay
     } deriving (Eq, Ord, Data, Typeable)
 
 instance NFData TimeOfDay where
-    rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` s `seq` () -- FIXME: Data.Fixed had no NFData instances yet at time of writing
+    rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` rnf s `seq` ()
 
 -- | Hour zero
 midnight :: TimeOfDay

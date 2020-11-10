@@ -41,10 +41,8 @@ secondsToNominalDiffTime = MkNominalDiffTime
 nominalDiffTimeToSeconds :: NominalDiffTime -> Pico
 nominalDiffTimeToSeconds (MkNominalDiffTime t) = t
 
--- necessary because H98 doesn't have "cunning newtype" derivation
-instance NFData NominalDiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
-                                                                                                    where
-    rnf ndt = seq ndt ()
+instance NFData NominalDiffTime where
+    rnf (MkNominalDiffTime t) = rnf t
 
 instance Enum NominalDiffTime where
     succ (MkNominalDiffTime a) = MkNominalDiffTime (succ a)

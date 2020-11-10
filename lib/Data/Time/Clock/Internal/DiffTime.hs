@@ -25,10 +25,8 @@ newtype DiffTime =
     MkDiffTime Pico
     deriving (Eq, Ord, Data, Typeable)
 
--- necessary because H98 doesn't have "cunning newtype" derivation
-instance NFData DiffTime -- FIXME: Data.Fixed had no NFData instances yet at time of writing
-                                                                                             where
-    rnf dt = seq dt ()
+instance NFData DiffTime where
+    rnf (MkDiffTime t) = rnf t
 
 -- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum DiffTime where

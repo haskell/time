@@ -1,7 +1,8 @@
 # Change Log
 
 ## [1.11.1]
-- All modules Safe or Trustworthy
+- all modules Safe or Trustworthy
+- fix NFData instances for DiffTime, NominalDiffTime, TimeOfDay
 
 ## [1.11]
 - new calendrical type synonyms and abstract constructors
