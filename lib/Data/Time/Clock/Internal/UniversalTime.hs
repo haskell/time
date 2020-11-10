@@ -16,6 +16,5 @@ newtype UniversalTime = ModJulianDate
     { getModJulianDate :: Rational
     } deriving (Eq, Ord, Data, Typeable)
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance NFData UniversalTime where
     rnf (ModJulianDate a) = rnf a

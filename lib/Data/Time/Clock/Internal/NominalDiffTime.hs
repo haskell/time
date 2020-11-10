@@ -64,7 +64,6 @@ instance Read NominalDiffTime where
         _ <- lift $ char 's'
         return $ MkNominalDiffTime t
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Num NominalDiffTime where
     (MkNominalDiffTime a) + (MkNominalDiffTime b) = MkNominalDiffTime (a + b)
     (MkNominalDiffTime a) - (MkNominalDiffTime b) = MkNominalDiffTime (a - b)
@@ -74,17 +73,14 @@ instance Num NominalDiffTime where
     signum (MkNominalDiffTime a) = MkNominalDiffTime (signum a)
     fromInteger i = MkNominalDiffTime (fromInteger i)
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Real NominalDiffTime where
     toRational (MkNominalDiffTime a) = toRational a
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Fractional NominalDiffTime where
     (MkNominalDiffTime a) / (MkNominalDiffTime b) = MkNominalDiffTime (a / b)
     recip (MkNominalDiffTime a) = MkNominalDiffTime (recip a)
     fromRational r = MkNominalDiffTime (fromRational r)
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance RealFrac NominalDiffTime where
     properFraction (MkNominalDiffTime a) = (i, MkNominalDiffTime f)
       where

@@ -28,7 +28,6 @@ newtype DiffTime =
 instance NFData DiffTime where
     rnf (MkDiffTime t) = rnf t
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum DiffTime where
     succ (MkDiffTime a) = MkDiffTime (succ a)
     pred (MkDiffTime a) = MkDiffTime (pred a)
@@ -48,7 +47,6 @@ instance Read DiffTime where
         _ <- lift $ char 's'
         return $ MkDiffTime t
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Num DiffTime where
     (MkDiffTime a) + (MkDiffTime b) = MkDiffTime (a + b)
     (MkDiffTime a) - (MkDiffTime b) = MkDiffTime (a - b)
@@ -58,17 +56,14 @@ instance Num DiffTime where
     signum (MkDiffTime a) = MkDiffTime (signum a)
     fromInteger i = MkDiffTime (fromInteger i)
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Real DiffTime where
     toRational (MkDiffTime a) = toRational a
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Fractional DiffTime where
     (MkDiffTime a) / (MkDiffTime b) = MkDiffTime (a / b)
     recip (MkDiffTime a) = MkDiffTime (recip a)
     fromRational r = MkDiffTime (fromRational r)
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance RealFrac DiffTime where
     properFraction (MkDiffTime a) = let
         (b', a') = properFraction a

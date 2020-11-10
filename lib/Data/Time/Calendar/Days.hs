@@ -20,7 +20,6 @@ newtype Day = ModifiedJulianDay
 instance NFData Day where
     rnf (ModifiedJulianDay a) = rnf a
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Enum Day where
     succ (ModifiedJulianDay a) = ModifiedJulianDay (succ a)
     pred (ModifiedJulianDay a) = ModifiedJulianDay (pred a)
@@ -32,7 +31,6 @@ instance Enum Day where
     enumFromThenTo (ModifiedJulianDay a) (ModifiedJulianDay b) (ModifiedJulianDay c) =
         fmap ModifiedJulianDay (enumFromThenTo a b c)
 
--- necessary because H98 doesn't have "cunning newtype" derivation
 instance Ix Day where
     range (ModifiedJulianDay a, ModifiedJulianDay b) = fmap ModifiedJulianDay (range (a, b))
     index (ModifiedJulianDay a, ModifiedJulianDay b) (ModifiedJulianDay c) = index (a, b) c
