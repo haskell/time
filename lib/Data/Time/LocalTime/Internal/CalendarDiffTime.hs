@@ -11,6 +11,7 @@ import Data.Semigroup hiding (option)
 import Data.Fixed
 import Data.Typeable
 import Data.Data
+import Control.DeepSeq
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Clock.Internal.NominalDiffTime
 
@@ -27,6 +28,9 @@ data CalendarDiffTime = CalendarDiffTime
     -- ^ @since 1.9.2
 #endif
     )
+
+instance NFData CalendarDiffTime where
+    rnf (CalendarDiffTime m t) = rnf m `seq` rnf t `seq` ()
 
 -- | Additive
 instance Semigroup CalendarDiffTime where
