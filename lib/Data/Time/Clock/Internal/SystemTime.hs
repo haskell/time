@@ -1,4 +1,6 @@
-#ifdef mingw32_HOST_OS
+#include "HsTimeConfig.h"
+
+#if defined(mingw32_HOST_OS) || !defined(HAVE_CLOCK_GETTIME)
 {-# LANGUAGE Safe #-}
 #else
 {-# LANGUAGE Trustworthy #-}
@@ -16,7 +18,6 @@ import Control.DeepSeq
 import Data.Int (Int64)
 import Data.Time.Clock.Internal.DiffTime
 import Data.Word
-#include "HsTimeConfig.h"
 
 #ifdef mingw32_HOST_OS
 import qualified System.Win32.Time as Win32
