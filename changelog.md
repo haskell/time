@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.11.1.1]
+- fix module Safe status
+
 ## [1.11.1]
 - all modules Safe or Trustworthy
 - fix NFData instances for DiffTime, NominalDiffTime, TimeOfDay
