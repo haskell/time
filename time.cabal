@@ -1,7 +1,8 @@
+cabal-version:  3.0
 name:           time
 version:        1.11.1.1
 stability:      stable
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
 author:         Ashley Yakeley
 maintainer:     <ashley@semantic.org>
@@ -11,7 +12,6 @@ synopsis:       A time library
 description:    Time, clocks and calendars
 category:       Time
 build-type:     Configure
-cabal-version:  >=1.10
 tested-with:
     GHC == 8.0.2,
     GHC == 8.2.2,
@@ -76,7 +76,7 @@ library
         Data.Time.Format.ISO8601,
         Data.Time
     other-modules:
-        Data.Format
+        Data.Format,
         Data.Time.Calendar.Types,
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Days,
@@ -96,7 +96,7 @@ library
         Data.Time.Clock.Internal.UTCDiff,
         Data.Time.LocalTime.Internal.TimeZone,
         Data.Time.LocalTime.Internal.TimeOfDay,
-        Data.Time.LocalTime.Internal.CalendarDiffTime
+        Data.Time.LocalTime.Internal.CalendarDiffTime,
         Data.Time.LocalTime.Internal.LocalTime,
         Data.Time.LocalTime.Internal.ZonedTime,
         Data.Time.Format.Parse,
@@ -110,6 +110,8 @@ library
         install-includes:
             HsTime.h
     else
+        autogen-includes:
+            HsTimeConfig.h
         install-includes:
             HsTime.h
             HsTimeConfig.h
