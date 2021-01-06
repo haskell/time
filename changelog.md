@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.11.1.2]
+- fix cabal file
+
 ## [1.11.1.1]
 - fix module Safe status
 
