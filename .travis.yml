@@ -13,24 +13,24 @@ before_cache:
 # Test with the latest version of each X.Y version
 matrix:
   include:
-    - env: CABALVER=1.24 GHCVER=8.0.2
+    - env: CABALVER=3.2 GHCVER=8.0.2
       compiler: ": #GHC 8.0.2" # released 2017-01-11
-      addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.2], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.2.2
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.0.2], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.2.2
       compiler: ": #GHC 8.2.2" # released 2017-11-21
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.2.2], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.4.4
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.2.2], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.4.4
       compiler: ": #GHC 8.4.4" # released 2018-10-14
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.4.4], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.6.5
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.4.4], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.6.5
       compiler: ": #GHC 8.6.5" # released 2019-04-23
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.6.5], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.8.2
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.6.5], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.8.2
       compiler: ": #GHC 8.8.2" # released 2020-01-16
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.8.2], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.10.2
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.8.2], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.10.2
       compiler: ": #GHC 8.10.2" # released 2020-08-08
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.10.2], sources: [hvr-ghc]}}
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.10.2], sources: [hvr-ghc]}}
 
 before_install:
  - unset CC
