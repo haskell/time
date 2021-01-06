@@ -13,24 +13,24 @@ before_cache:
 # Test with the latest version of each X.Y version
 matrix:
   include:
-    - env: CABALVER=1.24 GHCVER=8.0.2
+    - env: CABALVER=3.2 GHCVER=8.0.2
       compiler: ": #GHC 8.0.2" # released 2017-01-11
-      addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.2], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.2.2
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.0.2], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.2.2
       compiler: ": #GHC 8.2.2" # released 2017-11-21
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.2.2], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.4.4
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.2.2], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.4.4
       compiler: ": #GHC 8.4.4" # released 2018-10-14
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.4.4], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.6.5
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.4.4], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.6.5
       compiler: ": #GHC 8.6.5" # released 2019-04-23
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.6.5], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.8.2
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.6.5], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.8.2
       compiler: ": #GHC 8.8.2" # released 2020-01-16
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.8.2], sources: [hvr-ghc]}}
-    - env: CABALVER=2.0 GHCVER=8.10.2
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.8.2], sources: [hvr-ghc]}}
+    - env: CABALVER=3.2 GHCVER=8.10.2
       compiler: ": #GHC 8.10.2" # released 2020-08-08
-      addons: {apt: {packages: [cabal-install-2.0,ghc-8.10.2], sources: [hvr-ghc]}}
+      addons: {apt: {packages: [cabal-install-3.2,ghc-8.10.2], sources: [hvr-ghc]}}
 
 before_install:
  - unset CC
@@ -54,18 +54,11 @@ install:
 script:
  - if [ -f configure.ac ]; then autoreconf -i; fi
 # worarkound cyclic deps within testsuite
-# no tests for now
 # - cabal install . 'QuickCheck >= 2.5.1' 'test-framework >= 0.8' 'test-framework-quickcheck2' --force-reinstalls
  - cabal configure --disable-tests -v2  # -v2 provides useful information for debugging
  - cabal build --ghc-options="-Werror"   # this builds all libraries and executables (including tests/benchmarks)
 # - cabal test
  - cabal check
  - cabal sdist   # tests that a source-distribution can be generated
-
-# Check that the resulting source distribution can be built & installed.
-# If there are no other `.tar.gz` files in `dist`, this can be even simpler:
-# `cabal install --force-reinstalls dist/*-*.tar.gz`
- - SRC_TGZ=$(cabal info . | awk '{print $2;exit}').tar.gz &&
-   (cd dist && cabal install --force-reinstalls "$SRC_TGZ")
 
 # EOF
