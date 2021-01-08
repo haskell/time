@@ -211,8 +211,6 @@ test-suite test-unix
         tasty,
         tasty-hunit,
         tasty-quickcheck
-    if !os(windows)
-        build-depends: unix
     main-is: Main.hs
     other-modules:
         Test.TestUtil
