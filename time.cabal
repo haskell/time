@@ -1,8 +1,8 @@
-cabal-version:  3.0
+cabal-version:  >=1.10
 name:           time
 version:        1.11.1.2
 stability:      stable
-license:        BSD-2-Clause
+license:        BSD2
 license-file:   LICENSE
 author:         Ashley Yakeley
 maintainer:     <ashley@semantic.org>
