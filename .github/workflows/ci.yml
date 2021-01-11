@@ -1,0 +1,95 @@
+name: ci
+on:
+  push: {}
+  pull_request: {}
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        ghc: ['8.10', '8.8', '8.6', '8.4', '8.2', '8.0']
+    steps:
+    - uses: actions/checkout@v2
+    - uses: haskell/actions/setup@v1
+      id: setup-haskell-cabal
+      with:
+        ghc-version: ${{ matrix.ghc }}
+    - uses: actions/cache@v2
+      name: Cache cabal stuff
+      with:
+        path: |
+          ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+          dist-newstyle
+        key: ${{ runner.os }}-${{ matrix.ghc }}
+    - name: Build
+      run: |
+        autoreconf -i
+        cabal sdist -z -o .
+        cabal get time-*.tar.gz
+        cd time-*/
+        cabal update
+        cabal test all --test-show-details=direct
+    - name: Haddock
+      run: cabal haddock
+
+  build-win:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc: ['8.10', '8.8', '8.6', '8.4', '8.2', '8.0']
+    steps:
+    - uses: actions/checkout@v2
+    - uses: haskell/actions/setup@v1
+      id: setup-haskell-cabal
+      with:
+        ghc-version: ${{ matrix.ghc }}
+    - uses: actions/cache@v2
+      name: Cache cabal stuff
+      with:
+        path: |
+          ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+          dist-newstyle
+        key: ${{ runner.os }}-${{ matrix.ghc }}
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        path-type: inherit
+        install: autoconf
+    - name: Build
+      run: |
+        autoreconf -i
+        cabal sdist -z -o .
+        cabal get time-*.tar.gz
+        cd time-*/
+        cabal update
+        cabal test all --test-show-details=direct
+    - name: Haddock
+      run: cabal haddock
+
+  build-freebsd:
+    # See https://github.com/vmactions/freebsd-vm#under-the-hood.
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      id: build-freebsd
+      uses: vmactions/freebsd-vm@v0.1.0
+      with:
+        usesh: true
+        mem: 4096
+        prepare: pkg install -y ghc hs-cabal-install git autoconf
+        run: |
+          autoreconf -i
+          cabal sdist -z -o .
+          cabal get time-*.tar.gz
+          cd time-*/
+          cabal update
+          cabal test all --test-show-details=direct
