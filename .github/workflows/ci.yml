@@ -27,11 +27,10 @@ jobs:
     - name: Build
       run: |
         autoreconf -i
-        cabal sdist -z -o .
-        cabal get time-*.tar.gz
-        cd time-*/
         cabal update
-        cabal test all --test-show-details=direct
+        cabal v1-install --only-dependencies --enable-tests
+        cabal v1-configure --enable-tests
+        cabal v1-test
     - name: Haddock
       run: cabal haddock
 
@@ -66,11 +65,10 @@ jobs:
     - name: Build
       run: |
         autoreconf -i
-        cabal sdist -z -o .
-        cabal get time-*.tar.gz
-        cd time-*/
         cabal update
-        cabal test all --test-show-details=direct
+        cabal v1-install --only-dependencies --enable-tests
+        cabal v1-configure --enable-tests
+        cabal v1-test
     - name: Haddock
       run: cabal haddock
 
@@ -88,8 +86,7 @@ jobs:
         prepare: pkg install -y ghc hs-cabal-install git autoconf
         run: |
           autoreconf -i
-          cabal sdist -z -o .
-          cabal get time-*.tar.gz
-          cd time-*/
           cabal update
-          cabal test all --test-show-details=direct
+          cabal v1-install --only-dependencies --enable-tests
+          cabal v1-configure --enable-tests
+          cabal v1-test
