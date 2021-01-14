@@ -72,6 +72,7 @@ Before release:
 14. Upload to Hackage
 
     autoreconf -i
+    ./configure   # workaround for cabal issue
     stack upload .
     http://hackage.haskell.org/package/time
 
