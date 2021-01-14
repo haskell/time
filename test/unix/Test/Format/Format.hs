@@ -244,6 +244,10 @@ testQs =
     , formatUnitTest "%-5Q" 0.37 ".37   "
     ]
 
-testFormat :: TestTree
-testFormat =
-    localOption (QuickCheckTests 10000) $ testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat ++ testQs
+strftimeHasGNUExts :: Bool
+strftimeHasGNUExts = unixFormatTime "%_6Y" utc (UTCTime (fromGregorian 1980 1 1) 0) == "  1980"
+
+testFormat :: [TestTree]
+testFormat = if strftimeHasGNUExts
+    then pure $ localOption (QuickCheckTests 10000) $ testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat ++ testQs
+    else []
