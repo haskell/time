@@ -110,8 +110,9 @@ library
         install-includes:
             HsTime.h
     else
-        autogen-includes:
-            HsTimeConfig.h
+        -- # requires cabal 3, see #145, #146
+        --autogen-includes:
+        --    HsTimeConfig.h
         install-includes:
             HsTime.h
             HsTimeConfig.h
