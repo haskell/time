@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 & "git" "clean" "-dXf"
 & "git" "pull"
-& "stack" "exec" "--" "autoreconf" "-i"
+& "stack" "exec" "--" "env" "autoreconf" "-i"
 if (!$?) {Exit 1}
 ForEach ($r in "lts-9","lts-11","lts-12","lts-14","lts-16","nightly")
 {
