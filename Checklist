@@ -25,6 +25,7 @@ Before release:
     stack.yaml
     fullcheck
     fullcheck.ps1
+    .github/workflows/ci.yml
 
 6. Use latest stack
 
