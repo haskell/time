@@ -12,10 +12,10 @@ packages:
   original:
     hackage: process-1.6.10.0
 - completed:
-    hackage: unix-2.7.2.2@sha256:9e93f93cc5a065248120136e83a0a6d1ce93d6eb5ef2a2543f9593e93e164d24,3496
+    hackage: unix-2.7.2.2@sha256:55d8af3f25d2a92c86951a2d8fc47aebe80015a895c4f0e57320cfdae78dd7c1,3496
     pantry-tree:
       size: 3536
-      sha256: 0b54bf49636d2a8c06e28315710e4437e001e05b4523d6e3cb083ba2426a38b2
+      sha256: e816eca2bf42fda4da49c744b146a301ae0435380cc163ad2fbc889cf0a4e27f
   original:
     hackage: unix-2.7.2.2
 - completed:
@@ -49,7 +49,7 @@ packages:
     commit: d240eb7334cd08c7e377b59fcb1977bdf95527d6
 snapshots:
 - completed:
-    size: 532413
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/21.yaml
-    sha256: 7b5cac89352fa4a88606dc6cb250aee9291f21e2e988d464065f5aa51f5de33d
-  original: lts-16.21
+    size: 567037
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/9.yaml
+    sha256: d7d8d5106e53d1669964bd8bd2b0f88a5ad192d772f5376384b76738fd992311
+  original: lts-17.9

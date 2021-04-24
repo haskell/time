@@ -3,8 +3,8 @@ git clean -dXf
 git pull
 autoreconf -i
 # latest LTS resolver for each GHC x.y version
-for r in lts-9 lts-11 lts-12 lts-14 lts-16 nightly
+for c in ghc-8.8 ghc-8.10 ghc-9.0
 do
-stack --resolver $r build
+stack --compiler $c build
 done
 echo OK

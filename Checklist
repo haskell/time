@@ -19,7 +19,7 @@ Before release:
 
     changelog.md
 
-5. Use latest LTS resolver
+5. Use correct GHC versions & latest LTS resolver
 
     https://www.stackage.org/lts
     stack.yaml
