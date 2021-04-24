@@ -15,7 +15,7 @@ Before release:
     time.cabal
     configure.ac
 
-4. Update changelog
+4. Update changelog, add current UTC date
 
     changelog.md
 
