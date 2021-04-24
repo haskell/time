@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.11.1.2] -
+## [1.11.1.2] - 2021-04-24
 - fix cabal file
 - correct "license" field in cabal file
 - add dates to changelog entries

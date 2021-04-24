@@ -48,18 +48,27 @@ Before release:
     git commit -a
     git push
 
-11. Check Travis build
+11. Check builds (these can be done in parallel)
 
-    https://travis-ci.org/haskell/time
+11a. Check GitHub build
 
-12. Build and test on 32-bit Linux machine
+    https://github.com/haskell/time/actions
+
+11b. Build and test on 32-bit Linux machine
 
     stack upgrade
     stack --version
     git pull
     ./fullcheck
 
-13. Build and test on Windows
+11c. Build and test on FreeBSD machine
+
+    stack upgrade
+    stack --version
+    git pull
+    ./fullcheck
+
+11d. Build and test on Windows
 
     (in PowerShell)
     Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
@@ -68,28 +77,28 @@ Before release:
     git pull
     .\fullcheck
 
-14. Upload to Hackage
+12. Upload to Hackage
 
     autoreconf -i
     ./configure   # workaround for cabal issue
     stack upload .
     http://hackage.haskell.org/package/time
 
-15. Tag commit
+13. Tag commit
 
     git tag -a -s VERSION -m "Version VERSION"
     git push --tags
 
-16. Update ghc branch
+14. Update ghc branch
 
     git checkout ghc
     git merge master
     git push
 
-17. Restore local branch for next development
+15. Restore local branch for next development
 
     git checkout master
 
-18. Close completed milestone
+16. Close completed milestone
 
     https://github.com/haskell/time/milestones
