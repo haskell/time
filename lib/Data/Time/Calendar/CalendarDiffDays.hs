@@ -6,10 +6,6 @@ module Data.Time.Calendar.CalendarDiffDays
         module Data.Time.Calendar.CalendarDiffDays
     ) where
 
-#if MIN_VERSION_base(4,11,0)
-#else
-import Data.Semigroup hiding (option)
-#endif
 import Data.Typeable
 import Data.Data
 import Control.DeepSeq
@@ -19,13 +15,9 @@ data CalendarDiffDays = CalendarDiffDays
     , cdDays :: Integer
     } deriving (Eq,
     Data
-#if __GLASGOW_HASKELL__ >= 802
     -- ^ @since 1.9.2
-#endif
     ,Typeable
-#if __GLASGOW_HASKELL__ >= 802
     -- ^ @since 1.9.2
-#endif
     )
 
 instance NFData CalendarDiffDays where

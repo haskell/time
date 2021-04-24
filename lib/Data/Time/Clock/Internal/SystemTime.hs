@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 #include "HsTimeConfig.h"
 
 #if defined(mingw32_HOST_OS) || !defined(HAVE_CLOCK_GETTIME)

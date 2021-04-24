@@ -5,10 +5,6 @@ module Test.Format.ParseTime
     , test_parse_format
     ) where
 
-#if MIN_VERSION_base(4,11,0)
-#else
-import Data.Semigroup hiding (option)
-#endif
 import Control.Monad
 import Data.Char
 import Data.Maybe

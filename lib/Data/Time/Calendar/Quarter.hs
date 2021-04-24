@@ -1,7 +1,4 @@
 {-# LANGUAGE Safe #-}
-#if __GLASGOW_HASKELL__ < 802
-{-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
-#endif
 
 -- | Year quarters.
 module Data.Time.Calendar.Quarter
@@ -98,9 +95,7 @@ pattern YearQuarter :: Year -> QuarterOfYear -> Quarter
 pattern YearQuarter y qy <- MkQuarter ((\q -> divMod' q 4) -> (y,toEnum . succ . fromInteger -> qy)) where
     YearQuarter y qy = MkQuarter $ (y * 4) + toInteger (pred $ fromEnum qy)
 
-#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearQuarter #-}
-#endif
 
 monthOfYearQuarter :: MonthOfYear -> QuarterOfYear
 monthOfYearQuarter my | my <= 3 = Q1

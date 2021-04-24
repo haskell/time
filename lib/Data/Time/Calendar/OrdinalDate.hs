@@ -48,9 +48,7 @@ pattern YearDay :: Year -> DayOfYear -> Day
 pattern YearDay y d <- (toOrdinalDate -> (y,d)) where
     YearDay y d = fromOrdinalDate y d
 
-#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearDay #-}
-#endif
 
 -- | Convert from ISO 8601 Ordinal Date format.
 -- Invalid day numbers return 'Nothing'

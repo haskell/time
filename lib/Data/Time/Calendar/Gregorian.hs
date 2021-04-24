@@ -53,9 +53,7 @@ pattern YearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
 pattern YearMonthDay y m d <- (toGregorian -> (y,m,d)) where
     YearMonthDay y m d = fromGregorian y m d
 
-#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearMonthDay #-}
-#endif
 
 -- | Convert from proleptic Gregorian calendar.
 -- Invalid values will return Nothing

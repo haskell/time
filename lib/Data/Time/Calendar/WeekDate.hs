@@ -100,9 +100,7 @@ pattern YearWeekDay :: Year -> WeekOfYear -> DayOfWeek -> Day
 pattern YearWeekDay y wy dw <- (toWeekDate -> (y,wy,toEnum -> dw)) where
     YearWeekDay y wy dw = fromWeekDate y wy (fromEnum dw)
 
-#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearWeekDay #-}
-#endif
 
 -- | Convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will return Nothing.

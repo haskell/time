@@ -49,9 +49,7 @@ pattern JulianYearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
 pattern JulianYearMonthDay y m d <- (toJulian -> (y,m,d)) where
     JulianYearMonthDay y m d = fromJulian y m d
 
-#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE JulianYearMonthDay #-}
-#endif
 
 -- | Convert from proleptic Julian calendar.
 -- Invalid values will return Nothing.

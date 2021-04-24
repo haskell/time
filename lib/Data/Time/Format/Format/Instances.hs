@@ -1,8 +1,5 @@
 {-# LANGUAGE Safe #-}
 {-# OPTIONS -fno-warn-orphans #-}
-#if __GLASGOW_HASKELL__ < 802
-{-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
-#endif
 
 module Data.Time.Format.Format.Instances
     (

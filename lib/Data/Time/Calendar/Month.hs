@@ -1,7 +1,4 @@
 {-# LANGUAGE Safe #-}
-#if __GLASGOW_HASKELL__ < 802
-{-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-incomplete-uni-patterns #-}
-#endif
 
 -- | An absolute count of common calendar months.
 module Data.Time.Calendar.Month
@@ -77,9 +74,7 @@ fromYearMonthValid y my = do
     my' <- clipValid 1 12 my
     return $ YearMonth y my'
 
-#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE YearMonth #-}
-#endif
 
 toMonthDay :: Day -> (Month,DayOfMonth)
 toMonthDay (YearMonthDay y my dm) = (YearMonth y my, dm)
@@ -93,6 +88,4 @@ pattern MonthDay m dm <- (toMonthDay -> (m,dm)) where
 fromMonthDayValid :: Month -> DayOfMonth -> Maybe Day
 fromMonthDayValid (YearMonth y my) dm = fromGregorianValid y my dm
 
-#if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE MonthDay #-}
-#endif

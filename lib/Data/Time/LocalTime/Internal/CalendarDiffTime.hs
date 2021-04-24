@@ -5,9 +5,7 @@ module Data.Time.LocalTime.Internal.CalendarDiffTime
         -- * Calendar Duration
         module Data.Time.LocalTime.Internal.CalendarDiffTime
     ) where
-#if !MIN_VERSION_base(4,11,0)
-import Data.Semigroup hiding (option)
-#endif
+
 import Data.Fixed
 import Data.Typeable
 import Data.Data
@@ -20,13 +18,9 @@ data CalendarDiffTime = CalendarDiffTime
     , ctTime :: NominalDiffTime
     } deriving (Eq,
     Data
-#if __GLASGOW_HASKELL__ >= 802
     -- ^ @since 1.9.2
-#endif
     ,Typeable
-#if __GLASGOW_HASKELL__ >= 802
     -- ^ @since 1.9.2
-#endif
     )
 
 instance NFData CalendarDiffTime where
