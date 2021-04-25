@@ -1,34 +1,34 @@
 {-# LANGUAGE Safe #-}
+
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.Calendar.Gregorian
-    (
+module Data.Time.Calendar.Gregorian (
     -- * Year, month and day
-      Year
-    , MonthOfYear
-    , DayOfMonth
+    Year,
+    MonthOfYear,
+    DayOfMonth,
+
     -- * Gregorian calendar
-    , toGregorian
-    , fromGregorian
-    , pattern YearMonthDay
-    , fromGregorianValid
-    , showGregorian
-    , gregorianMonthLength
+    toGregorian,
+    fromGregorian,
+    pattern YearMonthDay,
+    fromGregorianValid,
+    showGregorian,
+    gregorianMonthLength,
     -- calendrical arithmetic
     -- e.g. "one month after March 31st"
-    , addGregorianMonthsClip
-    , addGregorianMonthsRollOver
-    , addGregorianYearsClip
-    , addGregorianYearsRollOver
-    , addGregorianDurationClip
-    , addGregorianDurationRollOver
-    , diffGregorianDurationClip
-    , diffGregorianDurationRollOver
+    addGregorianMonthsClip,
+    addGregorianMonthsRollOver,
+    addGregorianYearsClip,
+    addGregorianYearsRollOver,
+    addGregorianDurationClip,
+    addGregorianDurationRollOver,
+    diffGregorianDurationClip,
+    diffGregorianDurationRollOver,
     -- re-exported from OrdinalDate
-    , isLeapYear
-    ) where
+    isLeapYear,
+) where
 
-import Data.Time.Calendar.Types
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.MonthDay
@@ -50,8 +50,10 @@ fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isL
 -- | Bidirectional abstract constructor for the proleptic Gregorian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
 pattern YearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
-pattern YearMonthDay y m d <- (toGregorian -> (y,m,d)) where
-    YearMonthDay y m d = fromGregorian y m d
+pattern YearMonthDay y m d <-
+    (toGregorian -> (y, m, d))
+    where
+        YearMonthDay y m d = fromGregorian y m d
 
 {-# COMPLETE YearMonthDay #-}
 
@@ -115,42 +117,46 @@ addGregorianDurationRollOver (CalendarDiffDays m d) day = addDays d $ addGregori
 
 -- | Calendrical difference, with as many whole months as possible
 diffGregorianDurationClip :: Day -> Day -> CalendarDiffDays
-diffGregorianDurationClip day2 day1 = let
-    (y1, m1, d1) = toGregorian day1
-    (y2, m2, d2) = toGregorian day2
-    ym1 = y1 * 12 + toInteger m1
-    ym2 = y2 * 12 + toInteger m2
-    ymdiff = ym2 - ym1
-    ymAllowed =
-        if day2 >= day1
-            then if d2 >= d1
-                     then ymdiff
-                     else ymdiff - 1
-            else if d2 <= d1
-                     then ymdiff
-                     else ymdiff + 1
-    dayAllowed = addGregorianDurationClip (CalendarDiffDays ymAllowed 0) day1
-    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
+diffGregorianDurationClip day2 day1 =
+    let (y1, m1, d1) = toGregorian day1
+        (y2, m2, d2) = toGregorian day2
+        ym1 = y1 * 12 + toInteger m1
+        ym2 = y2 * 12 + toInteger m2
+        ymdiff = ym2 - ym1
+        ymAllowed =
+            if day2 >= day1
+                then
+                    if d2 >= d1
+                        then ymdiff
+                        else ymdiff - 1
+                else
+                    if d2 <= d1
+                        then ymdiff
+                        else ymdiff + 1
+        dayAllowed = addGregorianDurationClip (CalendarDiffDays ymAllowed 0) day1
+     in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- | Calendrical difference, with as many whole months as possible.
 -- Same as 'diffGregorianDurationClip' for positive durations.
 diffGregorianDurationRollOver :: Day -> Day -> CalendarDiffDays
-diffGregorianDurationRollOver day2 day1 = let
-    (y1, m1, d1) = toGregorian day1
-    (y2, m2, d2) = toGregorian day2
-    ym1 = y1 * 12 + toInteger m1
-    ym2 = y2 * 12 + toInteger m2
-    ymdiff = ym2 - ym1
-    ymAllowed =
-        if day2 >= day1
-            then if d2 >= d1
-                     then ymdiff
-                     else ymdiff - 1
-            else if d2 <= d1
-                     then ymdiff
-                     else ymdiff + 1
-    dayAllowed = addGregorianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
-    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
+diffGregorianDurationRollOver day2 day1 =
+    let (y1, m1, d1) = toGregorian day1
+        (y2, m2, d2) = toGregorian day2
+        ym1 = y1 * 12 + toInteger m1
+        ym2 = y2 * 12 + toInteger m2
+        ymdiff = ym2 - ym1
+        ymAllowed =
+            if day2 >= day1
+                then
+                    if d2 >= d1
+                        then ymdiff
+                        else ymdiff - 1
+                else
+                    if d2 <= d1
+                        then ymdiff
+                        else ymdiff + 1
+        dayAllowed = addGregorianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
+     in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- orphan instance
 instance Show Day where

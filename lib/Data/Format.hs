@@ -1,34 +1,34 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Format
-    ( Productish(..)
-    , Summish(..)
-    , parseReader
-    , Format(..)
-    , formatShow
-    , formatParseM
-    , isoMap
-    , mapMFormat
-    , filterFormat
-    , clipFormat
-    , enumMap
-    , literalFormat
-    , specialCaseShowFormat
-    , specialCaseFormat
-    , optionalFormat
-    , casesFormat
-    , optionalSignFormat
-    , mandatorySignFormat
-    , SignOption(..)
-    , integerFormat
-    , decimalFormat
-    ) where
+module Data.Format (
+    Productish (..),
+    Summish (..),
+    parseReader,
+    Format (..),
+    formatShow,
+    formatParseM,
+    isoMap,
+    mapMFormat,
+    filterFormat,
+    clipFormat,
+    enumMap,
+    literalFormat,
+    specialCaseShowFormat,
+    specialCaseFormat,
+    optionalFormat,
+    casesFormat,
+    optionalSignFormat,
+    mandatorySignFormat,
+    SignOption (..),
+    integerFormat,
+    decimalFormat,
+) where
 
 import Control.Monad.Fail
 import Data.Char
 import Data.Void
-import Prelude hiding (fail)
 import Text.ParserCombinators.ReadP
+import Prelude hiding (fail)
 
 class IsoVariant f where
     isoMap :: (a -> b) -> (b -> a) -> f a -> f b
@@ -61,10 +61,10 @@ parseReader readp s =
 
 -- | A text format for a type
 data Format t = MkFormat
-    { formatShowM :: t -> Maybe String
-        -- ^ Show a value in the format, if representable
-    , formatReadP :: ReadP t
-        -- ^ Read a value in the format
+    { -- | Show a value in the format, if representable
+      formatShowM :: t -> Maybe String
+    , -- | Read a value in the format
+      formatReadP :: ReadP t
     }
 
 -- | Show a value in the format, or error if unrepresentable
@@ -92,86 +92,88 @@ mapMFormat amb bma (MkFormat sa ra) =
 filterFormat :: (a -> Bool) -> Format a -> Format a
 filterFormat test =
     mapMFormat
-        (\a ->
-             if test a
-                 then Just a
-                 else Nothing)
-        (\a ->
-             if test a
-                 then Just a
-                 else Nothing)
+        ( \a ->
+            if test a
+                then Just a
+                else Nothing
+        )
+        ( \a ->
+            if test a
+                then Just a
+                else Nothing
+        )
 
 -- | Limits are inclusive
 clipFormat :: Ord a => (a, a) -> Format a -> Format a
 clipFormat (lo, hi) = filterFormat (\a -> a >= lo && a <= hi)
 
 instance Productish Format where
-    pUnit = MkFormat {formatShowM = \_ -> Just "", formatReadP = return ()}
-    (<**>) (MkFormat sa ra) (MkFormat sb rb) = let
-        sab (a, b) = do
-            astr <- sa a
-            bstr <- sb b
-            return $ astr ++ bstr
-        rab = do
-            a <- ra
-            b <- rb
-            return (a, b)
-        in MkFormat sab rab
-    (MkFormat sa ra) **> (MkFormat sb rb) = let
-        s b = do
-            astr <- sa ()
-            bstr <- sb b
-            return $ astr ++ bstr
-        r = do
-            ra
-            rb
-        in MkFormat s r
-    (MkFormat sa ra) <** (MkFormat sb rb) = let
-        s a = do
-            astr <- sa a
-            bstr <- sb ()
-            return $ astr ++ bstr
-        r = do
-            a <- ra
-            rb
-            return a
-        in MkFormat s r
+    pUnit = MkFormat{formatShowM = \_ -> Just "", formatReadP = return ()}
+    (<**>) (MkFormat sa ra) (MkFormat sb rb) =
+        let sab (a, b) = do
+                astr <- sa a
+                bstr <- sb b
+                return $ astr ++ bstr
+            rab = do
+                a <- ra
+                b <- rb
+                return (a, b)
+         in MkFormat sab rab
+    (MkFormat sa ra) **> (MkFormat sb rb) =
+        let s b = do
+                astr <- sa ()
+                bstr <- sb b
+                return $ astr ++ bstr
+            r = do
+                ra
+                rb
+         in MkFormat s r
+    (MkFormat sa ra) <** (MkFormat sb rb) =
+        let s a = do
+                astr <- sa a
+                bstr <- sb ()
+                return $ astr ++ bstr
+            r = do
+                a <- ra
+                rb
+                return a
+         in MkFormat s r
 
 instance Summish Format where
     pVoid = MkFormat absurd pfail
-    (MkFormat sa ra) <++> (MkFormat sb rb) = let
-        sab (Left a) = sa a
-        sab (Right b) = sb b
-        rab = (fmap Left ra) +++ (fmap Right rb)
-        in MkFormat sab rab
+    (MkFormat sa ra) <++> (MkFormat sb rb) =
+        let sab (Left a) = sa a
+            sab (Right b) = sb b
+            rab = (fmap Left ra) +++ (fmap Right rb)
+         in MkFormat sab rab
 
 literalFormat :: String -> Format ()
-literalFormat s = MkFormat {formatShowM = \_ -> Just s, formatReadP = string s >> return ()}
+literalFormat s = MkFormat{formatShowM = \_ -> Just s, formatReadP = string s >> return ()}
 
 specialCaseShowFormat :: Eq a => (a, String) -> Format a -> Format a
-specialCaseShowFormat (val, str) (MkFormat s r) = let
-    s' t
-        | t == val = Just str
-    s' t = s t
-    in MkFormat s' r
+specialCaseShowFormat (val, str) (MkFormat s r) =
+    let s' t
+            | t == val = Just str
+        s' t = s t
+     in MkFormat s' r
 
 specialCaseFormat :: Eq a => (a, String) -> Format a -> Format a
-specialCaseFormat (val, str) (MkFormat s r) = let
-    s' t
-        | t == val = Just str
-    s' t = s t
-    r' = (string str >> return val) +++ r
-    in MkFormat s' r'
+specialCaseFormat (val, str) (MkFormat s r) =
+    let s' t
+            | t == val = Just str
+        s' t = s t
+        r' = (string str >> return val) +++ r
+     in MkFormat s' r'
 
 optionalFormat :: Eq a => a -> Format a -> Format a
 optionalFormat val = specialCaseFormat (val, "")
 
 casesFormat :: Eq a => [(a, String)] -> Format a
-casesFormat pairs = let
-    s t = lookup t pairs
-    r [] = pfail
-    r ((v, str):pp) = (string str >> return v) <++ r pp
-    in MkFormat s $ r pairs
+casesFormat pairs =
+    let s t = lookup t pairs
+        r [] = pfail
+        r ((v, str) : pp) = (string str >> return v) <++ r pp
+     in MkFormat s $ r pairs
 
 optionalSignFormat :: (Eq t, Num t) => Format t
 optionalSignFormat = casesFormat [(1, ""), (1, "+"), (0, ""), (-1, "-")]
@@ -218,20 +220,20 @@ trimTrailing s
 trimTrailing s = s
 
 showNumber :: Show t => SignOption -> Maybe Int -> t -> Maybe String
-showNumber signOpt mdigitcount t = let
-    showIt str = let
-        (intPart, decPart) = break ((==) '.') str
-        in (zeroPad mdigitcount intPart) ++ trimTrailing decPart
-    in case show t of
-           ('-':str) ->
-               case signOpt of
-                   NoSign -> Nothing
-                   _ -> Just $ '-' : showIt str
-           str ->
-               Just $
-               case signOpt of
-                   PosNegSign -> '+' : showIt str
-                   _ -> showIt str
+showNumber signOpt mdigitcount t =
+    let showIt str =
+            let (intPart, decPart) = break ((==) '.') str
+             in (zeroPad mdigitcount intPart) ++ trimTrailing decPart
+     in case show t of
+            ('-' : str) ->
+                case signOpt of
+                    NoSign -> Nothing
+                    _ -> Just $ '-' : showIt str
+            str ->
+                Just $
+                    case signOpt of
+                        PosNegSign -> '+' : showIt str
+                        _ -> showIt str
 
 integerFormat :: (Show t, Read t, Num t) => SignOption -> Maybe Int -> Format t
 integerFormat signOpt mdigitcount = MkFormat (showNumber signOpt mdigitcount) (readNumber signOpt mdigitcount False)

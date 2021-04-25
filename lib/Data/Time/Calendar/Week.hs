@@ -1,18 +1,17 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.Week
-    (
-      -- * Week
-      DayOfWeek(..)
-    , dayOfWeek
-    , dayOfWeekDiff
-    , firstDayOfWeekOnAfter
-    ) where
+module Data.Time.Calendar.Week (
+    -- * Week
+    DayOfWeek (..),
+    dayOfWeek,
+    dayOfWeekDiff,
+    firstDayOfWeekOnAfter,
+) where
 
+import Control.DeepSeq
+import Data.Data
 import Data.Fixed
 import Data.Ix
-import Data.Data
-import Control.DeepSeq
 import Data.Time.Calendar.Days
 
 data DayOfWeek
@@ -62,7 +61,6 @@ instance Enum DayOfWeek where
 
 dayOfWeek :: Day -> DayOfWeek
 dayOfWeek (ModifiedJulianDay d) = toEnum $ fromInteger $ d + 3
-
 
 -- | @dayOfWeekDiff a b = a - b@ in range 0 to 6.
 -- The number of days from b to the next a.

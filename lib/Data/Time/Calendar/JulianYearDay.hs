@@ -1,14 +1,13 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.JulianYearDay
-    (
+module Data.Time.Calendar.JulianYearDay (
     -- * Year and day format
-      module Data.Time.Calendar.JulianYearDay
-    ) where
+    module Data.Time.Calendar.JulianYearDay,
+) where
 
-import Data.Time.Calendar.Types
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private
+import Data.Time.Calendar.Types
 
 -- | Convert to proleptic Julian year and day format.
 toJulianYearAndDay :: Day -> (Year, DayOfYear)
@@ -28,16 +27,19 @@ fromJulianYearAndDay year day = ModifiedJulianDay mjd
   where
     y = year - 1
     mjd =
-        (fromIntegral
-             (clip
-                  1
-                  (if isJulianLeapYear year
-                       then 366
-                       else 365)
-                  day)) +
-        (365 * y) +
-        (div y 4) -
-        678578
+        ( fromIntegral
+            ( clip
+                1
+                ( if isJulianLeapYear year
+                    then 366
+                    else 365
+                )
+                day
+            )
+        )
+            + (365 * y)
+            + (div y 4)
+            - 678578
 
 -- | Convert from proleptic Julian year and day format.
 -- Invalid day numbers will return Nothing
@@ -46,12 +48,12 @@ fromJulianYearAndDayValid year day = do
     day' <-
         clipValid
             1
-            (if isJulianLeapYear year
-                 then 366
-                 else 365)
+            ( if isJulianLeapYear year
+                then 366
+                else 365
+            )
             day
-    let
-        y = year - 1
+    let y = year - 1
         mjd = (fromIntegral day') + (365 * y) + (div y 4) - 678578
     return (ModifiedJulianDay mjd)
 

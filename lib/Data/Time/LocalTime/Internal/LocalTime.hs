@@ -1,18 +1,18 @@
 {-# LANGUAGE Safe #-}
+
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.LocalTime.Internal.LocalTime
-    (
+module Data.Time.LocalTime.Internal.LocalTime (
     -- * Local Time
-      LocalTime(..)
-    , addLocalTime
-    , diffLocalTime
+    LocalTime (..),
+    addLocalTime,
+    diffLocalTime,
     -- converting UTC and UT1 times to LocalTime
-    , utcToLocalTime
-    , localTimeToUTC
-    , ut1ToLocalTime
-    , localTimeToUT1
-    ) where
+    utcToLocalTime,
+    localTimeToUTC,
+    ut1ToLocalTime,
+    localTimeToUT1,
+) where
 
 import Control.DeepSeq
 import Data.Data
@@ -32,7 +32,8 @@ import Data.Time.LocalTime.Internal.TimeZone
 data LocalTime = LocalTime
     { localDay :: Day
     , localTimeOfDay :: TimeOfDay
-    } deriving (Eq, Ord, Data, Typeable)
+    }
+    deriving (Eq, Ord, Data, Typeable)
 
 instance NFData LocalTime where
     rnf (LocalTime d t) = rnf d `seq` rnf t `seq` ()

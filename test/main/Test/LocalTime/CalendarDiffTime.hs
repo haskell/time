@@ -1,6 +1,6 @@
-module Test.LocalTime.CalendarDiffTime
-    ( testCalendarDiffTime
-    ) where
+module Test.LocalTime.CalendarDiffTime (
+    testCalendarDiffTime,
+) where
 
 --import Data.Time.LocalTime
 import Test.Arbitrary ()
@@ -13,5 +13,5 @@ testCalendarDiffTime :: TestTree
 testCalendarDiffTime =
     testGroup
         "CalendarDiffTime"
-          --testReadShow
+        --testReadShow
         []

@@ -1,11 +1,11 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Clock.Internal.UniversalTime
-    (
+module Data.Time.Clock.Internal.UniversalTime (
     -- * Universal Time
+
     -- | Time as measured by the Earth.
-      UniversalTime(..)
-    ) where
+    UniversalTime (..),
+) where
 
 import Control.DeepSeq
 import Data.Data
@@ -14,7 +14,8 @@ import Data.Data
 -- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.
 newtype UniversalTime = ModJulianDate
     { getModJulianDate :: Rational
-    } deriving (Eq, Ord, Data, Typeable)
+    }
+    deriving (Eq, Ord, Data, Typeable)
 
 instance NFData UniversalTime where
     rnf (ModJulianDate a) = rnf a

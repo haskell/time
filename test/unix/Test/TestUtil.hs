@@ -41,5 +41,5 @@ tgroup aa f = fmap (\a -> nameTest (show a) $ f a) aa
 assertEqualQC :: (Show a, Eq a) => String -> a -> a -> Result
 assertEqualQC _name expected found
     | expected == found = succeeded
-assertEqualQC "" expected found = failed {reason = "expected " ++ show expected ++ ", found " ++ show found}
-assertEqualQC name expected found = failed {reason = name ++ ": expected " ++ show expected ++ ", found " ++ show found}
+assertEqualQC "" expected found = failed{reason = "expected " ++ show expected ++ ", found " ++ show found}
+assertEqualQC name expected found = failed{reason = name ++ ": expected " ++ show expected ++ ", found " ++ show found}

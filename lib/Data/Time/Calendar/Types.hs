@@ -2,7 +2,6 @@
 
 module Data.Time.Calendar.Types where
 
-
 -- | Year of Common Era.
 type Year = Integer
 

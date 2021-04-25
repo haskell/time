@@ -1,22 +1,21 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.LocalTime
-    (
+module Data.Time.LocalTime (
     -- * Time zones
-      TimeZone(..)
-    , timeZoneOffsetString
-    , timeZoneOffsetString'
-    , minutesToTimeZone
-    , hoursToTimeZone
-    , utc
+    TimeZone (..),
+    timeZoneOffsetString,
+    timeZoneOffsetString',
+    minutesToTimeZone,
+    hoursToTimeZone,
+    utc,
     -- getting the locale time zone
-    , getTimeZone
-    , getCurrentTimeZone
-    , module Data.Time.LocalTime.Internal.TimeOfDay
-    , module Data.Time.LocalTime.Internal.CalendarDiffTime
-    , module Data.Time.LocalTime.Internal.LocalTime
-    , module Data.Time.LocalTime.Internal.ZonedTime
-    ) where
+    getTimeZone,
+    getCurrentTimeZone,
+    module Data.Time.LocalTime.Internal.TimeOfDay,
+    module Data.Time.LocalTime.Internal.CalendarDiffTime,
+    module Data.Time.LocalTime.Internal.LocalTime,
+    module Data.Time.LocalTime.Internal.ZonedTime,
+) where
 
 import Data.Time.Format ()
 import Data.Time.LocalTime.Internal.CalendarDiffTime

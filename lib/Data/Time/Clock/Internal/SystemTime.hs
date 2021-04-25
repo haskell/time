@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+
 #include "HsTimeConfig.h"
 
 #if defined(mingw32_HOST_OS) || !defined(HAVE_CLOCK_GETTIME)
@@ -7,15 +8,15 @@
 {-# LANGUAGE Trustworthy #-}
 #endif
 
-module Data.Time.Clock.Internal.SystemTime
-    ( SystemTime(..)
-    , getSystemTime
-    , getTime_resolution
-    , getTAISystemTime
-    ) where
+module Data.Time.Clock.Internal.SystemTime (
+    SystemTime (..),
+    getSystemTime,
+    getTime_resolution,
+    getTAISystemTime,
+) where
 
-import Data.Data
 import Control.DeepSeq
+import Data.Data
 import Data.Int (Int64)
 import Data.Time.Clock.Internal.DiffTime
 import Data.Word
@@ -35,9 +36,10 @@ import Foreign.C.Types (CLong(..))
 -- Its semantics depends on the clock function, but the epoch is typically the beginning of 1970.
 -- Note that 'systemNanoseconds' of 1E9 to 2E9-1 can be used to represent leap seconds.
 data SystemTime = MkSystemTime
-    { systemSeconds :: {-# UNPACK #-}!Int64
-    , systemNanoseconds :: {-# UNPACK #-}!Word32
-    } deriving (Eq, Ord, Show, Data, Typeable)
+    { systemSeconds :: {-# UNPACK #-} !Int64
+    , systemNanoseconds :: {-# UNPACK #-} !Word32
+    }
+    deriving (Eq, Ord, Show, Data, Typeable)
 
 instance NFData SystemTime where
     rnf a = a `seq` ()
@@ -45,12 +47,15 @@ instance NFData SystemTime where
 -- | Get the system time, epoch start of 1970 UTC, leap-seconds ignored.
 -- 'getSystemTime' is typically much faster than 'getCurrentTime'.
 getSystemTime :: IO SystemTime
+
 -- | The resolution of 'getSystemTime', 'getCurrentTime', 'getPOSIXTime'.
 -- On UNIX systems this uses @clock_getres@, which may be <https://github.com/microsoft/WSL/issues/6029 wrong on WSL2>.
 getTime_resolution :: DiffTime
+
 -- | If supported, get TAI time, epoch start of 1970 TAI, with resolution.
 -- This is supported only on UNIX systems, and only those with CLOCK_TAI available at run-time.
 getTAISystemTime :: Maybe (DiffTime, IO SystemTime)
+
 #ifdef mingw32_HOST_OS
 -- On Windows, the equlvalent of POSIX time is "file time", defined as
 -- the number of 100-nanosecond intervals that have elapsed since

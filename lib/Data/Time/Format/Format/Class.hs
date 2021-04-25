@@ -1,23 +1,22 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Format.Format.Class
-    (
-        -- * Formatting
-      formatTime
-    , FormatNumericPadding
-    , FormatOptions(..)
-    , FormatTime(..)
-    , ShowPadded
-    , PadOption
-    , formatGeneral
-    , formatString
-    , formatNumber
-    , formatNumberStd
-    , showPaddedFixed
-    , showPaddedFixedFraction
-    , quotBy
-    , remBy
-    ) where
+module Data.Time.Format.Format.Class (
+    -- * Formatting
+    formatTime,
+    FormatNumericPadding,
+    FormatOptions (..),
+    FormatTime (..),
+    ShowPadded,
+    PadOption,
+    formatGeneral,
+    formatString,
+    formatNumber,
+    formatNumberStd,
+    showPaddedFixed,
+    showPaddedFixedFraction,
+    quotBy,
+    remBy,
+) where
 
 import Data.Char
 import Data.Fixed
@@ -40,36 +39,36 @@ class FormatTime t where
 
 -- the weird UNIX logic is here
 getPadOption :: Bool -> Bool -> Int -> Char -> Maybe FormatNumericPadding -> Maybe Int -> PadOption
-getPadOption trunc fdef idef cdef mnpad mi = let
-    c =
-        case mnpad of
-            Just (Just c') -> c'
-            Just Nothing -> ' '
-            _ -> cdef
-    i =
-        case mi of
-            Just i' ->
-                case mnpad of
-                    Just Nothing -> i'
-                    _ ->
-                        if trunc
-                            then i'
-                            else max i' idef
-            Nothing -> idef
-    f =
-        case mi of
-            Just _ -> True
-            Nothing ->
-                case mnpad of
-                    Nothing -> fdef
-                    Just Nothing -> False
-                    Just (Just _) -> True
-    in if f
-           then Pad i c
-           else NoPad
+getPadOption trunc fdef idef cdef mnpad mi =
+    let c =
+            case mnpad of
+                Just (Just c') -> c'
+                Just Nothing -> ' '
+                _ -> cdef
+        i =
+            case mi of
+                Just i' ->
+                    case mnpad of
+                        Just Nothing -> i'
+                        _ ->
+                            if trunc
+                                then i'
+                                else max i' idef
+                Nothing -> idef
+        f =
+            case mi of
+                Just _ -> True
+                Nothing ->
+                    case mnpad of
+                        Nothing -> fdef
+                        Just Nothing -> False
+                        Just (Just _) -> True
+     in if f
+            then Pad i c
+            else NoPad
 
 formatGeneral ::
-       Bool -> Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (FormatOptions -> t -> String)
+    Bool -> Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (FormatOptions -> t -> String)
 formatGeneral trunc fdef idef cdef ff fo =
     ff (foLocale fo) $ getPadOption trunc fdef idef cdef (foPadding fo) (foWidth fo)
 
@@ -85,25 +84,25 @@ formatNumberStd n = formatNumber False n '0'
 showPaddedFixed :: HasResolution a => PadOption -> PadOption -> Fixed a -> String
 showPaddedFixed padn padf x
     | x < 0 = '-' : showPaddedFixed padn padf (negate x)
-showPaddedFixed padn padf x = let
-    ns = showPaddedNum padn $ (floor x :: Integer)
-    fs = showPaddedFixedFraction padf x
-    ds =
-        if null fs
-            then ""
-            else "."
-    in ns ++ ds ++ fs
+showPaddedFixed padn padf x =
+    let ns = showPaddedNum padn $ (floor x :: Integer)
+        fs = showPaddedFixedFraction padf x
+        ds =
+            if null fs
+                then ""
+                else "."
+     in ns ++ ds ++ fs
 
 showPaddedFixedFraction :: HasResolution a => PadOption -> Fixed a -> String
-showPaddedFixedFraction pado x = let
-    digits = dropWhile (== '.') $ dropWhile (/= '.') $ showFixed True x
-    n = length digits
-    in case pado of
-           NoPad -> digits
-           Pad i c ->
-               if i < n
-                   then take i digits
-                   else digits ++ replicate (i - n) c
+showPaddedFixedFraction pado x =
+    let digits = dropWhile (== '.') $ dropWhile (/= '.') $ showFixed True x
+        n = length digits
+     in case pado of
+            NoPad -> digits
+            Pad i c ->
+                if i < n
+                    then take i digits
+                    else digits ++ replicate (i - n) c
 
 -- | Substitute various time-related information for each %-code in the string, as per 'formatCharacter'.
 --
@@ -329,18 +328,18 @@ showPaddedFixedFraction pado x = let
 -- [@%0ES@] seconds of minute as two digits, with decimal point and \<width\> (default 12) decimal places.
 formatTime :: (FormatTime t) => TimeLocale -> String -> t -> String
 formatTime _ [] _ = ""
-formatTime locale ('%':cs) t =
+formatTime locale ('%' : cs) t =
     case formatTime1 locale cs t of
         Just result -> result
         Nothing -> '%' : (formatTime locale cs t)
-formatTime locale (c:cs) t = c : (formatTime locale cs t)
+formatTime locale (c : cs) t = c : (formatTime locale cs t)
 
 formatTime1 :: (FormatTime t) => TimeLocale -> String -> t -> Maybe String
-formatTime1 locale ('_':cs) t = formatTime2 locale id (Just (Just ' ')) cs t
-formatTime1 locale ('-':cs) t = formatTime2 locale id (Just Nothing) cs t
-formatTime1 locale ('0':cs) t = formatTime2 locale id (Just (Just '0')) cs t
-formatTime1 locale ('^':cs) t = formatTime2 locale (fmap toUpper) Nothing cs t
-formatTime1 locale ('#':cs) t = formatTime2 locale (fmap toLower) Nothing cs t
+formatTime1 locale ('_' : cs) t = formatTime2 locale id (Just (Just ' ')) cs t
+formatTime1 locale ('-' : cs) t = formatTime2 locale id (Just Nothing) cs t
+formatTime1 locale ('0' : cs) t = formatTime2 locale id (Just (Just '0')) cs t
+formatTime1 locale ('^' : cs) t = formatTime2 locale (fmap toUpper) Nothing cs t
+formatTime1 locale ('#' : cs) t = formatTime2 locale (fmap toLower) Nothing cs t
 formatTime1 locale cs t = formatTime2 locale id Nothing cs t
 
 getDigit :: Char -> Maybe Int
@@ -352,31 +351,31 @@ getDigit c = Just $ (ord c) - (ord '0')
 
 pullNumber :: Maybe Int -> String -> (Maybe Int, String)
 pullNumber mx [] = (mx, [])
-pullNumber mx s@(c:cs) =
+pullNumber mx s@(c : cs) =
     case getDigit c of
         Just i -> pullNumber (Just $ (fromMaybe 0 mx) * 10 + i) cs
         Nothing -> (mx, s)
 
 formatTime2 ::
-       (FormatTime t) => TimeLocale -> (String -> String) -> Maybe FormatNumericPadding -> String -> t -> Maybe String
-formatTime2 locale recase mpad cs t = let
-    (mwidth, rest) = pullNumber Nothing cs
-    in formatTime3 locale recase mpad mwidth rest t
+    (FormatTime t) => TimeLocale -> (String -> String) -> Maybe FormatNumericPadding -> String -> t -> Maybe String
+formatTime2 locale recase mpad cs t =
+    let (mwidth, rest) = pullNumber Nothing cs
+     in formatTime3 locale recase mpad mwidth rest t
 
 formatTime3 ::
-       (FormatTime t)
-    => TimeLocale
-    -> (String -> String)
-    -> Maybe FormatNumericPadding
-    -> Maybe Int
-    -> String
-    -> t
-    -> Maybe String
-formatTime3 locale recase mpad mwidth ('E':cs) = formatTime4 True recase (MkFormatOptions locale mpad mwidth) cs
+    (FormatTime t) =>
+    TimeLocale ->
+    (String -> String) ->
+    Maybe FormatNumericPadding ->
+    Maybe Int ->
+    String ->
+    t ->
+    Maybe String
+formatTime3 locale recase mpad mwidth ('E' : cs) = formatTime4 True recase (MkFormatOptions locale mpad mwidth) cs
 formatTime3 locale recase mpad mwidth cs = formatTime4 False recase (MkFormatOptions locale mpad mwidth) cs
 
 formatTime4 :: (FormatTime t) => Bool -> (String -> String) -> FormatOptions -> String -> t -> Maybe String
-formatTime4 alt recase fo (c:cs) t = Just $ (recase (formatChar alt c fo t)) ++ (formatTime (foLocale fo) cs t)
+formatTime4 alt recase fo (c : cs) t = Just $ (recase (formatChar alt c fo t)) ++ (formatTime (foLocale fo) cs t)
 formatTime4 _alt _recase _fo [] _t = Nothing
 
 formatChar :: (FormatTime t) => Bool -> Char -> FormatOptions -> t -> String

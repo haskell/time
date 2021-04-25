@@ -1,6 +1,6 @@
-module Test.Calendar.ConvertBack
-    ( convertBack
-    ) where
+module Test.Calendar.ConvertBack (
+    convertBack,
+) where
 
 import Data.Time.Calendar
 import Data.Time.Calendar.Julian
@@ -10,19 +10,19 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 checkDay :: (Show t) => (Day -> t) -> (t -> Day) -> (t -> Maybe Day) -> Day -> String
-checkDay encodeDay decodeDay decodeDayValid day = let
-    st = encodeDay day
-    day' = decodeDay st
-    mday' = decodeDayValid st
-    a =
-        if day /= day'
-            then unwords [show day, "-> ", show st, "-> ", show day', "(diff", show (diffDays day' day) ++ ")"]
-            else ""
-    b =
-        if Just day /= mday'
-            then unwords [show day, "->", show st, "->", show mday']
-            else ""
-    in a ++ b
+checkDay encodeDay decodeDay decodeDayValid day =
+    let st = encodeDay day
+        day' = decodeDay st
+        mday' = decodeDayValid st
+        a =
+            if day /= day'
+                then unwords [show day, "-> ", show st, "-> ", show day', "(diff", show (diffDays day' day) ++ ")"]
+                else ""
+        b =
+            if Just day /= mday'
+                then unwords [show day, "->", show st, "->", show mday']
+                else ""
+     in a ++ b
 
 checkers :: [Day -> String]
 checkers =

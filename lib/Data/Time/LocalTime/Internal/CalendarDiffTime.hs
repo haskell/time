@@ -1,27 +1,27 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.LocalTime.Internal.CalendarDiffTime
-    (
-        -- * Calendar Duration
-        module Data.Time.LocalTime.Internal.CalendarDiffTime
-    ) where
+module Data.Time.LocalTime.Internal.CalendarDiffTime (
+    -- * Calendar Duration
+    module Data.Time.LocalTime.Internal.CalendarDiffTime,
+) where
 
-import Data.Fixed
-import Data.Typeable
-import Data.Data
 import Control.DeepSeq
+import Data.Data
+import Data.Fixed
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Clock.Internal.NominalDiffTime
 
 data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer
     , ctTime :: NominalDiffTime
-    } deriving (Eq,
-    Data
-    -- ^ @since 1.9.2
-    ,Typeable
-    -- ^ @since 1.9.2
-    )
+    }
+    deriving
+        ( Eq
+        , -- | @since 1.9.2
+          Data
+        , -- | @since 1.9.2
+          Typeable
+        )
 
 instance NFData CalendarDiffTime where
     rnf (CalendarDiffTime m t) = rnf m `seq` rnf t `seq` ()

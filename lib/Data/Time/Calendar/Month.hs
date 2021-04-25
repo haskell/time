@@ -1,25 +1,25 @@
 {-# LANGUAGE Safe #-}
 
 -- | An absolute count of common calendar months.
-module Data.Time.Calendar.Month
-    (
-        Month(..), addMonths, diffMonths,
-        pattern YearMonth,
-        fromYearMonthValid,
-        pattern MonthDay,
-        fromMonthDayValid
-    ) where
+module Data.Time.Calendar.Month (
+    Month (..),
+    addMonths,
+    diffMonths,
+    pattern YearMonth,
+    fromYearMonthValid,
+    pattern MonthDay,
+    fromMonthDayValid,
+) where
 
-import Data.Time.Calendar.Types
+import Control.DeepSeq
+import Data.Data
+import Data.Fixed
+import Data.Ix
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Private
-import Data.Data
-import Data.Fixed
-import Text.Read
 import Text.ParserCombinators.ReadP
-import Control.DeepSeq
-import Data.Ix
+import Text.Read
 
 -- | An absolute count of common calendar months.
 -- Number is equal to @(year * 12) + (monthOfYear - 1)@.
@@ -66,8 +66,10 @@ diffMonths (MkMonth a) (MkMonth b) = a - b
 -- | Bidirectional abstract constructor.
 -- Invalid months of year will be clipped to the correct range.
 pattern YearMonth :: Year -> MonthOfYear -> Month
-pattern YearMonth y my <- MkMonth ((\m -> divMod' m 12) -> (y,succ . fromInteger -> my)) where
-    YearMonth y my = MkMonth $ (y * 12) + toInteger (pred $ clip 1 12 my)
+pattern YearMonth y my <-
+    MkMonth ((\m -> divMod' m 12) -> (y, succ . fromInteger -> my))
+    where
+        YearMonth y my = MkMonth $ (y * 12) + toInteger (pred $ clip 1 12 my)
 
 fromYearMonthValid :: Year -> MonthOfYear -> Maybe Month
 fromYearMonthValid y my = do
@@ -76,14 +78,16 @@ fromYearMonthValid y my = do
 
 {-# COMPLETE YearMonth #-}
 
-toMonthDay :: Day -> (Month,DayOfMonth)
+toMonthDay :: Day -> (Month, DayOfMonth)
 toMonthDay (YearMonthDay y my dm) = (YearMonth y my, dm)
 
 -- | Bidirectional abstract constructor.
 -- Invalid days of month will be clipped to the correct range.
 pattern MonthDay :: Month -> DayOfMonth -> Day
-pattern MonthDay m dm <- (toMonthDay -> (m,dm)) where
-    MonthDay (YearMonth y my) dm = YearMonthDay y my dm
+pattern MonthDay m dm <-
+    (toMonthDay -> (m, dm))
+    where
+        MonthDay (YearMonth y my) dm = YearMonthDay y my dm
 
 fromMonthDayValid :: Month -> DayOfMonth -> Maybe Day
 fromMonthDayValid (YearMonth y my) dm = fromGregorianValid y my dm

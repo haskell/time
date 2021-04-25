@@ -1,26 +1,27 @@
 {-# LANGUAGE Safe #-}
 
 -- | Year quarters.
-module Data.Time.Calendar.Quarter
-    (
-        QuarterOfYear(..), addQuarters, diffQuarters,
-        Quarter(..),
-        pattern YearQuarter,
-        monthOfYearQuarter,
-        monthQuarter,
-        dayQuarter
-    ) where
+module Data.Time.Calendar.Quarter (
+    QuarterOfYear (..),
+    addQuarters,
+    diffQuarters,
+    Quarter (..),
+    pattern YearQuarter,
+    monthOfYearQuarter,
+    monthQuarter,
+    dayQuarter,
+) where
 
-import Data.Time.Calendar.Types
-import Data.Time.Calendar.Private
-import Data.Time.Calendar.Days
-import Data.Time.Calendar.Month
+import Control.DeepSeq
 import Data.Data
 import Data.Fixed
-import Text.Read
-import Text.ParserCombinators.ReadP
-import Control.DeepSeq
 import Data.Ix
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Month
+import Data.Time.Calendar.Private
+import Data.Time.Calendar.Types
+import Text.ParserCombinators.ReadP
+import Text.Read
 
 -- | Quarters of each year. Each quarter corresponds to three months.
 data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Data, Typeable, Read, Show, Ix)
@@ -92,8 +93,10 @@ diffQuarters (MkQuarter a) (MkQuarter b) = a - b
 
 -- | Bidirectional abstract constructor.
 pattern YearQuarter :: Year -> QuarterOfYear -> Quarter
-pattern YearQuarter y qy <- MkQuarter ((\q -> divMod' q 4) -> (y,toEnum . succ . fromInteger -> qy)) where
-    YearQuarter y qy = MkQuarter $ (y * 4) + toInteger (pred $ fromEnum qy)
+pattern YearQuarter y qy <-
+    MkQuarter ((\q -> divMod' q 4) -> (y, toEnum . succ . fromInteger -> qy))
+    where
+        YearQuarter y qy = MkQuarter $ (y * 4) + toInteger (pred $ fromEnum qy)
 
 {-# COMPLETE YearQuarter #-}
 

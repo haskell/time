@@ -1,18 +1,18 @@
 {-# LANGUAGE Trustworthy #-}
 
-module Data.Time.Clock.Internal.NominalDiffTime
-    ( NominalDiffTime
-    , secondsToNominalDiffTime
-    , nominalDiffTimeToSeconds
-    , nominalDay
-    ) where
+module Data.Time.Clock.Internal.NominalDiffTime (
+    NominalDiffTime,
+    secondsToNominalDiffTime,
+    nominalDiffTimeToSeconds,
+    nominalDay,
+) where
 
 import Control.DeepSeq
 import Data.Data
 import Data.Fixed
+import GHC.Read
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
-import GHC.Read
 
 -- | This is a length of time, as measured by UTC.
 -- It has a precision of 10^-12 s.
@@ -25,8 +25,8 @@ import GHC.Read
 -- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
-newtype NominalDiffTime =
-    MkNominalDiffTime Pico
+newtype NominalDiffTime
+    = MkNominalDiffTime Pico
     deriving (Eq, Ord, Data, Typeable)
 
 -- | Create a 'NominalDiffTime' from a number of seconds.
@@ -91,14 +91,17 @@ instance RealFrac NominalDiffTime where
     floor (MkNominalDiffTime a) = floor a
 
 {-# RULES
-"realToFrac/DiffTime->NominalDiffTime" realToFrac =
-                                       \ dt -> MkNominalDiffTime (realToFrac dt)
-"realToFrac/NominalDiffTime->DiffTime" realToFrac =
-                                       \ (MkNominalDiffTime ps) -> realToFrac ps
-"realToFrac/NominalDiffTime->Pico" realToFrac =
-                                   \ (MkNominalDiffTime ps) -> ps
+"realToFrac/DiffTime->NominalDiffTime"
+    realToFrac =
+        \dt -> MkNominalDiffTime (realToFrac dt)
+"realToFrac/NominalDiffTime->DiffTime"
+    realToFrac =
+        \(MkNominalDiffTime ps) -> realToFrac ps
+"realToFrac/NominalDiffTime->Pico"
+    realToFrac =
+        \(MkNominalDiffTime ps) -> ps
 "realToFrac/Pico->NominalDiffTime" realToFrac = MkNominalDiffTime
- #-}
+    #-}
 
 -- | One day in 'NominalDiffTime'.
 nominalDay :: NominalDiffTime

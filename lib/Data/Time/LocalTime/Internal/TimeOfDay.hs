@@ -1,23 +1,22 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.LocalTime.Internal.TimeOfDay
-    (
+module Data.Time.LocalTime.Internal.TimeOfDay (
     -- * Time of day
-      TimeOfDay(..)
-    , midnight
-    , midday
-    , makeTimeOfDayValid
-    , timeToDaysAndTimeOfDay
-    , daysAndTimeOfDayToTime
-    , utcToLocalTimeOfDay
-    , localToUTCTimeOfDay
-    , timeToTimeOfDay
-    , pastMidnight
-    , timeOfDayToTime
-    , sinceMidnight
-    , dayFractionToTimeOfDay
-    , timeOfDayToDayFraction
-    ) where
+    TimeOfDay (..),
+    midnight,
+    midday,
+    makeTimeOfDayValid,
+    timeToDaysAndTimeOfDay,
+    daysAndTimeOfDayToTime,
+    utcToLocalTimeOfDay,
+    localToUTCTimeOfDay,
+    timeToTimeOfDay,
+    pastMidnight,
+    timeOfDayToTime,
+    sinceMidnight,
+    dayFractionToTimeOfDay,
+    timeOfDayToDayFraction,
+) where
 
 import Control.DeepSeq
 import Data.Data
@@ -29,14 +28,15 @@ import Data.Time.LocalTime.Internal.TimeZone
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 data TimeOfDay = TimeOfDay
-    { todHour :: Int
-    -- ^ range 0 - 23
-    , todMin :: Int
-    -- ^ range 0 - 59
-    , todSec :: Pico
-    -- ^ Note that 0 <= 'todSec' < 61, accomodating leap seconds.
-    -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
-    } deriving (Eq, Ord, Data, Typeable)
+    { -- | range 0 - 23
+      todHour :: Int
+    , -- | range 0 - 59
+      todMin :: Int
+    , -- | Note that 0 <= 'todSec' < 61, accomodating leap seconds.
+      -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
+      todSec :: Pico
+    }
+    deriving (Eq, Ord, Data, Typeable)
 
 instance NFData TimeOfDay where
     rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` rnf s `seq` ()
@@ -62,12 +62,12 @@ makeTimeOfDayValid h m s = do
 -- | Convert a period of time into a count of days and a time of day since midnight.
 -- The time of day will never have a leap second.
 timeToDaysAndTimeOfDay :: NominalDiffTime -> (Integer, TimeOfDay)
-timeToDaysAndTimeOfDay dt = let
-    s = realToFrac dt
-    (m, ms) = divMod' s 60
-    (h, hm) = divMod' m 60
-    (d, dh) = divMod' h 24
-    in (d, TimeOfDay dh hm ms)
+timeToDaysAndTimeOfDay dt =
+    let s = realToFrac dt
+        (m, ms) = divMod' s 60
+        (h, hm) = divMod' m 60
+        (d, dh) = divMod' h 24
+     in (d, TimeOfDay dh hm ms)
 
 -- | Convert a count of days and a time of day since midnight into a period of time.
 daysAndTimeOfDayToTime :: Integer -> TimeOfDay -> NominalDiffTime

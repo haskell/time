@@ -1,6 +1,6 @@
-module Test.Calendar.AddDays
-    ( addDaysTest
-    ) where
+module Test.Calendar.AddDays (
+    addDaysTest,
+) where
 
 import Data.Time.Calendar
 import Test.Calendar.AddDaysRef
@@ -36,8 +36,14 @@ resultDays = do
     increment <- increments
     day <- days
     return
-        ((showGregorian day) ++
-         " + " ++ (show increment) ++ " * " ++ aname ++ " = " ++ showGregorian (adder increment day))
+        ( (showGregorian day)
+            ++ " + "
+            ++ (show increment)
+            ++ " * "
+            ++ aname
+            ++ " = "
+            ++ showGregorian (adder increment day)
+        )
 
 addDaysTest :: TestTree
 addDaysTest = testCase "addDays" $ assertEqual "" addDaysRef $ unlines resultDays

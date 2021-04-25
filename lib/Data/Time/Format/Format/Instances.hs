@@ -1,8 +1,8 @@
 {-# LANGUAGE Safe #-}
+
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.Format.Format.Instances
-    (
+module Data.Time.Format.Format.Instances (
     ) where
 
 import Control.Applicative ((<|>))
@@ -11,8 +11,8 @@ import Data.Fixed
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
-import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Month
+import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Week
 import Data.Time.Calendar.WeekDate
@@ -35,15 +35,15 @@ mapFormatCharacter ba = fmap $ fmap $ \as -> as . ba
 instance FormatTime LocalTime where
     formatCharacter _ 'c' = Just $ \fo -> formatTime (foLocale fo) $ dateTimeFmt $ foLocale fo
     formatCharacter alt c =
-        mapFormatCharacter localDay (formatCharacter alt c) <|>
-        mapFormatCharacter localTimeOfDay (formatCharacter alt c)
+        mapFormatCharacter localDay (formatCharacter alt c)
+            <|> mapFormatCharacter localTimeOfDay (formatCharacter alt c)
 
 todAMPM :: TimeLocale -> TimeOfDay -> String
-todAMPM locale day = let
-    (am, pm) = amPm locale
-    in if (todHour day) < 12
-           then am
-           else pm
+todAMPM locale day =
+    let (am, pm) = amPm locale
+     in if (todHour day) < 12
+            then am
+            else pm
 
 tod12Hour :: TimeOfDay -> Int
 tod12Hour day = (mod (todHour day - 1) 12) + 1
@@ -80,22 +80,22 @@ instance FormatTime ZonedTime where
     formatCharacter _ 's' =
         Just $ formatNumber True 1 '0' $ (floor . utcTimeToPOSIXSeconds . zonedTimeToUTC :: ZonedTime -> Integer)
     formatCharacter alt c =
-        mapFormatCharacter zonedTimeToLocalTime (formatCharacter alt c) <|>
-        mapFormatCharacter zonedTimeZone (formatCharacter alt c)
+        mapFormatCharacter zonedTimeToLocalTime (formatCharacter alt c)
+            <|> mapFormatCharacter zonedTimeZone (formatCharacter alt c)
 
 instance FormatTime TimeZone where
     formatCharacter False 'z' = Just $ formatGeneral False True 4 '0' $ \_ -> timeZoneOffsetString'' False
     formatCharacter True 'z' = Just $ formatGeneral False True 5 '0' $ \_ -> timeZoneOffsetString'' True
     formatCharacter alt 'Z' =
-        Just $ \fo z -> let
-            n = timeZoneName z
-            idef =
-                if alt
-                    then 5
-                    else 4
-            in if null n
-                   then formatGeneral False True idef '0' (\_ -> timeZoneOffsetString'' alt) fo z
-                   else formatString (\_ -> timeZoneName) fo z
+        Just $ \fo z ->
+            let n = timeZoneName z
+                idef =
+                    if alt
+                        then 5
+                        else 4
+             in if null n
+                    then formatGeneral False True idef '0' (\_ -> timeZoneOffsetString'' alt) fo z
+                    else formatString (\_ -> timeZoneName) fo z
     formatCharacter _ _ = Nothing
 
 instance FormatTime DayOfWeek where
@@ -166,12 +166,12 @@ instance FormatTime NominalDiffTime where
     formatCharacter False 'S' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
     formatCharacter True 'S' =
         Just $
-        formatGeneral True False 12 '0' $ \_ padf t -> let
-            padn =
-                case padf of
-                    NoPad -> NoPad
-                    Pad _ c -> Pad 2 c
-            in showPaddedFixed padn padf (realToFrac $ remBy 60 t :: Pico)
+            formatGeneral True False 12 '0' $ \_ padf t ->
+                let padn =
+                        case padf of
+                            NoPad -> NoPad
+                            Pad _ c -> Pad 2 c
+                 in showPaddedFixed padn padf (realToFrac $ remBy 60 t :: Pico)
     formatCharacter _ _ = Nothing
 
 instance FormatTime DiffTime where
@@ -188,12 +188,12 @@ instance FormatTime DiffTime where
     formatCharacter False 'S' = Just $ formatNumberStd 2 $ remBy 60 . quotBy 1
     formatCharacter True 'S' =
         Just $
-        formatGeneral True False 12 '0' $ \_ padf t -> let
-            padn =
-                case padf of
-                    NoPad -> NoPad
-                    Pad _ c -> Pad 2 c
-            in showPaddedFixed padn padf (realToFrac $ remBy 60 t :: Pico)
+            formatGeneral True False 12 '0' $ \_ padf t ->
+                let padn =
+                        case padf of
+                            NoPad -> NoPad
+                            Pad _ c -> Pad 2 c
+                 in showPaddedFixed padn padf (realToFrac $ remBy 60 t :: Pico)
     formatCharacter _ _ = Nothing
 
 instance FormatTime CalendarDiffDays where

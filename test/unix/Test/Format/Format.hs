@@ -1,8 +1,8 @@
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Test.Format.Format
-    ( testFormat
-    ) where
+module Test.Format.Format (
+    testFormat,
+) where
 
 import Data.Char
 import Data.Fixed as F
@@ -25,59 +25,70 @@ import Test.TestUtil
     const char *format,
     int isdst,int gmtoff,time_t t);
 -}
-foreign import ccall unsafe "FormatStuff.h format_time" format_time
-    :: CString ->
-  CSize -> CString -> CInt -> CInt -> CString -> CTime -> IO CSize
+foreign import ccall unsafe "FormatStuff.h format_time"
+    format_time ::
+        CString ->
+        CSize ->
+        CString ->
+        CInt ->
+        CInt ->
+        CString ->
+        CTime ->
+        IO CSize
 
 withBuffer :: Int -> (CString -> IO CSize) -> IO String
 withBuffer n f =
     withArray
         (replicate n 0)
-        (\buffer -> do
-             len <- f buffer
-             peekCStringLen (buffer, fromIntegral len))
+        ( \buffer -> do
+            len <- f buffer
+            peekCStringLen (buffer, fromIntegral len)
+        )
 
 unixFormatTime :: String -> TimeZone -> UTCTime -> String
 unixFormatTime fmt zone time =
     unsafePerformIO $
-    withCString
-        fmt
-        (\pfmt ->
-             withCString
-                 (timeZoneName zone)
-                 (\pzonename ->
-                      withBuffer
-                          100
-                          (\buffer ->
-                               format_time
-                                   buffer
-                                   100
-                                   pfmt
-                                   (if timeZoneSummerOnly zone
+        withCString
+            fmt
+            ( \pfmt ->
+                withCString
+                    (timeZoneName zone)
+                    ( \pzonename ->
+                        withBuffer
+                            100
+                            ( \buffer ->
+                                format_time
+                                    buffer
+                                    100
+                                    pfmt
+                                    ( if timeZoneSummerOnly zone
                                         then 1
-                                        else 0)
-                                   (fromIntegral (timeZoneMinutes zone * 60))
-                                   pzonename
-                                   (fromInteger (floor (utcTimeToPOSIXSeconds time))))))
+                                        else 0
+                                    )
+                                    (fromIntegral (timeZoneMinutes zone * 60))
+                                    pzonename
+                                    (fromInteger (floor (utcTimeToPOSIXSeconds time)))
+                            )
+                    )
+            )
 
 locale :: TimeLocale
-locale = defaultTimeLocale {dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
+locale = defaultTimeLocale{dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
 instance Random (F.Fixed res) where
-    randomR (MkFixed lo, MkFixed hi) oldgen = let
-        (v, newgen) = randomR (lo, hi) oldgen
-        in (MkFixed v, newgen)
-    random oldgen = let
-        (v, newgen) = random oldgen
-        in (MkFixed v, newgen)
+    randomR (MkFixed lo, MkFixed hi) oldgen =
+        let (v, newgen) = randomR (lo, hi) oldgen
+         in (MkFixed v, newgen)
+    random oldgen =
+        let (v, newgen) = random oldgen
+         in (MkFixed v, newgen)
 
 instance Arbitrary TimeZone where
     arbitrary = do
         mins <- choose (-2000, 2000)
         dst <- arbitrary
         hasName <- arbitrary
-        let
-            name =
+        let name =
                 if hasName
                     then "ZONE"
                     else ""
@@ -92,17 +103,16 @@ instance Arbitrary TimeOfDay where
 
 -- | The size of 'CTime' is platform-dependent.
 secondsFitInCTime :: Integer -> Bool
-secondsFitInCTime sec = let
-    CTime ct = fromInteger sec
-    sec' = toInteger ct
-    in sec == sec'
+secondsFitInCTime sec =
+    let CTime ct = fromInteger sec
+        sec' = toInteger ct
+     in sec == sec'
 
 instance Arbitrary UTCTime where
     arbitrary = do
         day <- choose (-25000, 75000)
         time <- arbitrary
-        let
-            -- verify that the created time can fit in the local CTime
+        let -- verify that the created time can fit in the local CTime
             localT = LocalTime (ModifiedJulianDay day) time
             utcT = localTimeToUTC utc localT
             secondsInteger = floor (utcTimeToPOSIXSeconds utcT)
@@ -135,12 +145,12 @@ unixWorkarounds _ s = s
 compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
 compareFormat _modUnix fmt zone _time
     | last fmt == 'Z' && timeZoneName zone == "" = rejected
-compareFormat modUnix fmt zone time = let
-    ctime = utcToZonedTime zone time
-    haskellText = formatTime locale fmt ctime
-    unixText = unixFormatTime fmt zone time
-    expectedText = unixWorkarounds fmt (modUnix unixText)
-    in assertEqualQC (show time ++ " with " ++ show zone) expectedText haskellText
+compareFormat modUnix fmt zone time =
+    let ctime = utcToZonedTime zone time
+        haskellText = formatTime locale fmt ctime
+        unixText = unixFormatTime fmt zone time
+        expectedText = unixWorkarounds fmt (modUnix unixText)
+     in assertEqualQC (show time ++ " with " ++ show zone) expectedText haskellText
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
@@ -159,12 +169,13 @@ widths = ["", "1", "2", "9", "12"]
 
 formats :: [String]
 formats =
-    ["%G-W%V-%u", "%U-%w", "%W-%u"] ++
-    (do
-         char <- chars
-         width <- widths
-         modifier <- modifiers
-         return $ "%" ++ modifier ++ width ++ [char])
+    ["%G-W%V-%u", "%U-%w", "%W-%u"]
+        ++ ( do
+                char <- chars
+                width <- widths
+                modifier <- modifiers
+                return $ "%" ++ modifier ++ width ++ [char]
+           )
 
 hashformats :: [String]
 hashformats = do
@@ -187,10 +198,10 @@ testCompareHashFormat =
 
 formatUnitTest :: String -> Pico -> String -> TestTree
 formatUnitTest fmt sec expected =
-    nameTest (show fmt) $ let
-        tod = TimeOfDay 0 0 (1 + sec)
-        found = formatTime locale fmt tod
-        in assertEqual "" expected found
+    nameTest (show fmt) $
+        let tod = TimeOfDay 0 0 (1 + sec)
+            found = formatTime locale fmt tod
+         in assertEqual "" expected found
 
 testQs :: [TestTree]
 testQs =
@@ -248,6 +259,7 @@ strftimeHasGNUExts :: Bool
 strftimeHasGNUExts = unixFormatTime "%_6Y" utc (UTCTime (fromGregorian 1980 1 1) 0) == "  1980"
 
 testFormat :: [TestTree]
-testFormat = if strftimeHasGNUExts
-    then pure $ localOption (QuickCheckTests 10000) $ testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat ++ testQs
-    else []
+testFormat =
+    if strftimeHasGNUExts
+        then pure $ localOption (QuickCheckTests 10000) $ testGroup "testFormat" $ testCompareFormat ++ testCompareHashFormat ++ testQs
+        else []

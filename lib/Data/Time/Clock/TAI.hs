@@ -1,19 +1,19 @@
 {-# LANGUAGE Safe #-}
+
 {-# OPTIONS -fno-warn-orphans #-}
 
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
-module Data.Time.Clock.TAI
-    (
+module Data.Time.Clock.TAI (
     -- TAI arithmetic
-      module Data.Time.Clock.Internal.AbsoluteTime
+    module Data.Time.Clock.Internal.AbsoluteTime,
     -- leap-second map type
-    , LeapSecondMap
+    LeapSecondMap,
     -- conversion between UTC and TAI with map
-    , utcDayLength
-    , utcToTAITime
-    , taiToUTCTime
-    , taiClock
-    ) where
+    utcDayLength,
+    utcToTAITime,
+    taiToUTCTime,
+    taiClock,
+) where
 
 import Data.Fixed
 import Data.Maybe
@@ -49,17 +49,16 @@ utcToTAITime lsmap (UTCTime day dtime) = do
     return $ addAbsoluteTime dtime t
 
 taiToUTCTime :: LeapSecondMap -> AbsoluteTime -> Maybe UTCTime
-taiToUTCTime lsmap abstime = let
-    stable day = do
-        dayt <- dayStart lsmap day
-        len <- utcDayLength lsmap day
-        let
-            dtime = diffAbsoluteTime abstime dayt
-            day' = addDays (div' dtime len) day
-        if day == day'
-            then return (UTCTime day dtime)
-            else stable day'
-    in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
+taiToUTCTime lsmap abstime =
+    let stable day = do
+            dayt <- dayStart lsmap day
+            len <- utcDayLength lsmap day
+            let dtime = diffAbsoluteTime abstime dayt
+                day' = addDays (div' dtime len) day
+            if day == day'
+                then return (UTCTime day dtime)
+                else stable day'
+     in stable $ ModifiedJulianDay $ div' (diffAbsoluteTime abstime taiEpoch) 86400
 
 -- | TAI clock, if it exists. Note that it is unlikely to be set correctly, without due care and attention.
 taiClock :: Maybe (DiffTime, IO AbsoluteTime)

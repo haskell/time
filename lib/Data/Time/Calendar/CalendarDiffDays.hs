@@ -1,24 +1,24 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.CalendarDiffDays
-    (
-        -- * Calendar Duration
-        module Data.Time.Calendar.CalendarDiffDays
-    ) where
+module Data.Time.Calendar.CalendarDiffDays (
+    -- * Calendar Duration
+    module Data.Time.Calendar.CalendarDiffDays,
+) where
 
-import Data.Typeable
-import Data.Data
 import Control.DeepSeq
+import Data.Data
 
 data CalendarDiffDays = CalendarDiffDays
     { cdMonths :: Integer
     , cdDays :: Integer
-    } deriving (Eq,
-    Data
-    -- ^ @since 1.9.2
-    ,Typeable
-    -- ^ @since 1.9.2
-    )
+    }
+    deriving
+        ( Eq
+        , -- | @since 1.9.2
+          Data
+        , -- | @since 1.9.2
+          Typeable
+        )
 
 instance NFData CalendarDiffDays where
     rnf (CalendarDiffDays m d) = rnf m `seq` rnf d `seq` ()

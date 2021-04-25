@@ -1,12 +1,11 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.Days
-    (
+module Data.Time.Calendar.Days (
     -- * Days
-      Day(..)
-    , addDays
-    , diffDays
-    ) where
+    Day (..),
+    addDays,
+    diffDays,
+) where
 
 import Control.DeepSeq
 import Data.Data
@@ -15,7 +14,8 @@ import Data.Ix
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
 newtype Day = ModifiedJulianDay
     { toModifiedJulianDay :: Integer
-    } deriving (Eq, Ord, Data, Typeable)
+    }
+    deriving (Eq, Ord, Data, Typeable)
 
 instance NFData Day where
     rnf (ModifiedJulianDay a) = rnf a

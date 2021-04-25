@@ -1,28 +1,27 @@
 {-# LANGUAGE Trustworthy #-}
 
-module Data.Time.Clock.Internal.DiffTime
-    (
+module Data.Time.Clock.Internal.DiffTime (
     -- * Absolute intervals
-      DiffTime
-    , secondsToDiffTime
-    , picosecondsToDiffTime
-    , diffTimeToPicoseconds
-    ) where
+    DiffTime,
+    secondsToDiffTime,
+    picosecondsToDiffTime,
+    diffTimeToPicoseconds,
+) where
 
 import Control.DeepSeq
 import Data.Data
 import Data.Fixed
+import GHC.Read
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
-import GHC.Read
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions such as 'fromInteger' and 'realToFrac' will treat it as seconds.
 -- For example, @(0.010 :: DiffTime)@ corresponds to 10 milliseconds.
 --
 -- It has a precision of one picosecond (= 10^-12 s). Enumeration functions will treat it as picoseconds.
-newtype DiffTime =
-    MkDiffTime Pico
+newtype DiffTime
+    = MkDiffTime Pico
     deriving (Eq, Ord, Data, Typeable)
 
 instance NFData DiffTime where
@@ -65,9 +64,9 @@ instance Fractional DiffTime where
     fromRational r = MkDiffTime (fromRational r)
 
 instance RealFrac DiffTime where
-    properFraction (MkDiffTime a) = let
-        (b', a') = properFraction a
-        in (b', MkDiffTime a')
+    properFraction (MkDiffTime a) =
+        let (b', a') = properFraction a
+         in (b', MkDiffTime a')
     truncate (MkDiffTime a) = truncate a
     round (MkDiffTime a) = round a
     ceiling (MkDiffTime a) = ceiling a
@@ -86,6 +85,6 @@ diffTimeToPicoseconds :: DiffTime -> Integer
 diffTimeToPicoseconds (MkDiffTime (MkFixed x)) = x
 
 {-# RULES
-"realToFrac/DiffTime->Pico" realToFrac = \ (MkDiffTime ps) -> ps
+"realToFrac/DiffTime->Pico" realToFrac = \(MkDiffTime ps) -> ps
 "realToFrac/Pico->DiffTime" realToFrac = MkDiffTime
- #-}
+    #-}

@@ -1,6 +1,6 @@
-module Test.LocalTime.TimeZone
-    ( testTimeZone
-    ) where
+module Test.LocalTime.TimeZone (
+    testTimeZone,
+) where
 
 import Data.Time
 import System.Environment (setEnv)

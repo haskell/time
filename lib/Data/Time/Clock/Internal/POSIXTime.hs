@@ -11,5 +11,4 @@ posixDayLength = nominalDay
 -- | POSIX time is the nominal time since 1970-01-01 00:00 UTC
 --
 -- To convert from a 'Foreign.C.Types.CTime' or @System.Posix.EpochTime@, use 'realToFrac'.
---
 type POSIXTime = NominalDiffTime

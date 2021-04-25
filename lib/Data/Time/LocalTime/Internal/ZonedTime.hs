@@ -1,13 +1,14 @@
 {-# LANGUAGE Safe #-}
+
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.LocalTime.Internal.ZonedTime
-    ( ZonedTime(..)
-    , utcToZonedTime
-    , zonedTimeToUTC
-    , getZonedTime
-    , utcToLocalZonedTime
-    ) where
+module Data.Time.LocalTime.Internal.ZonedTime (
+    ZonedTime (..),
+    utcToZonedTime,
+    zonedTimeToUTC,
+    getZonedTime,
+    utcToLocalZonedTime,
+) where
 
 import Control.DeepSeq
 import Data.Data
@@ -24,7 +25,8 @@ import Data.Time.LocalTime.Internal.TimeZone
 data ZonedTime = ZonedTime
     { zonedTimeToLocalTime :: LocalTime
     , zonedTimeZone :: TimeZone
-    } deriving (Data, Typeable)
+    }
+    deriving (Data, Typeable)
 
 instance NFData ZonedTime where
     rnf (ZonedTime lt z) = rnf lt `seq` rnf z `seq` ()

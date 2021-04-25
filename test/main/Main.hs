@@ -1,6 +1,5 @@
 module Main where
 
-import Test.Types()
 import Test.Calendar.AddDays
 import Test.Calendar.CalendarProps
 import Test.Calendar.Calendars
@@ -23,25 +22,26 @@ import Test.LocalTime.CalendarDiffTime
 import Test.LocalTime.Time
 import Test.LocalTime.TimeOfDay
 import Test.Tasty
+import Test.Types ()
 
 tests :: TestTree
 tests =
     testGroup
         "Time"
         [ testGroup
-              "Calendar"
-              [ addDaysTest
-              , testCalendarProps
-              , testCalendars
-              , clipDates
-              , convertBack
-              , longWeekYears
-              , testMonthDay
-              , testEaster
-              , testValid
-              , testWeek
-              , testDuration
-              ]
+            "Calendar"
+            [ addDaysTest
+            , testCalendarProps
+            , testCalendars
+            , clipDates
+            , convertBack
+            , longWeekYears
+            , testMonthDay
+            , testEaster
+            , testValid
+            , testWeek
+            , testDuration
+            ]
         , testGroup "Clock" [testClockConversion, testResolutions, testTAI]
         , testGroup "Format" [testFormat, testParseTime, testISO8601]
         , testGroup "LocalTime" [testTime, testTimeOfDay, testCalendarDiffTime]

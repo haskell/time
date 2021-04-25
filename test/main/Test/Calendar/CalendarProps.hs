@@ -1,12 +1,12 @@
-module Test.Calendar.CalendarProps
-    ( testCalendarProps
-    ) where
+module Test.Calendar.CalendarProps (
+    testCalendarProps,
+) where
 
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.Quarter
-import Test.TestUtil
-import Test.Tasty
 import Test.Arbitrary ()
+import Test.Tasty
+import Test.TestUtil
 
 testYearMonth :: TestTree
 testYearMonth = nameTest "YearMonth" $ \m -> case m of
@@ -21,4 +21,4 @@ testYearQuarter = nameTest "YearQuarter" $ \q -> case q of
     YearQuarter y qy -> q == YearQuarter y qy
 
 testCalendarProps :: TestTree
-testCalendarProps = nameTest "calender-props" [testYearMonth,testMonthDay,testYearQuarter]
+testCalendarProps = nameTest "calender-props" [testYearMonth, testMonthDay, testYearQuarter]

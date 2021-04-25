@@ -1,6 +1,6 @@
-module Test.Calendar.Calendars
-    ( testCalendars
-    ) where
+module Test.Calendar.Calendars (
+    testCalendars,
+) where
 
 import Data.Time.Calendar
 import Data.Time.Calendar.Julian
