@@ -26,6 +26,13 @@ packages:
   original:
     hackage: directory-1.3.6.1
 - completed:
+    hackage: Cabal-3.4.0.0@sha256:74ca2bc93297dc20b291c8dc721055278aa4a7942b0b5aca86766d407e3cbe5f,30533
+    pantry-tree:
+      size: 45845
+      sha256: b378b1f4a94f2911e9774c67e16859d7deae1ee1bad787cf790443e1f031388f
+  original:
+    hackage: Cabal-3.4.0.0
+- completed:
     name: haskell-src-exts
     version: 1.21.1
     git: https://github.com/AshleyYakeley/haskell-src-exts.git

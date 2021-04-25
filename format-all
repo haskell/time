@@ -1,0 +1,3 @@
+#!/bin/bash -e
+stack build --no-test --no-bench --no-haddock hindent
+for f in `find -name '*.hs' -not -path '*.stack-work/*' | grep -xvf .format.ignore`; do `stack path --local-install-root`/bin/hindent $f || exit; done
