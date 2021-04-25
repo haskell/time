@@ -26,34 +26,19 @@ packages:
   original:
     hackage: directory-1.3.6.1
 - completed:
-    hackage: Cabal-3.4.0.0@sha256:74ca2bc93297dc20b291c8dc721055278aa4a7942b0b5aca86766d407e3cbe5f,30533
+    hackage: hpc-0.6.0.3@sha256:de3f7982345d315f1d7713df38b4f2cf09bd274f7d64dffec0cf2a0d9c8aab19,1185
     pantry-tree:
-      size: 45845
-      sha256: b378b1f4a94f2911e9774c67e16859d7deae1ee1bad787cf790443e1f031388f
+      size: 432
+      sha256: 4686c367eb25eb4d32d66bd4c080d6caa2b5e78c73beea3993db690137e1d6cb
   original:
-    hackage: Cabal-3.4.0.0
+    hackage: hpc-0.6.0.3
 - completed:
-    name: haskell-src-exts
-    version: 1.21.1
-    git: https://github.com/AshleyYakeley/haskell-src-exts.git
+    hackage: fourmolu-0.3.0.0@sha256:4ce7683b97d5cdcac6cfec0a64298b67fd2777bfba2c484148a24d2c6bdb6ad8,6496
     pantry-tree:
-      size: 97010
-      sha256: 429025c159bccacbea490310ae69f5319ab524a845a07a5c3d51328b18fe4be8
-    commit: 31e1466e35cee9a91fa6678d73c938f0f44759eb
+      size: 108479
+      sha256: d929dbd007e5b093f4ce8787c3ad625f0b083351773f34375b0b4e55dd666be0
   original:
-    git: https://github.com/AshleyYakeley/haskell-src-exts.git
-    commit: 31e1466e35cee9a91fa6678d73c938f0f44759eb
-- completed:
-    name: hindent
-    version: 5.3.0
-    git: https://github.com/AshleyYakeley/hindent.git
-    pantry-tree:
-      size: 1906
-      sha256: 7221b71f7191814395b94522ed9d3599bb58cdfbf780a5a1196b27bc85ddd310
-    commit: d240eb7334cd08c7e377b59fcb1977bdf95527d6
-  original:
-    git: https://github.com/AshleyYakeley/hindent.git
-    commit: d240eb7334cd08c7e377b59fcb1977bdf95527d6
+    hackage: fourmolu-0.3.0.0
 snapshots:
 - completed:
     size: 567037

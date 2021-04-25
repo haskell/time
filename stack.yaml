@@ -13,11 +13,8 @@ extra-deps:
 - process-1.6.10.0
 - unix-2.7.2.2
 - directory-1.3.6.1
-- Cabal-3.4.0.0
-- git: https://github.com/AshleyYakeley/haskell-src-exts.git
-  commit: 31e1466e35cee9a91fa6678d73c938f0f44759eb
-- git: https://github.com/AshleyYakeley/hindent.git
-  commit: d240eb7334cd08c7e377b59fcb1977bdf95527d6
+- hpc-0.6.0.3
+- fourmolu-0.3.0.0
 
 ghc-options:
     "$locals": -Werror -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints -Wcompat -Wnoncanonical-monad-instances
