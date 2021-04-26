@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.12] -
+- support GHC 8.8, 8.10, 9.0 only
+
 ## [1.11.1.2] - 2021-04-24
 - fix cabal file
 - correct "license" field in cabal file
