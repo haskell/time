@@ -80,8 +80,8 @@ Before release:
 
 12. Upload to Hackage
 
+    git clean -dXf
     autoreconf -i
-    ./configure   # workaround for cabal issue
     stack upload .
     http://hackage.haskell.org/package/time
 

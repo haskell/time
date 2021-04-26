@@ -1,8 +1,8 @@
-cabal-version:  >=1.10
+cabal-version:  3.0
 name:           time
 version:        1.12
 stability:      stable
-license:        BSD2
+license:        BSD-2-Clause
 license-file:   LICENSE
 author:         Ashley Yakeley
 maintainer:     <ashley@semantic.org>
@@ -106,9 +106,8 @@ library
         install-includes:
             HsTime.h
     else
-        -- # requires cabal 3, see #145, #146
-        --autogen-includes:
-        --    HsTimeConfig.h
+        autogen-includes:
+            HsTimeConfig.h
         install-includes:
             HsTime.h
             HsTimeConfig.h
