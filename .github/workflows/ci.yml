@@ -73,7 +73,6 @@ jobs:
       run: cabal haddock
 
   build-freebsd:
-    if: false # currently broken
     # See https://github.com/vmactions/freebsd-vm#under-the-hood.
     runs-on: macos-latest
     steps:
