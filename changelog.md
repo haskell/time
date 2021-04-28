@@ -2,6 +2,7 @@
 
 ## [1.12] -
 - support GHC 8.8, 8.10, 9.0 only
+- fix: don't provide TAI clock where it's unavailable (e.g. FreeBSD)
 
 ## [1.11.1.2] - 2021-04-24
 - fix cabal file

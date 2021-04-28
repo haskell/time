@@ -87,8 +87,10 @@ getSystemTime = clockGetSystemTime clock_REALTIME
 
 getTime_resolution = timespecToDiffTime realtimeRes
 
-getTAISystemTime =
-    fmap (\resolution -> (timespecToDiffTime resolution, clockGetSystemTime clock_TAI)) $ clockResolution clock_TAI
+getTAISystemTime = do
+    clockID <- clock_TAI
+    resolution <- clockResolution clockID
+    return $ (timespecToDiffTime resolution, clockGetSystemTime clockID)
 #else
 -- Use gettimeofday
 getSystemTime = do

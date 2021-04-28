@@ -31,7 +31,7 @@ foreign import ccall unsafe "time.h clock_getres"
     clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
 
 -- | Get the resolution of the given clock.
-clockGetRes :: #{type clockid_t} -> IO (Either Errno CTimespec)
+clockGetRes :: ClockID -> IO (Either Errno CTimespec)
 clockGetRes clockid = alloca $ \ptspec -> do
     rc <- clock_getres clockid ptspec
     case rc of
@@ -52,8 +52,13 @@ clockGetTime clockid = alloca (\ptspec -> do
 clock_REALTIME :: ClockID
 clock_REALTIME = #{const CLOCK_REALTIME}
 
-clock_TAI :: ClockID
-clock_TAI = #{const 11}
+clock_TAI :: Maybe ClockID
+clock_TAI =
+#if defined(CLOCK_TAI)
+    Just #{const CLOCK_TAI}
+#else
+    Nothing
+#endif
 
 realtimeRes :: CTimespec
 realtimeRes = unsafePerformIO $ do
