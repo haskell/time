@@ -7,6 +7,7 @@ module Test.Format.ISO8601 (
 import Data.Ratio
 import Data.Time
 import Data.Time.Format.ISO8601
+import Data.Time.Format.Internal
 import Test.Arbitrary ()
 import Test.QuickCheck.Property
 import Test.Tasty
@@ -28,14 +29,27 @@ readShowProperty fmt val =
                         then succeeded
                         else failed{reason = show str ++ ": expected " ++ (show expected) ++ ", found " ++ (show found)}
 
+class SpecialTestValues a where
+    -- | values that should always be tested
+    specialTestValues :: [a]
+
+instance {-# OVERLAPPABLE #-} SpecialTestValues a where
+    specialTestValues = []
+
+instance SpecialTestValues TimeOfDay where
+    specialTestValues = [TimeOfDay 0 0 0, TimeOfDay 24 0 0]
+
+readShowTest :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => Format a -> [TestTree]
+readShowTest fmt = [nameTest "random" $ readShowProperty fmt, nameTest "special" $ fmap (\a -> nameTest (show a) $ readShowProperty fmt a) specialTestValues]
+
 readBoth :: NameTest t => (FormatExtension -> t) -> [TestTree]
 readBoth fmts = [nameTest "extended" $ fmts ExtendedFormat, nameTest "basic" $ fmts BasicFormat]
 
-readShowProperties :: (Eq a, Show a, Arbitrary a) => (FormatExtension -> Format a) -> [TestTree]
-readShowProperties fmts = readBoth $ \fe -> readShowProperty $ fmts fe
+readShowTests :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (FormatExtension -> Format a) -> [TestTree]
+readShowTests fmts = readBoth $ \fe -> readShowTest $ fmts fe
 
-newtype Durational t
-    = MkDurational t
+newtype Durational t = MkDurational {unDurational :: t}
+    deriving (Eq)
 
 instance Show t => Show (Durational t) where
     show (MkDurational t) = show t
@@ -55,50 +69,53 @@ instance Arbitrary (Durational CalendarDiffTime) where
                 ss <- choose (negate limit * picofactor, limit * picofactor)
                 return $ MkDurational $ CalendarDiffTime mm $ fromRational $ ss % picofactor
 
+durationalFormat :: Format a -> Format (Durational a)
+durationalFormat (MkFormat sa ra) = MkFormat (\b -> sa $ unDurational b) (fmap MkDurational ra)
+
 testReadShowFormat :: TestTree
 testReadShowFormat =
     nameTest
         "read-show format"
-        [ nameTest "calendarFormat" $ readShowProperties $ calendarFormat
-        , nameTest "yearMonthFormat" $ readShowProperty $ yearMonthFormat
-        , nameTest "yearFormat" $ readShowProperty $ yearFormat
-        , nameTest "centuryFormat" $ readShowProperty $ centuryFormat
-        , nameTest "expandedCalendarFormat" $ readShowProperties $ expandedCalendarFormat 6
-        , nameTest "expandedYearMonthFormat" $ readShowProperty $ expandedYearMonthFormat 6
-        , nameTest "expandedYearFormat" $ readShowProperty $ expandedYearFormat 6
-        , nameTest "expandedCenturyFormat" $ readShowProperty $ expandedCenturyFormat 4
-        , nameTest "ordinalDateFormat" $ readShowProperties $ ordinalDateFormat
-        , nameTest "expandedOrdinalDateFormat" $ readShowProperties $ expandedOrdinalDateFormat 6
-        , nameTest "weekDateFormat" $ readShowProperties $ weekDateFormat
-        , nameTest "yearWeekFormat" $ readShowProperties $ yearWeekFormat
-        , nameTest "expandedWeekDateFormat" $ readShowProperties $ expandedWeekDateFormat 6
-        , nameTest "expandedYearWeekFormat" $ readShowProperties $ expandedYearWeekFormat 6
-        , nameTest "timeOfDayFormat" $ readShowProperties $ timeOfDayFormat
-        , nameTest "hourMinuteFormat" $ readShowProperties $ hourMinuteFormat
-        , nameTest "hourFormat" $ readShowProperty $ hourFormat
-        , nameTest "withTimeDesignator" $ readShowProperties $ \fe -> withTimeDesignator $ timeOfDayFormat fe
-        , nameTest "withUTCDesignator" $ readShowProperties $ \fe -> withUTCDesignator $ timeOfDayFormat fe
-        , nameTest "timeOffsetFormat" $ readShowProperties $ timeOffsetFormat
-        , nameTest "timeOfDayAndOffsetFormat" $ readShowProperties $ timeOfDayAndOffsetFormat
+        [ nameTest "calendarFormat" $ readShowTests $ calendarFormat
+        , nameTest "yearMonthFormat" $ readShowTest $ yearMonthFormat
+        , nameTest "yearFormat" $ readShowTest $ yearFormat
+        , nameTest "centuryFormat" $ readShowTest $ centuryFormat
+        , nameTest "expandedCalendarFormat" $ readShowTests $ expandedCalendarFormat 6
+        , nameTest "expandedYearMonthFormat" $ readShowTest $ expandedYearMonthFormat 6
+        , nameTest "expandedYearFormat" $ readShowTest $ expandedYearFormat 6
+        , nameTest "expandedCenturyFormat" $ readShowTest $ expandedCenturyFormat 4
+        , nameTest "ordinalDateFormat" $ readShowTests $ ordinalDateFormat
+        , nameTest "expandedOrdinalDateFormat" $ readShowTests $ expandedOrdinalDateFormat 6
+        , nameTest "weekDateFormat" $ readShowTests $ weekDateFormat
+        , nameTest "yearWeekFormat" $ readShowTests $ yearWeekFormat
+        , nameTest "expandedWeekDateFormat" $ readShowTests $ expandedWeekDateFormat 6
+        , nameTest "expandedYearWeekFormat" $ readShowTests $ expandedYearWeekFormat 6
+        , nameTest "timeOfDayFormat" $ readShowTests $ timeOfDayFormat
+        , nameTest "hourMinuteFormat" $ readShowTests $ hourMinuteFormat
+        , nameTest "hourFormat" $ readShowTest $ hourFormat
+        , nameTest "withTimeDesignator" $ readShowTests $ \fe -> withTimeDesignator $ timeOfDayFormat fe
+        , nameTest "withUTCDesignator" $ readShowTests $ \fe -> withUTCDesignator $ timeOfDayFormat fe
+        , nameTest "timeOffsetFormat" $ readShowTests $ timeOffsetFormat
+        , nameTest "timeOfDayAndOffsetFormat" $ readShowTests $ timeOfDayAndOffsetFormat
         , nameTest "localTimeFormat" $
-            readShowProperties $ \fe -> localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+            readShowTests $ \fe -> localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
         , nameTest "zonedTimeFormat" $
-            readShowProperties $ \fe -> zonedTimeFormat (calendarFormat fe) (timeOfDayFormat fe) fe
-        , nameTest "utcTimeFormat" $ readShowProperties $ \fe -> utcTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+            readShowTests $ \fe -> zonedTimeFormat (calendarFormat fe) (timeOfDayFormat fe) fe
+        , nameTest "utcTimeFormat" $ readShowTests $ \fe -> utcTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
         , nameTest "dayAndTimeFormat" $
-            readShowProperties $ \fe -> dayAndTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
-        , nameTest "timeAndOffsetFormat" $ readShowProperties $ \fe -> timeAndOffsetFormat (timeOfDayFormat fe) fe
-        , nameTest "durationDaysFormat" $ readShowProperty $ durationDaysFormat
-        , nameTest "durationTimeFormat" $ readShowProperty $ durationTimeFormat
+            readShowTests $ \fe -> dayAndTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+        , nameTest "timeAndOffsetFormat" $ readShowTests $ \fe -> timeAndOffsetFormat (timeOfDayFormat fe) fe
+        , nameTest "durationDaysFormat" $ readShowTest $ durationDaysFormat
+        , nameTest "durationTimeFormat" $ readShowTest $ durationTimeFormat
         , nameTest "alternativeDurationDaysFormat" $
-            readBoth $ \fe (MkDurational t) -> readShowProperty (alternativeDurationDaysFormat fe) t
+            readBoth $ \fe -> readShowTest (durationalFormat $ alternativeDurationDaysFormat fe)
         , nameTest "alternativeDurationTimeFormat" $
-            readBoth $ \fe (MkDurational t) -> readShowProperty (alternativeDurationTimeFormat fe) t
+            readBoth $ \fe -> readShowTest (durationalFormat $ alternativeDurationTimeFormat fe)
         , nameTest "intervalFormat" $
-            readShowProperties $ \fe ->
+            readShowTests $ \fe ->
                 intervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
         , nameTest "recurringIntervalFormat" $
-            readShowProperties $ \fe ->
+            readShowTests $ \fe ->
                 recurringIntervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
         ]
 

@@ -27,6 +27,9 @@ import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.LocalTime.Internal.TimeZone
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
+--
+-- @TimeOfDay 24 0 0@ is considered invalid for the purposes of 'makeTimeOfDayValid', as well as reading and parsing,
+-- but valid for ISO 8601 parsing in "Data.Time.Format.ISO8601".
 data TimeOfDay = TimeOfDay
     { -- | range 0 - 23
       todHour :: Int

@@ -49,6 +49,9 @@ module Data.Time.Format.ISO8601 (
     alternativeDurationTimeFormat,
     intervalFormat,
     recurringIntervalFormat,
+
+    -- * Other
+    isoMakeTimeOfDayValid,
 ) where
 
 import Control.Monad.Fail
@@ -150,8 +153,15 @@ mapWeekDate :: Format (Integer, (Int, Int)) -> Format Day
 mapWeekDate =
     mapMFormat (\(y, (w, d)) -> fromWeekDateValid y w d) (\day -> (\(y, w, d) -> Just (y, (w, d))) $ toWeekDate day)
 
+-- | Like `makeTimeOfDayValid`, but accepts @24 0 0@ per ISO 8601:2004(E) sec. 4.2.3
+--
+-- @since 1.12
+isoMakeTimeOfDayValid :: Int -> Int -> Pico -> Maybe TimeOfDay
+isoMakeTimeOfDayValid 24 0 0 = return (TimeOfDay 24 0 0)
+isoMakeTimeOfDayValid h m s = makeTimeOfDayValid h m s
+
 mapTimeOfDay :: Format (Int, (Int, Pico)) -> Format TimeOfDay
-mapTimeOfDay = mapMFormat (\(h, (m, s)) -> makeTimeOfDayValid h m s) (\(TimeOfDay h m s) -> Just (h, (m, s)))
+mapTimeOfDay = mapMFormat (\(h, (m, s)) -> isoMakeTimeOfDayValid h m s) (\(TimeOfDay h m s) -> Just (h, (m, s)))
 
 -- | ISO 8601:2004(E) sec. 4.1.2.2
 calendarFormat :: FormatExtension -> Format Day
@@ -225,6 +235,7 @@ hourMinuteFormat fe =
     let toTOD (h, m) =
             case timeToDaysAndTimeOfDay $ fromRationalRound $ toRational $ (fromIntegral h) * 3600 + m * 60 of
                 (0, tod) -> Just tod
+                (1, TimeOfDay 0 0 0) -> Just $ TimeOfDay 24 0 0
                 _ -> Nothing
         fromTOD tod =
             let mm = (realToFrac $ daysAndTimeOfDayToTime 0 tod) / 60
@@ -237,6 +248,7 @@ hourFormat =
     let toTOD h =
             case timeToDaysAndTimeOfDay $ fromRationalRound $ toRational $ h * 3600 of
                 (0, tod) -> Just tod
+                (1, TimeOfDay 0 0 0) -> Just $ TimeOfDay 24 0 0
                 _ -> Nothing
         fromTOD tod = Just $ (realToFrac $ daysAndTimeOfDayToTime 0 tod) / 3600
      in mapMFormat toTOD fromTOD $ hourDecimalFormat
