@@ -4,6 +4,7 @@
 - support GHC 8.8, 8.10, 9.0 only
 - fix: don't provide TAI clock where it's unavailable (e.g. FreeBSD)
 - fix: handle time of day 24:00:00 for ISO 8601 parsing (only)
+- fix parsing of %f and %G with negative years
 
 ## [1.11.1.2] - 2021-04-24
 - fix cabal file

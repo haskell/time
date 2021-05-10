@@ -10,6 +10,7 @@ import Data.Time.Calendar.Month
 import Data.Time.Calendar.Quarter
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.POSIX
+import System.Random
 import Test.Tasty.QuickCheck hiding (reason)
 
 instance Arbitrary DayOfWeek where
@@ -31,8 +32,10 @@ instance Arbitrary Quarter where
 instance Arbitrary QuarterOfYear where
     arbitrary = liftM toEnum $ choose (1, 4)
 
+deriving instance Random Day
+
 instance Arbitrary Day where
-    arbitrary = liftM ModifiedJulianDay $ choose (-313698, 2973483) -- 1000-01-1 to 9999-12-31
+    arbitrary = choose (fromGregorian (-9900) 1 1, fromGregorian 9999 12 31)
     shrink day =
         let (y, m, d) = toGregorian day
             dayShrink =

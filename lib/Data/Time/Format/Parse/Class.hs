@@ -148,13 +148,15 @@ timeParseTimeSpecifier l mpad c =
             optional (char ':')
             m <- parsePaddedDigits PrePadding ZeroPadding False 2
             return (s : h ++ m)
+        allowNegative :: ReadP String -> ReadP String
+        allowNegative p = (char '-' >> fmap ('-' :) p) <++ p
      in case c of
             -- century
-            'C' -> (char '-' >> fmap ('-' :) (digits SpacePadding 2)) <++ digits SpacePadding 2
-            'f' -> digits SpacePadding 2
+            'C' -> allowNegative $ digits SpacePadding 2
+            'f' -> allowNegative $ digits SpacePadding 2
             -- year
-            'Y' -> (char '-' >> fmap ('-' :) (digits SpacePadding 4)) <++ digits SpacePadding 4
-            'G' -> digits SpacePadding 4
+            'Y' -> allowNegative $ digits SpacePadding 4
+            'G' -> allowNegative $ digits SpacePadding 4
             -- year of century
             'y' -> digits ZeroPadding 2
             'g' -> digits ZeroPadding 2

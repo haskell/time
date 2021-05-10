@@ -128,6 +128,7 @@ test-suite test-main
     default-language: Haskell2010
     default-extensions:
         Rank2Types
+        GeneralizedNewtypeDeriving
         DeriveDataTypeable
         StandaloneDeriving
         ExistentialQuantification
@@ -141,6 +142,7 @@ test-suite test-main
         base,
         deepseq,
         time,
+        random,
         QuickCheck,
         tasty,
         tasty-hunit,
