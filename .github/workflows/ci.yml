@@ -13,7 +13,7 @@ jobs:
         ghc: ['9.0', '8.10', '8.8']
     steps:
     - uses: actions/checkout@v2
-    - uses: haskell/actions/setup@v1
+    - uses: haskell/actions/setup@v1.2.1
       id: setup-haskell-cabal
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -45,7 +45,7 @@ jobs:
         ghc: ['9.0', '8.10', '8.8']
     steps:
     - uses: actions/checkout@v2
-    - uses: haskell/actions/setup@v1
+    - uses: haskell/actions/setup@v1.2.1
       id: setup-haskell-cabal
       with:
         ghc-version: ${{ matrix.ghc }}
