@@ -12,7 +12,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
         ghc: ['9.0', '8.10', '8.8']
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - uses: haskell/actions/setup@v1
       id: setup-haskell-cabal
       with:
@@ -44,7 +44,7 @@ jobs:
       matrix:
         ghc: ['9.0', '8.10', '8.8']
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - uses: haskell/actions/setup@v1
       id: setup-haskell-cabal
       with:
@@ -76,7 +76,7 @@ jobs:
     # See https://github.com/vmactions/freebsd-vm#under-the-hood.
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Build
       id: build-freebsd
       uses: vmactions/freebsd-vm@v0.1.4
