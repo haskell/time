@@ -2,6 +2,18 @@
 
 module Data.Time.Calendar.MonthDay (
     MonthOfYear,
+    pattern January,
+    pattern February,
+    pattern March,
+    pattern April,
+    pattern May,
+    pattern June,
+    pattern July,
+    pattern August,
+    pattern September,
+    pattern October,
+    pattern November,
+    pattern December,
     DayOfMonth,
     DayOfYear,
     monthAndDayToDayOfYear,

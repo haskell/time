@@ -6,6 +6,18 @@ module Data.Time.Calendar.Gregorian (
     -- * Year, month and day
     Year,
     MonthOfYear,
+    pattern January,
+    pattern February,
+    pattern March,
+    pattern April,
+    pattern May,
+    pattern June,
+    pattern July,
+    pattern August,
+    pattern September,
+    pattern October,
+    pattern November,
+    pattern December,
     DayOfMonth,
 
     -- * Gregorian calendar

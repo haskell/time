@@ -9,6 +9,7 @@ import Test.Calendar.Duration
 import Test.Calendar.Easter
 import Test.Calendar.LongWeekYears
 import Test.Calendar.MonthDay
+import Test.Calendar.MonthOfYear
 import Test.Calendar.Valid
 import Test.Calendar.Week
 import Test.Clock.Conversion
@@ -37,6 +38,7 @@ tests =
             , convertBack
             , longWeekYears
             , testMonthDay
+            , testMonthOfYear
             , testEaster
             , testValid
             , testWeek
