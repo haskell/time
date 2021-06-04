@@ -42,10 +42,14 @@ instance Show LocalTime where
     show (LocalTime d t) = (showGregorian d) ++ " " ++ (show t)
 
 -- | addLocalTime a b = a + b
+--
+-- Works by assuming the @LocalTime@s are in UTC.
 addLocalTime :: NominalDiffTime -> LocalTime -> LocalTime
 addLocalTime x = utcToLocalTime utc . addUTCTime x . localTimeToUTC utc
 
 -- | diffLocalTime a b = a - b
+--
+-- Works by assuming the @LocalTime@s are in UTC.
 diffLocalTime :: LocalTime -> LocalTime -> NominalDiffTime
 diffLocalTime a b = diffUTCTime (localTimeToUTC utc a) (localTimeToUTC utc b)
 
