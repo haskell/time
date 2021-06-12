@@ -2,8 +2,7 @@
 git clean -dXf
 git pull
 autoreconf -i
-# latest LTS resolver for each GHC x.y version
-for c in ghc-8.8 ghc-8.10 ghc-9.0
+for c in ghc-8.8.4 ghc-8.10.5 ghc-9.0.1
 do
 stack --compiler $c build
 done

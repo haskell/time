@@ -14,8 +14,8 @@ category:       Time
 build-type:     Configure
 tested-with:
     GHC == 8.8.4,
-    GHC == 8.10.2,
-    GHC == 9.0
+    GHC == 8.10.5,
+    GHC == 9.0.1
 x-follows-version-policy:
 
 extra-source-files:

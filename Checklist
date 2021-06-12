@@ -19,61 +19,68 @@ Before release:
 
     changelog.md
 
-5. Use correct GHC versions & latest LTS resolver
+5. Use latest LTS resolver
 
     https://www.stackage.org/lts
     stack.yaml
+
+6. Use correct & latest GHC versions
+
+    https://www.haskell.org/ghc/download.html
     fullcheck
     fullcheck.ps1
+    time.cabal
+        - tested-with
+        - base dependency lower bound
     .github/workflows/ci.yml
 
-6. Use latest stack
+7. Use latest stack
 
     stack upgrade
     stack --version
 
-7. Format source
+8. Format source
 
     ./format-all
 
-8. Build & test
+9. Build & test
 
     ./fullcheck
 
-9. Run benchmarks
+10. Run benchmarks
 
     stack bench
 
-10. Inspect generated haddock
+11. Inspect generated haddock, if necessary
 
     `stack path --local-doc-root`/index.html
 
-11. Commit and push changes to repo
+12. Commit and push changes to repo
 
     git commit -a
     git push
 
-12. Check builds (these can be done in parallel)
+13. Check builds (these can be done in parallel)
 
-12a. Check GitHub build
+13a. Check GitHub build
 
     https://github.com/haskell/time/actions
 
-12b. Build and test on 32-bit Linux machine
+13b. Build and test on 32-bit Linux machine
 
     stack upgrade
     stack --version
     git pull
     ./fullcheck
 
-12c. Build and test on FreeBSD machine
+13c. Build and test on FreeBSD machine
 
     stack upgrade
     stack --version
     git pull
     ./fullcheck
 
-12d. Build and test on Windows
+13d. Build and test on Windows
 
     (in PowerShell)
     Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
@@ -82,28 +89,28 @@ Before release:
     git pull
     .\fullcheck
 
-13. Upload to Hackage
+14. Upload to Hackage
 
     git clean -dXf
     autoreconf -i
     stack upload .
     http://hackage.haskell.org/package/time
 
-14. Tag commit
+15. Tag commit
 
     git tag -a -s VERSION -m "Version VERSION"
     git push --tags
 
-15. Update ghc branch
+16. Update ghc branch
 
     git checkout ghc
     git merge master
     git push
 
-16. Restore local branch for next development
+17. Restore local branch for next development
 
     git checkout master
 
-17. Close completed milestone
+18. Close completed milestone
 
     https://github.com/haskell/time/milestones
