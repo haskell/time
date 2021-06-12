@@ -70,6 +70,7 @@ Before release:
 
     stack upgrade
     stack --version
+    git checkout master
     git pull
     ./fullcheck
 
@@ -77,6 +78,7 @@ Before release:
 
     stack upgrade
     stack --version
+    git checkout master
     git pull
     ./fullcheck
 
@@ -86,6 +88,7 @@ Before release:
     Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
     stack upgrade
     stack --version
+    git checkout master
     git pull
     .\fullcheck
 
@@ -114,3 +117,7 @@ Before release:
 18. Close completed milestone
 
     https://github.com/haskell/time/milestones
+
+19. Inform GHC team
+
+    https://gitlab.haskell.org/ghc/ghc/-/issues
