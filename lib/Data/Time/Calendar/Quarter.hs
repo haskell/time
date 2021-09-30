@@ -10,6 +10,10 @@ module Data.Time.Calendar.Quarter (
     monthOfYearQuarter,
     monthQuarter,
     dayQuarter,
+    pattern BeginningOfQuarter,
+    pattern EndOfQuarter,
+    allQuarterByDay,
+    allQuarter,
 ) where
 
 import Control.DeepSeq
@@ -17,6 +21,7 @@ import Data.Data
 import Data.Fixed
 import Data.Ix
 import Data.Time.Calendar.Days
+import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Types
@@ -111,3 +116,39 @@ monthQuarter (YearMonth y my) = YearQuarter y $ monthOfYearQuarter my
 
 dayQuarter :: Day -> Quarter
 dayQuarter (MonthDay m _) = monthQuarter m
+
+-- | Bidirectional abstract constructor.
+pattern BeginningOfQuarter :: Quarter -> Day
+pattern BeginningOfQuarter q <-
+    (dayQuarter -> q)
+    where
+        BeginningOfQuarter (YearQuarter y q) =
+            case q of
+                Q1 -> YearMonthDay y January 1
+                Q2 -> YearMonthDay y April 1
+                Q3 -> YearMonthDay y July 1
+                Q4 -> YearMonthDay y October 1
+
+{-# COMPLETE BeginningOfQuarter #-}
+
+-- | Bidirectional abstract constructor.
+pattern EndOfQuarter :: Quarter -> Day
+pattern EndOfQuarter q <-
+    (dayQuarter -> q)
+    where
+        EndOfQuarter (YearQuarter y q) =
+            case q of
+                Q1 -> YearMonthDay y March 31
+                Q2 -> YearMonthDay y June 30
+                Q3 -> YearMonthDay y September 30
+                Q4 -> YearMonthDay y December 31
+
+{-# COMPLETE EndOfQuarter #-}
+
+-- | Returns the beginning and end days of a 'Quarter' based on a 'Day'.
+allQuarterByDay :: Day -> (Day, Day)
+allQuarterByDay = allQuarter . dayQuarter
+
+-- | Returns the beginning and end days of a 'Quarter'.
+allQuarter :: Quarter -> (Day, Day)
+allQuarter q = (BeginningOfQuarter q, EndOfQuarter q)

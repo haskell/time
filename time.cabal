@@ -168,6 +168,7 @@ test-suite test-main
         Test.Calendar.MonthDay
         Test.Calendar.MonthDayRef
         Test.Calendar.MonthOfYear
+        Test.Calendar.Quarter
         Test.Calendar.Valid
         Test.Calendar.Week
         Test.Clock.Conversion
