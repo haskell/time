@@ -7,10 +7,10 @@ import Test.Calendar.ClipDates
 import Test.Calendar.ConvertBack
 import Test.Calendar.Duration
 import Test.Calendar.Easter
+import Test.Calendar.HasDays
 import Test.Calendar.LongWeekYears
 import Test.Calendar.MonthDay
 import Test.Calendar.MonthOfYear
-import Test.Calendar.Quarter
 import Test.Calendar.Valid
 import Test.Calendar.Week
 import Test.Clock.Conversion
@@ -38,10 +38,10 @@ tests =
             , clipDates
             , convertBack
             , longWeekYears
+            , testHasDays
             , testMonthDay
             , testMonthOfYear
             , testEaster
-            , testQuarter
             , testValid
             , testWeek
             , testDuration

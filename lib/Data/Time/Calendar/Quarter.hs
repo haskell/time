@@ -10,17 +10,13 @@ module Data.Time.Calendar.Quarter (
     monthOfYearQuarter,
     monthQuarter,
     dayQuarter,
-    allQuarterByDay,
-    allQuarter,
 ) where
 
 import Control.DeepSeq
 import Data.Data
 import Data.Fixed
 import Data.Ix
-import Data.Time.Calendar.Class
 import Data.Time.Calendar.Days
-import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Types
@@ -89,21 +85,6 @@ instance Read Quarter where
         m <- readPrec
         return $ YearQuarter y m
 
-instance HasDays Quarter where
-    firstDay (YearQuarter y q) =
-        case q of
-            Q1 -> YearMonthDay y January 1
-            Q2 -> YearMonthDay y April 1
-            Q3 -> YearMonthDay y July 1
-            Q4 -> YearMonthDay y October 1
-
-    lastDay (YearQuarter y q) =
-        case q of
-            Q1 -> YearMonthDay y March 31
-            Q2 -> YearMonthDay y June 30
-            Q3 -> YearMonthDay y September 30
-            Q4 -> YearMonthDay y December 31
-
 addQuarters :: Integer -> Quarter -> Quarter
 addQuarters n (MkQuarter a) = MkQuarter $ a + n
 
@@ -130,11 +111,3 @@ monthQuarter (YearMonth y my) = YearQuarter y $ monthOfYearQuarter my
 
 dayQuarter :: Day -> Quarter
 dayQuarter (MonthDay m _) = monthQuarter m
-
--- | Returns the beginning and end days of a 'Quarter' based on a 'Day'.
-allQuarterByDay :: Day -> (Day, Day)
-allQuarterByDay = allQuarter . dayQuarter
-
--- | Returns the beginning and end days of a 'Quarter'.
-allQuarter :: Quarter -> (Day, Day)
-allQuarter q = (firstDay q, lastDay q)
