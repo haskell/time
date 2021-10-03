@@ -15,7 +15,6 @@ instance HasDays Quarter where
             Q2 -> YearMonthDay y April 1
             Q3 -> YearMonthDay y July 1
             Q4 -> YearMonthDay y October 1
-
     lastDay (YearQuarter y q) =
         case q of
             Q1 -> YearMonthDay y March 31
