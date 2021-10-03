@@ -42,28 +42,6 @@ testQuarter =
     testGroup
         "Quarter"
         [ testGroup
-            "pattern BeginningOfQuarter"
-            [ testProperty "Q1" $ \(MkWYear y) ->
-                BeginningOfQuarter (YearQuarter y Q1) == YearMonthDay y January 1
-            , testProperty "Q2" $ \(MkWYear y) ->
-                BeginningOfQuarter (YearQuarter y Q2) == YearMonthDay y April 1
-            , testProperty "Q3" $ \(MkWYear y) ->
-                BeginningOfQuarter (YearQuarter y Q3) == YearMonthDay y July 1
-            , testProperty "Q4" $ \(MkWYear y) ->
-                BeginningOfQuarter (YearQuarter y Q4) == YearMonthDay y October 1
-            ]
-        , testGroup
-            "pattern EndOfQuarter"
-            [ testProperty "Q1" $ \(MkWYear y) ->
-                EndOfQuarter (YearQuarter y Q1) == YearMonthDay y March 31
-            , testProperty "Q2" $ \(MkWYear y) ->
-                EndOfQuarter (YearQuarter y Q2) == YearMonthDay y June 30
-            , testProperty "Q3" $ \(MkWYear y) ->
-                EndOfQuarter (YearQuarter y Q3) == YearMonthDay y September 30
-            , testProperty "Q4" $ \(MkWYear y) ->
-                EndOfQuarter (YearQuarter y Q4) == YearMonthDay y December 31
-            ]
-        , testGroup
             "allQuarterByDay"
             [ testProperty "Q1" $ \(MkWYear y, MkQ1Month m) ->
                 allQuarterByDay (YearMonthDay y m 1) == (YearMonthDay y January 1, YearMonthDay y March 31)
