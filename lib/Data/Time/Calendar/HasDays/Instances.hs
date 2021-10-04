@@ -4,9 +4,14 @@
 
 module Data.Time.Calendar.HasDays.Instances () where
 
+import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.HasDays.Class
 import Data.Time.Calendar.Quarter
+
+instance HasDays Day where
+    firstDay = id
+    lastDay = id
 
 instance HasDays Quarter where
     firstDay (YearQuarter y q) =
