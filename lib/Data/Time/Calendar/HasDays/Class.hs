@@ -6,6 +6,7 @@ module Data.Time.Calendar.HasDays.Class (
 
 import Data.Time.Calendar.Days
 
+-- | The class of types which can be represented as a period of days.
 class HasDays t where
     -- | Returns the first 'Day' in a period of days.
     firstDay :: t -> Day
