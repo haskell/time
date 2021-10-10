@@ -58,55 +58,55 @@ testHasDays =
 
 testDay :: [TestTree]
 testDay =
-    [ testProperty "firstDay" $ \(MkWDay d) ->
-        firstDay d == d
-    , testProperty "lastDay" $ \(MkWDay d) ->
-        lastDay d == d
+    [ testProperty "firstDayOf" $ \(MkWDay d) ->
+        firstDayOf d == d
+    , testProperty "lastDayOf" $ \(MkWDay d) ->
+        lastDayOf d == d
     ]
 
 testMonth :: [TestTree]
 testMonth =
-    [ testProperty "firstDay" $ \(MkWMonth my@(YearMonth y m)) ->
-        firstDay my == YearMonthDay y m 1
+    [ testProperty "firstDayOf" $ \(MkWMonth my@(YearMonth y m)) ->
+        firstDayOf my == YearMonthDay y m 1
     , testGroup
-        "lastDay"
+        "lastDayOf"
         [ testCase "leap year" $
-            lastDay (YearMonth 2024 February) @?= YearMonthDay 2024 February 29
+            lastDayOf (YearMonth 2024 February) @?= YearMonthDay 2024 February 29
         , testCase "regular year" $
-            lastDay (YearMonth 2023 February) @?= YearMonthDay 2023 February 28
+            lastDayOf (YearMonth 2023 February) @?= YearMonthDay 2023 February 28
         ]
     ]
 
 testQuarter :: [TestTree]
 testQuarter =
     [ testGroup
-        "firstDay"
+        "firstDayOf"
         [ testProperty "Q1" $ \(MkWYear y) ->
-            firstDay (YearQuarter y Q1) == YearMonthDay y January 1
+            firstDayOf (YearQuarter y Q1) == YearMonthDay y January 1
         , testProperty "Q2" $ \(MkWYear y) ->
-            firstDay (YearQuarter y Q2) == YearMonthDay y April 1
+            firstDayOf (YearQuarter y Q2) == YearMonthDay y April 1
         , testProperty "Q3" $ \(MkWYear y) ->
-            firstDay (YearQuarter y Q3) == YearMonthDay y July 1
+            firstDayOf (YearQuarter y Q3) == YearMonthDay y July 1
         , testProperty "Q4" $ \(MkWYear y) ->
-            firstDay (YearQuarter y Q4) == YearMonthDay y October 1
+            firstDayOf (YearQuarter y Q4) == YearMonthDay y October 1
         ]
     , testGroup
-        "lastDay"
+        "lastDayOf"
         [ testProperty "Q1" $ \(MkWYear y) ->
-            lastDay (YearQuarter y Q1) == YearMonthDay y March 31
+            lastDayOf (YearQuarter y Q1) == YearMonthDay y March 31
         , testProperty "Q2" $ \(MkWYear y) ->
-            lastDay (YearQuarter y Q2) == YearMonthDay y June 30
+            lastDayOf (YearQuarter y Q2) == YearMonthDay y June 30
         , testProperty "Q3" $ \(MkWYear y) ->
-            lastDay (YearQuarter y Q3) == YearMonthDay y September 30
+            lastDayOf (YearQuarter y Q3) == YearMonthDay y September 30
         , testProperty "Q4" $ \(MkWYear y) ->
-            lastDay (YearQuarter y Q4) == YearMonthDay y December 31
+            lastDayOf (YearQuarter y Q4) == YearMonthDay y December 31
         ]
     ]
 
 testYear :: [TestTree]
 testYear =
-    [ testProperty "firstDay" $ \(MkWYear y) ->
-        firstDay y == YearMonthDay y January 1
-    , testProperty "lastDay" $ \(MkWYear y) ->
-        lastDay y == YearMonthDay y December 31
+    [ testProperty "firstDayOf" $ \(MkWYear y) ->
+        firstDayOf y == YearMonthDay y January 1
+    , testProperty "lastDayOf" $ \(MkWYear y) ->
+        lastDayOf y == YearMonthDay y December 31
     ]

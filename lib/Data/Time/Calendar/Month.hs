@@ -57,6 +57,10 @@ instance Read Month where
         m <- readPrec
         return $ YearMonth y m
 
+instance HasDays Month where
+    firstDayOf (YearMonth y m) = YearMonthDay y m 1
+    lastDayOf (YearMonth y m) = YearMonthDay y m 31
+
 addMonths :: Integer -> Month -> Month
 addMonths n (MkMonth a) = MkMonth $ a + n
 

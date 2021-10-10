@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.13] -
+- add HasDays class for periods of days
+
 ## [1.12] - 2021-06-12
 - support GHC 8.8, 8.10, 9.0 only
 - add patterns for each month of year

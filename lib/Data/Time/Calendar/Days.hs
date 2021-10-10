@@ -5,6 +5,9 @@ module Data.Time.Calendar.Days (
     Day (..),
     addDays,
     diffDays,
+    HasDays (..),
+    allDaysOf,
+    dayCountOf,
 ) where
 
 import Control.DeepSeq
@@ -42,3 +45,23 @@ addDays n (ModifiedJulianDay a) = ModifiedJulianDay (a + n)
 
 diffDays :: Day -> Day -> Integer
 diffDays (ModifiedJulianDay a) (ModifiedJulianDay b) = a - b
+
+-- | The class of types which can be represented as a period of days.
+class HasDays t where
+    -- | Returns the first 'Day' in a period of days.
+    firstDayOf :: t -> Day
+
+    -- | Returns the last 'Day' in a period of days.
+    lastDayOf :: t -> Day
+
+-- | A list of all the days in this period
+allDaysOf :: HasDays t => t -> [Day]
+allDaysOf x = [firstDayOf x .. lastDayOf x]
+
+-- | The number of days in this period.
+dayCountOf :: HasDays t => t -> Integer
+dayCountOf x = succ $ diffDays (lastDayOf x) (firstDayOf x)
+
+instance HasDays Day where
+    firstDayOf = id
+    lastDayOf = id

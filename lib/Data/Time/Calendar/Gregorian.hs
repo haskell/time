@@ -1,4 +1,5 @@
 {-# LANGUAGE Safe #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
 
@@ -173,3 +174,10 @@ diffGregorianDurationRollOver day2 day1 =
 -- orphan instance
 instance Show Day where
     show = showGregorian
+
+-- orphan instance
+
+-- | Year
+instance HasDays Year where
+    firstDayOf y = YearMonthDay y January 1
+    lastDayOf y = YearMonthDay y December 31

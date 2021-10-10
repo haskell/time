@@ -85,6 +85,20 @@ instance Read Quarter where
         m <- readPrec
         return $ YearQuarter y m
 
+instance HasDays Quarter where
+    firstDayOf (YearQuarter y q) =
+        case q of
+            Q1 -> firstDayOf $ YearMonth y January
+            Q2 -> firstDayOf $ YearMonth y April
+            Q3 -> firstDayOf $ YearMonth y July
+            Q4 -> firstDayOf $ YearMonth y October
+    lastDayOf (YearQuarter y q) =
+        case q of
+            Q1 -> lastDayOf $ YearMonth y March
+            Q2 -> lastDayOf $ YearMonth y June
+            Q3 -> lastDayOf $ YearMonth y September
+            Q4 -> lastDayOf $ YearMonth y December
+
 addQuarters :: Integer -> Quarter -> Quarter
 addQuarters n (MkQuarter a) = MkQuarter $ a + n
 
