@@ -5,9 +5,9 @@ import Test.Calendar.CalendarProps
 import Test.Calendar.Calendars
 import Test.Calendar.ClipDates
 import Test.Calendar.ConvertBack
+import Test.Calendar.DayPeriod
 import Test.Calendar.Duration
 import Test.Calendar.Easter
-import Test.Calendar.HasDays
 import Test.Calendar.LongWeekYears
 import Test.Calendar.MonthDay
 import Test.Calendar.MonthOfYear

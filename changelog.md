@@ -1,7 +1,8 @@
 # Change Log
 
 ## [1.13] -
-- add HasDays class for periods of days
+- add DayPeriod class for periods of days
+- add QuarterDay pattern
 - add CommonEra and BeforeCommonEra patterns
 
 ## [1.12] - 2021-06-12

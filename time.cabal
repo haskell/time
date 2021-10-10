@@ -163,7 +163,7 @@ test-suite test-main
         Test.Calendar.Duration
         Test.Calendar.Easter
         Test.Calendar.EasterRef
-        Test.Calendar.HasDays
+        Test.Calendar.DayPeriod
         Test.Calendar.LongWeekYears
         Test.Calendar.LongWeekYearsRef
         Test.Calendar.MonthDay

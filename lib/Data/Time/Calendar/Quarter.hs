@@ -86,19 +86,19 @@ instance Read Quarter where
         m <- readPrec
         return $ YearQuarter y m
 
-instance HasDays Quarter where
-    firstDayOf (YearQuarter y q) =
+instance DayPeriod Quarter where
+    periodFirstDay (YearQuarter y q) =
         case q of
-            Q1 -> firstDayOf $ YearMonth y January
-            Q2 -> firstDayOf $ YearMonth y April
-            Q3 -> firstDayOf $ YearMonth y July
-            Q4 -> firstDayOf $ YearMonth y October
-    lastDayOf (YearQuarter y q) =
+            Q1 -> periodFirstDay $ YearMonth y January
+            Q2 -> periodFirstDay $ YearMonth y April
+            Q3 -> periodFirstDay $ YearMonth y July
+            Q4 -> periodFirstDay $ YearMonth y October
+    periodLastDay (YearQuarter y q) =
         case q of
-            Q1 -> lastDayOf $ YearMonth y March
-            Q2 -> lastDayOf $ YearMonth y June
-            Q3 -> lastDayOf $ YearMonth y September
-            Q4 -> lastDayOf $ YearMonth y December
+            Q1 -> periodLastDay $ YearMonth y March
+            Q2 -> periodLastDay $ YearMonth y June
+            Q3 -> periodLastDay $ YearMonth y September
+            Q4 -> periodLastDay $ YearMonth y December
     dayPeriod (MonthDay m _) = monthQuarter m
 
 addQuarters :: Integer -> Quarter -> Quarter
@@ -132,8 +132,8 @@ dayQuarter = dayPeriod
 -- Invalid days of quarter will be clipped to the correct range.
 pattern QuarterDay :: Quarter -> DayOfQuarter -> Day
 pattern QuarterDay q dq <-
-    (fromDay -> (q, dq))
+    (periodFromDay -> (q, dq))
     where
-        QuarterDay = toDay
+        QuarterDay = periodToDay
 
 {-# COMPLETE QuarterDay #-}

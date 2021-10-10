@@ -5,12 +5,14 @@ module Data.Time.Calendar.Days (
     Day (..),
     addDays,
     diffDays,
-    HasDays (..),
-    allDaysOf,
-    dayCountOf,
-    fromDay,
-    toDay,
-    toDayValid,
+
+    -- * DayPeriod
+    DayPeriod (..),
+    periodAllDays,
+    periodLength,
+    periodFromDay,
+    periodToDay,
+    periodToDayValid,
 ) where
 
 import Control.DeepSeq
@@ -50,43 +52,43 @@ diffDays :: Day -> Day -> Integer
 diffDays (ModifiedJulianDay a) (ModifiedJulianDay b) = a - b
 
 -- | The class of types which can be represented as a period of days.
-class Ord t => HasDays t where
+class Ord p => DayPeriod p where
     -- | Returns the first 'Day' in a period of days.
-    firstDayOf :: t -> Day
+    periodFirstDay :: p -> Day
 
     -- | Returns the last 'Day' in a period of days.
-    lastDayOf :: t -> Day
+    periodLastDay :: p -> Day
 
     -- | Get the period this day is in
-    dayPeriod :: Day -> t
+    dayPeriod :: Day -> p
 
 -- | A list of all the days in this period
-allDaysOf :: HasDays t => t -> [Day]
-allDaysOf x = [firstDayOf x .. lastDayOf x]
+periodAllDays :: DayPeriod p => p -> [Day]
+periodAllDays x = [periodFirstDay x .. periodLastDay x]
 
 -- | The number of days in this period.
-dayCountOf :: HasDays t => t -> Integer
-dayCountOf x = succ $ diffDays (lastDayOf x) (firstDayOf x)
+periodLength :: DayPeriod p => p -> Integer
+periodLength x = succ $ diffDays (periodLastDay x) (periodFirstDay x)
 
 -- | Get the period this day is in, with the 1-based day number within the period.
--- `fromDay (firstDayOf x) = (x,1)`
-fromDay :: HasDays t => Day -> (t, Int)
-fromDay d =
-    let t = dayPeriod d
-        dt = succ $ diffDays d (firstDayOf t)
-     in (t, fromInteger dt)
+-- `periodFromDay (periodFirstDay x) = (x,1)`
+periodFromDay :: DayPeriod p => Day -> (p, Int)
+periodFromDay d =
+    let p = dayPeriod d
+        dt = succ $ diffDays d (periodFirstDay p)
+     in (p, fromInteger dt)
 
--- | Inverse of `fromDay`
-toDay :: HasDays t => t -> Int -> Day
-toDay t i = addDays (toInteger $ pred i) $ firstDayOf t
+-- | Inverse of `periodFromDay`
+periodToDay :: DayPeriod p => p -> Int -> Day
+periodToDay p i = addDays (toInteger $ pred i) $ periodFirstDay p
 
--- | Validating inverse of `fromDay`
-toDayValid :: HasDays t => t -> Int -> Maybe Day
-toDayValid t i =
-    let d = toDay t i
-     in if fst (fromDay d) == t then Just d else Nothing
+-- | Validating inverse of `periodFromDay`
+periodToDayValid :: DayPeriod p => p -> Int -> Maybe Day
+periodToDayValid p i =
+    let d = periodToDay p i
+     in if fst (periodFromDay d) == p then Just d else Nothing
 
-instance HasDays Day where
-    firstDayOf = id
-    lastDayOf = id
+instance DayPeriod Day where
+    periodFirstDay = id
+    periodLastDay = id
     dayPeriod = id

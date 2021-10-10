@@ -57,9 +57,9 @@ instance Read Month where
         m <- readPrec
         return $ YearMonth y m
 
-instance HasDays Month where
-    firstDayOf (YearMonth y m) = YearMonthDay y m 1
-    lastDayOf (YearMonth y m) = YearMonthDay y m 31 -- clips to correct day
+instance DayPeriod Month where
+    periodFirstDay (YearMonth y m) = YearMonthDay y m 1
+    periodLastDay (YearMonth y m) = YearMonthDay y m 31 -- clips to correct day
     dayPeriod (YearMonthDay y my _) = YearMonth y my
 
 addMonths :: Integer -> Month -> Month
@@ -87,11 +87,11 @@ fromYearMonthValid y my = do
 -- Invalid days of month will be clipped to the correct range.
 pattern MonthDay :: Month -> DayOfMonth -> Day
 pattern MonthDay m dm <-
-    (fromDay -> (m, dm))
+    (periodFromDay -> (m, dm))
     where
-        MonthDay = toDay
+        MonthDay = periodToDay
 
 fromMonthDayValid :: Month -> DayOfMonth -> Maybe Day
-fromMonthDayValid = toDayValid
+fromMonthDayValid = periodToDayValid
 
 {-# COMPLETE MonthDay #-}
