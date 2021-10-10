@@ -14,7 +14,7 @@ import Data.Time.Calendar.Month
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Quarter
 import Data.Time.Calendar.WeekDate
-import Test.Arbitrary ()
+import Test.Arbitrary (supportedDayRange)
 import Test.QuickCheck.Property
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -592,6 +592,10 @@ formatParseFormatTests =
         "format_parse_format"
         [ localOption (QuickCheckTests 50000) $
             nameTest "general" $ allTypes $ \name p -> nameTest name $ prop_format_parse_format p
+        , nameTest "#177" $
+            [ nameTest "start" $ \fc -> prop_format_parse_format Proxy fc (fst supportedDayRange)
+            , nameTest "end" $ \fc -> prop_format_parse_format Proxy fc (snd supportedDayRange)
+            ]
         , nameTest "leapsecond" $ allLeapSecondTypes $ \name t -> nameTest name $ \fc -> prop_format_parse_format Proxy fc t
         ]
 
