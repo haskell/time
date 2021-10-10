@@ -34,8 +34,11 @@ instance Arbitrary QuarterOfYear where
 
 deriving instance Random Day
 
+supportedDayRange :: (Day, Day)
+supportedDayRange = (fromGregorian (-9899) 1 1, fromGregorian 9999 12 31)
+
 instance Arbitrary Day where
-    arbitrary = choose (fromGregorian (-9900) 1 1, fromGregorian 9999 12 31)
+    arbitrary = choose supportedDayRange
     shrink day =
         let (y, m, d) = toGregorian day
             dayShrink =
