@@ -73,13 +73,16 @@ library
         Data.Time
     other-modules:
         Data.Format,
-        Data.Time.Calendar.Types,
-        Data.Time.Calendar.Private,
+        Data.Time.Calendar.CalendarDiffDays,
         Data.Time.Calendar.Days,
         Data.Time.Calendar.Gregorian,
-        Data.Time.Calendar.CalendarDiffDays,
-        Data.Time.Calendar.Week,
+        Data.Time.Calendar.HasDays,
+        Data.Time.Calendar.HasDays.Class,
+        Data.Time.Calendar.HasDays.Instances,
         Data.Time.Calendar.JulianYearDay,
+        Data.Time.Calendar.Private,
+        Data.Time.Calendar.Types,
+        Data.Time.Calendar.Week,
         Data.Time.Clock.Internal.DiffTime,
         Data.Time.Clock.Internal.AbsoluteTime,
         Data.Time.Clock.Internal.NominalDiffTime,
@@ -163,6 +166,7 @@ test-suite test-main
         Test.Calendar.Duration
         Test.Calendar.Easter
         Test.Calendar.EasterRef
+        Test.Calendar.HasDays
         Test.Calendar.LongWeekYears
         Test.Calendar.LongWeekYearsRef
         Test.Calendar.MonthDay

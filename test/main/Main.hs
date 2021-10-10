@@ -7,6 +7,7 @@ import Test.Calendar.ClipDates
 import Test.Calendar.ConvertBack
 import Test.Calendar.Duration
 import Test.Calendar.Easter
+import Test.Calendar.HasDays
 import Test.Calendar.LongWeekYears
 import Test.Calendar.MonthDay
 import Test.Calendar.MonthOfYear
@@ -37,6 +38,7 @@ tests =
             , clipDates
             , convertBack
             , longWeekYears
+            , testHasDays
             , testMonthDay
             , testMonthOfYear
             , testEaster
