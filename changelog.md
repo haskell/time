@@ -2,6 +2,7 @@
 
 ## [1.13] -
 - add HasDays class for periods of days
+- add CommonEra and BeforeCommonEra patterns
 
 ## [1.12] - 2021-06-12
 - support GHC 8.8, 8.10, 9.0 only

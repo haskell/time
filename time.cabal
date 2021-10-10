@@ -171,6 +171,7 @@ test-suite test-main
         Test.Calendar.MonthOfYear
         Test.Calendar.Valid
         Test.Calendar.Week
+        Test.Calendar.Year
         Test.Clock.Conversion
         Test.Clock.Resolution
         Test.Clock.TAI

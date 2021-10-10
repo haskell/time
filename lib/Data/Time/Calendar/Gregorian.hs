@@ -6,6 +6,8 @@
 module Data.Time.Calendar.Gregorian (
     -- * Year, month and day
     Year,
+    pattern CommonEra,
+    pattern BeforeCommonEra,
     MonthOfYear,
     pattern January,
     pattern February,
@@ -47,6 +49,7 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.MonthDay
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
+import Data.Time.Calendar.Types
 
 -- | Convert to proleptic Gregorian calendar.
 toGregorian :: Day -> (Year, MonthOfYear, DayOfMonth)

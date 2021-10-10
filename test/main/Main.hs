@@ -13,6 +13,7 @@ import Test.Calendar.MonthDay
 import Test.Calendar.MonthOfYear
 import Test.Calendar.Valid
 import Test.Calendar.Week
+import Test.Calendar.Year
 import Test.Clock.Conversion
 import Test.Clock.Resolution
 import Test.Clock.TAI
@@ -44,6 +45,7 @@ tests =
             , testEaster
             , testValid
             , testWeek
+            , testYear
             , testDuration
             ]
         , testGroup "Clock" [testClockConversion, testResolutions, testTAI]

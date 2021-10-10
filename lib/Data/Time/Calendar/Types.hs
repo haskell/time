@@ -5,6 +5,24 @@ module Data.Time.Calendar.Types where
 -- | Year of Common Era.
 type Year = Integer
 
+-- | Also known as Anno Domini.
+pattern CommonEra :: Integer -> Year
+pattern CommonEra n <-
+    ((\y -> if y > 0 then Just y else Nothing) -> Just n)
+    where
+        CommonEra n = n
+
+-- | Also known as Before Christ.
+-- Note that Year 1 = 1 CE, and the previous Year 0 = 1 BCE.
+-- 'CommonEra' and 'BeforeCommonEra' form a @COMPLETE@ set.
+pattern BeforeCommonEra :: Integer -> Year
+pattern BeforeCommonEra n <-
+    ((\y -> if y <= 0 then Just (1 - y) else Nothing) -> Just n)
+    where
+        BeforeCommonEra n = 1 - n
+
+{-# COMPLETE CommonEra, BeforeCommonEra #-}
+
 -- | Month of year, in range 1 (January) to 12 (December).
 type MonthOfYear = Int
 
