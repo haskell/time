@@ -59,7 +59,8 @@ instance Read Month where
 
 instance HasDays Month where
     firstDayOf (YearMonth y m) = YearMonthDay y m 1
-    lastDayOf (YearMonth y m) = YearMonthDay y m 31
+    lastDayOf (YearMonth y m) = YearMonthDay y m 31 -- clips to correct day
+    dayPeriod (YearMonthDay y my _) = YearMonth y my
 
 addMonths :: Integer -> Month -> Month
 addMonths n (MkMonth a) = MkMonth $ a + n
@@ -82,18 +83,15 @@ fromYearMonthValid y my = do
 
 {-# COMPLETE YearMonth #-}
 
-toMonthDay :: Day -> (Month, DayOfMonth)
-toMonthDay (YearMonthDay y my dm) = (YearMonth y my, dm)
-
 -- | Bidirectional abstract constructor.
 -- Invalid days of month will be clipped to the correct range.
 pattern MonthDay :: Month -> DayOfMonth -> Day
 pattern MonthDay m dm <-
-    (toMonthDay -> (m, dm))
+    (fromDay -> (m, dm))
     where
-        MonthDay (YearMonth y my) dm = YearMonthDay y my dm
+        MonthDay = toDay
 
 fromMonthDayValid :: Month -> DayOfMonth -> Maybe Day
-fromMonthDayValid (YearMonth y my) dm = fromGregorianValid y my dm
+fromMonthDayValid = toDayValid
 
 {-# COMPLETE MonthDay #-}

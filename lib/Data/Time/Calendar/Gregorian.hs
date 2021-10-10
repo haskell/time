@@ -181,3 +181,4 @@ instance Show Day where
 instance HasDays Year where
     firstDayOf y = YearMonthDay y January 1
     lastDayOf y = YearMonthDay y December 31
+    dayPeriod (YearMonthDay y _ _) = y

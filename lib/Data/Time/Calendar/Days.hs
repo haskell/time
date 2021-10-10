@@ -8,6 +8,9 @@ module Data.Time.Calendar.Days (
     HasDays (..),
     allDaysOf,
     dayCountOf,
+    fromDay,
+    toDay,
+    toDayValid,
 ) where
 
 import Control.DeepSeq
@@ -47,12 +50,15 @@ diffDays :: Day -> Day -> Integer
 diffDays (ModifiedJulianDay a) (ModifiedJulianDay b) = a - b
 
 -- | The class of types which can be represented as a period of days.
-class HasDays t where
+class Ord t => HasDays t where
     -- | Returns the first 'Day' in a period of days.
     firstDayOf :: t -> Day
 
     -- | Returns the last 'Day' in a period of days.
     lastDayOf :: t -> Day
+
+    -- | Get the period this day is in
+    dayPeriod :: Day -> t
 
 -- | A list of all the days in this period
 allDaysOf :: HasDays t => t -> [Day]
@@ -62,6 +68,25 @@ allDaysOf x = [firstDayOf x .. lastDayOf x]
 dayCountOf :: HasDays t => t -> Integer
 dayCountOf x = succ $ diffDays (lastDayOf x) (firstDayOf x)
 
+-- | Get the period this day is in, with the 1-based day number within the period.
+-- `fromDay (firstDayOf x) = (x,1)`
+fromDay :: HasDays t => Day -> (t, Int)
+fromDay d =
+    let t = dayPeriod d
+        dt = succ $ diffDays d (firstDayOf t)
+     in (t, fromInteger dt)
+
+-- | Inverse of `fromDay`
+toDay :: HasDays t => t -> Int -> Day
+toDay t i = addDays (toInteger $ pred i) $ firstDayOf t
+
+-- | Validating inverse of `fromDay`
+toDayValid :: HasDays t => t -> Int -> Maybe Day
+toDayValid t i =
+    let d = toDay t i
+     in if fst (fromDay d) == t then Just d else Nothing
+
 instance HasDays Day where
     firstDayOf = id
     lastDayOf = id
+    dayPeriod = id

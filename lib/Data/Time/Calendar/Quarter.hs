@@ -10,6 +10,7 @@ module Data.Time.Calendar.Quarter (
     monthOfYearQuarter,
     monthQuarter,
     dayQuarter,
+    pattern QuarterDay,
 ) where
 
 import Control.DeepSeq
@@ -98,6 +99,7 @@ instance HasDays Quarter where
             Q2 -> lastDayOf $ YearMonth y June
             Q3 -> lastDayOf $ YearMonth y September
             Q4 -> lastDayOf $ YearMonth y December
+    dayPeriod (MonthDay m _) = monthQuarter m
 
 addQuarters :: Integer -> Quarter -> Quarter
 addQuarters n (MkQuarter a) = MkQuarter $ a + n
@@ -124,4 +126,14 @@ monthQuarter :: Month -> Quarter
 monthQuarter (YearMonth y my) = YearQuarter y $ monthOfYearQuarter my
 
 dayQuarter :: Day -> Quarter
-dayQuarter (MonthDay m _) = monthQuarter m
+dayQuarter = dayPeriod
+
+-- | Bidirectional abstract constructor.
+-- Invalid days of quarter will be clipped to the correct range.
+pattern QuarterDay :: Quarter -> DayOfQuarter -> Day
+pattern QuarterDay q dq <-
+    (fromDay -> (q, dq))
+    where
+        QuarterDay = toDay
+
+{-# COMPLETE QuarterDay #-}

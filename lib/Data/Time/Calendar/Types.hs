@@ -50,6 +50,9 @@ pattern December = 12
 -- | Day of month, in range 1 to 31.
 type DayOfMonth = Int
 
+-- | Day of quarter, in range 1 to 92.
+type DayOfQuarter = Int
+
 -- | Day of year, in range 1 (January 1st) to 366.
 -- December 31st is 365 in a common year, 366 in a leap year.
 type DayOfYear = Int
