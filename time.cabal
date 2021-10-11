@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           time
-version:        1.12
+version:        1.13
 stability:      stable
 license:        BSD-2-Clause
 license-file:   LICENSE
@@ -14,7 +14,7 @@ category:       Time
 build-type:     Configure
 tested-with:
     GHC == 8.8.4,
-    GHC == 8.10.5,
+    GHC == 8.10.7,
     GHC == 9.0.1
 x-follows-version-policy:
 
