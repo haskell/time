@@ -10,11 +10,11 @@ import Test.Tasty.HUnit
 import Test.TestUtil
 
 cbRoundTrip :: TestTree
-cbRoundTrip = nameTest "CE/BCE" $ \(YearDay y _) -> case y of
-    CommonEra n -> case y of
+cbRoundTrip = nameTest "CE-BCE" $ \(YearDay y _) -> case y of
+    CommonEra n -> case id y of
         BeforeCommonEra _ -> False
         _ -> n >= 1 && y == CommonEra n
-    _ -> case y of
+    _ -> case id y of
         BeforeCommonEra n -> n >= 1 && y == BeforeCommonEra n
         _ -> False
 
