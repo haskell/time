@@ -153,7 +153,7 @@ mapWeekDate :: Format (Integer, (Int, Int)) -> Format Day
 mapWeekDate =
     mapMFormat (\(y, (w, d)) -> fromWeekDateValid y w d) (\day -> (\(y, w, d) -> Just (y, (w, d))) $ toWeekDate day)
 
--- | Like `makeTimeOfDayValid`, but accepts @24 0 0@ per ISO 8601:2004(E) sec. 4.2.3
+-- | Like 'makeTimeOfDayValid', but accepts @24 0 0@ per ISO 8601:2004(E) sec. 4.2.3
 --
 -- @since 1.12
 isoMakeTimeOfDayValid :: Int -> Int -> Pico -> Maybe TimeOfDay

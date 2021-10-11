@@ -130,6 +130,8 @@ dayQuarter = dayPeriod
 
 -- | Bidirectional abstract constructor.
 -- Invalid days of quarter will be clipped to the correct range.
+--
+-- @since 1.13
 pattern QuarterDay :: Quarter -> DayOfQuarter -> Day
 pattern QuarterDay q dq <-
     (periodFromDay -> (q, dq))

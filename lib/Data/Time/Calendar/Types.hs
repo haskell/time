@@ -2,7 +2,7 @@
 
 module Data.Time.Calendar.Types where
 
--- | Year of Common Era.
+-- | Year of Common Era (when positive).
 type Year = Integer
 
 -- | Also known as Anno Domini.
@@ -75,5 +75,5 @@ type DayOfQuarter = Int
 -- December 31st is 365 in a common year, 366 in a leap year.
 type DayOfYear = Int
 
--- | Week of year, by various reckonings, generally in range 0-53 depending on reckoning
+-- | Week of year, by various reckonings, generally in range 0-53 depending on reckoning.
 type WeekOfYear = Int

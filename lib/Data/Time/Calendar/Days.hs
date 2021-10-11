@@ -52,6 +52,8 @@ diffDays :: Day -> Day -> Integer
 diffDays (ModifiedJulianDay a) (ModifiedJulianDay b) = a - b
 
 -- | The class of types which can be represented as a period of days.
+--
+-- @since 1.13
 class Ord p => DayPeriod p where
     -- | Returns the first 'Day' in a period of days.
     periodFirstDay :: p -> Day
@@ -59,30 +61,41 @@ class Ord p => DayPeriod p where
     -- | Returns the last 'Day' in a period of days.
     periodLastDay :: p -> Day
 
-    -- | Get the period this day is in
+    -- | Get the period this day is in.
     dayPeriod :: Day -> p
 
--- | A list of all the days in this period
+-- | A list of all the days in this period.
+--
+-- @since 1.13
 periodAllDays :: DayPeriod p => p -> [Day]
-periodAllDays x = [periodFirstDay x .. periodLastDay x]
+periodAllDays p = [periodFirstDay p .. periodLastDay p]
 
 -- | The number of days in this period.
-periodLength :: DayPeriod p => p -> Integer
-periodLength x = succ $ diffDays (periodLastDay x) (periodFirstDay x)
+--
+-- @since 1.13
+periodLength :: DayPeriod p => p -> Int
+periodLength p = succ $ fromInteger $ diffDays (periodLastDay p) (periodFirstDay p)
 
 -- | Get the period this day is in, with the 1-based day number within the period.
--- `periodFromDay (periodFirstDay x) = (x,1)`
+--
+-- @periodFromDay (periodFirstDay p) = (p,1)@
+--
+-- @since 1.13
 periodFromDay :: DayPeriod p => Day -> (p, Int)
 periodFromDay d =
     let p = dayPeriod d
-        dt = succ $ diffDays d (periodFirstDay p)
-     in (p, fromInteger dt)
+        dt = succ $ fromInteger $ diffDays d $ periodFirstDay p
+     in (p, dt)
 
--- | Inverse of `periodFromDay`
+-- | Inverse of 'periodFromDay'.
+--
+-- @since 1.13
 periodToDay :: DayPeriod p => p -> Int -> Day
 periodToDay p i = addDays (toInteger $ pred i) $ periodFirstDay p
 
--- | Validating inverse of `periodFromDay`
+-- | Validating inverse of 'periodFromDay'.
+--
+-- @since 1.13
 periodToDayValid :: DayPeriod p => p -> Int -> Maybe Day
 periodToDayValid p i =
     let d = periodToDay p i
