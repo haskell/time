@@ -39,7 +39,7 @@ tests =
             , clipDates
             , convertBack
             , longWeekYears
-            , testHasDays
+            , testDayPeriod
             , testMonthDay
             , testMonthOfYear
             , testEaster
