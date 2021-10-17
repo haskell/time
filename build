@@ -1,0 +1,7 @@
+#!/bin/bash -e
+PATH=$HOME/.ghcup/bin:$PATH
+ghcup set cabal latest
+ghcup set ghc latest
+cabal v1-install --only-dependencies --enable-tests
+cabal v1-configure --enable-tests
+cabal v1-test

@@ -6,7 +6,7 @@ Before release:
 
 2. Pull upstream changes
 
-    git checkout master
+    git switch master
     git pull
 
 3. Update version numbers
@@ -68,56 +68,47 @@ Before release:
 
 13b. Build and test on 32-bit Linux machine
 
-    stack upgrade
-    stack --version
-    git checkout master
-    git pull
+    git switch master
     ./fullcheck
 
 13c. Build and test on FreeBSD machine
 
-    stack upgrade
-    stack --version
-    git checkout master
-    git pull
+    git switch master
     ./fullcheck
 
 13d. Build and test on Windows
 
     (in PowerShell)
     Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-    stack upgrade
-    stack --version
-    git checkout master
-    git pull
+    git switch master
     .\fullcheck
 
-14. Upload to Hackage
+1.  Upload to Hackage
 
     git clean -dXf
     autoreconf -i
     stack upload .
     http://hackage.haskell.org/package/time
 
-15. Tag commit
+2.  Tag commit
 
     git tag -a -s VERSION -m "Version VERSION"
     git push --tags
 
-16. Update ghc branch
+3.  Update ghc branch
 
-    git checkout ghc
+    git switch ghc
     git merge master
     git push
 
-17. Restore local branch for next development
+4.  Restore local branch for next development
 
-    git checkout master
+    git switch master
 
-18. Close completed milestone
+5.  Close completed milestone
 
     https://github.com/haskell/time/milestones
 
-19. Inform GHC team
+6.  Inform GHC team
 
     https://gitlab.haskell.org/ghc/ghc/-/issues

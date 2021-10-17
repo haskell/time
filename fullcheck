@@ -2,8 +2,15 @@
 git clean -dXf
 git pull
 autoreconf -i
-for c in ghc-8.8.4 ghc-8.10.7 ghc-9.0.1
+PATH=$HOME/.ghcup/bin:$PATH
+ghcup upgrade
+ghcup install cabal --set latest
+for c in 8.8.4 8.10.7 9.0.1
 do
-stack --compiler $c build
+ghcup install ghc --set $c
+cabal update
+cabal v1-install --only-dependencies --enable-tests
+cabal v1-configure --enable-tests
+cabal v1-test
 done
 echo OK
