@@ -17,8 +17,9 @@ import Test.TestUtil
 
 deriving instance Eq ZonedTime
 
-readShowProperty :: (Eq a, Show a) => Format a -> a -> Property
-readShowProperty fmt val =
+readShowProperty :: (Eq a, Show a) => (a -> Bool) -> Format a -> a -> Property
+readShowProperty skip _ val | skip val = property Discard
+readShowProperty _ fmt val =
     case formatShowM fmt val of
         Nothing -> property Discard
         Just str ->
@@ -37,16 +38,22 @@ instance {-# OVERLAPPABLE #-} SpecialTestValues a where
     specialTestValues = []
 
 instance SpecialTestValues TimeOfDay where
-    specialTestValues = [TimeOfDay 0 0 0, TimeOfDay 24 0 0]
+    specialTestValues = [TimeOfDay 0 0 0, TimeOfDay 0 0 60, TimeOfDay 1 0 60, TimeOfDay 24 0 0]
+
+readShowTestCheck :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (a -> Bool) -> Format a -> [TestTree]
+readShowTestCheck skip fmt = [nameTest "random" $ readShowProperty skip fmt, nameTest "special" $ fmap (\a -> nameTest (show a) $ readShowProperty skip fmt a) $ filter (not . skip) specialTestValues]
 
 readShowTest :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => Format a -> [TestTree]
-readShowTest fmt = [nameTest "random" $ readShowProperty fmt, nameTest "special" $ fmap (\a -> nameTest (show a) $ readShowProperty fmt a) specialTestValues]
+readShowTest = readShowTestCheck $ \_ -> False
 
 readBoth :: NameTest t => (FormatExtension -> t) -> [TestTree]
 readBoth fmts = [nameTest "extended" $ fmts ExtendedFormat, nameTest "basic" $ fmts BasicFormat]
 
+readShowTestsCheck :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (a -> Bool) -> (FormatExtension -> Format a) -> [TestTree]
+readShowTestsCheck skip fmts = readBoth $ \fe -> readShowTestCheck skip $ fmts fe
+
 readShowTests :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (FormatExtension -> Format a) -> [TestTree]
-readShowTests fmts = readBoth $ \fe -> readShowTest $ fmts fe
+readShowTests = readShowTestsCheck $ \_ -> False
 
 newtype Durational t = MkDurational {unDurational :: t}
     deriving (Eq)
@@ -91,8 +98,8 @@ testReadShowFormat =
         , nameTest "expandedWeekDateFormat" $ readShowTests $ expandedWeekDateFormat 6
         , nameTest "expandedYearWeekFormat" $ readShowTests $ expandedYearWeekFormat 6
         , nameTest "timeOfDayFormat" $ readShowTests $ timeOfDayFormat
-        , nameTest "hourMinuteFormat" $ readShowTests $ hourMinuteFormat
-        , nameTest "hourFormat" $ readShowTest $ hourFormat
+        , nameTest "hourMinuteFormat" $ readShowTestsCheck (\(TimeOfDay _ _ s) -> s >= 60) $ hourMinuteFormat
+        , nameTest "hourFormat" $ readShowTestCheck (\(TimeOfDay _ _ s) -> s >= 60) $ hourFormat
         , nameTest "withTimeDesignator" $ readShowTests $ \fe -> withTimeDesignator $ timeOfDayFormat fe
         , nameTest "withUTCDesignator" $ readShowTests $ \fe -> withUTCDesignator $ timeOfDayFormat fe
         , nameTest "timeOffsetFormat" $ readShowTests $ timeOffsetFormat
