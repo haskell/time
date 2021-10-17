@@ -1,3 +1,3 @@
 #!/bin/bash -e
 stack build --no-test --no-bench --no-haddock fourmolu
-for f in `find -name '*.hs' -not -path '*.stack-work/*' | grep -xvf .format.ignore`; do `stack path --local-install-root`/bin/fourmolu -i -o -XPatternSynonyms $f || exit; done
+for f in `find -name '*.hs' -not -path '*.stack-work/*' -not -path '*/dist/*' | grep -xvf .format.ignore`; do `stack path --local-install-root`/bin/fourmolu -i -o -XPatternSynonyms $f || exit; done
