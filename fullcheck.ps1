@@ -7,11 +7,15 @@ if (!$?) {Exit 1}
 if (!$?) {Exit 1}
 & "ghcup" "upgrade"
 if (!$?) {Exit 1}
-& "ghcup" "install" "cabal" "--set" "latest"
+& "ghcup" "install" "cabal" "latest"
+if (!$?) {Exit 1}
+& "ghcup" "set" "cabal" "latest"
 if (!$?) {Exit 1}
 ForEach ($c in "ghc-8.8.4","ghc-8.10.7","ghc-9.0.1")
 {
-    & "ghcup" "install" "ghc" "--set" "$c"
+    & "ghcup" "install" "ghc" "$c"
+    if (!$?) {Exit 1}
+    & "ghcup" "set" "ghc" "$c"
     if (!$?) {Exit 1}
     & "cabal" "update"
     if (!$?) {Exit 1}
