@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.13] -
+## [1.13] - 2021-10-18
 - add DayPeriod class for periods of days
 - add QuarterDay pattern
 - add CommonEra and BeforeCommonEra patterns
