@@ -7,7 +7,8 @@ ghcup upgrade
 ghcup install cabal --set latest
 for c in 8.8.4 8.10.7 9.0.1
 do
-ghcup install ghc --set $c
+ghcup install ghc $c
+ghcup set ghc $c
 cabal update
 cabal v1-install --only-dependencies --enable-tests
 cabal v1-configure --enable-tests
