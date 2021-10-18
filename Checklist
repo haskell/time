@@ -83,32 +83,32 @@ Before release:
     git switch master
     .\fullcheck
 
-1.  Upload to Hackage
+14.  Upload to Hackage
 
     git clean -dXf
     autoreconf -i
     stack upload .
     http://hackage.haskell.org/package/time
 
-2.  Tag commit
+15.  Tag commit
 
     git tag -a -s VERSION -m "Version VERSION"
     git push --tags
 
-3.  Update ghc branch
+16.  Update ghc branch
 
     git switch ghc
     git merge master
     git push
 
-4.  Restore local branch for next development
+17.  Restore local branch for next development
 
     git switch master
 
-5.  Close completed milestone
+18.  Close completed milestone
 
     https://github.com/haskell/time/milestones
 
-6.  Inform GHC team
+19.  Inform GHC team
 
     https://gitlab.haskell.org/ghc/ghc/-/issues
