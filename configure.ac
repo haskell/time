@@ -1,4 +1,4 @@
-AC_INIT([Haskell time package],[1.13],[ashley@semantic.org],[time])
+AC_INIT([Haskell time package],[1.12.1],[ashley@semantic.org],[time])
 
 # Safety check: Ensure that we are in the correct source directory.
 AC_CONFIG_SRCDIR([lib/include/HsTime.h])
