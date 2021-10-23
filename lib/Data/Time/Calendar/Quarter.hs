@@ -10,6 +10,7 @@ module Data.Time.Calendar.Quarter (
     monthOfYearQuarter,
     monthQuarter,
     dayQuarter,
+    DayOfQuarter,
     pattern QuarterDay,
 ) where
 
@@ -116,22 +117,25 @@ pattern YearQuarter y qy <-
 
 {-# COMPLETE YearQuarter #-}
 
+-- | The 'QuarterOfYear' this 'MonthOfYear' is in.
 monthOfYearQuarter :: MonthOfYear -> QuarterOfYear
 monthOfYearQuarter my | my <= 3 = Q1
 monthOfYearQuarter my | my <= 6 = Q2
 monthOfYearQuarter my | my <= 9 = Q3
 monthOfYearQuarter _ = Q4
 
+-- | The 'Quarter' this 'Month' is in.
 monthQuarter :: Month -> Quarter
 monthQuarter (YearMonth y my) = YearQuarter y $ monthOfYearQuarter my
 
+-- | The 'Quarter' this 'Day' is in.
 dayQuarter :: Day -> Quarter
 dayQuarter = dayPeriod
 
 -- | Bidirectional abstract constructor.
 -- Invalid days of quarter will be clipped to the correct range.
 --
--- @since 1.13
+-- @since 1.12.1
 pattern QuarterDay :: Quarter -> DayOfQuarter -> Day
 pattern QuarterDay q dq <-
     (periodFromDay -> (q, dq))

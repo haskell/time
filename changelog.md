@@ -2,7 +2,7 @@
 
 ## [1.12.1] -
 - add DayPeriod class for periods of days
-- add QuarterDay pattern
+- add QuarterDay pattern and DayOfQuarter type synonym
 - add CommonEra and BeforeCommonEra patterns
 
 ## [1.12] - 2021-06-12
