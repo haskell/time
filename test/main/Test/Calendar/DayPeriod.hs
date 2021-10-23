@@ -1,5 +1,5 @@
 module Test.Calendar.DayPeriod (
-    testHasDays,
+    testDayPeriod,
 ) where
 
 import Data.Time.Calendar
@@ -46,8 +46,23 @@ newtype WDayOfMonth = MkWDayOfMonth DayOfMonth
 instance Arbitrary WDayOfMonth where
     arbitrary = fmap MkWDayOfMonth $ choose (-5, 35)
 
-testHasDays :: TestTree
-testHasDays =
+newtype WQuarterOfYear = MkWQuarterOfYear QuarterOfYear
+    deriving (Eq, Show)
+
+instance Arbitrary WQuarterOfYear where
+    arbitrary = fmap MkWQuarterOfYear $ elements [Q1 .. Q4]
+
+newtype WQuarter = MkWQuarter Quarter
+    deriving (Eq, Show)
+
+instance Arbitrary WQuarter where
+    arbitrary = do
+        (MkWYear y) <- arbitrary
+        (MkWQuarterOfYear q) <- arbitrary
+        pure $ MkWQuarter $ YearQuarter y q
+
+testDayPeriod :: TestTree
+testDayPeriod =
     testGroup
         "DayPeriod"
         [ testGroup "Day" testDay
@@ -62,6 +77,12 @@ testDay =
         periodFirstDay d == d
     , testProperty "periodLastDay" $ \(MkWDay d) ->
         periodLastDay d == d
+    , testProperty "dayPeriod" $ \(MkWDay d) ->
+        dayPeriod d == d
+    , testProperty "periodAllDays" $ \(MkWDay d) ->
+        periodAllDays d == [d]
+    , testProperty "periodLength" $ \(MkWDay d) ->
+        periodLength d == 1
     ]
 
 testMonth :: [TestTree]
@@ -74,6 +95,19 @@ testMonth =
             periodLastDay (YearMonth 2024 February) @?= YearMonthDay 2024 February 29
         , testCase "regular year" $
             periodLastDay (YearMonth 2023 February) @?= YearMonthDay 2023 February 28
+        ]
+    , testProperty "dayPeriod" $ \(MkWMonth my@(YearMonth y m), MkWDayOfMonth d) ->
+        dayPeriod (YearMonthDay y m d) == my
+    , testProperty "periodAllDays" $ \(MkWMonth my@(YearMonth y1 m1)) ->
+        all (== (y1, m1)) $ map (\(YearMonthDay y2 m2 _) -> (y2, m2)) $ periodAllDays my
+    , testGroup
+        "periodLength"
+        [ testProperty "property tests" $ \(MkWMonth my) ->
+            periodLength my >= 28
+        , testCase "leap year" $
+            periodLength (YearMonth 2024 February) @?= 29
+        , testCase "regular year" $
+            periodLength (YearMonth 2023 February) @?= 28
         ]
     ]
 
@@ -101,6 +135,12 @@ testQuarter =
         , testProperty "Q4" $ \(MkWYear y) ->
             periodLastDay (YearQuarter y Q4) == YearMonthDay y December 31
         ]
+    , testProperty "dayPeriod" $ \(MkWMonth my@(YearMonth y m), MkWDayOfMonth d) ->
+        dayPeriod (YearMonthDay y m d) == monthQuarter my
+    , testProperty "periodAllDays" $ \(MkWQuarter q) ->
+        all (== q) $ map dayQuarter $ periodAllDays q
+    , testProperty "periodLength" $ \(MkWQuarter q) ->
+        periodLength q >= 90
     ]
 
 testYear :: [TestTree]
@@ -109,4 +149,10 @@ testYear =
         periodFirstDay y == YearMonthDay y January 1
     , testProperty "periodLastDay" $ \(MkWYear y) ->
         periodLastDay y == YearMonthDay y December 31
+    , testProperty "dayPeriod" $ \(MkWYear y, MkWMonthOfYear m, MkWDayOfMonth d) ->
+        dayPeriod (YearMonthDay y m d) == y
+    , testProperty "periodAllDays" $ \(MkWYear y1) ->
+        all (== y1) $ map (\(YearMonthDay y2 _ _) -> y2) $ periodAllDays y1
+    , testProperty "periodLength" $ \(MkWYear y) ->
+        periodLength y >= 365
     ]
