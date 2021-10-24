@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.12.1] -
+## [1.12.1] - 2021-10-24
 - add DayPeriod class for periods of days
 - add QuarterDay pattern and DayOfQuarter type synonym
 - add CommonEra and BeforeCommonEra patterns
