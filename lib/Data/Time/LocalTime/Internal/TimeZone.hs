@@ -117,7 +117,27 @@ getTimeZoneSystem t = do
     ctime <- toCTime $ systemSeconds t
     getTimeZoneCTime ctime
 
--- | Get the local time-zone for a given time (varying as per summertime adjustments).
+-- | Get the time-zone for a given time (varying as per summertime adjustments).
+--
+-- On unix systems the output of this function depends on:
+--
+-- 1. the value of @TZ@ environment variable (if set)
+-- 
+-- 2. global system time zone settings (usually configured by @\/etc\/localtime@ symlink)
+-- 
+-- For details see tzset(3) and localtime(3).
+--
+-- Example:
+--
+-- @
+-- > let t = `UTCTime` (`Data.Time.Calendar.fromGregorian` 2021 7 1) 0
+-- > `getTimeZone` t
+-- CEST
+-- > `System.Environment.setEnv` \"TZ\" \"America/New_York\" >> `getTimeZone` t
+-- EDT
+-- > `System.Environment.setEnv` \"TZ\" \"Europe/Berlin\" >> `getTimeZone` t
+-- CEST
+-- @
 getTimeZone :: UTCTime -> IO TimeZone
 getTimeZone t = do
     ctime <- toCTime $ floor $ utcTimeToPOSIXSeconds t
