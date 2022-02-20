@@ -1,6 +1,7 @@
 # Change Log
 
 ## [1.12.2] -
+- fix: handle +HH format for timeOffsetFormat etc.
 
 ## [1.12.1] - 2021-10-24
 - add DayPeriod class for periods of days

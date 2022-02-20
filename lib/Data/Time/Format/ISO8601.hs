@@ -263,13 +263,18 @@ withUTCDesignator f = f <** literalFormat "Z"
 -- | ISO 8601:2004(E) sec. 4.2.5.1
 timeOffsetFormat :: FormatExtension -> Format TimeZone
 timeOffsetFormat fe = let
-    toTimeZone (sign, (h, m)) = minutesToTimeZone $ sign * (h * 60 + m)
+    toTimeZone (sign, ehm) =
+        minutesToTimeZone $
+            sign * case ehm of
+                Left h -> h * 60
+                Right (h, m) -> h * 60 + m
     fromTimeZone tz = let
         mm = timeZoneMinutes tz
-        hm = quotRem (abs mm) 60
-        in (signum mm, hm)
+        (h, m) = quotRem (abs mm) 60
+        in (signum mm, Right (h, m))
+    digits2 = integerFormat NoSign (Just 2)
     in isoMap toTimeZone fromTimeZone $
-        mandatorySignFormat <**> extColonFormat fe (integerFormat NoSign (Just 2)) (integerFormat NoSign (Just 2))
+        mandatorySignFormat <**> (digits2 <++> extColonFormat fe digits2 digits2)
 
 -- | ISO 8601:2004(E) sec. 4.2.5.2
 timeOfDayAndOffsetFormat :: FormatExtension -> Format (TimeOfDay, TimeZone)

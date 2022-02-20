@@ -17,6 +17,7 @@ Before release:
 
 4. Update changelog, add current UTC date
 
+    date -u
     changelog.md
 
 5. Use latest LTS resolver
