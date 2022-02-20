@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           time
-version:        1.12.1
+version:        1.12.2
 stability:      stable
 license:        BSD-2-Clause
 license-file:   LICENSE

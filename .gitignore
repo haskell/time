@@ -5,6 +5,7 @@ conf*
 a.out
 configure
 dist/
+dist-newstyle/
 dist-install
 ghc.mk
 lib/include/HsTimeConfig.h
