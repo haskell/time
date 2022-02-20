@@ -47,7 +47,8 @@ monthAndDayToDayOfYearValid :: Bool -> MonthOfYear -> DayOfMonth -> Maybe DayOfY
 monthAndDayToDayOfYearValid isLeap month day = do
     month' <- clipValid 1 12 month
     day' <- clipValid 1 (monthLength' isLeap month') day
-    let day'' = fromIntegral day'
+    let
+        day'' = fromIntegral day'
         month'' = fromIntegral month'
         k =
             if month' <= 2
@@ -104,4 +105,4 @@ monthLengths isleap =
     , 31
     ]
 
---J        F                   M  A  M  J  J  A  S  O  N  D
+-- J        F                   M  A  M  J  J  A  S  O  N  D

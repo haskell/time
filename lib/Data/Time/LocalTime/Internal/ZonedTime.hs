@@ -50,7 +50,6 @@ getZonedTime = do
     zone <- getTimeZone t
     return (utcToZonedTime zone t)
 
--- |
 utcToLocalZonedTime :: UTCTime -> IO ZonedTime
 utcToLocalZonedTime t = do
     zone <- getTimeZone t

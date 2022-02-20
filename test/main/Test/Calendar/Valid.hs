@@ -11,36 +11,36 @@ import Test.Tasty
 import Test.Tasty.QuickCheck hiding (reason)
 
 validResult :: (Eq c, Show c, Eq t, Show t) => (s -> c) -> Bool -> (t -> c) -> (c -> t) -> (c -> Maybe t) -> s -> Result
-validResult sc valid toComponents fromComponents fromComponentsValid s =
-    let c = sc s
-        mt = fromComponentsValid c
-        t' = fromComponents c
-        c' = toComponents t'
-     in if valid
-            then case mt of
-                Nothing -> rejected
-                Just t ->
-                    if t' /= t
-                        then failed{reason = "'fromValid' gives " ++ show t ++ ", but 'from' gives " ++ show t'}
-                        else
-                            if c' /= c
-                                then
-                                    failed
-                                        { reason =
-                                            "found valid, but converts "
-                                                ++ show c
-                                                ++ " -> "
-                                                ++ show t'
-                                                ++ " -> "
-                                                ++ show c'
-                                        }
-                                else succeeded
-            else case mt of
-                Nothing ->
-                    if c' /= c
-                        then succeeded
-                        else failed{reason = show c ++ " found invalid, but converts with " ++ show t'}
-                Just _ -> rejected
+validResult sc valid toComponents fromComponents fromComponentsValid s = let
+    c = sc s
+    mt = fromComponentsValid c
+    t' = fromComponents c
+    c' = toComponents t'
+    in if valid
+        then case mt of
+            Nothing -> rejected
+            Just t ->
+                if t' /= t
+                    then failed{reason = "'fromValid' gives " ++ show t ++ ", but 'from' gives " ++ show t'}
+                    else
+                        if c' /= c
+                            then
+                                failed
+                                    { reason =
+                                        "found valid, but converts "
+                                            ++ show c
+                                            ++ " -> "
+                                            ++ show t'
+                                            ++ " -> "
+                                            ++ show c'
+                                    }
+                            else succeeded
+        else case mt of
+            Nothing ->
+                if c' /= c
+                    then succeeded
+                    else failed{reason = show c ++ " found invalid, but converts with " ++ show t'}
+            Just _ -> rejected
 
 validTest ::
     (Arbitrary s, Show s, Eq c, Show c, Eq t, Show t) =>
@@ -58,16 +58,16 @@ validTest name sc toComponents fromComponents fromComponentsValid =
         ]
 
 toSundayStartWeek :: Day -> (Integer, Int, Int)
-toSundayStartWeek day =
-    let (y, _) = toOrdinalDate day
-        (w, d) = sundayStartWeek day
-     in (y, w, d)
+toSundayStartWeek day = let
+    (y, _) = toOrdinalDate day
+    (w, d) = sundayStartWeek day
+    in (y, w, d)
 
 toMondayStartWeek :: Day -> (Integer, Int, Int)
-toMondayStartWeek day =
-    let (y, _) = toOrdinalDate day
-        (w, d) = mondayStartWeek day
-     in (y, w, d)
+toMondayStartWeek day = let
+    (y, _) = toOrdinalDate day
+    (w, d) = mondayStartWeek day
+    in (y, w, d)
 
 newtype WYear
     = MkWYear Year

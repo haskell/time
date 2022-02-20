@@ -24,9 +24,10 @@ testMonthDay =
     yearDays isLeap =
         map
             ( \yd ->
-                let (m, d) = dayOfYearToMonthAndDay isLeap yd
+                let
+                    (m, d) = dayOfYearToMonthAndDay isLeap yd
                     yd' = monthAndDayToDayOfYear isLeap m d
                     mdtext = show m ++ "-" ++ show d
-                 in showCompare yd mdtext yd'
+                    in showCompare yd mdtext yd'
             )
             [-2 .. 369]

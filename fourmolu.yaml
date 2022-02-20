@@ -1,2 +1,3 @@
 respectful: false
 haddock-style: single-line
+consistent-let: true

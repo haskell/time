@@ -231,27 +231,26 @@ fromRationalRound r = fromRational $ round (r * 1000000000000) % 1000000000000
 
 -- | ISO 8601:2004(E) sec. 4.2.2.3(a), 4.2.2.4(b)
 hourMinuteFormat :: FormatExtension -> Format TimeOfDay
-hourMinuteFormat fe =
-    let toTOD (h, m) =
-            case timeToDaysAndTimeOfDay $ fromRationalRound $ toRational $ (fromIntegral h) * 3600 + m * 60 of
-                (0, tod) -> Just tod
-                (1, TimeOfDay 0 0 0) -> Just $ TimeOfDay 24 0 0
-                _ -> Nothing
-        fromTOD tod =
-            let mm = (realToFrac $ daysAndTimeOfDayToTime 0 tod) / 60
-             in Just $ quotRemBy 60 mm
-     in mapMFormat toTOD fromTOD $ extColonFormat fe hourFormat' $ minuteDecimalFormat
+hourMinuteFormat fe = let
+    toTOD (h, m) =
+        case timeToDaysAndTimeOfDay $ fromRationalRound $ toRational $ (fromIntegral h) * 3600 + m * 60 of
+            (0, tod) -> Just tod
+            (1, TimeOfDay 0 0 0) -> Just $ TimeOfDay 24 0 0
+            _ -> Nothing
+    fromTOD tod = let
+        mm = (realToFrac $ daysAndTimeOfDayToTime 0 tod) / 60
+        in Just $ quotRemBy 60 mm
+    in mapMFormat toTOD fromTOD $ extColonFormat fe hourFormat' $ minuteDecimalFormat
 
 -- | ISO 8601:2004(E) sec. 4.2.2.3(b), 4.2.2.4(c)
 hourFormat :: Format TimeOfDay
-hourFormat =
-    let toTOD h =
-            case timeToDaysAndTimeOfDay $ fromRationalRound $ toRational $ h * 3600 of
-                (0, tod) -> Just tod
-                (1, TimeOfDay 0 0 0) -> Just $ TimeOfDay 24 0 0
-                _ -> Nothing
-        fromTOD tod = Just $ (realToFrac $ daysAndTimeOfDayToTime 0 tod) / 3600
-     in mapMFormat toTOD fromTOD $ hourDecimalFormat
+hourFormat = let
+    toTOD h = case timeToDaysAndTimeOfDay $ fromRationalRound $ toRational $ h * 3600 of
+        (0, tod) -> Just tod
+        (1, TimeOfDay 0 0 0) -> Just $ TimeOfDay 24 0 0
+        _ -> Nothing
+    fromTOD tod = Just $ (realToFrac $ daysAndTimeOfDayToTime 0 tod) / 3600
+    in mapMFormat toTOD fromTOD $ hourDecimalFormat
 
 -- | ISO 8601:2004(E) sec. 4.2.2.5
 withTimeDesignator :: Format t -> Format t
@@ -263,14 +262,14 @@ withUTCDesignator f = f <** literalFormat "Z"
 
 -- | ISO 8601:2004(E) sec. 4.2.5.1
 timeOffsetFormat :: FormatExtension -> Format TimeZone
-timeOffsetFormat fe =
-    let toTimeZone (sign, (h, m)) = minutesToTimeZone $ sign * (h * 60 + m)
-        fromTimeZone tz =
-            let mm = timeZoneMinutes tz
-                hm = quotRem (abs mm) 60
-             in (signum mm, hm)
-     in isoMap toTimeZone fromTimeZone $
-            mandatorySignFormat <**> extColonFormat fe (integerFormat NoSign (Just 2)) (integerFormat NoSign (Just 2))
+timeOffsetFormat fe = let
+    toTimeZone (sign, (h, m)) = minutesToTimeZone $ sign * (h * 60 + m)
+    fromTimeZone tz = let
+        mm = timeZoneMinutes tz
+        hm = quotRem (abs mm) 60
+        in (signum mm, hm)
+    in isoMap toTimeZone fromTimeZone $
+        mandatorySignFormat <**> extColonFormat fe (integerFormat NoSign (Just 2)) (integerFormat NoSign (Just 2))
 
 -- | ISO 8601:2004(E) sec. 4.2.5.2
 timeOfDayAndOffsetFormat :: FormatExtension -> Format (TimeOfDay, TimeZone)
@@ -307,10 +306,10 @@ decDesignator :: (Eq t, Show t, Read t, Num t) => Char -> Format t
 decDesignator c = optionalFormat 0 $ decimalFormat NoSign Nothing <** literalFormat [c]
 
 daysDesigs :: Format CalendarDiffDays
-daysDesigs =
-    let toCD (y, (m, (w, d))) = CalendarDiffDays (y * 12 + m) (w * 7 + d)
-        fromCD (CalendarDiffDays mm d) = (quot mm 12, (rem mm 12, (0, d)))
-     in isoMap toCD fromCD $ intDesignator 'Y' <**> intDesignator 'M' <**> intDesignator 'W' <**> intDesignator 'D'
+daysDesigs = let
+    toCD (y, (m, (w, d))) = CalendarDiffDays (y * 12 + m) (w * 7 + d)
+    fromCD (CalendarDiffDays mm d) = (quot mm 12, (rem mm 12, (0, d)))
+    in isoMap toCD fromCD $ intDesignator 'Y' <**> intDesignator 'M' <**> intDesignator 'W' <**> intDesignator 'D'
 
 -- | ISO 8601:2004(E) sec. 4.4.3.2
 durationDaysFormat :: Format CalendarDiffDays
@@ -318,44 +317,44 @@ durationDaysFormat = (**>) (literalFormat "P") $ specialCaseShowFormat (mempty, 
 
 -- | ISO 8601:2004(E) sec. 4.4.3.2
 durationTimeFormat :: Format CalendarDiffTime
-durationTimeFormat =
-    let toCT (cd, (h, (m, s))) =
-            mappend (calendarTimeDays cd) (calendarTimeTime $ daysAndTimeOfDayToTime 0 $ TimeOfDay h m s)
-        fromCT (CalendarDiffTime mm t) =
-            let (d, TimeOfDay h m s) = timeToDaysAndTimeOfDay t
-             in (CalendarDiffDays mm d, (h, (m, s)))
-     in (**>) (literalFormat "P") $
-            specialCaseShowFormat (mempty, "0D") $
-                isoMap toCT fromCT $
-                    (<**>) daysDesigs $
-                        optionalFormat (0, (0, 0)) $
-                            literalFormat "T" **> intDesignator 'H' <**> intDesignator 'M' <**> decDesignator 'S'
+durationTimeFormat = let
+    toCT (cd, (h, (m, s))) =
+        mappend (calendarTimeDays cd) (calendarTimeTime $ daysAndTimeOfDayToTime 0 $ TimeOfDay h m s)
+    fromCT (CalendarDiffTime mm t) = let
+        (d, TimeOfDay h m s) = timeToDaysAndTimeOfDay t
+        in (CalendarDiffDays mm d, (h, (m, s)))
+    in (**>) (literalFormat "P") $
+        specialCaseShowFormat (mempty, "0D") $
+            isoMap toCT fromCT $
+                (<**>) daysDesigs $
+                    optionalFormat (0, (0, 0)) $
+                        literalFormat "T" **> intDesignator 'H' <**> intDesignator 'M' <**> decDesignator 'S'
 
 -- | ISO 8601:2004(E) sec. 4.4.3.3
 alternativeDurationDaysFormat :: FormatExtension -> Format CalendarDiffDays
-alternativeDurationDaysFormat fe =
-    let toCD (y, (m, d)) = CalendarDiffDays (y * 12 + m) d
-        fromCD (CalendarDiffDays mm d) = (quot mm 12, (rem mm 12, d))
-     in isoMap toCD fromCD $
-            (**>) (literalFormat "P") $
-                extDashFormat fe (clipFormat (0, 9999) $ integerFormat NegSign $ Just 4) $
-                    extDashFormat fe (clipFormat (0, 12) $ integerFormat NegSign $ Just 2) $
-                        (clipFormat (0, 30) $ integerFormat NegSign $ Just 2)
+alternativeDurationDaysFormat fe = let
+    toCD (y, (m, d)) = CalendarDiffDays (y * 12 + m) d
+    fromCD (CalendarDiffDays mm d) = (quot mm 12, (rem mm 12, d))
+    in isoMap toCD fromCD $
+        (**>) (literalFormat "P") $
+            extDashFormat fe (clipFormat (0, 9999) $ integerFormat NegSign $ Just 4) $
+                extDashFormat fe (clipFormat (0, 12) $ integerFormat NegSign $ Just 2) $
+                    (clipFormat (0, 30) $ integerFormat NegSign $ Just 2)
 
 -- | ISO 8601:2004(E) sec. 4.4.3.3
 alternativeDurationTimeFormat :: FormatExtension -> Format CalendarDiffTime
-alternativeDurationTimeFormat fe =
-    let toCT (cd, (h, (m, s))) =
-            mappend (calendarTimeDays cd) (calendarTimeTime $ daysAndTimeOfDayToTime 0 $ TimeOfDay h m s)
-        fromCT (CalendarDiffTime mm t) =
-            let (d, TimeOfDay h m s) = timeToDaysAndTimeOfDay t
-             in (CalendarDiffDays mm d, (h, (m, s)))
-     in isoMap toCT fromCT $
-            (<**>) (alternativeDurationDaysFormat fe) $
-                withTimeDesignator $
-                    extColonFormat fe (clipFormat (0, 24) $ integerFormat NegSign (Just 2)) $
-                        extColonFormat fe (clipFormat (0, 60) $ integerFormat NegSign (Just 2)) $
-                            (clipFormat (0, 60) $ decimalFormat NegSign (Just 2))
+alternativeDurationTimeFormat fe = let
+    toCT (cd, (h, (m, s))) =
+        mappend (calendarTimeDays cd) (calendarTimeTime $ daysAndTimeOfDayToTime 0 $ TimeOfDay h m s)
+    fromCT (CalendarDiffTime mm t) = let
+        (d, TimeOfDay h m s) = timeToDaysAndTimeOfDay t
+        in (CalendarDiffDays mm d, (h, (m, s)))
+    in isoMap toCT fromCT $
+        (<**>) (alternativeDurationDaysFormat fe) $
+            withTimeDesignator $
+                extColonFormat fe (clipFormat (0, 24) $ integerFormat NegSign (Just 2)) $
+                    extColonFormat fe (clipFormat (0, 60) $ integerFormat NegSign (Just 2)) $
+                        (clipFormat (0, 60) $ decimalFormat NegSign (Just 2))
 
 -- | ISO 8601:2004(E) sec. 4.4.4.1
 intervalFormat :: Format a -> Format b -> Format (a, b)

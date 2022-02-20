@@ -23,10 +23,10 @@ import Data.Time.Clock.Internal.DiffTime
 -- It consists of the day number, and a time offset from midnight.
 -- Note that if a day has a leap second added to it, it will have 86401 seconds.
 data UTCTime = UTCTime
-    { -- | the day
-      utctDay :: Day
-    , -- | the time from midnight, 0 <= t < 86401s (because of leap-seconds)
-      utctDayTime :: DiffTime
+    { utctDay :: Day
+    -- ^ the day
+    , utctDayTime :: DiffTime
+    -- ^ the time from midnight, 0 <= t < 86401s (because of leap-seconds)
     }
     deriving (Data, Typeable)
 

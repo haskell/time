@@ -18,7 +18,7 @@ sundayAfter day = addDays (7 - (mod (toModifiedJulianDay day + 3) 7)) day
 
 -- | Given a year, find the Paschal full moon according to Orthodox Christian tradition
 orthodoxPaschalMoon :: Year -> Day
-orthodoxPaschalMoon year = addDays (- shiftedEpact) (fromJulian jyear 4 19)
+orthodoxPaschalMoon year = addDays (-shiftedEpact) (fromJulian jyear 4 19)
   where
     shiftedEpact = mod (14 + 11 * (mod year 19)) 30
     jyear =
@@ -32,7 +32,7 @@ orthodoxEaster = sundayAfter . orthodoxPaschalMoon
 
 -- | Given a year, find the Paschal full moon according to the Gregorian method
 gregorianPaschalMoon :: Year -> Day
-gregorianPaschalMoon year = addDays (- adjustedEpact) (fromGregorian year 4 19)
+gregorianPaschalMoon year = addDays (-adjustedEpact) (fromGregorian year 4 19)
   where
     century = (div year 100) + 1
     shiftedEpact = mod (14 + 11 * (mod year 19) - (div (3 * century) 4) + (div (5 + 8 * century) 25)) 30

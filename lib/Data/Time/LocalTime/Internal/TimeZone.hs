@@ -26,12 +26,12 @@ import Foreign.C
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone
-    { -- | The number of minutes offset from UTC. Positive means local time will be later in the day than UTC.
-      timeZoneMinutes :: Int
-    , -- | Is this time zone just persisting for the summer?
-      timeZoneSummerOnly :: Bool
-    , -- | The name of the zone, typically a three- or four-letter acronym.
-      timeZoneName :: String
+    { timeZoneMinutes :: Int
+    -- ^ The number of minutes offset from UTC. Positive means local time will be later in the day than UTC.
+    , timeZoneSummerOnly :: Bool
+    -- ^ Is this time zone just persisting for the summer?
+    , timeZoneName :: String
+    -- ^ The name of the zone, typically a three- or four-letter acronym.
     }
     deriving (Eq, Ord, Data, Typeable)
 
@@ -48,12 +48,11 @@ hoursToTimeZone i = minutesToTimeZone (60 * i)
 
 showT :: Bool -> PadOption -> Int -> String
 showT False opt t = showPaddedNum opt ((div t 60) * 100 + (mod t 60))
-showT True opt t =
-    let opt' =
-            case opt of
-                NoPad -> NoPad
-                Pad i c -> Pad (max 0 $ i - 3) c
-     in showPaddedNum opt' (div t 60) ++ ":" ++ show2 (mod t 60)
+showT True opt t = let
+    opt' = case opt of
+        NoPad -> NoPad
+        Pad i c -> Pad (max 0 $ i - 3) c
+    in showPaddedNum opt' (div t 60) ++ ":" ++ show2 (mod t 60)
 
 timeZoneOffsetString'' :: Bool -> PadOption -> TimeZone -> String
 timeZoneOffsetString'' colon opt (TimeZone t _ _)
@@ -104,12 +103,12 @@ getTimeZoneCTime ctime =
 
 -- there's no instance Bounded CTime, so this is the easiest way to check for overflow
 toCTime :: Int64 -> IO CTime
-toCTime t =
-    let tt = fromIntegral t
-        t' = fromIntegral tt
-     in if t' == t
-            then return $ CTime tt
-            else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow"
+toCTime t = let
+    tt = fromIntegral t
+    t' = fromIntegral tt
+    in if t' == t
+        then return $ CTime tt
+        else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow"
 
 -- | Get the local time-zone for a given time (varying as per summertime adjustments).
 getTimeZoneSystem :: SystemTime -> IO TimeZone

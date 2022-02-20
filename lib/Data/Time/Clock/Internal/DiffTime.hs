@@ -64,9 +64,9 @@ instance Fractional DiffTime where
     fromRational r = MkDiffTime (fromRational r)
 
 instance RealFrac DiffTime where
-    properFraction (MkDiffTime a) =
-        let (b', a') = properFraction a
-         in (b', MkDiffTime a')
+    properFraction (MkDiffTime a) = let
+        (b', a') = properFraction a
+        in (b', MkDiffTime a')
     truncate (MkDiffTime a) = truncate a
     round (MkDiffTime a) = round a
     ceiling (MkDiffTime a) = ceiling a

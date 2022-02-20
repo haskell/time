@@ -39,33 +39,28 @@ class FormatTime t where
 
 -- the weird UNIX logic is here
 getPadOption :: Bool -> Bool -> Int -> Char -> Maybe FormatNumericPadding -> Maybe Int -> PadOption
-getPadOption trunc fdef idef cdef mnpad mi =
-    let c =
-            case mnpad of
-                Just (Just c') -> c'
-                Just Nothing -> ' '
-                _ -> cdef
-        i =
-            case mi of
-                Just i' ->
-                    case mnpad of
-                        Just Nothing -> i'
-                        _ ->
-                            if trunc
-                                then i'
-                                else max i' idef
-                Nothing -> idef
-        f =
-            case mi of
-                Just _ -> True
-                Nothing ->
-                    case mnpad of
-                        Nothing -> fdef
-                        Just Nothing -> False
-                        Just (Just _) -> True
-     in if f
-            then Pad i c
-            else NoPad
+getPadOption trunc fdef idef cdef mnpad mi = let
+    c = case mnpad of
+        Just (Just c') -> c'
+        Just Nothing -> ' '
+        _ -> cdef
+    i = case mi of
+        Just i' -> case mnpad of
+            Just Nothing -> i'
+            _ ->
+                if trunc
+                    then i'
+                    else max i' idef
+        Nothing -> idef
+    f = case mi of
+        Just _ -> True
+        Nothing -> case mnpad of
+            Nothing -> fdef
+            Just Nothing -> False
+            Just (Just _) -> True
+    in if f
+        then Pad i c
+        else NoPad
 
 formatGeneral ::
     Bool -> Bool -> Int -> Char -> (TimeLocale -> PadOption -> t -> String) -> (FormatOptions -> t -> String)
@@ -84,25 +79,25 @@ formatNumberStd n = formatNumber False n '0'
 showPaddedFixed :: HasResolution a => PadOption -> PadOption -> Fixed a -> String
 showPaddedFixed padn padf x
     | x < 0 = '-' : showPaddedFixed padn padf (negate x)
-showPaddedFixed padn padf x =
-    let ns = showPaddedNum padn $ (floor x :: Integer)
-        fs = showPaddedFixedFraction padf x
-        ds =
-            if null fs
-                then ""
-                else "."
-     in ns ++ ds ++ fs
+showPaddedFixed padn padf x = let
+    ns = showPaddedNum padn $ (floor x :: Integer)
+    fs = showPaddedFixedFraction padf x
+    ds =
+        if null fs
+            then ""
+            else "."
+    in ns ++ ds ++ fs
 
 showPaddedFixedFraction :: HasResolution a => PadOption -> Fixed a -> String
-showPaddedFixedFraction pado x =
-    let digits = dropWhile (== '.') $ dropWhile (/= '.') $ showFixed True x
-        n = length digits
-     in case pado of
-            NoPad -> digits
-            Pad i c ->
-                if i < n
-                    then take i digits
-                    else digits ++ replicate (i - n) c
+showPaddedFixedFraction pado x = let
+    digits = dropWhile (== '.') $ dropWhile (/= '.') $ showFixed True x
+    n = length digits
+    in case pado of
+        NoPad -> digits
+        Pad i c ->
+            if i < n
+                then take i digits
+                else digits ++ replicate (i - n) c
 
 -- | Substitute various time-related information for each %-code in the string, as per 'formatCharacter'.
 --
@@ -358,9 +353,9 @@ pullNumber mx s@(c : cs) =
 
 formatTime2 ::
     (FormatTime t) => TimeLocale -> (String -> String) -> Maybe FormatNumericPadding -> String -> t -> Maybe String
-formatTime2 locale recase mpad cs t =
-    let (mwidth, rest) = pullNumber Nothing cs
-     in formatTime3 locale recase mpad mwidth rest t
+formatTime2 locale recase mpad cs t = let
+    (mwidth, rest) = pullNumber Nothing cs
+    in formatTime3 locale recase mpad mwidth rest t
 
 formatTime3 ::
     (FormatTime t) =>

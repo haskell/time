@@ -23,9 +23,9 @@ tupleUp2 :: [a] -> [b] -> [(a, b)]
 tupleUp2 l1 l2 = concatMap (\e -> map (e,) l2) l1
 
 tupleUp3 :: [a] -> [b] -> [c] -> [(a, b, c)]
-tupleUp3 l1 l2 l3 =
-    let ts = tupleUp2 l2 l3
-     in concatMap (\e -> map (\(f, g) -> (e, f, g)) ts) l1
+tupleUp3 l1 l2 l3 = let
+    ts = tupleUp2 l2 l3
+    in concatMap (\e -> map (\(f, g) -> (e, f, g)) ts) l1
 
 testPairs :: String -> [String] -> [String] -> TestTree
 testPairs name expected found = testGroup name $ fmap (\(e, f) -> testCase e $ assertEqual "" e f) $ zip expected found

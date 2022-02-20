@@ -133,46 +133,46 @@ addGregorianDurationRollOver (CalendarDiffDays m d) day = addDays d $ addGregori
 
 -- | Calendrical difference, with as many whole months as possible
 diffGregorianDurationClip :: Day -> Day -> CalendarDiffDays
-diffGregorianDurationClip day2 day1 =
-    let (y1, m1, d1) = toGregorian day1
-        (y2, m2, d2) = toGregorian day2
-        ym1 = y1 * 12 + toInteger m1
-        ym2 = y2 * 12 + toInteger m2
-        ymdiff = ym2 - ym1
-        ymAllowed =
-            if day2 >= day1
-                then
-                    if d2 >= d1
-                        then ymdiff
-                        else ymdiff - 1
-                else
-                    if d2 <= d1
-                        then ymdiff
-                        else ymdiff + 1
-        dayAllowed = addGregorianDurationClip (CalendarDiffDays ymAllowed 0) day1
-     in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
+diffGregorianDurationClip day2 day1 = let
+    (y1, m1, d1) = toGregorian day1
+    (y2, m2, d2) = toGregorian day2
+    ym1 = y1 * 12 + toInteger m1
+    ym2 = y2 * 12 + toInteger m2
+    ymdiff = ym2 - ym1
+    ymAllowed =
+        if day2 >= day1
+            then
+                if d2 >= d1
+                    then ymdiff
+                    else ymdiff - 1
+            else
+                if d2 <= d1
+                    then ymdiff
+                    else ymdiff + 1
+    dayAllowed = addGregorianDurationClip (CalendarDiffDays ymAllowed 0) day1
+    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- | Calendrical difference, with as many whole months as possible.
 -- Same as 'diffGregorianDurationClip' for positive durations.
 diffGregorianDurationRollOver :: Day -> Day -> CalendarDiffDays
-diffGregorianDurationRollOver day2 day1 =
-    let (y1, m1, d1) = toGregorian day1
-        (y2, m2, d2) = toGregorian day2
-        ym1 = y1 * 12 + toInteger m1
-        ym2 = y2 * 12 + toInteger m2
-        ymdiff = ym2 - ym1
-        ymAllowed =
-            if day2 >= day1
-                then
-                    if d2 >= d1
-                        then ymdiff
-                        else ymdiff - 1
-                else
-                    if d2 <= d1
-                        then ymdiff
-                        else ymdiff + 1
-        dayAllowed = addGregorianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
-     in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
+diffGregorianDurationRollOver day2 day1 = let
+    (y1, m1, d1) = toGregorian day1
+    (y2, m2, d2) = toGregorian day2
+    ym1 = y1 * 12 + toInteger m1
+    ym2 = y2 * 12 + toInteger m2
+    ymdiff = ym2 - ym1
+    ymAllowed =
+        if day2 >= day1
+            then
+                if d2 >= d1
+                    then ymdiff
+                    else ymdiff - 1
+            else
+                if d2 <= d1
+                    then ymdiff
+                    else ymdiff + 1
+    dayAllowed = addGregorianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
+    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- orphan instance
 instance Show Day where

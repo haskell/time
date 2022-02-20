@@ -51,7 +51,8 @@ testResolution name timeDiff (reportedRes, getTime) =
                 do
                     threadDelay 1000 -- 1ms
                     getTime
-        let times = fmap (\t -> timeDiff t t0) $ times0 ++ times1 ++ times2 ++ times3 ++ times4
+        let
+            times = fmap (\t -> timeDiff t t0) $ times0 ++ times1 ++ times2 ++ times3 ++ times4
             foundGrid = gcdAll times
         assertBool ("reported resolution: " <> show reportedRes <> ", found: " <> show foundGrid) $ foundGrid <= reportedRes
 

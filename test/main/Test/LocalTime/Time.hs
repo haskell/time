@@ -10,16 +10,16 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 showCal :: Integer -> String
-showCal mjd =
-    let date = ModifiedJulianDay mjd
-        (y, m, d) = toGregorian date
-        date' = fromGregorian y m d
-     in concat
-            [ show mjd ++ "=" ++ showGregorian date ++ "=" ++ showOrdinalDate date ++ "=" ++ showWeekDate date ++ "\n"
-            , if date == date'
-                then ""
-                else "=" ++ (show $ toModifiedJulianDay date') ++ "!"
-            ]
+showCal mjd = let
+    date = ModifiedJulianDay mjd
+    (y, m, d) = toGregorian date
+    date' = fromGregorian y m d
+    in concat
+        [ show mjd ++ "=" ++ showGregorian date ++ "=" ++ showOrdinalDate date ++ "=" ++ showWeekDate date ++ "\n"
+        , if date == date'
+            then ""
+            else "=" ++ (show $ toModifiedJulianDay date') ++ "!"
+        ]
 
 testCal :: String
 testCal =
@@ -63,10 +63,10 @@ leapSec1998 :: UTCTime
 leapSec1998 = localTimeToUTC utc leapSec1998Cal
 
 testUTC :: String
-testUTC =
-    let lsMineCal = utcToLocalTime myzone leapSec1998
-        lsMine = localTimeToUTC myzone lsMineCal
-     in unlines [showCal 51178, show leapSec1998Cal, showUTCTime leapSec1998, show lsMineCal, showUTCTime lsMine]
+testUTC = let
+    lsMineCal = utcToLocalTime myzone leapSec1998
+    lsMine = localTimeToUTC myzone lsMineCal
+    in unlines [showCal 51178, show leapSec1998Cal, showUTCTime leapSec1998, show lsMineCal, showUTCTime lsMine]
 
 neglong :: Rational
 neglong = -120
@@ -86,15 +86,15 @@ testUT1 =
         ]
 
 testTimeOfDayToDayFraction :: String
-testTimeOfDayToDayFraction =
-    let f = dayFractionToTimeOfDay . timeOfDayToDayFraction
-     in unlines
-            [ show $ f $ TimeOfDay 12 34 56.789
-            , show $ f $ TimeOfDay 12 34 56.789123
-            , show $ f $ TimeOfDay 12 34 56.789123456
-            , show $ f $ TimeOfDay 12 34 56.789123456789
-            , show $ f $ TimeOfDay minBound 0 0
-            ]
+testTimeOfDayToDayFraction = let
+    f = dayFractionToTimeOfDay . timeOfDayToDayFraction
+    in unlines
+        [ show $ f $ TimeOfDay 12 34 56.789
+        , show $ f $ TimeOfDay 12 34 56.789123
+        , show $ f $ TimeOfDay 12 34 56.789123456
+        , show $ f $ TimeOfDay 12 34 56.789123456789
+        , show $ f $ TimeOfDay minBound 0 0
+        ]
 
 testTime :: TestTree
 testTime =

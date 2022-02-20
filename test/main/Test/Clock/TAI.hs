@@ -19,28 +19,28 @@ sampleLeapSecondMap _ = Nothing
 
 testTAI :: TestTree
 testTAI =
-    testGroup "leap second transition" $
-        let dayA = fromGregorian 1972 6 30
-            dayB = fromGregorian 1972 7 1
-            utcTime1 = UTCTime dayA 86399
-            utcTime2 = UTCTime dayA 86400
-            utcTime3 = UTCTime dayB 0
-            mAbsTime1 = utcToTAITime sampleLeapSecondMap utcTime1
-            mAbsTime2 = utcToTAITime sampleLeapSecondMap utcTime2
-            mAbsTime3 = utcToTAITime sampleLeapSecondMap utcTime3
-         in [ testCase "mapping" $ do
+    testGroup "leap second transition" $ let
+        dayA = fromGregorian 1972 6 30
+        dayB = fromGregorian 1972 7 1
+        utcTime1 = UTCTime dayA 86399
+        utcTime2 = UTCTime dayA 86400
+        utcTime3 = UTCTime dayB 0
+        mAbsTime1 = utcToTAITime sampleLeapSecondMap utcTime1
+        mAbsTime2 = utcToTAITime sampleLeapSecondMap utcTime2
+        mAbsTime3 = utcToTAITime sampleLeapSecondMap utcTime3
+        in [ testCase "mapping" $ do
                 assertEqual "dayA" (Just 10) $ sampleLeapSecondMap dayA
                 assertEqual "dayB" (Just 11) $ sampleLeapSecondMap dayB
-            , testCase "day length" $ do
+           , testCase "day length" $ do
                 assertEqual "dayA" (Just 86401) $ utcDayLength sampleLeapSecondMap dayA
                 assertEqual "dayB" (Just 86400) $ utcDayLength sampleLeapSecondMap dayB
-            , testCase "differences" $ do
+           , testCase "differences" $ do
                 absTime1 <- assertJust mAbsTime1
                 absTime2 <- assertJust mAbsTime2
                 absTime3 <- assertJust mAbsTime3
                 assertEqual "absTime2 - absTime1" 1 $ diffAbsoluteTime absTime2 absTime1
                 assertEqual "absTime3 - absTime2" 1 $ diffAbsoluteTime absTime3 absTime2
-            , testGroup
+           , testGroup
                 "round-trip"
                 [ testCase "1" $ do
                     absTime <- assertJust mAbsTime1
@@ -55,4 +55,4 @@ testTAI =
                     utcTime <- assertJust $ taiToUTCTime sampleLeapSecondMap absTime
                     assertEqual "round-trip" utcTime3 utcTime
                 ]
-            ]
+           ]

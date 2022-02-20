@@ -11,12 +11,12 @@ testTimeOfDay :: TestTree
 testTimeOfDay =
     testGroup
         "TimeOfDay"
-        [ testProperty "daysAndTimeOfDayToTime . timeToDaysAndTimeOfDay" $ \ndt ->
-            let (d, tod) = timeToDaysAndTimeOfDay ndt
-                ndt' = daysAndTimeOfDayToTime d tod
-             in ndt' == ndt
-        , testProperty "timeOfDayToTime . timeToTimeOfDay" $ \dt ->
-            let tod = timeToTimeOfDay dt
-                dt' = timeOfDayToTime tod
-             in dt' == dt
+        [ testProperty "daysAndTimeOfDayToTime . timeToDaysAndTimeOfDay" $ \ndt -> let
+            (d, tod) = timeToDaysAndTimeOfDay ndt
+            ndt' = daysAndTimeOfDayToTime d tod
+            in ndt' == ndt
+        , testProperty "timeOfDayToTime . timeToTimeOfDay" $ \dt -> let
+            tod = timeToTimeOfDay dt
+            dt' = timeOfDayToTime tod
+            in dt' == dt
         ]

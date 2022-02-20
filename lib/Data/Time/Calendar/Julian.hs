@@ -125,43 +125,43 @@ addJulianDurationRollOver (CalendarDiffDays m d) day = addDays d $ addJulianMont
 
 -- | Calendrical difference, with as many whole months as possible
 diffJulianDurationClip :: Day -> Day -> CalendarDiffDays
-diffJulianDurationClip day2 day1 =
-    let (y1, m1, d1) = toJulian day1
-        (y2, m2, d2) = toJulian day2
-        ym1 = y1 * 12 + toInteger m1
-        ym2 = y2 * 12 + toInteger m2
-        ymdiff = ym2 - ym1
-        ymAllowed =
-            if day2 >= day1
-                then
-                    if d2 >= d1
-                        then ymdiff
-                        else ymdiff - 1
-                else
-                    if d2 <= d1
-                        then ymdiff
-                        else ymdiff + 1
-        dayAllowed = addJulianDurationClip (CalendarDiffDays ymAllowed 0) day1
-     in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
+diffJulianDurationClip day2 day1 = let
+    (y1, m1, d1) = toJulian day1
+    (y2, m2, d2) = toJulian day2
+    ym1 = y1 * 12 + toInteger m1
+    ym2 = y2 * 12 + toInteger m2
+    ymdiff = ym2 - ym1
+    ymAllowed =
+        if day2 >= day1
+            then
+                if d2 >= d1
+                    then ymdiff
+                    else ymdiff - 1
+            else
+                if d2 <= d1
+                    then ymdiff
+                    else ymdiff + 1
+    dayAllowed = addJulianDurationClip (CalendarDiffDays ymAllowed 0) day1
+    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- | Calendrical difference, with as many whole months as possible.
 -- Same as 'diffJulianDurationClip' for positive durations.
 diffJulianDurationRollOver :: Day -> Day -> CalendarDiffDays
-diffJulianDurationRollOver day2 day1 =
-    let (y1, m1, d1) = toJulian day1
-        (y2, m2, d2) = toJulian day2
-        ym1 = y1 * 12 + toInteger m1
-        ym2 = y2 * 12 + toInteger m2
-        ymdiff = ym2 - ym1
-        ymAllowed =
-            if day2 >= day1
-                then
-                    if d2 >= d1
-                        then ymdiff
-                        else ymdiff - 1
-                else
-                    if d2 <= d1
-                        then ymdiff
-                        else ymdiff + 1
-        dayAllowed = addJulianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
-     in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
+diffJulianDurationRollOver day2 day1 = let
+    (y1, m1, d1) = toJulian day1
+    (y2, m2, d2) = toJulian day2
+    ym1 = y1 * 12 + toInteger m1
+    ym2 = y2 * 12 + toInteger m2
+    ymdiff = ym2 - ym1
+    ymAllowed =
+        if day2 >= day1
+            then
+                if d2 >= d1
+                    then ymdiff
+                    else ymdiff - 1
+            else
+                if d2 <= d1
+                    then ymdiff
+                    else ymdiff + 1
+    dayAllowed = addJulianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
+    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed

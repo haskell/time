@@ -31,13 +31,13 @@ import Data.Time.LocalTime.Internal.TimeZone
 -- @TimeOfDay 24 0 0@ is considered invalid for the purposes of 'makeTimeOfDayValid', as well as reading and parsing,
 -- but valid for ISO 8601 parsing in "Data.Time.Format.ISO8601".
 data TimeOfDay = TimeOfDay
-    { -- | range 0 - 23
-      todHour :: Int
-    , -- | range 0 - 59
-      todMin :: Int
-    , -- | Note that 0 <= 'todSec' < 61, accomodating leap seconds.
-      -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
-      todSec :: Pico
+    { todHour :: Int
+    -- ^ range 0 - 23
+    , todMin :: Int
+    -- ^ range 0 - 59
+    , todSec :: Pico
+    -- ^ Note that 0 <= 'todSec' < 61, accomodating leap seconds.
+    -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
     }
     deriving (Eq, Ord, Data, Typeable)
 
@@ -65,12 +65,12 @@ makeTimeOfDayValid h m s = do
 -- | Convert a period of time into a count of days and a time of day since midnight.
 -- The time of day will never have a leap second.
 timeToDaysAndTimeOfDay :: NominalDiffTime -> (Integer, TimeOfDay)
-timeToDaysAndTimeOfDay dt =
-    let s = realToFrac dt
-        (m, ms) = divMod' s 60
-        (h, hm) = divMod' m 60
-        (d, dh) = divMod' h 24
-     in (d, TimeOfDay dh hm ms)
+timeToDaysAndTimeOfDay dt = let
+    s = realToFrac dt
+    (m, ms) = divMod' s 60
+    (h, hm) = divMod' m 60
+    (d, dh) = divMod' h 24
+    in (d, TimeOfDay dh hm ms)
 
 -- | Convert a count of days and a time of day since midnight into a period of time.
 daysAndTimeOfDayToTime :: Integer -> TimeOfDay -> NominalDiffTime

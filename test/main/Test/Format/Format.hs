@@ -39,7 +39,8 @@ somestrings = ["", " ", "-", "\n"]
 compareExpected :: (Eq t, Show t, ParseTime t) => String -> String -> String -> Proxy t -> TestTree
 compareExpected testname fmt str proxy =
     testCase testname $ do
-        let found :: ParseTime t => Proxy t -> Maybe t
+        let
+            found :: ParseTime t => Proxy t -> Maybe t
             found _ = parseTimeM False defaultTimeLocale fmt str
         assertEqual "" Nothing $ found proxy
 
@@ -62,10 +63,10 @@ testDayOfWeek :: TestTree
 testDayOfWeek =
     testGroup "DayOfWeek" $
         tgroup "uwaA" $ \fmt ->
-            tgroup days $ \day ->
-                let dayFormat = formatTime defaultTimeLocale ['%', fmt] day
-                    dowFormat = formatTime defaultTimeLocale ['%', fmt] $ dayOfWeek day
-                 in assertEqual "" dayFormat dowFormat
+            tgroup days $ \day -> let
+                dayFormat = formatTime defaultTimeLocale ['%', fmt] day
+                dowFormat = formatTime defaultTimeLocale ['%', fmt] $ dayOfWeek day
+                in assertEqual "" dayFormat dowFormat
 
 testZone :: String -> String -> Int -> TestTree
 testZone fmt expected minutes =

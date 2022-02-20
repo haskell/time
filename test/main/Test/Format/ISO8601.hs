@@ -23,9 +23,10 @@ readShowProperty _ fmt val =
     case formatShowM fmt val of
         Nothing -> property Discard
         Just str ->
-            let found = formatParseM fmt str
+            let
+                found = formatParseM fmt str
                 expected = Just val
-             in property $
+                in property $
                     if expected == found
                         then succeeded
                         else failed{reason = show str ++ ": expected " ++ (show expected) ++ ", found " ++ (show found)}
@@ -68,13 +69,13 @@ instance Arbitrary (Durational CalendarDiffDays) where
         return $ MkDurational $ CalendarDiffDays mm dd
 
 instance Arbitrary (Durational CalendarDiffTime) where
-    arbitrary =
-        let limit = 40 * 86400
-            picofactor = 10 ^ (12 :: Int)
-         in do
-                mm <- choose (-10000, 10000)
-                ss <- choose (negate limit * picofactor, limit * picofactor)
-                return $ MkDurational $ CalendarDiffTime mm $ fromRational $ ss % picofactor
+    arbitrary = let
+        limit = 40 * 86400
+        picofactor = 10 ^ (12 :: Int)
+        in do
+            mm <- choose (-10000, 10000)
+            ss <- choose (negate limit * picofactor, limit * picofactor)
+            return $ MkDurational $ CalendarDiffTime mm $ fromRational $ ss % picofactor
 
 durationalFormat :: Format a -> Format (Durational a)
 durationalFormat (MkFormat sa ra) = MkFormat (\b -> sa $ unDurational b) (fmap MkDurational ra)

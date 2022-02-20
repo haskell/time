@@ -53,7 +53,8 @@ fromJulianYearAndDayValid year day = do
                 else 365
             )
             day
-    let y = year - 1
+    let
+        y = year - 1
         mjd = (fromIntegral day') + (365 * y) + (div y 4) - 678578
     return (ModifiedJulianDay mjd)
 

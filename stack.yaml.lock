@@ -5,43 +5,54 @@
 
 packages:
 - completed:
-    hackage: process-1.6.10.0@sha256:c0d2d8adaca7cea7ceaa60e67b61c775dc03727b83bdb1c97aa8cbeac9f5dd84,2469
+    hackage: process-1.6.13.2@sha256:a6530a5698796e29d85817f74ca3ae20d2172fb9fa52b492c2e6816e1306bfe8,2963
     pantry-tree:
-      size: 1211
-      sha256: 6e90778b5105753d7de0f7a0c502dadf8f04825f17a36186aa801e56ef7ca206
+      size: 1543
+      sha256: 045d10d710f046aa69ab3dd3f425b9479820809d6c3ca1596e0b995bcf49ac7a
   original:
-    hackage: process-1.6.10.0
+    hackage: process-1.6.13.2
 - completed:
-    hackage: unix-2.7.2.2@sha256:55d8af3f25d2a92c86951a2d8fc47aebe80015a895c4f0e57320cfdae78dd7c1,3496
+    hackage: unix-2.7.2.2@sha256:15f5365c5995634e45de1772b9504761504a310184e676bc2ef60a14536dbef9,3496
     pantry-tree:
       size: 3536
-      sha256: e816eca2bf42fda4da49c744b146a301ae0435380cc163ad2fbc889cf0a4e27f
+      sha256: 36434ced74d679622d61b69e8d92e1bd632d9ef3e284c63094653b2e473b0553
   original:
     hackage: unix-2.7.2.2
 - completed:
-    hackage: directory-1.3.6.1@sha256:3dc9c69c8e09ec95a7a45c6d06abe0f0d2f604439c37e5f88e5a6c335b088d71,2810
+    hackage: directory-1.3.7.0@sha256:4d59f9714700e69d139084b47204fc91f13f31546aac39d666279996192b0d11,2940
     pantry-tree:
       size: 3433
-      sha256: 9247d0e7cfbf9946b922d23bd56a6b765cdb91f71d72f8ae6ed22c94dbd9f1db
+      sha256: 88b74942886e886b22ac1f3f0f65168563df4848766f372aaf014f712d3abb9a
   original:
-    hackage: directory-1.3.6.1
+    hackage: directory-1.3.7.0
 - completed:
-    hackage: hpc-0.6.0.3@sha256:de3f7982345d315f1d7713df38b4f2cf09bd274f7d64dffec0cf2a0d9c8aab19,1185
+    hackage: Cabal-3.6.2.0@sha256:e2266e14758c1f799220fad7f0d4b0b4ec567d81b7ba3faea17ff76d4c31de95,12437
     pantry-tree:
-      size: 432
-      sha256: 4686c367eb25eb4d32d66bd4c080d6caa2b5e78c73beea3993db690137e1d6cb
+      size: 19757
+      sha256: 6650e54cbbcda6d05c4d8b8094fa61e5ffbda15a798a354d2dad5b35dc3b2859
   original:
-    hackage: hpc-0.6.0.3
+    hackage: Cabal-3.6.2.0
 - completed:
-    hackage: fourmolu-0.3.0.0@sha256:4ce7683b97d5cdcac6cfec0a64298b67fd2777bfba2c484148a24d2c6bdb6ad8,6496
+    hackage: ghc-lib-parser-9.2.1.20211101@sha256:c7f5649391acb4ceec6770acce3b77dea8aad3fd442b2a32a1d0dbaede080c0b,12705
     pantry-tree:
-      size: 108479
-      sha256: d929dbd007e5b093f4ce8787c3ad625f0b083351773f34375b0b4e55dd666be0
+      size: 27578
+      sha256: 445b7dd1908b8187dfdab87673a68f1ca42e2bcfd7dd68f04a3ad91a2215e3e2
   original:
-    hackage: fourmolu-0.3.0.0
+    hackage: ghc-lib-parser-9.2.1.20211101
+- completed:
+    name: fourmolu
+    version: 0.5.0.1
+    git: https://github.com/AshleyYakeley/fourmolu.git
+    pantry-tree:
+      size: 128923
+      sha256: 20ce0b8c5a8a591497162afdd85cd88faa87b4c98eb93c91eb0c6f9672c87a42
+    commit: 3b62452795ac8029f7f645f834e74737a355bd14
+  original:
+    git: https://github.com/AshleyYakeley/fourmolu.git
+    commit: 3b62452795ac8029f7f645f834e74737a355bd14
 snapshots:
 - completed:
-    size: 586268
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/13.yaml
-    sha256: d9e658a22cfe8d87a64fdf219885f942fef5fe2bcb156a9800174911c5da2443
-  original: lts-18.13
+    size: 587821
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/24.yaml
+    sha256: 06d844ba51e49907bd29cb58b4a5f86ee7587a4cd7e6cf395eeec16cba619ce8
+  original: lts-18.24
