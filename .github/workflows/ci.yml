@@ -74,7 +74,7 @@ jobs:
 
   build-freebsd:
     # See https://github.com/vmactions/freebsd-vm#under-the-hood.
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
     - name: Build
