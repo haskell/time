@@ -121,9 +121,9 @@ getTimeZoneSystem t = do
 -- On unix systems the output of this function depends on:
 --
 -- 1. the value of @TZ@ environment variable (if set)
--- 
+--
 -- 2. global system time zone settings (usually configured by @\/etc\/localtime@ symlink)
--- 
+--
 -- For details see tzset(3) and localtime(3).
 --
 -- Example:
