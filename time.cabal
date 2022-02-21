@@ -123,6 +123,16 @@ test-suite ShowDefaultTZAbbreviations
         time
     main-is: ShowDefaultTZAbbreviations.hs
 
+test-suite ShowTime
+    type: exitcode-stdio-1.0
+    hs-source-dirs: test
+    default-language: Haskell2010
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+        base,
+        time
+    main-is: ShowTime.hs
+
 test-suite test-main
     type: exitcode-stdio-1.0
     hs-source-dirs: test/main
