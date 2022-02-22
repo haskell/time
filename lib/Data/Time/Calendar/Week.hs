@@ -6,6 +6,7 @@ module Data.Time.Calendar.Week (
     dayOfWeek,
     dayOfWeekDiff,
     firstDayOfWeekOnAfter,
+    weekAllDays
 ) where
 
 import Control.DeepSeq
@@ -70,3 +71,22 @@ dayOfWeekDiff a b = mod' (fromEnum a - fromEnum b) 7
 -- | The first day-of-week on or after some day
 firstDayOfWeekOnAfter :: DayOfWeek -> Day -> Day
 firstDayOfWeekOnAfter dw d = addDays (toInteger $ dayOfWeekDiff dw $ dayOfWeek d) d
+
+weekAllDays :: DayOfWeek -> Day -> [Day]
+weekAllDays startingDay day = [weekFirstDay startingDay day .. weekLastDay startingDay day]
+
+weekFirstDay :: DayOfWeek -> Day -> Day
+weekFirstDay startingDay day =
+    let numberOfDays = numberOfDaysDiff startingDay day
+        delta = if numberOfDays > 0 then 7 else 0
+    in addDays (numberOfDays - delta) day
+
+weekLastDay :: DayOfWeek -> Day -> Day
+weekLastDay startingDay day =
+    let numberOfDays = numberOfDaysDiff startingDay day
+    in if numberOfDays > 0
+        then addDays (numberOfDays - 1) day
+        else addDays (6 + numberOfDays) day
+
+numberOfDaysDiff :: DayOfWeek -> Day -> Integer
+numberOfDaysDiff startingDay day = toInteger $ fromEnum startingDay - fromEnum (dayOfWeek day)

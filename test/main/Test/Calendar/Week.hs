@@ -121,6 +121,15 @@ prop_weekYearMostStart ws y = let
     (y', dy) = toOrdinalDate d
     in y == y' && dy >= 5 && dy <= 11
 
+prop_weekAllDaysLenght :: DayOfWeek -> Day -> Bool
+prop_weekAllDaysLenght fd d = length (weekAllDays fd d) == 7
+
+prop_weekAllDaysElem :: DayOfWeek -> Day -> Bool
+prop_weekAllDaysElem fd d = d `elem` weekAllDays fd d
+
+prop_weekAllDaysFirstDay :: DayOfWeek -> Day -> Bool
+prop_weekAllDaysFirstDay fd d = dayOfWeek (head $ weekAllDays fd d) == fd
+
 testDiff :: TestTree
 testDiff =
     nameTest
@@ -135,5 +144,17 @@ testDiff =
         , nameTest "weekYearMostStart" prop_weekYearMostStart
         ]
 
+testWeekAllDays :: TestTree
+testWeekAllDays =
+    nameTest
+        "week All Days"
+        [ nameTest "Length" prop_weekAllDaysLenght
+        , nameTest "Elem" prop_weekAllDaysElem
+        , nameTest "First day" prop_weekAllDaysFirstDay
+        , nameTest "Whole Week-Monday" $ assertEqual "" [YearMonthDay 2022 2 21 .. YearMonthDay 2022 2 27] (weekAllDays Monday (YearMonthDay 2022 02 21))
+        , nameTest "Whole Week-Tuesday" $ assertEqual ""  [YearMonthDay 2022 2 15 .. YearMonthDay 2022 2 21] (weekAllDays Tuesday (YearMonthDay 2022 02 21))
+        , nameTest "Whole Week-Leap Year" $ assertEqual ""  [YearMonthDay 2024 2 26 .. YearMonthDay 2024 3 3] (weekAllDays Monday (YearMonthDay 2024 02 26))
+        ]
+
 testWeek :: TestTree
-testWeek = nameTest "Week" [testDay, testSucc, testPred, testSequences, testReadShow, testDiff]
+testWeek = nameTest "Week" [testDay, testSucc, testPred, testSequences, testReadShow, testDiff, testWeekAllDays]
