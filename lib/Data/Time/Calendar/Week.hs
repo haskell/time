@@ -6,7 +6,9 @@ module Data.Time.Calendar.Week (
     dayOfWeek,
     dayOfWeekDiff,
     firstDayOfWeekOnAfter,
-    weekAllDays
+    weekAllDays,
+    weekFirstDay,
+    weekLastDay,
 ) where
 
 import Control.DeepSeq
@@ -72,21 +74,55 @@ dayOfWeekDiff a b = mod' (fromEnum a - fromEnum b) 7
 firstDayOfWeekOnAfter :: DayOfWeek -> Day -> Day
 firstDayOfWeekOnAfter dw d = addDays (toInteger $ dayOfWeekDiff dw $ dayOfWeek d) d
 
+-- | Returns a week containing the given 'Day' where the first day is the
+-- 'DayOfWeek' specified.
+--
+-- Examples:
+--
+-- >>> weekAllDays Sunday (YearMonthDay 2022 02 21)
+-- [YearMonthDay 2022 2 20 .. YearMonthDay 2022 2 26]
+--
+-- >>> weekAllDays Monday (YearMonthDay 2022 02 21)
+-- [YearMonthDay 2022 2 21 .. YearMonthDay 2022 2 27]
+--
+-- >>> weekAllDays Tuesday (YearMonthDay 2022 02 21)
+-- [YearMonthDay 2022 2 15 .. YearMonthDay 2022 2 21]
+--
+-- @since 1.12.2
 weekAllDays :: DayOfWeek -> Day -> [Day]
-weekAllDays startingDay day = [weekFirstDay startingDay day .. weekLastDay startingDay day]
+weekAllDays firstDay day = take 7 [weekFirstDay firstDay day ..]
 
+-- | Returns the first day of a week containing the given 'Day'.
+--
+-- Examples:
+--
+-- >>> weekFirstDay Sunday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 20
+--
+-- >>> weekFirstDay Monday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 21
+--
+-- >>> weekFirstDay Tuesday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 15
+--
+-- @since 1.12.2
 weekFirstDay :: DayOfWeek -> Day -> Day
-weekFirstDay startingDay day =
-    let numberOfDays = numberOfDaysDiff startingDay day
-        delta = if numberOfDays > 0 then 7 else 0
-    in addDays (numberOfDays - delta) day
+weekFirstDay firstDay day =
+    addDays (negate $ toInteger $ dayOfWeekDiff (dayOfWeek day) firstDay) day
 
+-- | Returns the last day of a week containing the given 'Day'.
+--
+-- Examples:
+--
+-- >>> weekLastDay Sunday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 26
+--
+-- >>> weekLastDay Monday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 27
+--
+-- >>> weekLastDay Tuesday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 21
+--
+-- @since 1.12.2
 weekLastDay :: DayOfWeek -> Day -> Day
-weekLastDay startingDay day =
-    let numberOfDays = numberOfDaysDiff startingDay day
-    in if numberOfDays > 0
-        then addDays (numberOfDays - 1) day
-        else addDays (6 + numberOfDays) day
-
-numberOfDaysDiff :: DayOfWeek -> Day -> Integer
-numberOfDaysDiff startingDay day = toInteger $ fromEnum startingDay - fromEnum (dayOfWeek day)
+weekLastDay firstDay = addDays 6 . weekFirstDay firstDay
