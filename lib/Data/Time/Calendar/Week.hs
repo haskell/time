@@ -107,8 +107,7 @@ weekAllDays firstDay day = take 7 [weekFirstDay firstDay day ..]
 --
 -- @since 1.12.2
 weekFirstDay :: DayOfWeek -> Day -> Day
-weekFirstDay firstDay day =
-    addDays (negate $ toInteger $ dayOfWeekDiff (dayOfWeek day) firstDay) day
+weekFirstDay firstDay day = addDays (negate $ dayOfWeekDiffByDay firstDay day) day
 
 -- | Returns the last day of a week containing the given 'Day'.
 --
@@ -125,4 +124,7 @@ weekFirstDay firstDay day =
 --
 -- @since 1.12.2
 weekLastDay :: DayOfWeek -> Day -> Day
-weekLastDay firstDay = addDays 6 . weekFirstDay firstDay
+weekLastDay firstDay day = addDays (6 - dayOfWeekDiffByDay firstDay day) day
+
+dayOfWeekDiffByDay :: DayOfWeek -> Day -> Integer
+dayOfWeekDiffByDay firstDay day = toInteger $ dayOfWeekDiff (dayOfWeek day) firstDay
