@@ -90,7 +90,7 @@ firstDayOfWeekOnAfter dw d = addDays (toInteger $ dayOfWeekDiff dw $ dayOfWeek d
 --
 -- @since 1.12.2
 weekAllDays :: DayOfWeek -> Day -> [Day]
-weekAllDays firstDay day = take 7 [weekFirstDay firstDay day ..]
+weekAllDays firstDay day = [weekFirstDay firstDay day .. weekLastDay firstDay day]
 
 -- | Returns the first day of a week containing the given 'Day'.
 --
