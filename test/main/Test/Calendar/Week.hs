@@ -156,7 +156,7 @@ weekAllDaysTests =
         [ nameTest "FirstDay is less than Day-DayOfWeek" $
             assertEqual
                 ""
-                [YearMonthDay 2023 12 31.. YearMonthDay 2024 1 6]
+                [YearMonthDay 2023 12 31 .. YearMonthDay 2024 1 6]
                 (weekAllDays Sunday (YearMonthDay 2024 1 1))
         , nameTest "FirstDay is equal to Day-DayOfWeek" $
             assertEqual
