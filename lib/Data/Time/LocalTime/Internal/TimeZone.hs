@@ -110,19 +110,19 @@ toCTime t = let
         then return $ CTime tt
         else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow"
 
--- | Get the local time-zone for a given time (varying as per summertime adjustments).
+-- | Get the configured time-zone for a given time (varying as per summertime adjustments).
 getTimeZoneSystem :: SystemTime -> IO TimeZone
 getTimeZoneSystem t = do
     ctime <- toCTime $ systemSeconds t
     getTimeZoneCTime ctime
 
--- | Get the time-zone for a given time (varying as per summertime adjustments).
+-- | Get the configured time-zone for a given time (varying as per summertime adjustments).
 --
--- On unix systems the output of this function depends on:
+-- On Unix systems the output of this function depends on:
 --
--- 1. the value of @TZ@ environment variable (if set)
+-- 1. The value of @TZ@ environment variable (if set)
 --
--- 2. global system time zone settings (usually configured by @\/etc\/localtime@ symlink)
+-- 2. The system time zone (usually configured by @\/etc\/localtime@ symlink)
 --
 -- For details see tzset(3) and localtime(3).
 --
@@ -137,11 +137,18 @@ getTimeZoneSystem t = do
 -- > `System.Environment.setEnv` \"TZ\" \"Europe/Berlin\" >> `getTimeZone` t
 -- CEST
 -- @
+--
+-- On Windows systems the output of this function depends on:
+--
+-- 1. The value of @TZ@ environment variable (if set).
+-- See [here](https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/tzset) for how Windows interprets this variable.
+--
+-- 2. The system time zone, configured in Settings
 getTimeZone :: UTCTime -> IO TimeZone
 getTimeZone t = do
     ctime <- toCTime $ floor $ utcTimeToPOSIXSeconds t
     getTimeZoneCTime ctime
 
--- | Get the current time-zone.
+-- | Get the configured time-zone for the current time.
 getCurrentTimeZone :: IO TimeZone
 getCurrentTimeZone = getSystemTime >>= getTimeZoneSystem
