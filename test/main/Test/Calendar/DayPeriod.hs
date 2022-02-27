@@ -5,6 +5,7 @@ module Test.Calendar.DayPeriod (
 import Data.Time.Calendar
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.Quarter
+import Test.Arbitrary ()
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck
@@ -69,6 +70,7 @@ testDayPeriod =
         , testGroup "Month" testMonth
         , testGroup "Quarter" testQuarter
         , testGroup "Year" testYear
+        , testGroup "Week" testWeek
         ]
 
 testDay :: [TestTree]
@@ -155,4 +157,19 @@ testYear =
         all (== y1) $ map (\(YearMonthDay y2 _ _) -> y2) $ periodAllDays y1
     , testProperty "periodLength" $ \(MkWYear y) ->
         periodLength y >= 365
+    ]
+
+testWeek :: [TestTree]
+testWeek =
+    [ testProperty "weekFirstDay/weekLastDay range" $ \dw (MkWDay d) -> let
+        f = weekFirstDay dw d
+        l = weekLastDay dw d
+        in f <= d && d <= l
+    , testProperty "weekFirstDay/weekLastDay range" $ \dw (MkWDay d) -> let
+        f = weekFirstDay dw d
+        l = weekLastDay dw d
+        in addDays 6 f == l
+    , testProperty "weekFirstDay dayOfWeek" $ \dw (MkWDay d) -> let
+        f = weekFirstDay dw d
+        in dayOfWeek f == dw
     ]

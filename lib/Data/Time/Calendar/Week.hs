@@ -39,15 +39,14 @@ instance NFData DayOfWeek where
 -- | \"Circular\", so for example @[Tuesday ..]@ gives an endless sequence.
 -- Also: 'fromEnum' gives [1 .. 7] for [Monday .. Sunday], and 'toEnum' performs mod 7 to give a cycle of days.
 instance Enum DayOfWeek where
-    toEnum i =
-        case mod i 7 of
-            0 -> Sunday
-            1 -> Monday
-            2 -> Tuesday
-            3 -> Wednesday
-            4 -> Thursday
-            5 -> Friday
-            _ -> Saturday
+    toEnum i = case mod i 7 of
+        0 -> Sunday
+        1 -> Monday
+        2 -> Tuesday
+        3 -> Wednesday
+        4 -> Thursday
+        5 -> Friday
+        _ -> Saturday
     fromEnum Monday = 1
     fromEnum Tuesday = 2
     fromEnum Wednesday = 3
@@ -107,7 +106,7 @@ weekAllDays firstDay day = [weekFirstDay firstDay day .. weekLastDay firstDay da
 --
 -- @since 1.12.2
 weekFirstDay :: DayOfWeek -> Day -> Day
-weekFirstDay firstDay day = addDays (negate $ dayOfWeekDiffByDay firstDay day) day
+weekFirstDay firstDay day = addDays (negate 7) $ firstDayOfWeekOnAfter firstDay $ succ day
 
 -- | Returns the last day of a week containing the given 'Day'.
 --
@@ -124,7 +123,4 @@ weekFirstDay firstDay day = addDays (negate $ dayOfWeekDiffByDay firstDay day) d
 --
 -- @since 1.12.2
 weekLastDay :: DayOfWeek -> Day -> Day
-weekLastDay firstDay day = addDays (6 - dayOfWeekDiffByDay firstDay day) day
-
-dayOfWeekDiffByDay :: DayOfWeek -> Day -> Integer
-dayOfWeekDiffByDay firstDay day = toInteger $ dayOfWeekDiff (dayOfWeek day) firstDay
+weekLastDay firstDay day = pred $ firstDayOfWeekOnAfter firstDay $ succ day
