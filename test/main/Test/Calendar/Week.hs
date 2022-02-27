@@ -99,27 +99,27 @@ prop_firstDayOfWeekOnAfter_Day :: DayOfWeek -> Day -> Bool
 prop_firstDayOfWeekOnAfter_Day dw d = dayOfWeek (firstDayOfWeekOnAfter dw d) == dw
 
 prop_toFromWeekCalendar :: FirstWeekType -> DayOfWeek -> Day -> Bool
-prop_toFromWeekCalendar wt ws d = let
-    (y, wy, dw) = toWeekCalendar wt ws d
-    in fromWeekCalendar wt ws y wy dw == d
+prop_toFromWeekCalendar wt ws d =
+    let (y, wy, dw) = toWeekCalendar wt ws d
+     in fromWeekCalendar wt ws y wy dw == d
 
 prop_weekChanges :: FirstWeekType -> DayOfWeek -> Day -> Bool
-prop_weekChanges wt ws d = let
-    (_, wy0, _) = toWeekCalendar wt ws d
-    (_, wy1, dw) = toWeekCalendar wt ws $ succ d
-    in if dw == ws then wy0 /= wy1 else wy0 == wy1
+prop_weekChanges wt ws d =
+    let (_, wy0, _) = toWeekCalendar wt ws d
+        (_, wy1, dw) = toWeekCalendar wt ws $ succ d
+     in if dw == ws then wy0 /= wy1 else wy0 == wy1
 
 prop_weekYearWholeStart :: DayOfWeek -> Year -> Bool
-prop_weekYearWholeStart ws y = let
-    d = fromWeekCalendar FirstWholeWeek ws y 1 ws
-    (y', dy) = toOrdinalDate d
-    in y == y' && dy >= 1 && dy <= 7
+prop_weekYearWholeStart ws y =
+    let d = fromWeekCalendar FirstWholeWeek ws y 1 ws
+        (y', dy) = toOrdinalDate d
+     in y == y' && dy >= 1 && dy <= 7
 
 prop_weekYearMostStart :: DayOfWeek -> Year -> Bool
-prop_weekYearMostStart ws y = let
-    d = fromWeekCalendar FirstMostWeek ws y 2 ws
-    (y', dy) = toOrdinalDate d
-    in y == y' && dy >= 5 && dy <= 11
+prop_weekYearMostStart ws y =
+    let d = fromWeekCalendar FirstMostWeek ws y 2 ws
+        (y', dy) = toOrdinalDate d
+     in y == y' && dy >= 5 && dy <= 11
 
 testDiff :: TestTree
 testDiff =
@@ -135,5 +135,105 @@ testDiff =
         , nameTest "weekYearMostStart" prop_weekYearMostStart
         ]
 
+testWeekDays :: TestTree
+testWeekDays =
+    nameTest
+        "Week Days"
+        [ testGroup "weekAllDays" weekAllDaysTests
+        , testGroup "weekFirstDay" weekFirstDayTests
+        , testGroup "weekLastDay" weekLastDayTests
+        ]
+
+weekAllDaysTests :: [TestTree]
+weekAllDaysTests =
+    [ testGroup
+        "Property Tests"
+        [ nameTest "Week have 7 days" weekHaveSevenDays
+        , nameTest "Day is part of the week" dayIsPartOfWeek
+        ]
+    , testGroup
+        "Unit Tests"
+        [ nameTest "FirstDay is less than Day-DayOfWeek" $
+            assertEqual
+                ""
+                [YearMonthDay 2023 12 31 .. YearMonthDay 2024 1 6]
+                (weekAllDays Sunday (YearMonthDay 2024 1 1))
+        , nameTest "FirstDay is equal to Day-DayOfWeek" $
+            assertEqual
+                ""
+                [YearMonthDay 2024 2 26 .. YearMonthDay 2024 3 3]
+                (weekAllDays Monday (YearMonthDay 2024 2 26))
+        , nameTest "FirstDay is greater than Day-DayOfWeek" $
+            assertEqual
+                ""
+                [YearMonthDay 2022 2 15 .. YearMonthDay 2022 2 21]
+                (weekAllDays Tuesday (YearMonthDay 2022 2 21))
+        ]
+    ]
+  where
+    weekHaveSevenDays :: DayOfWeek -> Day -> Bool
+    weekHaveSevenDays fd d = length (weekAllDays fd d) == 7
+
+    dayIsPartOfWeek :: DayOfWeek -> Day -> Bool
+    dayIsPartOfWeek fd d = d `elem` weekAllDays fd d
+
+weekFirstDayTests :: [TestTree]
+weekFirstDayTests =
+    [ testGroup
+        "Property Tests"
+        [ nameTest "FirsyDay matches the Day-DayOfWeek" firstDayMatchesDay
+        ]
+    , testGroup
+        "Unit Tests"
+        [ nameTest "FirstDay is less than Day-DayOfWeek" $
+            assertEqual
+                ""
+                (YearMonthDay 2022 2 20)
+                (weekFirstDay Sunday (YearMonthDay 2022 2 21))
+        , nameTest "FirstDay is equal to Day-DayOfWeek" $
+            assertEqual
+                ""
+                (YearMonthDay 2022 2 21)
+                (weekFirstDay Monday (YearMonthDay 2022 2 21))
+        , nameTest "FirstDay is greater than Day-DayOfWeek" $
+            assertEqual
+                ""
+                (YearMonthDay 2022 2 15)
+                (weekFirstDay Tuesday (YearMonthDay 2022 2 21))
+        ]
+    ]
+  where
+    firstDayMatchesDay :: DayOfWeek -> Day -> Bool
+    firstDayMatchesDay fd d = dayOfWeek (weekFirstDay fd d) == fd
+
+weekLastDayTests :: [TestTree]
+weekLastDayTests =
+    [ nameTest "FirstDay is less than Day-DayOfWeek" $
+        assertEqual
+            ""
+            (YearMonthDay 2022 2 26)
+            (weekLastDay Sunday (YearMonthDay 2022 2 21))
+    , nameTest "FirstDay is equal to Day-DayOfWeek" $
+        assertEqual
+            ""
+            (YearMonthDay 2022 2 27)
+            (weekLastDay Monday (YearMonthDay 2022 2 21))
+    , nameTest "FirstDay is greater than Day-DayOfWeek" $
+        assertEqual
+            ""
+            (YearMonthDay 2022 2 21)
+            (weekLastDay Tuesday (YearMonthDay 2022 2 21))
+    ]
+
 testWeek :: TestTree
-testWeek = nameTest "Week" [testDay, testSucc, testPred, testSequences, testReadShow, testDiff]
+testWeek =
+    nameTest
+        "Week"
+        [ testDay
+        , testSucc
+        , testPred
+        , testSequences
+        , testReadShow
+        , testDiff
+        , testWeekDays
+        ]

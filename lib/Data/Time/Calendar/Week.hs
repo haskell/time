@@ -6,6 +6,9 @@ module Data.Time.Calendar.Week (
     dayOfWeek,
     dayOfWeekDiff,
     firstDayOfWeekOnAfter,
+    weekAllDays,
+    weekFirstDay,
+    weekLastDay,
 ) where
 
 import Control.DeepSeq
@@ -70,3 +73,58 @@ dayOfWeekDiff a b = mod' (fromEnum a - fromEnum b) 7
 -- | The first day-of-week on or after some day
 firstDayOfWeekOnAfter :: DayOfWeek -> Day -> Day
 firstDayOfWeekOnAfter dw d = addDays (toInteger $ dayOfWeekDiff dw $ dayOfWeek d) d
+
+-- | Returns a week containing the given 'Day' where the first day is the
+-- 'DayOfWeek' specified.
+--
+-- Examples:
+--
+-- >>> weekAllDays Sunday (YearMonthDay 2022 02 21)
+-- [YearMonthDay 2022 2 20 .. YearMonthDay 2022 2 26]
+--
+-- >>> weekAllDays Monday (YearMonthDay 2022 02 21)
+-- [YearMonthDay 2022 2 21 .. YearMonthDay 2022 2 27]
+--
+-- >>> weekAllDays Tuesday (YearMonthDay 2022 02 21)
+-- [YearMonthDay 2022 2 15 .. YearMonthDay 2022 2 21]
+--
+-- @since 1.12.2
+weekAllDays :: DayOfWeek -> Day -> [Day]
+weekAllDays firstDay day = [weekFirstDay firstDay day .. weekLastDay firstDay day]
+
+-- | Returns the first day of a week containing the given 'Day'.
+--
+-- Examples:
+--
+-- >>> weekFirstDay Sunday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 20
+--
+-- >>> weekFirstDay Monday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 21
+--
+-- >>> weekFirstDay Tuesday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 15
+--
+-- @since 1.12.2
+weekFirstDay :: DayOfWeek -> Day -> Day
+weekFirstDay firstDay day = addDays (negate $ dayOfWeekDiffByDay firstDay day) day
+
+-- | Returns the last day of a week containing the given 'Day'.
+--
+-- Examples:
+--
+-- >>> weekLastDay Sunday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 26
+--
+-- >>> weekLastDay Monday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 27
+--
+-- >>> weekLastDay Tuesday (YearMonthDay 2022 02 21)
+-- YearMonthDay 2022 2 21
+--
+-- @since 1.12.2
+weekLastDay :: DayOfWeek -> Day -> Day
+weekLastDay firstDay day = addDays (6 - dayOfWeekDiffByDay firstDay day) day
+
+dayOfWeekDiffByDay :: DayOfWeek -> Day -> Integer
+dayOfWeekDiffByDay firstDay day = toInteger $ dayOfWeekDiff (dayOfWeek day) firstDay
