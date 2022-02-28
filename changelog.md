@@ -2,6 +2,7 @@
 
 ## [1.12.2] -
 - add weekFirstDay, weekLastDay, weekAllDays
+- expose formatting/parsing internals
 - fix: handle +HH format for ISO8601 timeOffsetFormat etc.
 
 ## [1.12.1] - 2021-10-24
