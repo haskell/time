@@ -54,7 +54,7 @@ Before release:
 
 11. Inspect generated haddock, if necessary
 
-    `stack path --local-doc-root`/index.html
+    dist/doc/html/time/index.html
 
 12. Commit and push changes to repo
 

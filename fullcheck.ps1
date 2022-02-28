@@ -25,5 +25,7 @@ ForEach ($c in "8.8.4","8.10.7","9.0.1","9.2.1")
     if (!$?) {Exit 1}
     & "cabal" "v1-test"
     if (!$?) {Exit 1}
+    & "cabal" "v1-haddock"
+    if (!$?) {Exit 1}
 }
 Echo "OK"

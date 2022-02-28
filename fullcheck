@@ -14,5 +14,6 @@ cabal update
 cabal v1-install --only-dependencies --enable-tests
 cabal v1-configure --enable-tests
 cabal v1-test
+cabal v1-haddock
 done
 echo OK
