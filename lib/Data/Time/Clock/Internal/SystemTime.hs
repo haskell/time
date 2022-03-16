@@ -57,7 +57,7 @@ getTime_resolution :: DiffTime
 getTAISystemTime :: Maybe (DiffTime, IO SystemTime)
 
 #ifdef mingw32_HOST_OS
--- On Windows, the equlvalent of POSIX time is "file time", defined as
+-- On Windows, the equivalent of POSIX time is "file time", defined as
 -- the number of 100-nanosecond intervals that have elapsed since
 -- 12:00 A.M. January 1, 1601 (UTC).  We can convert this into a POSIX
 -- time by adjusting the offset to be relative to the POSIX epoch.
