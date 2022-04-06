@@ -5,7 +5,7 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
 {
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(_WIN32)
     // When compiling with MinGW (which does not provide a full POSIX
-    // layer as opposed to CygWin) it's better to use the CRT's
+    // layer as opposed to Cygwin) it's better to use the CRT's
     // underscore-prefixed `_tzset()` variant to avoid linker issues
     // as Microsoft considers the POSIX named `tzset()` function
     // deprecated (see http://msdn.microsoft.com/en-us/library/ms235384.aspx)
