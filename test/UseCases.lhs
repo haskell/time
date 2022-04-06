@@ -49,7 +49,7 @@ first day of the year it occurred in?
 
 * Given a date X, how do I find the last day of the month that X occurs in.
 For example, If X is July 4th, 2005, then I want the result to be July 31st,
-2005. If X is Februrary 5, then I want the result to be Februrary 28 for
+2005. If X is February 5, then I want the result to be February 28 for
 non-leap-years and February 29 for leap years.
 
 > lastDayOfMonth day = fromGregorian y m (gregorianMonthLength y m) where
