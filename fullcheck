@@ -6,7 +6,7 @@ PATH=$HOME/.ghcup/bin:$PATH
 ghcup upgrade
 ghcup install cabal latest
 ghcup set cabal latest
-for c in 8.8.4 8.10.7 9.0.1 9.2.1
+for c in 8.8.4 8.10.7 9.0.1 9.2.2
 do
 ghcup install ghc $c
 ghcup set ghc $c
