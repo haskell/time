@@ -37,6 +37,7 @@ utcToZonedTime zone time = ZonedTime (utcToLocalTime zone time) zone
 zonedTimeToUTC :: ZonedTime -> UTCTime
 zonedTimeToUTC (ZonedTime t zone) = localTimeToUTC zone t
 
+-- | For the time zone, this only shows the name, or offset if the name is empty.
 instance Show ZonedTime where
     show (ZonedTime t zone) = show t ++ " " ++ show zone
 
