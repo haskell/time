@@ -382,6 +382,9 @@ prop_read_show_ZonedUTC t = compareResult (Just $ zonedTimeToUTC t) (readMaybe (
 prop_read_show_LocalUTC :: LocalTime -> Result
 prop_read_show_LocalUTC t = compareResult (Just $ localTimeToUTC utc t) (readMaybe (show t))
 
+prop_read_show_UTC_no_TZ :: UTCTime -> Result
+prop_read_show_UTC_no_TZ t = compareResult (Just t) $ readMaybe $ show $ utcToLocalTime utc t
+
 --
 
 -- * special show functions
@@ -620,6 +623,7 @@ readShowTests =
         , nameTest "UTCTime" (prop_read_show :: UTCTime -> Result)
         , nameTest "UTCTime (zoned)" prop_read_show_ZonedUTC
         , nameTest "UTCTime (local)" prop_read_show_LocalUTC
+        , nameTest "UTCTime (no TZ)" prop_read_show_UTC_no_TZ
         , nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result)
         , nameTest "NominalDiffTime" (prop_read_show :: NominalDiffTime -> Result)
         , nameTest "DiffTime" (prop_read_show :: DiffTime -> Result)
