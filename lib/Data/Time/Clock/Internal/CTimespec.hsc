@@ -1,3 +1,5 @@
+{-# LANGUAGE CApiFFI #-}
+
 module Data.Time.Clock.Internal.CTimespec where
 
 #include "HsTimeConfig.h"
@@ -49,8 +51,7 @@ clockGetTime clockid = alloca (\ptspec -> do
     peek ptspec
     )
 
-clock_REALTIME :: ClockID
-clock_REALTIME = #{const CLOCK_REALTIME}
+foreign import capi unsafe "time.h value CLOCK_REALTIME" clock_REALTIME :: ClockID
 
 clock_TAI :: Maybe ClockID
 clock_TAI =
