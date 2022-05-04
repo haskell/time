@@ -4,6 +4,7 @@
 - add weekFirstDay, weekLastDay, weekAllDays
 - expose formatting/parsing internals
 - fix: handle +HH format for ISO8601 timeOffsetFormat etc.
+- fix clock_REALTIME for WebAssembly
 
 ## [1.12.1] - 2021-10-24
 - add DayPeriod class for periods of days
