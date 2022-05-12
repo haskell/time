@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest]
-        ghc: ['9.2.2', '9.0.1', '8.10.7', '8.8.4']
+        ghc: ['9.2.2', '9.0.2', '8.10.7']
     steps:
     - uses: actions/checkout@v3
     - uses: haskell/actions/setup@v2.0.0
@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: ['9.2.2', '9.0.1', '8.10.7', '8.8.4']
+        ghc: ['9.2.2', '9.0.2', '8.10.7']
     steps:
     - uses: actions/checkout@v3
     - uses: haskell/actions/setup@v2.0.0
