@@ -28,4 +28,4 @@ ForEach ($c in "8.10.7","9.0.2","9.2.2")
     & "cabal" "v1-haddock"
     if (!$?) {Exit 1}
 }
-Echo "OK"
+Write-Output "OK"
