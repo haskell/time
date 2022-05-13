@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.12.2] - 2022-05-12
+## [1.12.2] - 2022-05-14
 - add weekFirstDay, weekLastDay, weekAllDays
 - expose formatting/parsing internals
 - fix: handle +HH format for ISO8601 timeOffsetFormat etc.
