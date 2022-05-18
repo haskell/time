@@ -10,7 +10,7 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
     // as Microsoft considers the POSIX named `tzset()` function
     // deprecated (see http://msdn.microsoft.com/en-us/library/ms235384.aspx)
     _tzset();
-#else
+#elif defined(HAVE_TZSET)
     tzset();
 #endif
 

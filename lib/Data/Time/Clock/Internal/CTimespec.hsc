@@ -9,10 +9,11 @@ module Data.Time.Clock.Internal.CTimespec where
 import Foreign
 import Foreign.C
 import System.IO.Unsafe
+import System.Posix.Types
 
 #include <time.h>
 
-type ClockID = #{type clockid_t}
+type ClockID = CClockId
 
 data CTimespec = MkCTimespec CTime CLong
 
@@ -51,7 +52,7 @@ clockGetTime clockid = alloca (\ptspec -> do
     peek ptspec
     )
 
-foreign import capi unsafe "time.h value CLOCK_REALTIME" clock_REALTIME :: ClockID
+foreign import capi unsafe "HsTime.h value HS_CLOCK_REALTIME" clock_REALTIME :: ClockID
 
 clock_TAI :: Maybe ClockID
 clock_TAI =
