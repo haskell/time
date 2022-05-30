@@ -17,6 +17,7 @@ AC_CHECK_HEADERS([time.h])
 AC_CHECK_FUNCS([gmtime_r localtime_r])
 
 AC_CHECK_FUNCS([clock_gettime])
+AC_CHECK_FUNCS([tzset])
 
 AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
