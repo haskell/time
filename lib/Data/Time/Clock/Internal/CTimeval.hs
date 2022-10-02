@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
+{-# LANGUAGE CApiFFI #-}
 
 module Data.Time.Clock.Internal.CTimeval where
 
@@ -23,7 +24,7 @@ instance Storable CTimeval where
         pokeElemOff (castPtr p) 0 s
         pokeElemOff (castPtr p) 1 mus
 
-foreign import ccall unsafe "time.h gettimeofday" gettimeofday :: Ptr CTimeval -> Ptr () -> IO CInt
+foreign import capi unsafe "sys/time.h gettimeofday" gettimeofday :: Ptr CTimeval -> Ptr () -> IO CInt
 
 -- | Get the current POSIX time from the system clock.
 getCTimeval :: IO CTimeval
