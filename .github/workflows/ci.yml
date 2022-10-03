@@ -76,7 +76,7 @@ jobs:
     # See https://github.com/marketplace/actions/freebsd-vm.
     runs-on: macos-12
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build
       id: build-freebsd
       uses: vmactions/freebsd-vm@v0
