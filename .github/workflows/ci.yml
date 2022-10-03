@@ -73,13 +73,13 @@ jobs:
       run: cabal haddock
 
   build-freebsd:
-    # See https://github.com/vmactions/freebsd-vm#under-the-hood.
-    runs-on: macos-10.15
+    # See https://github.com/marketplace/actions/freebsd-vm.
+    runs-on: macos-12
     steps:
     - uses: actions/checkout@v3
     - name: Build
       id: build-freebsd
-      uses: vmactions/freebsd-vm@v0.1.6
+      uses: vmactions/freebsd-vm@v0
       with:
         usesh: true
         mem: 4096
