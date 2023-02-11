@@ -1,4 +1,5 @@
 {-# LANGUAGE Safe #-}
+{-# LANGUAGE DeriveLift #-}
 
 -- | Week-based calendars
 module Data.Time.Calendar.WeekDate (
@@ -23,13 +24,14 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Week
+import qualified Language.Haskell.TH.Syntax as TH
 
 data FirstWeekType
     = -- | first week is the first whole week of the year
       FirstWholeWeek
     | -- | first week is the first week with four days in the year
       FirstMostWeek
-    deriving (Eq)
+    deriving (Eq, TH.Lift)
 
 firstDayOfWeekCalendar :: FirstWeekType -> DayOfWeek -> Year -> Day
 firstDayOfWeekCalendar wt dow year = let

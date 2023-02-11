@@ -1,4 +1,5 @@
 {-# LANGUAGE Safe #-}
+{-# LANGUAGE DeriveLift #-}
 
 module Data.Time.Calendar.Week (
     -- * Week
@@ -16,6 +17,7 @@ import Data.Data
 import Data.Fixed
 import Data.Ix
 import Data.Time.Calendar.Days
+import qualified Language.Haskell.TH.Syntax as TH
 
 data DayOfWeek
     = Monday
@@ -25,7 +27,7 @@ data DayOfWeek
     | Friday
     | Saturday
     | Sunday
-    deriving (Eq, Show, Read, Data, Typeable, Ord, Ix)
+    deriving (Eq, Show, Read, Data, Typeable, Ord, Ix, TH.Lift)
 
 instance NFData DayOfWeek where
     rnf Monday = ()

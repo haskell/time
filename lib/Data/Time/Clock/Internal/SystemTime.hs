@@ -1,11 +1,12 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE Trustworthy #-}
+{-# LANGUAGE DeriveLift #-}
 
 #include "HsTimeConfig.h"
 
 #if defined(mingw32_HOST_OS) || !defined(HAVE_CLOCK_GETTIME)
 {-# LANGUAGE Safe #-}
 #else
-{-# LANGUAGE Trustworthy #-}
 #endif
 
 module Data.Time.Clock.Internal.SystemTime (
@@ -26,6 +27,7 @@ import qualified System.Win32.Time as Win32
 #elif defined(HAVE_CLOCK_GETTIME)
 import Data.Time.Clock.Internal.CTimespec
 import Foreign.C.Types (CLong(..), CTime(..))
+import qualified Language.Haskell.TH.Syntax as TH
 #else
 import Data.Time.Clock.Internal.CTimeval
 import Foreign.C.Types (CLong(..))
@@ -39,7 +41,7 @@ data SystemTime = MkSystemTime
     { systemSeconds :: {-# UNPACK #-} !Int64
     , systemNanoseconds :: {-# UNPACK #-} !Word32
     }
-    deriving (Eq, Ord, Show, Data, Typeable)
+    deriving (Eq, Ord, Show, Data, Typeable, TH.Lift)
 
 instance NFData SystemTime where
     rnf a = a `seq` ()
