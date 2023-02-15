@@ -158,7 +158,8 @@ test-suite test-main
         QuickCheck,
         tasty,
         tasty-hunit,
-        tasty-quickcheck
+        tasty-quickcheck,
+        template-haskell
     main-is: Main.hs
     other-modules:
         Test.Types
@@ -185,6 +186,7 @@ test-suite test-main
         Test.Calendar.Week
         Test.Calendar.Year
         Test.Clock.Conversion
+        Test.Clock.Lift
         Test.Clock.Resolution
         Test.Clock.TAI
         Test.Format.Compile
