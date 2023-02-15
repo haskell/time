@@ -1,5 +1,5 @@
 {-# LANGUAGE Safe #-}
-{-# LANGUAGE DeriveLift #-}
+
 
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
 module Data.Time.Clock.Internal.AbsoluteTime (

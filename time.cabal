@@ -43,6 +43,7 @@ library
     default-extensions:
         Rank2Types
         DeriveDataTypeable
+        DeriveLift
         StandaloneDeriving
         PatternSynonyms
         ViewPatterns

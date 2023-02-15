@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Trustworthy #-}
-{-# LANGUAGE DeriveLift #-}
+
 
 #include "HsTimeConfig.h"
 

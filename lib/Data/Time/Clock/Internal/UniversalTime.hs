@@ -1,5 +1,5 @@
 {-# LANGUAGE Safe #-}
-{-# LANGUAGE DeriveLift #-}
+
 
 module Data.Time.Clock.Internal.UniversalTime (
     -- * Universal Time

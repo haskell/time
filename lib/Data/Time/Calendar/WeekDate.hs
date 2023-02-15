@@ -1,5 +1,5 @@
 {-# LANGUAGE Safe #-}
-{-# LANGUAGE DeriveLift #-}
+
 
 -- | Week-based calendars
 module Data.Time.Calendar.WeekDate (
