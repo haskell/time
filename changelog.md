@@ -1,5 +1,7 @@
 # Change Log
 
+## [next]
+
 ## [1.12.2] - 2022-05-14
 - add weekFirstDay, weekLastDay, weekAllDays
 - expose formatting/parsing internals

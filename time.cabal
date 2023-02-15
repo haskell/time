@@ -13,9 +13,9 @@ description:    Time, clocks and calendars
 category:       Time
 build-type:     Configure
 tested-with:
-    GHC == 8.10.7,
     GHC == 9.0.2,
-    GHC == 9.2.2
+    GHC == 9.2.5,
+    GHC == 9.4.4
 x-follows-version-policy:
 
 extra-source-files:
