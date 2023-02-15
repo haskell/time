@@ -1,11 +1,11 @@
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE Trustworthy #-}
 
 #include "HsTimeConfig.h"
 
 #if defined(mingw32_HOST_OS) || !defined(HAVE_CLOCK_GETTIME)
 {-# LANGUAGE Safe #-}
 #else
+{-# LANGUAGE Trustworthy #-}
 #endif
 
 module Data.Time.Clock.Internal.SystemTime (
