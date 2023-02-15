@@ -1,6 +1,5 @@
 {-# LANGUAGE Safe #-}
 
-
 module Data.Time.Calendar.Week (
     -- * Week
     DayOfWeek (..),

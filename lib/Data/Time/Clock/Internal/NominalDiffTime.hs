@@ -1,7 +1,7 @@
-{-# LANGUAGE Trustworthy #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE Trustworthy #-}
 
 module Data.Time.Clock.Internal.NominalDiffTime (
     NominalDiffTime,
@@ -14,9 +14,9 @@ import Control.DeepSeq
 import Data.Data
 import Data.Fixed
 import GHC.Read
+import qualified Language.Haskell.TH.Syntax as TH
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
-import qualified Language.Haskell.TH.Syntax as TH
 
 -- | This is a length of time, as measured by UTC.
 -- It has a precision of 10^-12 s.

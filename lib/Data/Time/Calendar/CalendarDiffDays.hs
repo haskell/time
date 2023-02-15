@@ -1,6 +1,5 @@
 {-# LANGUAGE Safe #-}
 
-
 module Data.Time.Calendar.CalendarDiffDays (
     -- * Calendar Duration
     module Data.Time.Calendar.CalendarDiffDays,
@@ -20,8 +19,8 @@ data CalendarDiffDays = CalendarDiffDays
           Data
         , -- | @since 1.9.2
           Typeable
-          -- | @since 1.13.0
-        , TH.Lift
+        , -- | @since 1.13.0
+          TH.Lift
         )
 
 instance NFData CalendarDiffDays where

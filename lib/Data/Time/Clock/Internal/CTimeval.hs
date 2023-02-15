@@ -1,6 +1,6 @@
+{-# LANGUAGE CApiFFI #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
-{-# LANGUAGE CApiFFI #-}
 
 module Data.Time.Clock.Internal.CTimeval where
 

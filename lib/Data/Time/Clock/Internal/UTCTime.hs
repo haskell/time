@@ -1,4 +1,3 @@
-
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Clock.Internal.UTCTime (
