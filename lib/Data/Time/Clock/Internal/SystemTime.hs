@@ -20,13 +20,13 @@ import Data.Data
 import Data.Int (Int64)
 import Data.Time.Clock.Internal.DiffTime
 import Data.Word
+import qualified Language.Haskell.TH.Syntax as TH
 
 #ifdef mingw32_HOST_OS
 import qualified System.Win32.Time as Win32
 #elif defined(HAVE_CLOCK_GETTIME)
 import Data.Time.Clock.Internal.CTimespec
 import Foreign.C.Types (CLong(..), CTime(..))
-import qualified Language.Haskell.TH.Syntax as TH
 #else
 import Data.Time.Clock.Internal.CTimeval
 import Foreign.C.Types (CLong(..))
