@@ -1,6 +1,7 @@
 # Change Log
 
 ## [next]
+- add Lift instances to all types
 
 ## [1.12.2] - 2022-05-14
 - add weekFirstDay, weekLastDay, weekAllDays
