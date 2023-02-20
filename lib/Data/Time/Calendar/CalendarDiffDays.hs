@@ -35,9 +35,6 @@ instance Monoid CalendarDiffDays where
     mempty = CalendarDiffDays 0 0
     mappend = (<>)
 
-instance Show CalendarDiffDays where
-    show (CalendarDiffDays m d) = "P" ++ show m ++ "M" ++ show d ++ "D"
-
 calendarDay :: CalendarDiffDays
 calendarDay = CalendarDiffDays 0 1
 

@@ -4,5 +4,5 @@ ghcup set cabal latest
 ghcup set ghc latest
 cabal v1-install --only-dependencies --enable-tests
 cabal v1-configure --enable-tests
-cabal v1-test
+cabal v1-test --test-options="--hide-successes"
 cabal v1-haddock

@@ -627,8 +627,8 @@ readShowTests =
         , nameTest "UniversalTime" (prop_read_show :: UniversalTime -> Result)
         , nameTest "NominalDiffTime" (prop_read_show :: NominalDiffTime -> Result)
         , nameTest "DiffTime" (prop_read_show :: DiffTime -> Result)
-        -- nameTest "CalendarDiffDays" (prop_read_show :: CalendarDiffDays -> Result),
-        -- nameTest "CalendarDiffTime" (prop_read_show :: CalendarDiffTime -> Result)
+        , nameTest "CalendarDiffDays" (prop_read_show :: CalendarDiffDays -> Result)
+        , nameTest "CalendarDiffTime" (prop_read_show :: CalendarDiffTime -> Result)
         ]
 
 parseShowTests :: TestTree

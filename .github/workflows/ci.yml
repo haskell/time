@@ -32,7 +32,7 @@ jobs:
         cabal v1-configure --enable-tests
         cabal v1-test
     - name: Haddock
-      run: cabal haddock
+      run: cabal v1-haddock
 
   build-win:
     runs-on: windows-latest
@@ -70,7 +70,7 @@ jobs:
         cabal v1-configure --enable-tests
         cabal v1-test
     - name: Haddock
-      run: cabal haddock
+      run: cabal v1-haddock
 
   build-freebsd:
     # See https://github.com/marketplace/actions/freebsd-vm.
