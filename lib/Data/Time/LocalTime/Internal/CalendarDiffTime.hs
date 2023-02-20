@@ -7,7 +7,6 @@ module Data.Time.LocalTime.Internal.CalendarDiffTime (
 
 import Control.DeepSeq
 import Data.Data
-import Data.Fixed
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Clock.Internal.NominalDiffTime
 
@@ -34,9 +33,6 @@ instance Semigroup CalendarDiffTime where
 instance Monoid CalendarDiffTime where
     mempty = CalendarDiffTime 0 0
     mappend = (<>)
-
-instance Show CalendarDiffTime where
-    show (CalendarDiffTime m t) = "P" ++ show m ++ "MT" ++ showFixed True (realToFrac t :: Pico) ++ "S"
 
 calendarTimeDays :: CalendarDiffDays -> CalendarDiffTime
 calendarTimeDays (CalendarDiffDays m d) = CalendarDiffTime m $ fromInteger d * nominalDay

@@ -1,5 +1,7 @@
 {-# LANGUAGE Safe #-}
 
+{-# OPTIONS -fno-warn-orphans #-}
+
 module Data.Time.Format.ISO8601 (
     -- * Format
     Format,
@@ -58,11 +60,21 @@ import Control.Monad.Fail
 import Data.Fixed
 import Data.Format
 import Data.Ratio
-import Data.Time
+import Data.Time.Calendar.CalendarDiffDays
+import Data.Time.Calendar.Days
+import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.WeekDate
+import Data.Time.Clock.Internal.NominalDiffTime
+import Data.Time.Clock.Internal.UTCTime
+import Data.Time.LocalTime.Internal.CalendarDiffTime
+import Data.Time.LocalTime.Internal.LocalTime
+import Data.Time.LocalTime.Internal.TimeOfDay
+import Data.Time.LocalTime.Internal.TimeZone hiding (timeZoneOffsetString'')
+import Data.Time.LocalTime.Internal.ZonedTime
 import Text.ParserCombinators.ReadP
+import Text.Read (Read (..), lift)
 import Prelude hiding (fail)
 
 data FormatExtension
@@ -305,10 +317,10 @@ timeAndOffsetFormat :: Format t -> FormatExtension -> Format (t, TimeZone)
 timeAndOffsetFormat ft fe = ft <**> timeOffsetFormat fe
 
 intDesignator :: (Eq t, Show t, Read t, Num t) => Char -> Format t
-intDesignator c = optionalFormat 0 $ integerFormat NoSign Nothing <** literalFormat [c]
+intDesignator c = optionalFormat 0 $ integerFormat NegSign Nothing <** literalFormat [c]
 
 decDesignator :: (Eq t, Show t, Read t, Num t) => Char -> Format t
-decDesignator c = optionalFormat 0 $ decimalFormat NoSign Nothing <** literalFormat [c]
+decDesignator c = optionalFormat 0 $ decimalFormat NegSign Nothing <** literalFormat [c]
 
 daysDesigs :: Format CalendarDiffDays
 daysDesigs = let
@@ -414,3 +426,19 @@ instance ISO8601 CalendarDiffDays where
 -- | @PyYmMdDThHmMs[.sss]S@ (ISO 8601:2004(E) sec. 4.4.3.2)
 instance ISO8601 CalendarDiffTime where
     iso8601Format = durationTimeFormat
+
+-- orphan instance
+instance Read CalendarDiffDays where
+    readPrec = lift $ formatReadP iso8601Format
+
+-- orphan instance
+instance Show CalendarDiffDays where
+    show = formatShow iso8601Format
+
+-- orphan instance
+instance Read CalendarDiffTime where
+    readPrec = lift $ formatReadP iso8601Format
+
+-- orphan instance
+instance Show CalendarDiffTime where
+    show = formatShow iso8601Format
