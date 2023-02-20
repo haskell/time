@@ -1,3 +1,6 @@
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE Trustworthy #-}
 
 module Data.Time.Clock.Internal.DiffTime (
@@ -12,6 +15,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Fixed
 import GHC.Read
+import qualified Language.Haskell.TH.Syntax as TH
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
 
@@ -71,6 +75,11 @@ instance RealFrac DiffTime where
     round (MkDiffTime a) = round a
     ceiling (MkDiffTime a) = ceiling a
     floor (MkDiffTime a) = floor a
+
+-- Let GHC derive the instances when 'Fixed' has 'TH.Lift' instance.
+instance TH.Lift DiffTime where
+    liftTyped :: TH.Quote m => DiffTime -> TH.Code m DiffTime
+    liftTyped (MkDiffTime (MkFixed a)) = [||MkDiffTime (MkFixed $$(TH.liftTyped a))||]
 
 -- | Create a 'DiffTime' which represents an integral number of seconds.
 secondsToDiffTime :: Integer -> DiffTime

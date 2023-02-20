@@ -1,6 +1,7 @@
 # Change Log
 
 ## [next]
+- add Lift instances to all types
 - fix show of CalendarDiffTime
 
 ## [1.12.2] - 2022-05-14

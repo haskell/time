@@ -43,6 +43,7 @@ library
     default-extensions:
         Rank2Types
         DeriveDataTypeable
+        DeriveLift
         StandaloneDeriving
         PatternSynonyms
         ViewPatterns
@@ -50,7 +51,8 @@ library
     c-sources: lib/cbits/HsTime.c
     build-depends:
         base >= 4.14 && < 5,
-        deepseq >= 1.1
+        deepseq >= 1.1,
+        template-haskell >= 2.16,
     if os(windows)
         build-depends: Win32
     exposed-modules:
@@ -156,7 +158,8 @@ test-suite test-main
         QuickCheck,
         tasty,
         tasty-hunit,
-        tasty-quickcheck
+        tasty-quickcheck,
+        template-haskell
     main-is: Main.hs
     other-modules:
         Test.Types
@@ -183,6 +186,7 @@ test-suite test-main
         Test.Calendar.Week
         Test.Calendar.Year
         Test.Clock.Conversion
+        Test.Clock.Lift
         Test.Clock.Resolution
         Test.Clock.TAI
         Test.Format.Compile

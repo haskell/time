@@ -18,6 +18,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.DiffTime
+import qualified Language.Haskell.TH.Syntax as TH
 
 -- | This is the simplest representation of UTC.
 -- It consists of the day number, and a time offset from midnight.
@@ -28,7 +29,7 @@ data UTCTime = UTCTime
     , utctDayTime :: DiffTime
     -- ^ the time from midnight, 0 <= t < 86401s (because of leap-seconds)
     }
-    deriving (Data, Typeable)
+    deriving (Data, Typeable, TH.Lift)
 
 instance NFData UTCTime where
     rnf (UTCTime d t) = rnf d `seq` rnf t `seq` ()

@@ -20,6 +20,7 @@ import Data.Data
 import Data.Int (Int64)
 import Data.Time.Clock.Internal.DiffTime
 import Data.Word
+import qualified Language.Haskell.TH.Syntax as TH
 
 #ifdef mingw32_HOST_OS
 import qualified System.Win32.Time as Win32
@@ -39,7 +40,7 @@ data SystemTime = MkSystemTime
     { systemSeconds :: {-# UNPACK #-} !Int64
     , systemNanoseconds :: {-# UNPACK #-} !Word32
     }
-    deriving (Eq, Ord, Show, Data, Typeable)
+    deriving (Eq, Ord, Show, Data, Typeable, TH.Lift)
 
 instance NFData SystemTime where
     rnf a = a `seq` ()
