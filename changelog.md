@@ -3,6 +3,7 @@
 ## [next]
 - add Lift instances to all types
 - fix show of CalendarDiffTime
+- fix diffGregorianDurationRollOver, diffJulianDurationRollOver
 
 ## [1.12.2] - 2022-05-14
 - add weekFirstDay, weekLastDay, weekAllDays

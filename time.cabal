@@ -143,12 +143,14 @@ test-suite test-main
         GeneralizedNewtypeDeriving
         DeriveDataTypeable
         StandaloneDeriving
+        DerivingStrategies
         ExistentialQuantification
         MultiParamTypeClasses
         FlexibleInstances
         UndecidableInstances
         ScopedTypeVariables
         TupleSections
+        RecordWildCards
     ghc-options: -Wall -fwarn-tabs
     build-depends:
         base,

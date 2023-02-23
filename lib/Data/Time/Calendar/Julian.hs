@@ -145,23 +145,21 @@ diffJulianDurationClip day2 day1 = let
     in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- | Calendrical difference, with as many whole months as possible.
--- Same as 'diffJulianDurationClip' for positive durations.
 diffJulianDurationRollOver :: Day -> Day -> CalendarDiffDays
 diffJulianDurationRollOver day2 day1 = let
-    (y1, m1, d1) = toJulian day1
-    (y2, m2, d2) = toJulian day2
+    (y1, m1, _) = toJulian day1
+    (y2, m2, _) = toJulian day2
     ym1 = y1 * 12 + toInteger m1
     ym2 = y2 * 12 + toInteger m2
     ymdiff = ym2 - ym1
-    ymAllowed =
-        if day2 >= day1
-            then
-                if d2 >= d1
-                    then ymdiff
-                    else ymdiff - 1
-            else
-                if d2 <= d1
-                    then ymdiff
-                    else ymdiff + 1
-    dayAllowed = addJulianDurationRollOver (CalendarDiffDays ymAllowed 0) day1
-    in CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
+    findpos mdiff = let
+        dayAllowed = addJulianDurationRollOver (CalendarDiffDays mdiff 0) day1
+        dd = diffDays day2 dayAllowed
+        in if dd >= 0 then CalendarDiffDays mdiff dd else findpos (pred mdiff)
+    findneg mdiff = let
+        dayAllowed = addJulianDurationRollOver (CalendarDiffDays mdiff 0) day1
+        dd = diffDays day2 dayAllowed
+        in if dd <= 0 then CalendarDiffDays mdiff dd else findpos (succ mdiff)
+    in if day2 >= day1
+        then findpos ymdiff
+        else findneg ymdiff
