@@ -9,6 +9,8 @@ module Data.Time.Clock.Internal.DiffTime (
     secondsToDiffTime,
     picosecondsToDiffTime,
     diffTimeToPicoseconds,
+    diffTimeToMicroseconds,
+    diffTimeToMilliseconds
 ) where
 
 import Control.DeepSeq
@@ -92,6 +94,12 @@ picosecondsToDiffTime x = MkDiffTime (MkFixed x)
 -- | Get the number of picoseconds in a 'DiffTime'.
 diffTimeToPicoseconds :: DiffTime -> Integer
 diffTimeToPicoseconds (MkDiffTime (MkFixed x)) = x
+
+diffTimeToMicroseconds :: DiffTime -> Integer
+diffTimeToMicroseconds diffTime = quot (diffTimeToPicoseconds diffTime) 1000000
+
+diffTimeToMilliseconds :: DiffTime -> Integer
+diffTimeToMilliseconds diffTime = quot (diffTimeToPicoseconds diffTime) 1000000000
 
 {-# RULES
 "realToFrac/DiffTime->Pico" realToFrac = \(MkDiffTime ps) -> ps
