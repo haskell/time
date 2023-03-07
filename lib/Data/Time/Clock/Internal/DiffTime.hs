@@ -86,12 +86,12 @@ secondsToDiffTime :: Integer -> DiffTime
 secondsToDiffTime = fromInteger
 
 -- | Create a 'DiffTime' from a number of picoseconds.
-picosecondsToDiffTime :: Integer -> DiffTime
-picosecondsToDiffTime x = MkDiffTime (MkFixed x)
+picosecondsToDiffTime :: Pico -> DiffTime
+picosecondsToDiffTime = MkDiffTime
 
 -- | Get the number of picoseconds in a 'DiffTime'.
-diffTimeToPicoseconds :: DiffTime -> Integer
-diffTimeToPicoseconds (MkDiffTime (MkFixed x)) = x
+diffTimeToPicoseconds :: DiffTime -> Pico
+diffTimeToPicoseconds (MkDiffTime x) = x
 
 {-# RULES
 "realToFrac/DiffTime->Pico" realToFrac = \(MkDiffTime ps) -> ps
