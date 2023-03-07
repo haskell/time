@@ -11,6 +11,7 @@ module Data.Time.Clock.System (
     systemToTAITime,
 ) where
 
+import Data.Fixed (Fixed (..))
 import Data.Int (Int64)
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.AbsoluteTime
@@ -38,7 +39,7 @@ systemToUTCTime (MkSystemTime seconds nanoseconds) = let
     timePicoseconds :: Int64
     timePicoseconds = timeNanoseconds * 1000
     time :: DiffTime
-    time = picosecondsToDiffTime $ fromIntegral timePicoseconds
+    time = secondsToDiffTime $ MkFixed $ fromIntegral timePicoseconds
     in UTCTime day time
 
 -- | Convert 'UTCTime' to 'SystemTime', matching zero 'SystemTime' to midnight of 'systemEpochDay' UTC.
@@ -47,7 +48,7 @@ utcToSystemTime (UTCTime day time) = let
     days :: Int64
     days = fromIntegral $ diffDays day systemEpochDay
     timePicoseconds :: Int64
-    timePicoseconds = fromIntegral $ diffTimeToPicoseconds time
+    timePicoseconds = (\(MkFixed x) -> fromIntegral x) $ diffTimeToSeconds time
     timeNanoseconds :: Int64
     timeNanoseconds = timePicoseconds `div` 1000
     timeSeconds :: Int64
