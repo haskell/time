@@ -1,4 +1,6 @@
+#if !defined(javascript_HOST_ARCH)
 {-# LANGUAGE CApiFFI #-}
+#endif
 
 module Data.Time.Clock.Internal.CTimespec where
 
@@ -52,7 +54,13 @@ clockGetTime clockid = alloca (\ptspec -> do
     peek ptspec
     )
 
+#if defined(javascript_HOST_ARCH)
+-- JS backend doesn't support foreign imports with capi convention
+clock_REALTIME :: ClockID
+clock_REALTIME = #{const CLOCK_REALTIME}
+#else
 foreign import capi unsafe "HsTime.h value HS_CLOCK_REALTIME" clock_REALTIME :: ClockID
+#endif
 
 clock_TAI :: Maybe ClockID
 clock_TAI =
