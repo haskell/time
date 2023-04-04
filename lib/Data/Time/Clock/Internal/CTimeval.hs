@@ -1,6 +1,8 @@
-{-# LANGUAGE CApiFFI #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
+#if !defined(javascript_HOST_ARCH)
+{-# LANGUAGE CApiFFI #-}
+#endif
 
 module Data.Time.Clock.Internal.CTimeval where
 
@@ -24,7 +26,15 @@ instance Storable CTimeval where
         pokeElemOff (castPtr p) 0 s
         pokeElemOff (castPtr p) 1 mus
 
+#if defined(javascript_HOST_ARCH)
+
+foreign import ccall unsafe "sys/time.h gettimeofday" gettimeofday :: Ptr CTimeval -> Ptr () -> IO CInt
+
+#else
+
 foreign import capi unsafe "sys/time.h gettimeofday" gettimeofday :: Ptr CTimeval -> Ptr () -> IO CInt
+
+#endif
 
 -- | Get the current POSIX time from the system clock.
 getCTimeval :: IO CTimeval

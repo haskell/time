@@ -30,10 +30,21 @@ instance Storable CTimespec where
         #{poke struct timespec, tv_sec } p s
         #{poke struct timespec, tv_nsec} p ns
 
+#if defined(javascript_HOST_ARCH)
+
+foreign import ccall unsafe "time.h clock_gettime"
+    clock_gettime :: ClockID -> Ptr CTimespec -> IO CInt
+foreign import ccall unsafe "time.h clock_getres"
+    clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
+
+#else
+
 foreign import capi unsafe "time.h clock_gettime"
     clock_gettime :: ClockID -> Ptr CTimespec -> IO CInt
 foreign import capi unsafe "time.h clock_getres"
     clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
+
+#endif
 
 -- | Get the resolution of the given clock.
 clockGetRes :: ClockID -> IO (Either Errno CTimespec)
