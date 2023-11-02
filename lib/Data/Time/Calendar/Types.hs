@@ -1,6 +1,9 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.Types where
+
+import GHC.Generics (Generic)
 
 -- | Year of Common Era (when positive).
 type Year = Integer
@@ -22,6 +25,53 @@ pattern BeforeCommonEra n <-
         BeforeCommonEra n = 1 - n
 
 {-# COMPLETE CommonEra, BeforeCommonEra #-}
+
+data MonthOfYear
+  = January
+  | February
+  | March
+  | April
+  | May
+  | June
+  | July
+  | August
+  | September
+  | October
+  | November
+  | December
+  deriving (Show, Read, Eq, Ord, Generic, Enum, Bounded)
+
+-- | 1-based index of the month
+monthOfYearIndex :: MonthOfYear -> Int
+monthOfYearIndex moy = case moy of
+  January -> 1
+  February -> 2
+  March -> 3
+  April -> 4
+  May -> 5
+  June -> 6
+  July -> 7
+  August -> 8
+  September -> 9
+  October -> 10
+  November -> 11
+  December -> 12
+
+parseMonthOfYearIndex :: Int -> Maybe MonthOfYear
+parseMonthOfYearIndex ix = case ix of
+  1 -> Just January
+  2 -> Just February
+  3 -> Just March
+  4 -> Just April
+  5 -> Just May
+  6 -> Just June
+  7 -> Just July
+  8 -> Just August
+  9 -> Just September
+  10 -> Just October
+  11 -> Just November
+  12 -> Just December
+  _ -> Nothing
 
 -- | Day of month, in range 1 to 31.
 type DayOfMonth = Int
