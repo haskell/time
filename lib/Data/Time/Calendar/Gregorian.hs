@@ -8,19 +8,6 @@ module Data.Time.Calendar.Gregorian (
     Year,
     pattern CommonEra,
     pattern BeforeCommonEra,
-    MonthOfYear,
-    pattern January,
-    pattern February,
-    pattern March,
-    pattern April,
-    pattern May,
-    pattern June,
-    pattern July,
-    pattern August,
-    pattern September,
-    pattern October,
-    pattern November,
-    pattern December,
     DayOfMonth,
 
     -- * Gregorian calendar
@@ -52,7 +39,7 @@ import Data.Time.Calendar.Private
 import Data.Time.Calendar.Types
 
 -- | Convert to proleptic Gregorian calendar.
-toGregorian :: Day -> (Year, MonthOfYear, DayOfMonth)
+toGregorian :: Day -> (Year, Int, DayOfMonth)
 toGregorian date = (year, month, day)
   where
     (year, yd) = toOrdinalDate date
@@ -60,12 +47,12 @@ toGregorian date = (year, month, day)
 
 -- | Convert from proleptic Gregorian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
-fromGregorian :: Year -> MonthOfYear -> DayOfMonth -> Day
+fromGregorian :: Year -> Int -> DayOfMonth -> Day
 fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isLeapYear year) month day)
 
 -- | Bidirectional abstract constructor for the proleptic Gregorian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
-pattern YearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
+pattern YearMonthDay :: Year -> Int -> DayOfMonth -> Day
 pattern YearMonthDay y m d <-
     (toGregorian -> (y, m, d))
     where
@@ -75,7 +62,7 @@ pattern YearMonthDay y m d <-
 
 -- | Convert from proleptic Gregorian calendar.
 -- Invalid values will return Nothing
-fromGregorianValid :: Year -> MonthOfYear -> DayOfMonth -> Maybe Day
+fromGregorianValid :: Year -> Int -> DayOfMonth -> Maybe Day
 fromGregorianValid year month day = do
     doy <- monthAndDayToDayOfYearValid (isLeapYear year) month day
     fromOrdinalDateValid year doy
@@ -87,13 +74,13 @@ showGregorian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
     (y, m, d) = toGregorian date
 
 -- | The number of days in a given month according to the proleptic Gregorian calendar.
-gregorianMonthLength :: Year -> MonthOfYear -> DayOfMonth
+gregorianMonthLength :: Year -> Int -> DayOfMonth
 gregorianMonthLength year = monthLength (isLeapYear year)
 
-rolloverMonths :: (Year, Integer) -> (Year, MonthOfYear)
+rolloverMonths :: (Year, Integer) -> (Year, Int)
 rolloverMonths (y, m) = (y + (div (m - 1) 12), fromIntegral (mod (m - 1) 12) + 1)
 
-addGregorianMonths :: Integer -> Day -> (Year, MonthOfYear, DayOfMonth)
+addGregorianMonths :: Integer -> Day -> (Year, Int, DayOfMonth)
 addGregorianMonths n day = (y', m', d)
   where
     (y, m, d) = toGregorian day
@@ -178,6 +165,6 @@ instance Show Day where
 
 -- orphan instance
 instance DayPeriod Year where
-    periodFirstDay y = YearMonthDay y January 1
-    periodLastDay y = YearMonthDay y December 31
+    periodFirstDay y = YearMonthDay y 1 1
+    periodLastDay y = YearMonthDay y 12 31
     dayPeriod (YearMonthDay y _ _) = y

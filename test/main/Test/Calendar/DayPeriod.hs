@@ -26,7 +26,7 @@ newtype WYear = MkWYear Year
 instance Arbitrary WYear where
     arbitrary = fmap MkWYear $ choose (-1000, 3000)
 
-newtype WMonthOfYear = MkWMonthOfYear MonthOfYear
+newtype WMonthOfYear = MkWMonthOfYear Int
     deriving (Eq, Show)
 
 instance Arbitrary WMonthOfYear where
@@ -94,9 +94,9 @@ testMonth =
     , testGroup
         "periodLastDay"
         [ testCase "leap year" $
-            periodLastDay (YearMonth 2024 February) @?= YearMonthDay 2024 February 29
+            periodLastDay (YearMonth 2024 2) @?= YearMonthDay 2024 2 29
         , testCase "regular year" $
-            periodLastDay (YearMonth 2023 February) @?= YearMonthDay 2023 February 28
+            periodLastDay (YearMonth 2023 2) @?= YearMonthDay 2023 2 28
         ]
     , testProperty "dayPeriod" $ \(MkWMonth my@(YearMonth y m), MkWDayOfMonth d) ->
         dayPeriod (YearMonthDay y m d) == my
@@ -107,9 +107,9 @@ testMonth =
         [ testProperty "property tests" $ \(MkWMonth my) ->
             periodLength my >= 28
         , testCase "leap year" $
-            periodLength (YearMonth 2024 February) @?= 29
+            periodLength (YearMonth 2024 2) @?= 29
         , testCase "regular year" $
-            periodLength (YearMonth 2023 February) @?= 28
+            periodLength (YearMonth 2023 2) @?= 28
         ]
     ]
 
@@ -118,24 +118,24 @@ testQuarter =
     [ testGroup
         "periodFirstDay"
         [ testProperty "Q1" $ \(MkWYear y) ->
-            periodFirstDay (YearQuarter y Q1) == YearMonthDay y January 1
+            periodFirstDay (YearQuarter y Q1) == YearMonthDay y 1 1
         , testProperty "Q2" $ \(MkWYear y) ->
-            periodFirstDay (YearQuarter y Q2) == YearMonthDay y April 1
+            periodFirstDay (YearQuarter y Q2) == YearMonthDay y 4 1
         , testProperty "Q3" $ \(MkWYear y) ->
-            periodFirstDay (YearQuarter y Q3) == YearMonthDay y July 1
+            periodFirstDay (YearQuarter y Q3) == YearMonthDay y 7 1
         , testProperty "Q4" $ \(MkWYear y) ->
-            periodFirstDay (YearQuarter y Q4) == YearMonthDay y October 1
+            periodFirstDay (YearQuarter y Q4) == YearMonthDay y 10 1
         ]
     , testGroup
         "periodLastDay"
         [ testProperty "Q1" $ \(MkWYear y) ->
-            periodLastDay (YearQuarter y Q1) == YearMonthDay y March 31
+            periodLastDay (YearQuarter y Q1) == YearMonthDay y 3 31
         , testProperty "Q2" $ \(MkWYear y) ->
-            periodLastDay (YearQuarter y Q2) == YearMonthDay y June 30
+            periodLastDay (YearQuarter y Q2) == YearMonthDay y 6 30
         , testProperty "Q3" $ \(MkWYear y) ->
-            periodLastDay (YearQuarter y Q3) == YearMonthDay y September 30
+            periodLastDay (YearQuarter y Q3) == YearMonthDay y 9 30
         , testProperty "Q4" $ \(MkWYear y) ->
-            periodLastDay (YearQuarter y Q4) == YearMonthDay y December 31
+            periodLastDay (YearQuarter y Q4) == YearMonthDay y 12 31
         ]
     , testProperty "dayPeriod" $ \(MkWMonth my@(YearMonth y m), MkWDayOfMonth d) ->
         dayPeriod (YearMonthDay y m d) == monthQuarter my
@@ -148,9 +148,9 @@ testQuarter =
 testYear :: [TestTree]
 testYear =
     [ testProperty "periodFirstDay" $ \(MkWYear y) ->
-        periodFirstDay y == YearMonthDay y January 1
+        periodFirstDay y == YearMonthDay y 1 1
     , testProperty "periodLastDay" $ \(MkWYear y) ->
-        periodLastDay y == YearMonthDay y December 31
+        periodLastDay y == YearMonthDay y 12 31
     , testProperty "dayPeriod" $ \(MkWYear y, MkWMonthOfYear m, MkWDayOfMonth d) ->
         dayPeriod (YearMonthDay y m d) == y
     , testProperty "periodAllDays" $ \(MkWYear y1) ->

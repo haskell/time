@@ -91,16 +91,16 @@ instance Read Quarter where
 instance DayPeriod Quarter where
     periodFirstDay (YearQuarter y q) =
         case q of
-            Q1 -> periodFirstDay $ YearMonth y January
-            Q2 -> periodFirstDay $ YearMonth y April
-            Q3 -> periodFirstDay $ YearMonth y July
-            Q4 -> periodFirstDay $ YearMonth y October
+            Q1 -> periodFirstDay $ YearMonth y 1
+            Q2 -> periodFirstDay $ YearMonth y 4
+            Q3 -> periodFirstDay $ YearMonth y 7
+            Q4 -> periodFirstDay $ YearMonth y 10
     periodLastDay (YearQuarter y q) =
         case q of
-            Q1 -> periodLastDay $ YearMonth y March
-            Q2 -> periodLastDay $ YearMonth y June
-            Q3 -> periodLastDay $ YearMonth y September
-            Q4 -> periodLastDay $ YearMonth y December
+            Q1 -> periodLastDay $ YearMonth y 3
+            Q2 -> periodLastDay $ YearMonth y 6
+            Q3 -> periodLastDay $ YearMonth y 9
+            Q4 -> periodLastDay $ YearMonth y 12
     dayPeriod (MonthDay m _) = monthQuarter m
 
 addQuarters :: Integer -> Quarter -> Quarter
@@ -118,8 +118,8 @@ pattern YearQuarter y qy <-
 
 {-# COMPLETE YearQuarter #-}
 
--- | The 'QuarterOfYear' this 'MonthOfYear' is in.
-monthOfYearQuarter :: MonthOfYear -> QuarterOfYear
+-- | The 'QuarterOfYear' this 'Int' is in.
+monthOfYearQuarter :: Int -> QuarterOfYear
 monthOfYearQuarter my | my <= 3 = Q1
 monthOfYearQuarter my | my <= 6 = Q2
 monthOfYearQuarter my | my <= 9 = Q3

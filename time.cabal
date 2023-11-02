@@ -183,7 +183,6 @@ test-suite test-main
         Test.Calendar.LongWeekYearsRef
         Test.Calendar.MonthDay
         Test.Calendar.MonthDayRef
-        Test.Calendar.MonthOfYear
         Test.Calendar.Valid
         Test.Calendar.Week
         Test.Calendar.Year

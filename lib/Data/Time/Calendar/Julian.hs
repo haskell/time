@@ -2,19 +2,6 @@
 
 module Data.Time.Calendar.Julian (
     Year,
-    MonthOfYear,
-    pattern January,
-    pattern February,
-    pattern March,
-    pattern April,
-    pattern May,
-    pattern June,
-    pattern July,
-    pattern August,
-    pattern September,
-    pattern October,
-    pattern November,
-    pattern December,
     DayOfMonth,
     DayOfYear,
     module Data.Time.Calendar.JulianYearDay,
@@ -44,7 +31,7 @@ import Data.Time.Calendar.Private
 import Data.Time.Calendar.Types
 
 -- | Convert to proleptic Julian calendar.
-toJulian :: Day -> (Year, MonthOfYear, DayOfMonth)
+toJulian :: Day -> (Year, Int, DayOfMonth)
 toJulian date = (year, month, day)
   where
     (year, yd) = toJulianYearAndDay date
@@ -52,12 +39,12 @@ toJulian date = (year, month, day)
 
 -- | Convert from proleptic Julian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
-fromJulian :: Year -> MonthOfYear -> DayOfMonth -> Day
+fromJulian :: Year -> Int -> DayOfMonth -> Day
 fromJulian year month day = fromJulianYearAndDay year (monthAndDayToDayOfYear (isJulianLeapYear year) month day)
 
 -- | Bidirectional abstract constructor for the proleptic Julian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
-pattern JulianYearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
+pattern JulianYearMonthDay :: Year -> Int -> DayOfMonth -> Day
 pattern JulianYearMonthDay y m d <-
     (toJulian -> (y, m, d))
     where
@@ -67,7 +54,7 @@ pattern JulianYearMonthDay y m d <-
 
 -- | Convert from proleptic Julian calendar.
 -- Invalid values will return Nothing.
-fromJulianValid :: Year -> MonthOfYear -> DayOfMonth -> Maybe Day
+fromJulianValid :: Year -> Int -> DayOfMonth -> Maybe Day
 fromJulianValid year month day = do
     doy <- monthAndDayToDayOfYearValid (isJulianLeapYear year) month day
     fromJulianYearAndDayValid year doy
@@ -79,13 +66,13 @@ showJulian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
     (y, m, d) = toJulian date
 
 -- | The number of days in a given month according to the proleptic Julian calendar.
-julianMonthLength :: Year -> MonthOfYear -> DayOfMonth
+julianMonthLength :: Year -> Int -> DayOfMonth
 julianMonthLength year = monthLength (isJulianLeapYear year)
 
-rolloverMonths :: (Year, Integer) -> (Year, MonthOfYear)
+rolloverMonths :: (Year, Integer) -> (Year, Int)
 rolloverMonths (y, m) = (y + (div (m - 1) 12), fromIntegral (mod (m - 1) 12) + 1)
 
-addJulianMonths :: Integer -> Day -> (Year, MonthOfYear, DayOfMonth)
+addJulianMonths :: Integer -> Day -> (Year, Int, DayOfMonth)
 addJulianMonths n day = (y', m', d)
   where
     (y, m, d) = toJulian day

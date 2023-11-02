@@ -77,7 +77,7 @@ instance Arbitrary WYear where
     arbitrary = fmap MkWYear $ choose (-1000, 3000)
 
 newtype WMonthOfYear
-    = MkWMonthOfYear MonthOfYear
+    = MkWMonthOfYear Int
     deriving (Eq, Show)
 
 instance Arbitrary WMonthOfYear where
@@ -111,7 +111,7 @@ newtype WDayOfWeek
 instance Arbitrary WDayOfWeek where
     arbitrary = fmap MkWDayOfWeek $ choose (-5, 15)
 
-fromYMD :: (WYear, WMonthOfYear, WDayOfMonth) -> (Year, MonthOfYear, DayOfMonth)
+fromYMD :: (WYear, WMonthOfYear, WDayOfMonth) -> (Year, Int, DayOfMonth)
 fromYMD (MkWYear y, MkWMonthOfYear ym, MkWDayOfMonth md) = (y, ym, md)
 
 fromYD :: (WYear, WDayOfYear) -> (Year, DayOfYear)

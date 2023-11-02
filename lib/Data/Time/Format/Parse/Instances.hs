@@ -35,7 +35,7 @@ import Text.Read (readMaybe)
 data DayComponent
     = DCCentury Integer -- century of all years
     | DCCenturyYear Integer -- 0-99, last two digits of both real years and week years
-    | DCYearMonth MonthOfYear -- 1-12
+    | DCYearMonth Int -- 1-12
     | DCMonthDay DayOfMonth -- 1-31
     | DCYearDay DayOfYear -- 1-366
     | DCWeekDay Int -- 1-7 (mon-sun)

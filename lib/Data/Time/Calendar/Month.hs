@@ -71,13 +71,13 @@ diffMonths (MkMonth a) (MkMonth b) = a - b
 
 -- | Bidirectional abstract constructor.
 -- Invalid months of year will be clipped to the correct range.
-pattern YearMonth :: Year -> MonthOfYear -> Month
+pattern YearMonth :: Year -> Int -> Month
 pattern YearMonth y my <-
     MkMonth ((\m -> divMod' m 12) -> (y, succ . fromInteger -> my))
     where
         YearMonth y my = MkMonth $ (y * 12) + toInteger (pred $ clip 1 12 my)
 
-fromYearMonthValid :: Year -> MonthOfYear -> Maybe Month
+fromYearMonthValid :: Year -> Int -> Maybe Month
 fromYearMonthValid y my = do
     my' <- clipValid 1 12 my
     return $ YearMonth y my'
