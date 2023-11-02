@@ -1,6 +1,9 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.Types where
+
+import GHC.Generics (Generic)
 
 -- | Year of Common Era (when positive).
 type Year = Integer
@@ -24,46 +27,52 @@ pattern BeforeCommonEra n <-
 {-# COMPLETE CommonEra, BeforeCommonEra #-}
 
 -- | Month of year, in range 1 (January) to 12 (December).
-type MonthOfYear = Int
+data MonthOfYear
+  = January 
+  | February 
+  | March 
+  | April 
+  | May 
+  | June 
+  | July 
+  | August 
+  | September 
+  | October 
+  | November 
+  | December
+  deriving (Show, Read, Eq, Ord, Generic, Enum, Bounded)
 
-pattern January :: MonthOfYear
-pattern January = 1
+-- | 1-based index of the month
+monthOfYearIndex :: MonthOfYear -> Int
+monthOfYearIndex moy = case moy of
+  January -> 1
+  February -> 2
+  March -> 3
+  April -> 4
+  May -> 5
+  June -> 6
+  July -> 7
+  August -> 8
+  September -> 9
+  October -> 10
+  November -> 11
+  December -> 12
 
-pattern February :: MonthOfYear
-pattern February = 2
-
-pattern March :: MonthOfYear
-pattern March = 3
-
-pattern April :: MonthOfYear
-pattern April = 4
-
-pattern May :: MonthOfYear
-pattern May = 5
-
-pattern June :: MonthOfYear
-pattern June = 6
-
-pattern July :: MonthOfYear
-pattern July = 7
-
-pattern August :: MonthOfYear
-pattern August = 8
-
-pattern September :: MonthOfYear
-pattern September = 9
-
-pattern October :: MonthOfYear
-pattern October = 10
-
-pattern November :: MonthOfYear
-pattern November = 11
-
--- | The twelve 'MonthOfYear' patterns form a @COMPLETE@ set.
-pattern December :: MonthOfYear
-pattern December = 12
-
-{-# COMPLETE January, February, March, April, May, June, July, August, September, October, November, December #-}
+parseMonthOfYearIndex :: Int -> Maybe MonthOfYear
+parseMonthOfYearIndex ix = case ix of
+  1 -> Just January   
+  2 -> Just February  
+  3 -> Just March     
+  4 -> Just April     
+  5 -> Just May       
+  6 -> Just June      
+  7 -> Just July      
+  8 -> Just August    
+  9 -> Just September 
+  10 -> Just October   
+  11 -> Just November  
+  12 -> Just December  
+  _ -> Nothing
 
 -- | Day of month, in range 1 to 31.
 type DayOfMonth = Int

@@ -1,19 +1,7 @@
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.MonthDay (
-    MonthOfYear,
-    pattern January,
-    pattern February,
-    pattern March,
-    pattern April,
-    pattern May,
-    pattern June,
-    pattern July,
-    pattern August,
-    pattern September,
-    pattern October,
-    pattern November,
-    pattern December,
+    MonthOfYear(..),
     DayOfMonth,
     DayOfYear,
     monthAndDayToDayOfYear,
@@ -30,11 +18,10 @@ import Data.Time.Calendar.Types
 monthAndDayToDayOfYear :: Bool -> MonthOfYear -> DayOfMonth -> DayOfYear
 monthAndDayToDayOfYear isLeap month day = (div (367 * month'' - 362) 12) + k + day'
   where
-    month' = clip 1 12 month
-    day' = fromIntegral (clip 1 (monthLength' isLeap month') day)
-    month'' = fromIntegral month'
+    day' = fromIntegral (clip 1 (monthLength isLeap month) day)
+    month'' = monthOfYearIndex month
     k =
-        if month' <= 2
+        if month <= February
             then 0
             else
                 if isLeap
@@ -45,13 +32,12 @@ monthAndDayToDayOfYear isLeap month day = (div (367 * month'' - 362) 12) + k + d
 -- First arg is leap year flag.
 monthAndDayToDayOfYearValid :: Bool -> MonthOfYear -> DayOfMonth -> Maybe DayOfYear
 monthAndDayToDayOfYearValid isLeap month day = do
-    month' <- clipValid 1 12 month
-    day' <- clipValid 1 (monthLength' isLeap month') day
+    day' <- clipValid 1 (monthLength isLeap month) day
     let
         day'' = fromIntegral day'
-        month'' = fromIntegral month'
+        month'' = monthOfYearIndex month
         k =
-            if month' <= 2
+            if month <= February
                 then 0
                 else
                     if isLeap
@@ -74,35 +60,27 @@ dayOfYearToMonthAndDay isLeap yd =
             yd
         )
 
-findMonthDay :: [Int] -> Int -> (Int, Int)
+findMonthDay :: [Int] -> Int -> (MonthOfYear, Int)
 findMonthDay (n : ns) yd
-    | yd > n = (\(m, d) -> (m + 1, d)) (findMonthDay ns (yd - n))
-findMonthDay _ yd = (1, yd)
+    | yd > n = (\(m, d) -> (succ m, d)) (findMonthDay ns (yd - n))
+findMonthDay _ yd = (January, yd)
 
 -- | The length of a given month in the Gregorian or Julian calendars.
 -- First arg is leap year flag.
 monthLength :: Bool -> MonthOfYear -> DayOfMonth
-monthLength isLeap month' = monthLength' isLeap (clip 1 12 month')
+monthLength isLeap month = case month of
+  January -> 31
+  February -> if isLeap then 29 else 28
+  March -> 31
+  April -> 30
+  May -> 31
+  June -> 30
+  July -> 31
+  August -> 31
+  September -> 30
+  October -> 31
+  November -> 30
+  December -> 31
 
-monthLength' :: Bool -> MonthOfYear -> DayOfMonth
-monthLength' isLeap month' = (monthLengths isLeap) !! (month' - 1)
-
-monthLengths :: Bool -> [DayOfMonth]
-monthLengths isleap =
-    [ 31
-    , if isleap
-        then 29
-        else 28
-    , 31
-    , 30
-    , 31
-    , 30
-    , 31
-    , 31
-    , 30
-    , 31
-    , 30
-    , 31
-    ]
-
--- J        F                   M  A  M  J  J  A  S  O  N  D
+monthLengths :: Bool -> [Int]
+monthLengths isLeap = map (monthLength isLeap) [minBound .. maxBound]

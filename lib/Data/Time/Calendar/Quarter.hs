@@ -120,9 +120,9 @@ pattern YearQuarter y qy <-
 
 -- | The 'QuarterOfYear' this 'MonthOfYear' is in.
 monthOfYearQuarter :: MonthOfYear -> QuarterOfYear
-monthOfYearQuarter my | my <= 3 = Q1
-monthOfYearQuarter my | my <= 6 = Q2
-monthOfYearQuarter my | my <= 9 = Q3
+monthOfYearQuarter my | my <= March = Q1
+monthOfYearQuarter my | my <= June = Q2
+monthOfYearQuarter my | my <= September = Q3
 monthOfYearQuarter _ = Q4
 
 -- | The 'Quarter' this 'Month' is in.

@@ -15,9 +15,11 @@ import Control.DeepSeq
 import Data.Data
 import Data.Fixed
 import Data.Ix
+import Data.Maybe (fromJust)
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Private
+import Data.Time.Calendar.Types
 import qualified Language.Haskell.TH.Syntax as TH
 import Text.ParserCombinators.ReadP
 import Text.Read
@@ -48,15 +50,18 @@ instance Ix Month where
 
 -- | Show as @yyyy-mm@.
 instance Show Month where
-    show (YearMonth y m) = show4 y ++ "-" ++ show2 m
+    show (YearMonth y m) = show4 y ++ "-" ++ show2 (monthOfYearIndex m)
 
 -- | Read as @yyyy-mm@.
 instance Read Month where
     readPrec = do
         y <- readPrec
         _ <- lift $ char '-'
-        m <- readPrec
-        return $ YearMonth y m
+        moy' <- readPrec
+        moy <- case parseMonthOfYearIndex moy' of
+          Nothing -> fail "Invalid month of year index"
+          Just moy -> pure moy
+        return $ YearMonth y moy
 
 instance DayPeriod Month where
     periodFirstDay (YearMonth y m) = YearMonthDay y m 1
@@ -70,19 +75,17 @@ diffMonths :: Month -> Month -> Integer
 diffMonths (MkMonth a) (MkMonth b) = a - b
 
 -- | Bidirectional abstract constructor.
--- Invalid months of year will be clipped to the correct range.
 pattern YearMonth :: Year -> MonthOfYear -> Month
 pattern YearMonth y my <-
-    MkMonth ((\m -> divMod' m 12) -> (y, succ . fromInteger -> my))
+    MkMonth ((\m -> divMod' m 12) -> (y, fromJust . parseMonthOfYearIndex . succ . fromInteger -> my))
     where
-        YearMonth y my = MkMonth $ (y * 12) + toInteger (pred $ clip 1 12 my)
+        YearMonth y my = MkMonth $ (y * 12) + toInteger (monthOfYearIndex (pred my))
 
 fromYearMonthValid :: Year -> MonthOfYear -> Maybe Month
-fromYearMonthValid y my = do
-    my' <- clipValid 1 12 my
-    return $ YearMonth y my'
+fromYearMonthValid y moy = Just $ fromYearMonth y moy
 
-{-# COMPLETE YearMonth #-}
+fromYearMonth :: Year -> MonthOfYear -> Month
+fromYearMonth = YearMonth
 
 -- | Bidirectional abstract constructor.
 -- Invalid days of month will be clipped to the correct range.

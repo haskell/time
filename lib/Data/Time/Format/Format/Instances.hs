@@ -112,11 +112,11 @@ instance FormatTime Month where
     formatCharacter _ 'C' = Just $ formatNumber False 2 '0' $ \(YearMonth y _) -> div100 y
     -- Month of Year
     formatCharacter _ 'B' =
-        Just $ formatString $ \locale (YearMonth _ my) -> fst $ (months locale) !! (my - 1)
+        Just $ formatString $ \locale (YearMonth _ my) -> fst $ (months locale) !! (monthOfYearIndex (my - 1))
     formatCharacter _ 'b' =
-        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (my - 1)
+        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (monthOfYearIndex (my - 1))
     formatCharacter _ 'h' =
-        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (my - 1)
+        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (monthOfYearIndex (my - 1))
     formatCharacter _ 'm' = Just $ formatNumber True 2 '0' $ \(YearMonth _ m) -> m
     -- Default
     formatCharacter _ _ = Nothing

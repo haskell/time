@@ -16,6 +16,7 @@ import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private (clipValid)
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime
@@ -35,7 +36,7 @@ import Text.Read (readMaybe)
 data DayComponent
     = DCCentury Integer -- century of all years
     | DCCenturyYear Integer -- 0-99, last two digits of both real years and week years
-    | DCYearMonth MonthOfYear -- 1-12
+    | DCYearMonth MonthOfYear
     | DCMonthDay DayOfMonth -- 1-31
     | DCYearDay DayOfYear -- 1-366
     | DCWeekDay Int -- 1-7 (mon-sun)
@@ -86,15 +87,17 @@ makeDayComponent l c x = let
         -- %B: month name, long form (fst from months locale), January - December
         'B' -> do
             a <- oneBasedListIndex $ fmap fst $ months l
-            return [DCYearMonth a]
+            moy <- parseMonthOfYearIndex a
+            return [DCYearMonth moy]
         -- %b: month name, short form (snd from months locale), Jan - Dec
         'b' -> do
             a <- oneBasedListIndex $ fmap snd $ months l
-            return [DCYearMonth a]
+            moy <- parseMonthOfYearIndex a
+            return [DCYearMonth moy]
         -- %m: month of year, leading 0 as needed, 01 - 12
         'm' -> do
             raw <- ra
-            a <- clipValid 1 12 raw
+            a <- parseMonthOfYearIndex raw
             return [DCYearMonth a]
         -- %d: day of month, leading 0 as needed, 01 - 31
         'd' -> do
@@ -199,7 +202,7 @@ instance ParseTime Day where
                     SundayWeek -> fromSundayStartWeekValid y w (d `mod` 7)
                     MondayWeek -> fromMondayStartWeekValid y w d
             rest (_ : xs) = rest xs
-            rest [] = rest [DCYearMonth 1]
+            rest [] = rest [DCYearMonth January]
         rest cs
 
 instance ParseTime Month where
@@ -222,7 +225,7 @@ instance ParseTime Month where
                 in 100 * c + d
             rest (DCYearMonth m : _) = fromYearMonthValid y m
             rest (_ : xs) = rest xs
-            rest [] = fromYearMonthValid y 1
+            rest [] = fromYearMonthValid y January
         rest cs
 
 mfoldl :: (Monad m) => (a -> b -> m a) -> m a -> [b] -> m a

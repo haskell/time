@@ -36,6 +36,7 @@ module Data.Time.Calendar.Julian (
     diffJulianDurationRollOver,
 ) where
 
+import Data.Maybe (fromJust)
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.JulianYearDay
@@ -74,7 +75,7 @@ fromJulianValid year month day = do
 
 -- | Show in ISO 8601 format (yyyy-mm-dd)
 showJulian :: Day -> String
-showJulian date = (show4 y) ++ "-" ++ (show2 m) ++ "-" ++ (show2 d)
+showJulian date = (show4 y) ++ "-" ++ (show2 (monthOfYearIndex m)) ++ "-" ++ (show2 d)
   where
     (y, m, d) = toJulian date
 
@@ -83,13 +84,13 @@ julianMonthLength :: Year -> MonthOfYear -> DayOfMonth
 julianMonthLength year = monthLength (isJulianLeapYear year)
 
 rolloverMonths :: (Year, Integer) -> (Year, MonthOfYear)
-rolloverMonths (y, m) = (y + (div (m - 1) 12), fromIntegral (mod (m - 1) 12) + 1)
+rolloverMonths (y, m) = (y + (div (m - 1) 12), fromJust (parseMonthOfYearIndex (fromIntegral (mod (m - 1) 12) + 1)))
 
 addJulianMonths :: Integer -> Day -> (Year, MonthOfYear, DayOfMonth)
 addJulianMonths n day = (y', m', d)
   where
     (y, m, d) = toJulian day
-    (y', m') = rolloverMonths (y, fromIntegral m + n)
+    (y', m') = rolloverMonths (y, fromIntegral (monthOfYearIndex m) + n)
 
 -- | Add months, with days past the last day of the month clipped to the last day.
 -- For instance, 2005-01-30 + 1 month = 2005-02-28.
@@ -128,8 +129,8 @@ diffJulianDurationClip :: Day -> Day -> CalendarDiffDays
 diffJulianDurationClip day2 day1 = let
     (y1, m1, d1) = toJulian day1
     (y2, m2, d2) = toJulian day2
-    ym1 = y1 * 12 + toInteger m1
-    ym2 = y2 * 12 + toInteger m2
+    ym1 = y1 * 12 + toInteger (monthOfYearIndex m1)
+    ym2 = y2 * 12 + toInteger (monthOfYearIndex m2)
     ymdiff = ym2 - ym1
     ymAllowed =
         if day2 >= day1
@@ -149,8 +150,8 @@ diffJulianDurationRollOver :: Day -> Day -> CalendarDiffDays
 diffJulianDurationRollOver day2 day1 = let
     (y1, m1, _) = toJulian day1
     (y2, m2, _) = toJulian day2
-    ym1 = y1 * 12 + toInteger m1
-    ym2 = y2 * 12 + toInteger m2
+    ym1 = y1 * 12 + toInteger (monthOfYearIndex m1)
+    ym2 = y2 * 12 + toInteger (monthOfYearIndex m2)
     ymdiff = ym2 - ym1
     findpos mdiff = let
         dayAllowed = addJulianDurationRollOver (CalendarDiffDays mdiff 0) day1
