@@ -2,6 +2,7 @@
 
 module Data.Time.Calendar.Julian (
     Year,
+    MonthOfYear(..),
     DayOfMonth,
     DayOfYear,
     module Data.Time.Calendar.JulianYearDay,

@@ -8,6 +8,7 @@ module Data.Time.Calendar.Gregorian (
     Year,
     pattern CommonEra,
     pattern BeforeCommonEra,
+    MonthOfYear(..),
     DayOfMonth,
 
     -- * Gregorian calendar
