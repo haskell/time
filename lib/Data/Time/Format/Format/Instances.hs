@@ -14,6 +14,7 @@ import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.Week
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.Internal.DiffTime
@@ -112,12 +113,12 @@ instance FormatTime Month where
     formatCharacter _ 'C' = Just $ formatNumber False 2 '0' $ \(YearMonth y _) -> div100 y
     -- Month of Year
     formatCharacter _ 'B' =
-        Just $ formatString $ \locale (YearMonth _ my) -> fst $ (months locale) !! (monthOfYearIndex (my - 1))
+        Just $ formatString $ \locale (YearMonth _ my) -> fst $ (months locale) !! (monthOfYearIndex my - 1)
     formatCharacter _ 'b' =
-        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (monthOfYearIndex (my - 1))
+        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (monthOfYearIndex my - 1)
     formatCharacter _ 'h' =
-        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (monthOfYearIndex (my - 1))
-    formatCharacter _ 'm' = Just $ formatNumber True 2 '0' $ \(YearMonth _ m) -> m
+        Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (monthOfYearIndex my - 1)
+    formatCharacter _ 'm' = Just $ formatNumber True 2 '0' $ \(YearMonth _ m) -> monthOfYearIndex m
     -- Default
     formatCharacter _ _ = Nothing
 

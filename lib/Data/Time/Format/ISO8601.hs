@@ -157,7 +157,7 @@ secondFormat = decimalFormat NoSign (Just 2)
 
 mapGregorian :: Format (Integer, (Int, Int)) -> Format Day
 mapGregorian =
-    mapMFormat (\(y, (m, d)) -> fromGregorianValid y m d) (\day -> (\(y, m, d) -> parseMonthOfYearIndex m >>= \moy -> (y, (moy, d))) $ toGregorian day)
+    mapMFormat (\(y, (m, d)) -> parseMonthOfYearIndex m >>= \moy -> fromGregorianValid y moy d) (\day -> (\(y, m, d) ->Just (y, (monthOfYearIndex m, d))) $ toGregorian day)
 
 mapOrdinalDate :: Format (Integer, Int) -> Format Day
 mapOrdinalDate = mapMFormat (\(y, d) -> fromOrdinalDateValid y d) (Just . toOrdinalDate)

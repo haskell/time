@@ -18,7 +18,7 @@ showers =
     ]
 
 days :: [Day]
-days = [fromGregorian 0 12 31, fromJulian 1752 9 2, fromGregorian 1752 9 14, fromGregorian 2005 1 23]
+days = [fromGregorian 0 December 31, fromJulian 1752 September 2, fromGregorian 1752 September 14, fromGregorian 2005 January 23]
 
 testCalendars :: TestTree
 testCalendars = testCase "testCalendars" $ assertEqual "" testCalendarsRef $ unlines $ map (\d -> showShowers d) days

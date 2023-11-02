@@ -9,13 +9,13 @@ import Test.Tasty.HUnit
 
 days :: [Day]
 days =
-    [ fromGregorian 2005 2 28
-    , fromGregorian 2004 2 29
-    , fromGregorian 2004 1 31
-    , fromGregorian 2004 12 31
-    , fromGregorian 2005 7 1
-    , fromGregorian 2005 4 21
-    , fromGregorian 2005 6 30
+    [ fromGregorian 2005 February 28
+    , fromGregorian 2004 February 29
+    , fromGregorian 2004 January 31
+    , fromGregorian 2004 December 31
+    , fromGregorian 2005 July 1
+    , fromGregorian 2005 April 21
+    , fromGregorian 2005 June 30
     ]
 
 increments :: [Integer]

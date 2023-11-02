@@ -35,7 +35,7 @@ instance Arbitrary QuarterOfYear where
 deriving instance Random Day
 
 supportedDayRange :: (Day, Day)
-supportedDayRange = (fromGregorian (-9899) 1 1, fromGregorian 9999 12 31)
+supportedDayRange = (fromGregorian (-9899) January 1, fromGregorian 9999 December 31)
 
 instance Arbitrary Day where
     arbitrary = choose supportedDayRange
