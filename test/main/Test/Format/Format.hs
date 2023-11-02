@@ -57,7 +57,7 @@ testCheckParse :: TestTree
 testCheckParse = testGroup "checkParse" $ tgroup formats $ \fmt -> tgroup somestrings $ \str -> checkParse fmt str
 
 days :: [Day]
-days = [(fromGregorian 2018 1 5) .. (fromGregorian 2018 1 26)]
+days = [(fromGregorian 2018 January 5) .. (fromGregorian 2018 January 26)]
 
 testDayOfWeek :: TestTree
 testDayOfWeek =

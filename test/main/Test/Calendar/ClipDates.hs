@@ -2,7 +2,9 @@ module Test.Calendar.ClipDates (
     clipDates,
 ) where
 
+import Data.Maybe (fromJust)
 import Data.Time.Calendar
+import Data.Time.Calendar.Month
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Test.Calendar.ClipDatesRef
@@ -13,7 +15,7 @@ yearAndDay :: (Integer, Int) -> String
 yearAndDay (y, d) = (show y) ++ "-" ++ (show d) ++ " = " ++ (showOrdinalDate (fromOrdinalDate y d))
 
 gregorian :: (Integer, Int, Int) -> String
-gregorian (y, m, d) = (show y) ++ "-" ++ (show m) ++ "-" ++ (show d) ++ " = " ++ (showGregorian (fromGregorian y m d))
+gregorian (y, m, d) = (show y) ++ "-" ++ (show m) ++ "-" ++ (show d) ++ " = " ++ (showGregorian (fromGregorian y (fromJust (parseMonthOfYearIndex m)) d))
 
 iSOWeekDay :: (Integer, Int, Int) -> String
 iSOWeekDay (y, w, d) = (show y) ++ "-W" ++ (show w) ++ "-" ++ (show d) ++ " = " ++ (showWeekDate (fromWeekDate y w d))

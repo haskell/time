@@ -10,7 +10,7 @@ import Test.Tasty.HUnit
 
 longYear :: Integer -> Bool
 longYear year =
-    case toWeekDate (fromGregorian year 12 31) of
+    case toWeekDate (fromGregorian year December 31) of
         (_, 53, _) -> True
         _ -> False
 

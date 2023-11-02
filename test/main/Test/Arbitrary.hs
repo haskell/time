@@ -23,6 +23,11 @@ instance Arbitrary FirstWeekType where
 
 deriving instance Show FirstWeekType
 
+instance Arbitrary MonthOfYear where
+    arbitrary = choose (1, 12) `suchThatMap` parseMonthOfYearIndex
+    shrink January = []
+    shrink _ = [January]
+
 instance Arbitrary Month where
     arbitrary = liftM MkMonth $ choose (-30000, 200000)
 
@@ -46,8 +51,8 @@ instance Arbitrary Day where
                 then [fromGregorian y m (d - 1)]
                 else []
         monthShrink =
-            if m > 1
-                then [fromGregorian y (m - 1) d]
+            if m > January
+                then [fromGregorian y (pred m) d]
                 else []
         yearShrink =
             if y > 2000

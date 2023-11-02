@@ -13,7 +13,7 @@ import Test.TestUtil
 testDay :: TestTree
 testDay =
     nameTest "day" $ do
-        let day = fromGregorian 2018 1 9
+        let day = fromGregorian 2018 January 9
         assertEqual "" (ModifiedJulianDay 58127) day
         assertEqual "" (2018, 2, 2) $ toWeekDate day
         assertEqual "" Tuesday $ dayOfWeek day
@@ -156,18 +156,18 @@ weekAllDaysTests =
         [ nameTest "FirstDay is less than Day-DayOfWeek" $
             assertEqual
                 ""
-                [YearMonthDay 2023 12 31 .. YearMonthDay 2024 1 6]
-                (weekAllDays Sunday (YearMonthDay 2024 1 1))
+                [YearMonthDay 2023 December 31 .. YearMonthDay 2024 January 6]
+                (weekAllDays Sunday (YearMonthDay 2024 January 1))
         , nameTest "FirstDay is equal to Day-DayOfWeek" $
             assertEqual
                 ""
-                [YearMonthDay 2024 2 26 .. YearMonthDay 2024 3 3]
-                (weekAllDays Monday (YearMonthDay 2024 2 26))
+                [YearMonthDay 2024 February 26 .. YearMonthDay 2024 March 3]
+                (weekAllDays Monday (YearMonthDay 2024 February 26))
         , nameTest "FirstDay is greater than Day-DayOfWeek" $
             assertEqual
                 ""
-                [YearMonthDay 2022 2 15 .. YearMonthDay 2022 2 21]
-                (weekAllDays Tuesday (YearMonthDay 2022 2 21))
+                [YearMonthDay 2022 February 15 .. YearMonthDay 2022 February 21]
+                (weekAllDays Tuesday (YearMonthDay 2022 February 21))
         ]
     ]
   where
@@ -188,18 +188,18 @@ weekFirstDayTests =
         [ nameTest "FirstDay is less than Day-DayOfWeek" $
             assertEqual
                 ""
-                (YearMonthDay 2022 2 20)
-                (weekFirstDay Sunday (YearMonthDay 2022 2 21))
+                (YearMonthDay 2022 February 20)
+                (weekFirstDay Sunday (YearMonthDay 2022 February 21))
         , nameTest "FirstDay is equal to Day-DayOfWeek" $
             assertEqual
                 ""
-                (YearMonthDay 2022 2 21)
-                (weekFirstDay Monday (YearMonthDay 2022 2 21))
+                (YearMonthDay 2022 February 21)
+                (weekFirstDay Monday (YearMonthDay 2022 February 21))
         , nameTest "FirstDay is greater than Day-DayOfWeek" $
             assertEqual
                 ""
-                (YearMonthDay 2022 2 15)
-                (weekFirstDay Tuesday (YearMonthDay 2022 2 21))
+                (YearMonthDay 2022 February 15)
+                (weekFirstDay Tuesday (YearMonthDay 2022 February 21))
         ]
     ]
   where
@@ -211,18 +211,18 @@ weekLastDayTests =
     [ nameTest "FirstDay is less than Day-DayOfWeek" $
         assertEqual
             ""
-            (YearMonthDay 2022 2 26)
-            (weekLastDay Sunday (YearMonthDay 2022 2 21))
+            (YearMonthDay 2022 February 26)
+            (weekLastDay Sunday (YearMonthDay 2022 February 21))
     , nameTest "FirstDay is equal to Day-DayOfWeek" $
         assertEqual
             ""
-            (YearMonthDay 2022 2 27)
-            (weekLastDay Monday (YearMonthDay 2022 2 21))
+            (YearMonthDay 2022 February 27)
+            (weekLastDay Monday (YearMonthDay 2022 February 21))
     , nameTest "FirstDay is greater than Day-DayOfWeek" $
         assertEqual
             ""
-            (YearMonthDay 2022 2 21)
-            (weekLastDay Tuesday (YearMonthDay 2022 2 21))
+            (YearMonthDay 2022 February 21)
+            (weekLastDay Tuesday (YearMonthDay 2022 February 21))
     ]
 
 testWeek :: TestTree

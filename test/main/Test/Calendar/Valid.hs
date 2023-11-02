@@ -7,6 +7,7 @@ import Data.Time.Calendar.Julian
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.WeekDate
 import Test.QuickCheck.Property
+import Test.Arbitrary ()
 import Test.Tasty
 import Test.Tasty.QuickCheck hiding (reason)
 
@@ -81,7 +82,7 @@ newtype WMonthOfYear
     deriving (Eq, Show)
 
 instance Arbitrary WMonthOfYear where
-    arbitrary = fmap MkWMonthOfYear $ choose (-5, 17)
+    arbitrary = MkWMonthOfYear <$> arbitrary
 
 newtype WDayOfMonth
     = MkWDayOfMonth DayOfMonth

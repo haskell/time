@@ -30,7 +30,7 @@ newtype WMonthOfYear = MkWMonthOfYear MonthOfYear
     deriving (Eq, Show)
 
 instance Arbitrary WMonthOfYear where
-    arbitrary = fmap MkWMonthOfYear $ choose (-5, 17)
+    arbitrary = MkWMonthOfYear <$> arbitrary
 
 newtype WMonth = MkWMonth Month
     deriving (Eq, Show)

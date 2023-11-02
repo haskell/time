@@ -57,7 +57,7 @@ myzone :: TimeZone
 myzone = hoursToTimeZone (-8)
 
 leapSec1998Cal :: LocalTime
-leapSec1998Cal = LocalTime (fromGregorian 1998 12 31) (TimeOfDay 23 59 60.5)
+leapSec1998Cal = LocalTime (fromGregorian 1998 December 31) (TimeOfDay 23 59 60.5)
 
 leapSec1998 :: UTCTime
 leapSec1998 = localTimeToUTC utc leapSec1998Cal

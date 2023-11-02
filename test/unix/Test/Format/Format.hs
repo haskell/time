@@ -258,7 +258,7 @@ testQs =
     ]
 
 strftimeHasGNUExts :: Bool
-strftimeHasGNUExts = unixFormatTime "%_6Y" utc (UTCTime (fromGregorian 1980 1 1) 0) == "  1980"
+strftimeHasGNUExts = unixFormatTime "%_6Y" utc (UTCTime (fromGregorian 1980 January 1) 0) == "  1980"
 
 testFormat :: [TestTree]
 testFormat =

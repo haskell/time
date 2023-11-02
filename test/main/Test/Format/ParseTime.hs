@@ -117,7 +117,7 @@ testParseTime =
         ]
 
 yearDays :: Integer -> [Day]
-yearDays y = [(fromGregorian y 1 1) .. (fromGregorian y 12 31)]
+yearDays y = [(fromGregorian y January 1) .. (fromGregorian y December 31)]
 
 makeExhaustiveTest :: String -> [t] -> (t -> TestTree) -> TestTree
 makeExhaustiveTest name cases f = testGroup name (fmap f cases)
@@ -194,11 +194,11 @@ readTests =
           -- ,readTestsParensSpaces testTimeOfDay "8:4:2"
         ]
   where
-    testDay = fromGregorian 1912 7 8
+    testDay = fromGregorian 1912 July 8
     testTimeOfDay = TimeOfDay 8 4 2
 
 epoch :: LocalTime
-epoch = LocalTime (fromGregorian 1970 0 0) midnight
+epoch = LocalTime (fromGregorian 1970 January 0) midnight
 
 simpleFormatTests :: TestTree
 simpleFormatTests =
@@ -266,15 +266,15 @@ badParseTests = testGroup "bad" [parseTest False (Nothing :: Maybe Day) "%Y" ""]
 
 parseYMD :: Day -> TestTree
 parseYMD day = case toGregorian day of
-    (y, m, d) -> parseTest False (Just day) "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))
+    (y, m, d) -> parseTest False (Just day) "%Y%m%d" ((show y) ++ (show2 (monthOfYearIndex m)) ++ (show2 d))
 
 parseYearDayD :: Day -> TestTree
 parseYearDayD day = case toGregorian day of
-    (y, m, d) -> parseTest False (Just day) "%Y %m %d" ((show y) ++ " " ++ (show2 m) ++ " " ++ (show2 d))
+    (y, m, d) -> parseTest False (Just day) "%Y %m %d" ((show y) ++ " " ++ (show2 (monthOfYearIndex m)) ++ " " ++ (show2 d))
 
 parseYearDayE :: Day -> TestTree
 parseYearDayE day = case toGregorian day of
-    (y, m, d) -> parseTest False (Just day) "%Y %-m %e" ((show y) ++ " " ++ (show m) ++ " " ++ (show d))
+    (y, m, d) -> parseTest False (Just day) "%Y %-m %e" ((show y) ++ " " ++ (show (monthOfYearIndex m)) ++ " " ++ (show d))
 
 -- | 1969 - 2068
 expectedYear :: Integer -> Integer
@@ -285,17 +285,17 @@ show2 :: (Show n, Integral n) => n -> String
 show2 i = (show (div i 10)) ++ (show (mod i 10))
 
 parseYY :: Integer -> TestTree
-parseYY i = parseTest False (Just (fromGregorian (expectedYear i) 1 1)) "%y" (show2 i)
+parseYY i = parseTest False (Just (fromGregorian (expectedYear i) January 1)) "%y" (show2 i)
 
 parseCYY :: Integer -> Integer -> TestTree
-parseCYY c i = parseTest False (Just (fromGregorian ((c * 100) + i) 1 1)) "%-C %y" ((show c) ++ " " ++ (show2 i))
+parseCYY c i = parseTest False (Just (fromGregorian ((c * 100) + i) January 1)) "%-C %y" ((show c) ++ " " ++ (show2 i))
 
 parseCYY2 :: Integer -> Integer -> TestTree
-parseCYY2 c i = parseTest False (Just (fromGregorian ((c * 100) + i) 1 1)) "%C %y" ((show2 c) ++ " " ++ (show2 i))
+parseCYY2 c i = parseTest False (Just (fromGregorian ((c * 100) + i) January 1)) "%C %y" ((show2 c) ++ " " ++ (show2 i))
 
 parseCentury :: String -> Integer -> TestTree
 parseCentury int c =
-    parseTest False (Just (fromGregorian (c * 100) 1 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
+    parseTest False (Just (fromGregorian (c * 100) January 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
 
 parseTest :: (Show t, Eq t, ParseTime t) => Bool -> Maybe t -> String -> String -> TestTree
 parseTest sp expected formatStr target = let
@@ -472,7 +472,7 @@ instance HasFormatCodes ZonedTime where
 
 instance HasFormatCodes UTCTime where
     allFormatCodes _ = [(False, s) | s <- "cs"] ++ allFormatCodes (Proxy :: Proxy LocalTime)
-    incompleteS = Just $ UTCTime (fromGregorian 2000 1 1) 0
+    incompleteS = Just $ UTCTime (fromGregorian 2000 January 1) 0
 
 instance HasFormatCodes UniversalTime where
     allFormatCodes _ = allFormatCodes (Proxy :: Proxy LocalTime)
@@ -552,7 +552,7 @@ allLeapSecondTypes ::
     [r]
 allLeapSecondTypes f = let
     day :: Day
-    day = fromGregorian 2000 01 01
+    day = fromGregorian 2000 January 01
     lsTimeOfDay :: TimeOfDay
     lsTimeOfDay = TimeOfDay 23 59 60.5
     lsLocalTime :: LocalTime

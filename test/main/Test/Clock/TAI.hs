@@ -10,18 +10,18 @@ import Test.TestUtil
 
 sampleLeapSecondMap :: LeapSecondMap
 sampleLeapSecondMap d
-    | d < fromGregorian 1972 1 1 = Nothing
+    | d < fromGregorian 1972 January 1 = Nothing
 sampleLeapSecondMap d
-    | d < fromGregorian 1972 7 1 = Just 10
+    | d < fromGregorian 1972 July 1 = Just 10
 sampleLeapSecondMap d
-    | d < fromGregorian 1975 1 1 = Just 11
+    | d < fromGregorian 1975 January 1 = Just 11
 sampleLeapSecondMap _ = Nothing
 
 testTAI :: TestTree
 testTAI =
     testGroup "leap second transition" $ let
-        dayA = fromGregorian 1972 6 30
-        dayB = fromGregorian 1972 7 1
+        dayA = fromGregorian 1972 June 30
+        dayB = fromGregorian 1972 July 1
         utcTime1 = UTCTime dayA 86399
         utcTime2 = UTCTime dayA 86400
         utcTime3 = UTCTime dayB 0

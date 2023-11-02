@@ -194,7 +194,7 @@ testShowFormats =
                 durationTimeFormat
             )
             "2015-06-13T21:13:56/P1Y2M7DT5H33M2.34S"
-            ( LocalTime (fromGregorian 2015 6 13) (TimeOfDay 21 13 56)
+            ( LocalTime (fromGregorian 2015 June 13) (TimeOfDay 21 13 56)
             , CalendarDiffTime 14 $ 7 * nominalDay + 5 * 3600 + 33 * 60 + 2.34
             )
         , testShowReadFormat
@@ -205,14 +205,14 @@ testShowFormats =
             )
             "R74/2015-06-13T21:13:56/P1Y2M7DT5H33M2.34S"
             ( 74
-            , LocalTime (fromGregorian 2015 6 13) (TimeOfDay 21 13 56)
+            , LocalTime (fromGregorian 2015 June 13) (TimeOfDay 21 13 56)
             , CalendarDiffTime 14 $ 7 * nominalDay + 5 * 3600 + 33 * 60 + 2.34
             )
         , testShowReadFormat
             "recurringIntervalFormat etc."
             (recurringIntervalFormat (calendarFormat ExtendedFormat) durationDaysFormat)
             "R74/2015-06-13/P1Y2M7D"
-            (74, fromGregorian 2015 6 13, CalendarDiffDays 14 7)
+            (74, fromGregorian 2015 June 13, CalendarDiffDays 14 7)
         , testShowReadFormat "timeOffsetFormat" iso8601Format "-06:30" (minutesToTimeZone (-390))
         , testShowReadFormat "timeOffsetFormat" iso8601Format "-06:00" (minutesToTimeZone (-360))
         , testReadFormat "timeOffsetFormat" iso8601Format "-06" (minutesToTimeZone (-360))
@@ -242,64 +242,64 @@ testShowFormats =
             "zonedTimeFormat"
             iso8601Format
             "2024-07-06T08:45:56.553-06:30"
-            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone (-390)))
+            (ZonedTime (LocalTime (fromGregorian 2024 July 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone (-390)))
         , testShowReadFormat
             "zonedTimeFormat"
             iso8601Format
             "2024-07-06T08:45:56.553-06:00"
-            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone (-360)))
+            (ZonedTime (LocalTime (fromGregorian 2024 July 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone (-360)))
         , testReadFormat
             "zonedTimeFormat"
             iso8601Format
             "2024-07-06T08:45:56.553-06"
-            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone (-360)))
+            (ZonedTime (LocalTime (fromGregorian 2024 July 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone (-360)))
         , testShowReadFormat
             "zonedTimeFormat"
             iso8601Format
             "2024-07-06T08:45:56.553+06:30"
-            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 390))
+            (ZonedTime (LocalTime (fromGregorian 2024 July 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 390))
         , testShowReadFormat
             "zonedTimeFormat"
             iso8601Format
             "2024-07-06T08:45:56.553+06:00"
-            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 360))
+            (ZonedTime (LocalTime (fromGregorian 2024 July 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 360))
         , testReadFormat
             "zonedTimeFormat"
             iso8601Format
             "2024-07-06T08:45:56.553+06"
-            (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 360))
+            (ZonedTime (LocalTime (fromGregorian 2024 July 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 360))
         , testShowReadFormat
             "utcTimeFormat"
             iso8601Format
             "2024-07-06T08:45:56.553Z"
-            (UTCTime (fromGregorian 2024 07 06) (timeOfDayToTime $ TimeOfDay 8 45 56.553))
+            (UTCTime (fromGregorian 2024 July 06) (timeOfDayToTime $ TimeOfDay 8 45 56.553))
         , testShowReadFormat
             "utcTimeFormat"
             iso8601Format
             "2028-12-31T23:59:60.9Z"
-            (UTCTime (fromGregorian 2028 12 31) (timeOfDayToTime $ TimeOfDay 23 59 60.9))
-        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1994-W52-7" (fromGregorian 1995 1 1)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1995-W01-1" (fromGregorian 1995 1 2)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1996-W52-7" (fromGregorian 1996 12 29)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1997-W01-2" (fromGregorian 1996 12 31)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1997-W01-3" (fromGregorian 1997 1 1)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1974-W32-6" (fromGregorian 1974 8 10)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat BasicFormat) "1974W326" (fromGregorian 1974 8 10)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1995-W05-6" (fromGregorian 1995 2 4)
-        , testShowReadFormat "weekDateFormat" (weekDateFormat BasicFormat) "1995W056" (fromGregorian 1995 2 4)
+            (UTCTime (fromGregorian 2028 December 31) (timeOfDayToTime $ TimeOfDay 23 59 60.9))
+        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1994-W52-7" (fromGregorian 1995 January 1)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1995-W01-1" (fromGregorian 1995 January 2)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1996-W52-7" (fromGregorian 1996 December 29)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1997-W01-2" (fromGregorian 1996 December 31)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1997-W01-3" (fromGregorian 1997 January 1)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1974-W32-6" (fromGregorian 1974 August 10)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat BasicFormat) "1974W326" (fromGregorian 1974 August 10)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1995-W05-6" (fromGregorian 1995 February 4)
+        , testShowReadFormat "weekDateFormat" (weekDateFormat BasicFormat) "1995W056" (fromGregorian 1995 February 4)
         , testShowReadFormat
             "weekDateFormat"
             (expandedWeekDateFormat 6 ExtendedFormat)
             "+001995-W05-6"
-            (fromGregorian 1995 2 4)
-        , testShowReadFormat "weekDateFormat" (expandedWeekDateFormat 6 BasicFormat) "+001995W056" (fromGregorian 1995 2 4)
-        , testShowReadFormat "ordinalDateFormat" (ordinalDateFormat ExtendedFormat) "1846-235" (fromGregorian 1846 8 23)
-        , testShowReadFormat "ordinalDateFormat" (ordinalDateFormat BasicFormat) "1844236" (fromGregorian 1844 8 23)
+            (fromGregorian 1995 February 4)
+        , testShowReadFormat "weekDateFormat" (expandedWeekDateFormat 6 BasicFormat) "+001995W056" (fromGregorian 1995 February 4)
+        , testShowReadFormat "ordinalDateFormat" (ordinalDateFormat ExtendedFormat) "1846-235" (fromGregorian 1846 August 23)
+        , testShowReadFormat "ordinalDateFormat" (ordinalDateFormat BasicFormat) "1844236" (fromGregorian 1844 August 23)
         , testShowReadFormat
             "ordinalDateFormat"
             (expandedOrdinalDateFormat 5 ExtendedFormat)
             "+01846-235"
-            (fromGregorian 1846 8 23)
+            (fromGregorian 1846 August 23)
         , testShowReadFormat "hourMinuteFormat" (hourMinuteFormat ExtendedFormat) "13:17.25" (TimeOfDay 13 17 15)
         , testShowReadFormat "hourMinuteFormat" (hourMinuteFormat ExtendedFormat) "01:12.4" (TimeOfDay 1 12 24)
         , testShowReadFormat "hourMinuteFormat" (hourMinuteFormat BasicFormat) "1317.25" (TimeOfDay 13 17 15)

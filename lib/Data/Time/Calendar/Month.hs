@@ -9,6 +9,8 @@ module Data.Time.Calendar.Month (
     fromYearMonthValid,
     pattern MonthDay,
     fromMonthDayValid,
+    monthOfYearIndex,
+    parseMonthOfYearIndex,
 ) where
 
 import Control.DeepSeq
