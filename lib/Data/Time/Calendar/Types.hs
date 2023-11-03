@@ -63,8 +63,6 @@ pattern November = 11
 pattern December :: MonthOfYear
 pattern December = 12
 
-{-# COMPLETE January, February, March, April, May, June, July, August, September, October, November, December #-}
-
 -- | Day of month, in range 1 to 31.
 type DayOfMonth = Int
 
