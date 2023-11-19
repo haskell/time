@@ -11,7 +11,7 @@ if (!$?) {Exit 1}
 if (!$?) {Exit 1}
 & "ghcup" "set" "cabal" "latest"
 if (!$?) {Exit 1}
-ForEach ($c in "9.0.2","9.2.5","9.4.4")
+ForEach ($c in "9.4.8","9.6.3","9.8.1")
 {
     & "ghcup" "install" "ghc" "$c"
     if (!$?) {Exit 1}
