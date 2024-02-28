@@ -18,7 +18,7 @@ jobs:
       id: setup-haskell-cabal
       with:
         ghc-version: ${{ matrix.ghc }}
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       name: Cache cabal stuff
       with:
         path: |
@@ -50,7 +50,7 @@ jobs:
       id: setup-haskell-cabal
       with:
         ghc-version: ${{ matrix.ghc }}
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       name: Cache cabal stuff
       with:
         path: |
