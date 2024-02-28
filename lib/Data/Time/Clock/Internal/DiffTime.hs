@@ -7,8 +7,7 @@ module Data.Time.Clock.Internal.DiffTime (
     -- * Absolute intervals
     DiffTime,
     secondsToDiffTime,
-    picosecondsToDiffTime,
-    diffTimeToPicoseconds,
+    diffTimeToSeconds,
 ) where
 
 import Control.DeepSeq
@@ -82,16 +81,12 @@ instance TH.Lift DiffTime where
     liftTyped (MkDiffTime (MkFixed a)) = [||MkDiffTime (MkFixed $$(TH.liftTyped a))||]
 
 -- | Create a 'DiffTime' which represents an integral number of seconds.
-secondsToDiffTime :: Integer -> DiffTime
-secondsToDiffTime = fromInteger
-
--- | Create a 'DiffTime' from a number of picoseconds.
-picosecondsToDiffTime :: Integer -> DiffTime
-picosecondsToDiffTime x = MkDiffTime (MkFixed x)
+secondsToDiffTime :: Pico -> DiffTime
+secondsToDiffTime = MkDiffTime
 
 -- | Get the number of picoseconds in a 'DiffTime'.
-diffTimeToPicoseconds :: DiffTime -> Integer
-diffTimeToPicoseconds (MkDiffTime (MkFixed x)) = x
+diffTimeToSeconds :: DiffTime -> Pico
+diffTimeToSeconds (MkDiffTime x) = x
 
 {-# RULES
 "realToFrac/DiffTime->Pico" realToFrac = \(MkDiffTime ps) -> ps
