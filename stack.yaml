@@ -4,6 +4,7 @@ packages:
 allow-newer: true
 
 build:
+    keep-going: true
     haddock: true
     haddock-deps: false
     test: true
