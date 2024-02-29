@@ -44,6 +44,7 @@ library
         Rank2Types
         DeriveDataTypeable
         DeriveLift
+        DeriveGeneric
         StandaloneDeriving
         PatternSynonyms
         ViewPatterns

@@ -18,13 +18,14 @@ import Data.Ix
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Private
+import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
 import Text.ParserCombinators.ReadP
 import Text.Read
 
 -- | An absolute count of common calendar months.
 -- Number is equal to @(year * 12) + (monthOfYear - 1)@.
-newtype Month = MkMonth Integer deriving (Eq, Ord, Data, Typeable, TH.Lift)
+newtype Month = MkMonth Integer deriving (Eq, Ord, Data, Typeable, TH.Lift, Generic)
 
 instance NFData Month where
     rnf (MkMonth m) = rnf m

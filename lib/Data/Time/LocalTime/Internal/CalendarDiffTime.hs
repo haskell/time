@@ -9,6 +9,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Clock.Internal.NominalDiffTime
+import GHC.Generics
 
 data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer
@@ -20,6 +21,7 @@ data CalendarDiffTime = CalendarDiffTime
           Data
         , -- | @since 1.9.2
           Typeable
+        , Generic
         )
 
 instance NFData CalendarDiffTime where

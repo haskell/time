@@ -2,6 +2,7 @@
 
 ## [next]
 - add Lift instances to all types
+- add Generic instances to all types that have exposed constructors
 - fix show of CalendarDiffTime
 - fix diffGregorianDurationRollOver, diffJulianDurationRollOver
 

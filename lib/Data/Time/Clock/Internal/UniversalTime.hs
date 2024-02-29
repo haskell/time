@@ -9,6 +9,7 @@ module Data.Time.Clock.Internal.UniversalTime (
 
 import Control.DeepSeq
 import Data.Data
+import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
 
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
@@ -16,7 +17,7 @@ import qualified Language.Haskell.TH.Syntax as TH
 newtype UniversalTime = ModJulianDate
     { getModJulianDate :: Rational
     }
-    deriving (Eq, Ord, Data, Typeable, TH.Lift)
+    deriving (Eq, Ord, Data, Typeable, TH.Lift, Generic)
 
 instance NFData UniversalTime where
     rnf (ModJulianDate a) = rnf a

@@ -16,6 +16,7 @@ import Data.Data
 import Data.Fixed
 import Data.Ix
 import Data.Time.Calendar.Days
+import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
 
 data DayOfWeek
@@ -26,7 +27,7 @@ data DayOfWeek
     | Friday
     | Saturday
     | Sunday
-    deriving (Eq, Show, Read, Data, Typeable, Ord, Ix, TH.Lift)
+    deriving (Eq, Show, Read, Data, Typeable, Ord, Ix, TH.Lift, Generic)
 
 instance NFData DayOfWeek where
     rnf Monday = ()

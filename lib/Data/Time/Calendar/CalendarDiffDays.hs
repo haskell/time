@@ -7,6 +7,7 @@ module Data.Time.Calendar.CalendarDiffDays (
 
 import Control.DeepSeq
 import Data.Data
+import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
 
 data CalendarDiffDays = CalendarDiffDays
@@ -21,6 +22,7 @@ data CalendarDiffDays = CalendarDiffDays
           Typeable
         , -- | @since 1.13.0
           TH.Lift
+        , Generic
         )
 
 instance NFData CalendarDiffDays where
