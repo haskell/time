@@ -1,8 +1,9 @@
 #!/bin/bash -e
 if [ "$1" == "-b" ]
-then stack build --no-test --no-bench --no-haddock fourmolu
+then stack --stack-yaml stack.tools.yaml install --no-test --no-bench --no-haddock fourmolu
 fi
 
+INSTALL=`stack --stack-yaml stack.tools.yaml path --local-bin`
 for f in `find -name '*.hs' -not -path '*.stack-work/*' -not -path '*/dist/*' | grep -xvf .format.ignore`
-do `stack path --local-install-root`/bin/fourmolu -i -o -XPatternSynonyms $f || exit
+do $INSTALL/fourmolu -i -o -XPatternSynonyms $f || exit
 done

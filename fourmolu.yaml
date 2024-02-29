@@ -1,3 +1,6 @@
 respectful: false
 haddock-style: single-line
-consistent-let: true
+let-style: newline
+in-style: no-space
+single-constraint-parens: never
+single-deriving-parens: never
