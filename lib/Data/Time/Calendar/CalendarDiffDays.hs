@@ -20,9 +20,10 @@ data CalendarDiffDays = CalendarDiffDays
           Data
         , -- | @since 1.9.2
           Typeable
-        , -- | @since 1.13.0
+        , -- | @since 1.14
           TH.Lift
-        , Generic
+        , -- | @since 1.14
+          Generic
         )
 
 instance NFData CalendarDiffDays where

@@ -1,6 +1,6 @@
 # Change Log
 
-## [next]
+## [1.14]
 - add Lift instances to all types
 - add Generic instances to all types that have exposed constructors
 - fix show of CalendarDiffTime
