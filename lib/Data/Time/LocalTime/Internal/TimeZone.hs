@@ -48,11 +48,13 @@ hoursToTimeZone i = minutesToTimeZone (60 * i)
 
 showT :: Bool -> PadOption -> Int -> String
 showT False opt t = showPaddedNum opt ((div t 60) * 100 + (mod t 60))
-showT True opt t = let
-    opt' = case opt of
-        NoPad -> NoPad
-        Pad i c -> Pad (max 0 $ i - 3) c
-    in showPaddedNum opt' (div t 60) ++ ":" ++ show2 (mod t 60)
+showT True opt t =
+    let
+        opt' = case opt of
+            NoPad -> NoPad
+            Pad i c -> Pad (max 0 $ i - 3) c
+    in
+        showPaddedNum opt' (div t 60) ++ ":" ++ show2 (mod t 60)
 
 timeZoneOffsetString'' :: Bool -> PadOption -> TimeZone -> String
 timeZoneOffsetString'' colon opt (TimeZone t _ _)
@@ -103,12 +105,14 @@ getTimeZoneCTime ctime =
 
 -- there's no instance Bounded CTime, so this is the easiest way to check for overflow
 toCTime :: Int64 -> IO CTime
-toCTime t = let
-    tt = fromIntegral t
-    t' = fromIntegral tt
-    in if t' == t
-        then return $ CTime tt
-        else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow"
+toCTime t =
+    let
+        tt = fromIntegral t
+        t' = fromIntegral tt
+    in
+        if t' == t
+            then return $ CTime tt
+            else fail "Data.Time.LocalTime.Internal.TimeZone.toCTime: Overflow"
 
 -- | Get the configured time-zone for a given time (varying as per summertime adjustments).
 getTimeZoneSystem :: SystemTime -> IO TimeZone

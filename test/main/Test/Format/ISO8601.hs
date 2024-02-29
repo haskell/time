@@ -26,7 +26,8 @@ readShowProperty _ fmt val =
             let
                 found = formatParseM fmt str
                 expected = Just val
-                in property $
+            in
+                property $
                     if expected == found
                         then succeeded
                         else failed{reason = show str ++ ": expected " ++ (show expected) ++ ", found " ++ (show found)}
@@ -69,13 +70,15 @@ instance Arbitrary (Durational CalendarDiffDays) where
         return $ MkDurational $ CalendarDiffDays mm dd
 
 instance Arbitrary (Durational CalendarDiffTime) where
-    arbitrary = let
-        limit = 40 * 86400
-        picofactor = 10 ^ (12 :: Int)
-        in do
-            mm <- choose (-10000, 10000)
-            ss <- choose (negate limit * picofactor, limit * picofactor)
-            return $ MkDurational $ CalendarDiffTime mm $ fromRational $ ss % picofactor
+    arbitrary =
+        let
+            limit = 40 * 86400
+            picofactor = 10 ^ (12 :: Int)
+        in
+            do
+                mm <- choose (-10000, 10000)
+                ss <- choose (negate limit * picofactor, limit * picofactor)
+                return $ MkDurational $ CalendarDiffTime mm $ fromRational $ ss % picofactor
 
 durationalFormat :: Format a -> Format (Durational a)
 durationalFormat (MkFormat sa ra) = MkFormat (\b -> sa $ unDurational b) (fmap MkDurational ra)
@@ -106,19 +109,24 @@ testReadShowFormat =
         , nameTest "timeOffsetFormat" $ readShowTests $ timeOffsetFormat
         , nameTest "timeOfDayAndOffsetFormat" $ readShowTests $ timeOfDayAndOffsetFormat
         , nameTest "localTimeFormat" $
-            readShowTests $ \fe -> localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+            readShowTests $
+                \fe -> localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
         , nameTest "zonedTimeFormat" $
-            readShowTests $ \fe -> zonedTimeFormat (calendarFormat fe) (timeOfDayFormat fe) fe
+            readShowTests $
+                \fe -> zonedTimeFormat (calendarFormat fe) (timeOfDayFormat fe) fe
         , nameTest "utcTimeFormat" $ readShowTests $ \fe -> utcTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
         , nameTest "dayAndTimeFormat" $
-            readShowTests $ \fe -> dayAndTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+            readShowTests $
+                \fe -> dayAndTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
         , nameTest "timeAndOffsetFormat" $ readShowTests $ \fe -> timeAndOffsetFormat (timeOfDayFormat fe) fe
         , nameTest "durationDaysFormat" $ readShowTest $ durationDaysFormat
         , nameTest "durationTimeFormat" $ readShowTest $ durationTimeFormat
         , nameTest "alternativeDurationDaysFormat" $
-            readBoth $ \fe -> readShowTest (durationalFormat $ alternativeDurationDaysFormat fe)
+            readBoth $
+                \fe -> readShowTest (durationalFormat $ alternativeDurationDaysFormat fe)
         , nameTest "alternativeDurationTimeFormat" $
-            readBoth $ \fe -> readShowTest (durationalFormat $ alternativeDurationTimeFormat fe)
+            readBoth $
+                \fe -> readShowTest (durationalFormat $ alternativeDurationTimeFormat fe)
         , nameTest "intervalFormat" $
             readShowTests $ \fe ->
                 intervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
@@ -158,11 +166,14 @@ testShowFormats =
         , testShowReadFormat "durationTimeFormat" durationTimeFormat "PT1M18.77634S" $ CalendarDiffTime 0 $ 78.77634
         , testShowReadFormat "durationTimeFormat" durationTimeFormat "PT2H1M18.77634S" $ CalendarDiffTime 0 $ 7278.77634
         , testShowReadFormat "durationTimeFormat" durationTimeFormat "P5DT2H1M18.77634S" $
-            CalendarDiffTime 0 $ 5 * nominalDay + 7278.77634
+            CalendarDiffTime 0 $
+                5 * nominalDay + 7278.77634
         , testShowReadFormat "durationTimeFormat" durationTimeFormat "P7Y10M5DT2H1M18.77634S" $
-            CalendarDiffTime 94 $ 5 * nominalDay + 7278.77634
+            CalendarDiffTime 94 $
+                5 * nominalDay + 7278.77634
         , testShowReadFormat "durationTimeFormat" durationTimeFormat "P7Y10MT2H1M18.77634S" $
-            CalendarDiffTime 94 $ 7278.77634
+            CalendarDiffTime 94 $
+                7278.77634
         , testShowReadFormat "durationTimeFormat" durationTimeFormat "P8YT2H1M18.77634S" $ CalendarDiffTime 96 $ 7278.77634
         , testShowReadFormat "alternativeDurationDaysFormat" (alternativeDurationDaysFormat ExtendedFormat) "P0001-00-00" $
             CalendarDiffDays 12 0
@@ -179,12 +190,14 @@ testShowFormats =
             "alternativeDurationTimeFormat"
             (alternativeDurationTimeFormat ExtendedFormat)
             "P0007-10-05T02:01:18.77634"
-            $ CalendarDiffTime 94 $ 5 * nominalDay + 7278.77634
+            $ CalendarDiffTime 94
+            $ 5 * nominalDay + 7278.77634
         , testShowReadFormat
             "alternativeDurationTimeFormat"
             (alternativeDurationTimeFormat ExtendedFormat)
             "P4271-10-05T02:01:18.77634"
-            $ CalendarDiffTime (12 * 4271 + 10) $ 5 * nominalDay + 7278.77634
+            $ CalendarDiffTime (12 * 4271 + 10)
+            $ 5 * nominalDay + 7278.77634
         , testShowReadFormat "centuryFormat" centuryFormat "02" 2
         , testShowReadFormat "centuryFormat" centuryFormat "21" 21
         , testShowReadFormat

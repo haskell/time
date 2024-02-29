@@ -76,12 +76,16 @@ locale :: TimeLocale
 locale = defaultTimeLocale{dateTimeFmt = "%a %b %e %H:%M:%S %Y"}
 
 instance Random (F.Fixed res) where
-    randomR (MkFixed lo, MkFixed hi) oldgen = let
-        (v, newgen) = randomR (lo, hi) oldgen
-        in (MkFixed v, newgen)
-    random oldgen = let
-        (v, newgen) = random oldgen
-        in (MkFixed v, newgen)
+    randomR (MkFixed lo, MkFixed hi) oldgen =
+        let
+            (v, newgen) = randomR (lo, hi) oldgen
+        in
+            (MkFixed v, newgen)
+    random oldgen =
+        let
+            (v, newgen) = random oldgen
+        in
+            (MkFixed v, newgen)
 
 instance Arbitrary TimeZone where
     arbitrary = do
@@ -104,10 +108,12 @@ instance Arbitrary TimeOfDay where
 
 -- | The size of 'CTime' is platform-dependent.
 secondsFitInCTime :: Integer -> Bool
-secondsFitInCTime sec = let
-    CTime ct = fromInteger sec
-    sec' = toInteger ct
-    in sec == sec'
+secondsFitInCTime sec =
+    let
+        CTime ct = fromInteger sec
+        sec' = toInteger ct
+    in
+        sec == sec'
 
 instance Arbitrary UTCTime where
     arbitrary = do
@@ -147,12 +153,14 @@ unixWorkarounds _ s = s
 compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
 compareFormat _modUnix fmt zone _time
     | last fmt == 'Z' && timeZoneName zone == "" = rejected
-compareFormat modUnix fmt zone time = let
-    ctime = utcToZonedTime zone time
-    haskellText = formatTime locale fmt ctime
-    unixText = unixFormatTime fmt zone time
-    expectedText = unixWorkarounds fmt (modUnix unixText)
-    in assertEqualQC (show time ++ " with " ++ show zone) expectedText haskellText
+compareFormat modUnix fmt zone time =
+    let
+        ctime = utcToZonedTime zone time
+        haskellText = formatTime locale fmt ctime
+        unixText = unixFormatTime fmt zone time
+        expectedText = unixWorkarounds fmt (modUnix unixText)
+    in
+        assertEqualQC (show time ++ " with " ++ show zone) expectedText haskellText
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
@@ -200,10 +208,12 @@ testCompareHashFormat =
 
 formatUnitTest :: String -> Pico -> String -> TestTree
 formatUnitTest fmt sec expected =
-    nameTest (show fmt) $ let
-        tod = TimeOfDay 0 0 (1 + sec)
-        found = formatTime locale fmt tod
-        in assertEqual "" expected found
+    nameTest (show fmt) $
+        let
+            tod = TimeOfDay 0 0 (1 + sec)
+            found = formatTime locale fmt tod
+        in
+            assertEqual "" expected found
 
 testQs :: [TestTree]
 testQs =

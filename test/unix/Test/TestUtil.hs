@@ -32,7 +32,7 @@ instance NameTest Result where
 instance (Arbitrary a, Show a, Testable b) => NameTest (a -> b) where
     nameTest name = nameTest name . property
 
-instance (Testable a) => NameTest (Gen a) where
+instance Testable a => NameTest (Gen a) where
     nameTest name = nameTest name . property
 
 tgroup :: (Show a, NameTest t) => [a] -> (a -> t) -> [TestTree]

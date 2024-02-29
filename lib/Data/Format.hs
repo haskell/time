@@ -52,7 +52,7 @@ class IsoVariant f => Summish f where
     pVoid :: f Void
     (<++>) :: f a -> f b -> f (Either a b)
 
-parseReader :: (MonadFail m) => ReadP t -> String -> m t
+parseReader :: MonadFail m => ReadP t -> String -> m t
 parseReader readp s =
     case [t | (t, "") <- readP_to_S readp s] of
         [t] -> return t
@@ -75,7 +75,7 @@ formatShow fmt t =
         Nothing -> error "formatShow: bad value"
 
 -- | Parse a value in the format
-formatParseM :: (MonadFail m) => Format t -> String -> m t
+formatParseM :: MonadFail m => Format t -> String -> m t
 formatParseM format = parseReader $ formatReadP format
 
 instance IsoVariant Format where
@@ -119,7 +119,8 @@ instance Productish Format where
                 a <- ra
                 b <- rb
                 return (a, b)
-            in MkFormat sab rab
+        in
+            MkFormat sab rab
     (MkFormat sa ra) **> (MkFormat sb rb) =
         let
             s b = do
@@ -129,7 +130,8 @@ instance Productish Format where
             r = do
                 ra
                 rb
-            in MkFormat s r
+        in
+            MkFormat s r
     (MkFormat sa ra) <** (MkFormat sb rb) =
         let
             s a = do
@@ -140,7 +142,8 @@ instance Productish Format where
                 a <- ra
                 rb
                 return a
-            in MkFormat s r
+        in
+            MkFormat s r
 
 instance Summish Format where
     pVoid = MkFormat absurd pfail
@@ -149,7 +152,8 @@ instance Summish Format where
             sab (Left a) = sa a
             sab (Right b) = sb b
             rab = (fmap Left ra) +++ (fmap Right rb)
-            in MkFormat sab rab
+        in
+            MkFormat sab rab
 
 literalFormat :: String -> Format ()
 literalFormat s = MkFormat{formatShowM = \_ -> Just s, formatReadP = string s >> return ()}
@@ -160,7 +164,8 @@ specialCaseShowFormat (val, str) (MkFormat s r) =
         s' t
             | t == val = Just str
         s' t = s t
-        in MkFormat s' r
+    in
+        MkFormat s' r
 
 specialCaseFormat :: Eq a => (a, String) -> Format a -> Format a
 specialCaseFormat (val, str) (MkFormat s r) =
@@ -169,7 +174,8 @@ specialCaseFormat (val, str) (MkFormat s r) =
             | t == val = Just str
         s' t = s t
         r' = (string str >> return val) +++ r
-        in MkFormat s' r'
+    in
+        MkFormat s' r'
 
 optionalFormat :: Eq a => a -> Format a -> Format a
 optionalFormat val = specialCaseFormat (val, "")
@@ -180,7 +186,8 @@ casesFormat pairs =
         s t = lookup t pairs
         r [] = pfail
         r ((v, str) : pp) = (string str >> return v) <++ r pp
-        in MkFormat s $ r pairs
+    in
+        MkFormat s $ r pairs
 
 optionalSignFormat :: (Eq t, Num t) => Format t
 optionalSignFormat = casesFormat [(1, ""), (1, "+"), (0, ""), (-1, "-")]
@@ -232,8 +239,10 @@ showNumber signOpt mdigitcount t =
         showIt str =
             let
                 (intPart, decPart) = break ((==) '.') str
-                in (zeroPad mdigitcount intPart) ++ trimTrailing decPart
-        in case show t of
+            in
+                (zeroPad mdigitcount intPart) ++ trimTrailing decPart
+    in
+        case show t of
             ('-' : str) ->
                 case signOpt of
                     NoSign -> Nothing

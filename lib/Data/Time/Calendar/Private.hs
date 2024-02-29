@@ -36,29 +36,29 @@ show2Fixed x
     | x < 10 = '0' : (showFixed True x)
 show2Fixed x = showFixed True x
 
-show2 :: (ShowPadded t) => t -> String
+show2 :: ShowPadded t => t -> String
 show2 = showPaddedNum $ Pad 2 '0'
 
-show3 :: (ShowPadded t) => t -> String
+show3 :: ShowPadded t => t -> String
 show3 = showPaddedNum $ Pad 3 '0'
 
-show4 :: (ShowPadded t) => t -> String
+show4 :: ShowPadded t => t -> String
 show4 = showPaddedNum $ Pad 4 '0'
 
-mod100 :: (Integral i) => i -> i
+mod100 :: Integral i => i -> i
 mod100 x = mod x 100
 
-div100 :: (Integral i) => i -> i
+div100 :: Integral i => i -> i
 div100 x = div x 100
 
-clip :: (Ord t) => t -> t -> t -> t
+clip :: Ord t => t -> t -> t -> t
 clip a _ x
     | x < a = a
 clip _ b x
     | x > b = b
 clip _ _ x = x
 
-clipValid :: (Ord t) => t -> t -> t -> Maybe t
+clipValid :: Ord t => t -> t -> t -> Maybe t
 clipValid a _ x
     | x < a = Nothing
 clipValid _ b x
@@ -74,6 +74,8 @@ remBy d n = n - (fromInteger f) * d
     f = quotBy d n
 
 quotRemBy :: (Real a, Integral b) => a -> a -> (b, a)
-quotRemBy d n = let
-    f = quotBy d n
-    in (f, n - (fromIntegral f) * d)
+quotRemBy d n =
+    let
+        f = quotBy d n
+    in
+        (f, n - (fromIntegral f) * d)

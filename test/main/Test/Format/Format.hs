@@ -63,10 +63,12 @@ testDayOfWeek :: TestTree
 testDayOfWeek =
     testGroup "DayOfWeek" $
         tgroup "uwaA" $ \fmt ->
-            tgroup days $ \day -> let
-                dayFormat = formatTime defaultTimeLocale ['%', fmt] day
-                dowFormat = formatTime defaultTimeLocale ['%', fmt] $ dayOfWeek day
-                in assertEqual "" dayFormat dowFormat
+            tgroup days $ \day ->
+                let
+                    dayFormat = formatTime defaultTimeLocale ['%', fmt] day
+                    dowFormat = formatTime defaultTimeLocale ['%', fmt] $ dayOfWeek day
+                in
+                    assertEqual "" dayFormat dowFormat
 
 testZone :: String -> String -> Int -> TestTree
 testZone fmt expected minutes =
@@ -178,15 +180,23 @@ testCalenderDiffTime =
         [ testAFormat "%yy%Bm%ww%Dd%Hh%Mm%Ss" "5y4m3w2d2h22m8s" $ CalendarDiffTime 64 $ 23 * 86400 + 8528.21
         , testAFormat "%yy%Bm%ww%Dd%Hh%Mm%ESs" "5y4m3w2d2h22m8.21s" $ CalendarDiffTime 64 $ 23 * 86400 + 8528.21
         , testAFormat "%yy%Bm%ww%Dd%Hh%Mm%0ESs" "5y4m3w2d2h22m08.210000000000s" $
-            CalendarDiffTime 64 $ 23 * 86400 + 8528.21
+            CalendarDiffTime 64 $
+                23 * 86400 + 8528.21
         , testAFormat "%bm %dd %hh %mm %Ess" "64m 23d 554h 33262m 1995728.21s" $
-            CalendarDiffTime 64 $ 23 * 86400 + 8528.21
+            CalendarDiffTime 64 $
+                23 * 86400 + 8528.21
         , testAFormat "%yy%Bm%ww%Dd%Hh%Mm%Ss" "-5y-4m-3w-2d-2h-22m-8s" $
-            CalendarDiffTime (-64) $ negate $ 23 * 86400 + 8528.21
+            CalendarDiffTime (-64) $
+                negate $
+                    23 * 86400 + 8528.21
         , testAFormat "%yy%Bm%ww%Dd%Hh%Mm%ESs" "-5y-4m-3w-2d-2h-22m-8.21s" $
-            CalendarDiffTime (-64) $ negate $ 23 * 86400 + 8528.21
+            CalendarDiffTime (-64) $
+                negate $
+                    23 * 86400 + 8528.21
         , testAFormat "%bm %dd %hh %mm %Ess" "-64m -23d -554h -33262m -1995728.21s" $
-            CalendarDiffTime (-64) $ negate $ 23 * 86400 + 8528.21
+            CalendarDiffTime (-64) $
+                negate $
+                    23 * 86400 + 8528.21
         ]
 
 testFormat :: TestTree

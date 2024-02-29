@@ -161,15 +161,21 @@ testYear =
 
 testWeek :: [TestTree]
 testWeek =
-    [ testProperty "weekFirstDay/weekLastDay range" $ \dw (MkWDay d) -> let
-        f = weekFirstDay dw d
-        l = weekLastDay dw d
-        in f <= d && d <= l
-    , testProperty "weekFirstDay/weekLastDay range" $ \dw (MkWDay d) -> let
-        f = weekFirstDay dw d
-        l = weekLastDay dw d
-        in addDays 6 f == l
-    , testProperty "weekFirstDay dayOfWeek" $ \dw (MkWDay d) -> let
-        f = weekFirstDay dw d
-        in dayOfWeek f == dw
+    [ testProperty "weekFirstDay/weekLastDay range" $ \dw (MkWDay d) ->
+        let
+            f = weekFirstDay dw d
+            l = weekLastDay dw d
+        in
+            f <= d && d <= l
+    , testProperty "weekFirstDay/weekLastDay range" $ \dw (MkWDay d) ->
+        let
+            f = weekFirstDay dw d
+            l = weekLastDay dw d
+        in
+            addDays 6 f == l
+    , testProperty "weekFirstDay dayOfWeek" $ \dw (MkWDay d) ->
+        let
+            f = weekFirstDay dw d
+        in
+            dayOfWeek f == dw
     ]

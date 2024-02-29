@@ -83,10 +83,12 @@ periodLength p = succ $ fromInteger $ diffDays (periodLastDay p) (periodFirstDay
 --
 -- @since 1.12.1
 periodFromDay :: DayPeriod p => Day -> (p, Int)
-periodFromDay d = let
-    p = dayPeriod d
-    dt = succ $ fromInteger $ diffDays d $ periodFirstDay p
-    in (p, dt)
+periodFromDay d =
+    let
+        p = dayPeriod d
+        dt = succ $ fromInteger $ diffDays d $ periodFirstDay p
+    in
+        (p, dt)
 
 -- | Inverse of 'periodFromDay'.
 --
@@ -98,9 +100,11 @@ periodToDay p i = addDays (toInteger $ pred i) $ periodFirstDay p
 --
 -- @since 1.12.1
 periodToDayValid :: DayPeriod p => p -> Int -> Maybe Day
-periodToDayValid p i = let
-    d = periodToDay p i
-    in if fst (periodFromDay d) == p then Just d else Nothing
+periodToDayValid p i =
+    let
+        d = periodToDay p i
+    in
+        if fst (periodFromDay d) == p then Just d else Nothing
 
 instance DayPeriod Day where
     periodFirstDay = id

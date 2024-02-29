@@ -65,12 +65,14 @@ makeTimeOfDayValid h m s = do
 -- | Convert a period of time into a count of days and a time of day since midnight.
 -- The time of day will never have a leap second.
 timeToDaysAndTimeOfDay :: NominalDiffTime -> (Integer, TimeOfDay)
-timeToDaysAndTimeOfDay dt = let
-    s = realToFrac dt
-    (m, ms) = divMod' s 60
-    (h, hm) = divMod' m 60
-    (d, dh) = divMod' h 24
-    in (d, TimeOfDay dh hm ms)
+timeToDaysAndTimeOfDay dt =
+    let
+        s = realToFrac dt
+        (m, ms) = divMod' s 60
+        (h, hm) = divMod' m 60
+        (d, dh) = divMod' h 24
+    in
+        (d, TimeOfDay dh hm ms)
 
 -- | Convert a count of days and a time of day since midnight into a period of time.
 daysAndTimeOfDayToTime :: Integer -> TimeOfDay -> NominalDiffTime

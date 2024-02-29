@@ -57,10 +57,12 @@ instance Arbitrary Smallish where
         return $ MkSmallish n
 
 testPositiveDiff :: AddDiff -> TestTree
-testPositiveDiff MkAddDiff{..} = testProperty adName $ \day1 (MkSmallish i) -> let
-    day2 = addDays i day1
-    r = adDifference day2 day1
-    in property $ cdMonths r >= 0 && cdDays r >= 0
+testPositiveDiff MkAddDiff{..} = testProperty adName $ \day1 (MkSmallish i) ->
+    let
+        day2 = addDays i day1
+        r = adDifference day2 day1
+    in
+        property $ cdMonths r >= 0 && cdDays r >= 0
 
 testPositiveDiffs :: TestTree
 testPositiveDiffs =
@@ -69,14 +71,16 @@ testPositiveDiffs =
         $ fmap testPositiveDiff addDiffs
 
 testSpecific :: AddDiff -> (Integer, Int, Int) -> (Integer, Int, Int) -> (Integer, Integer) -> TestTree
-testSpecific MkAddDiff{..} (y2, m2, d2) (y1, m1, d1) (em, ed) = let
-    day1 = adFromYMD y1 m1 d1
-    day2 = adFromYMD y2 m2 d2
-    expected = CalendarDiffDays em ed
-    found = adDifference day2 day1
-    in testCase (adName ++ ": " ++ show day2 ++ " - " ++ show day1) $ do
-        assertEqual "add" day2 $ adAdd found day1
-        assertEqual "diff" expected found
+testSpecific MkAddDiff{..} (y2, m2, d2) (y1, m1, d1) (em, ed) =
+    let
+        day1 = adFromYMD y1 m1 d1
+        day2 = adFromYMD y2 m2 d2
+        expected = CalendarDiffDays em ed
+        found = adDifference day2 day1
+    in
+        testCase (adName ++ ": " ++ show day2 ++ " - " ++ show day1) $ do
+            assertEqual "add" day2 $ adAdd found day1
+            assertEqual "diff" expected found
 
 testSpecificPair :: (Integer, Int, Int) -> (Integer, Int, Int) -> (Integer, Integer) -> (Integer, Integer) -> TestTree
 testSpecificPair day2 day1 clipD rollD =

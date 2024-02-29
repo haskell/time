@@ -40,15 +40,17 @@ data FormatCode pf t = MkFormatCode
     }
 
 instance Show (FormatCode pf t) where
-    show (MkFormatCode m w a s) = let
-        ms = m
-        ws = fromMaybe "" $ fmap show w
-        as =
-            if a
-                then "E"
-                else ""
-        ss = [s]
-        in '%' : (ms <> ws <> as <> ss)
+    show (MkFormatCode m w a s) =
+        let
+            ms = m
+            ws = fromMaybe "" $ fmap show w
+            as =
+                if a
+                    then "E"
+                    else ""
+            ss = [s]
+        in
+            '%' : (ms <> ws <> as <> ss)
 
 formatCode :: FormatTime t => FormatCode pf t -> t -> String
 formatCode fc = format $ show fc
@@ -65,19 +67,21 @@ minCodeWidth :: Char -> Int
 minCodeWidth _ = 0
 
 fcShrink :: FormatCode pf t -> [FormatCode pf t]
-fcShrink fc = let
-    fc1 = case fcWidth fc of
-        Nothing -> []
-        Just w
-            | w > (minCodeWidth $ fcSpecifier fc) -> [fc{fcWidth = Nothing}, fc{fcWidth = Just $ w - 1}]
-        Just _ -> [fc{fcWidth = Nothing}]
-    fc2 = case fcAlt fc of
-        False -> []
-        True -> [fc{fcAlt = False}]
-    fc3 = case fcModifier fc of
-        "" -> []
-        _ -> [fc{fcModifier = ""}]
-    in fc1 ++ fc2 ++ fc3
+fcShrink fc =
+    let
+        fc1 = case fcWidth fc of
+            Nothing -> []
+            Just w
+                | w > (minCodeWidth $ fcSpecifier fc) -> [fc{fcWidth = Nothing}, fc{fcWidth = Just $ w - 1}]
+            Just _ -> [fc{fcWidth = Nothing}]
+        fc2 = case fcAlt fc of
+            False -> []
+            True -> [fc{fcAlt = False}]
+        fc3 = case fcModifier fc of
+            "" -> []
+            _ -> [fc{fcModifier = ""}]
+    in
+        fc1 ++ fc2 ++ fc3
 
 instance HasFormatCodes t => Arbitrary (FormatCode FormatOnly t) where
     arbitrary = do
@@ -153,11 +157,13 @@ extests =
         )
 
 readTest :: (Eq a, Show a, Read a) => [(a, String)] -> String -> TestTree
-readTest expected target = let
-    found = reads target
-    result = assertEqual "" expected found
-    name = show target
-    in Test.Tasty.HUnit.testCase name result
+readTest expected target =
+    let
+        found = reads target
+        result = assertEqual "" expected found
+        name = show target
+    in
+        Test.Tasty.HUnit.testCase name result
 
 readTestsParensSpaces ::
     forall a.
@@ -227,11 +233,13 @@ simpleFormatTests =
         ]
   where
     readsTest :: (Show a, Eq a, ParseTime a) => [(a, String)] -> String -> String -> TestTree
-    readsTest expected formatStr target = let
-        found = readSTime False defaultTimeLocale formatStr target
-        result = assertEqual "" expected found
-        name = (show formatStr) ++ " of " ++ (show target)
-        in Test.Tasty.HUnit.testCase name result
+    readsTest expected formatStr target =
+        let
+            found = readSTime False defaultTimeLocale formatStr target
+            result = assertEqual "" expected found
+            name = (show formatStr) ++ " of " ++ (show target)
+        in
+            Test.Tasty.HUnit.testCase name result
 
 spacingTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> TestTree
 spacingTests expected formatStr target =
@@ -298,25 +306,27 @@ parseCentury int c =
     parseTest False (Just (fromGregorian (c * 100) 1 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
 
 parseTest :: (Show t, Eq t, ParseTime t) => Bool -> Maybe t -> String -> String -> TestTree
-parseTest sp expected formatStr target = let
-    found = parse sp formatStr target
-    result = assertEqual "" expected found
-    name =
-        (show formatStr)
-            ++ " of "
-            ++ (show target)
-            ++ ( if sp
-                    then " allowing spaces"
-                    else ""
-               )
-    in Test.Tasty.HUnit.testCase name result
+parseTest sp expected formatStr target =
+    let
+        found = parse sp formatStr target
+        result = assertEqual "" expected found
+        name =
+            (show formatStr)
+                ++ " of "
+                ++ (show target)
+                ++ ( if sp
+                        then " allowing spaces"
+                        else ""
+                   )
+    in
+        Test.Tasty.HUnit.testCase name result
 
 {-
 readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> TestTree
 readsTest (Just e) = readsTest' [(e,"")]
 readsTest Nothing = readsTest' ([] :: [(t,String)])
 -}
-enumAdd :: (Enum a) => Int -> a -> a
+enumAdd :: Enum a => Int -> a -> a
 enumAdd i a = toEnum (i + fromEnum a)
 
 getMilZoneLetter :: Int -> Char
@@ -364,9 +374,11 @@ compareParse expected fmt text = compareResult' (", parsing " ++ (show text)) (J
 
 --
 test_parse_format :: (FormatTime t, ParseTime t, Show t) => String -> t -> (String, String, Maybe t)
-test_parse_format f t = let
-    s = format f t
-    in (show t, s, parse False f s `asTypeOf` Just t)
+test_parse_format f t =
+    let
+        s = format f t
+    in
+        (show t, s, parse False f s `asTypeOf` Just t)
 
 --
 
@@ -405,16 +417,20 @@ prop_parse_showOrdinalDate d = compareParse d "%Y-%j" (showOrdinalDate d)
 
 --
 prop_fromMondayStartWeek :: Day -> Result
-prop_fromMondayStartWeek d = let
-    (w, wd) = mondayStartWeek d
-    (y, _, _) = toGregorian d
-    in compareResult d (fromMondayStartWeek y w wd)
+prop_fromMondayStartWeek d =
+    let
+        (w, wd) = mondayStartWeek d
+        (y, _, _) = toGregorian d
+    in
+        compareResult d (fromMondayStartWeek y w wd)
 
 prop_fromSundayStartWeek :: Day -> Result
-prop_fromSundayStartWeek d = let
-    (w, wd) = sundayStartWeek d
-    (y, _, _) = toGregorian d
-    in compareResult d (fromSundayStartWeek y w wd)
+prop_fromSundayStartWeek d =
+    let
+        (w, wd) = sundayStartWeek d
+        (y, _, _) = toGregorian d
+    in
+        compareResult d (fromSundayStartWeek y w wd)
 
 -- t == parse (format t)
 prop_parse_format :: (Eq t, FormatTime t, ParseTime t, Show t) => FormatString t -> t -> Result
@@ -444,13 +460,15 @@ prop_format_parse_format ::
     FormatCode ParseAndFormat t ->
     t ->
     Result
-prop_format_parse_format _ fc v = let
-    s1 = formatCode fc v
-    ms1 = in1970 (fmap (formatCode fc) (incompleteS :: Maybe t)) (fcSpecifier fc) s1
-    mv2 :: Maybe t
-    mv2 = parseCode fc s1
-    ms2 = fmap (formatCode fc) mv2
-    in compareResult ms1 ms2
+prop_format_parse_format _ fc v =
+    let
+        s1 = formatCode fc v
+        ms1 = in1970 (fmap (formatCode fc) (incompleteS :: Maybe t)) (fcSpecifier fc) s1
+        mv2 :: Maybe t
+        mv2 = parseCode fc s1
+        ms2 = fmap (formatCode fc) mv2
+    in
+        compareResult ms1 ms2
 
 instance HasFormatCodes Day where
     allFormatCodes _ = [(False, s) | s <- "DFxYyCBbhmdejfVUW"]
@@ -467,7 +485,7 @@ instance HasFormatCodes TimeZone where
 instance HasFormatCodes ZonedTime where
     allFormatCodes _ =
         [(False, s) | s <- "cs"]
-        ++ allFormatCodes (Proxy :: Proxy LocalTime)
+            ++ allFormatCodes (Proxy :: Proxy LocalTime)
             ++ allFormatCodes (Proxy :: Proxy TimeZone)
 
 instance HasFormatCodes UTCTime where
@@ -525,7 +543,8 @@ typedTests prop =
     , nameTest "TimeZone" $ tgroup timeZoneFormats prop
     , nameTest "ZonedTime" $ tgroup zonedTimeFormats prop
     , nameTest "ZonedTime" $
-        tgroup zonedTimeAlmostFormats $ \fmt t -> (todSec $ localTimeOfDay $ zonedTimeToLocalTime t) < 60 ==> prop fmt t
+        tgroup zonedTimeAlmostFormats $
+            \fmt t -> (todSec $ localTimeOfDay $ zonedTimeToLocalTime t) < 60 ==> prop fmt t
     , nameTest "UTCTime" $ tgroup utcTimeAlmostFormats $ \fmt t -> utctDayTime t < 86400 ==> prop fmt t
     , nameTest "UniversalTime" $ tgroup universalTimeFormats prop
     , nameTest "CalendarDiffDays" $ tgroup calendarDiffDaysFormats prop
@@ -550,22 +569,24 @@ allTypes f =
 allLeapSecondTypes ::
     (forall t. (Eq t, Show t, Arbitrary t, FormatTime t, ParseTime t, HasFormatCodes t) => String -> t -> r) ->
     [r]
-allLeapSecondTypes f = let
-    day :: Day
-    day = fromGregorian 2000 01 01
-    lsTimeOfDay :: TimeOfDay
-    lsTimeOfDay = TimeOfDay 23 59 60.5
-    lsLocalTime :: LocalTime
-    lsLocalTime = LocalTime day lsTimeOfDay
-    lsZonedTime :: ZonedTime
-    lsZonedTime = ZonedTime lsLocalTime utc
-    lsUTCTime :: UTCTime
-    lsUTCTime = UTCTime day 86400.5
-    in [ f "TimeOfDay" lsTimeOfDay
-       , f "LocalTime" lsLocalTime
-       , f "ZonedTime" lsZonedTime
-       , f "UTCTime" lsUTCTime
-       ]
+allLeapSecondTypes f =
+    let
+        day :: Day
+        day = fromGregorian 2000 01 01
+        lsTimeOfDay :: TimeOfDay
+        lsTimeOfDay = TimeOfDay 23 59 60.5
+        lsLocalTime :: LocalTime
+        lsLocalTime = LocalTime day lsTimeOfDay
+        lsZonedTime :: ZonedTime
+        lsZonedTime = ZonedTime lsLocalTime utc
+        lsUTCTime :: UTCTime
+        lsUTCTime = UTCTime day 86400.5
+    in
+        [ f "TimeOfDay" lsTimeOfDay
+        , f "LocalTime" lsLocalTime
+        , f "ZonedTime" lsZonedTime
+        , f "UTCTime" lsUTCTime
+        ]
 
 parseEmptyTest ::
     forall t.
@@ -585,7 +606,9 @@ formatParseFormatTests =
     nameTest
         "format_parse_format"
         [ localOption (QuickCheckTests 50000) $
-            nameTest "general" $ allTypes $ \name p -> nameTest name $ prop_format_parse_format p
+            nameTest "general" $
+                allTypes $
+                    \name p -> nameTest name $ prop_format_parse_format p
         , nameTest "#177" $
             [ nameTest "start" $ \fc -> prop_format_parse_format Proxy fc (fst supportedDayRange)
             , nameTest "end" $ \fc -> prop_format_parse_format Proxy fc (snd supportedDayRange)

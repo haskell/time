@@ -2,7 +2,8 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Test.Format.Compile (
-    ) where
+
+) where
 
 import Data.Time
 

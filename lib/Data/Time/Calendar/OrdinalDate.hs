@@ -115,18 +115,20 @@ fromMondayStartWeek ::
     -- Monday is 1, Sunday is 7 (as @%u@ in 'Data.Time.Format.formatTime').
     Int ->
     Day
-fromMondayStartWeek year w d = let
-    -- first day of the year
-    firstDay = fromOrdinalDate year 1
-    -- 0-based year day of first monday of the year
-    zbFirstMonday = (5 - toModifiedJulianDay firstDay) `mod` 7
-    -- 0-based week of year
-    zbWeek = w - 1
-    -- 0-based day of week
-    zbDay = d - 1
-    -- 0-based day in year
-    zbYearDay = zbFirstMonday + 7 * toInteger zbWeek + toInteger zbDay
-    in addDays zbYearDay firstDay
+fromMondayStartWeek year w d =
+    let
+        -- first day of the year
+        firstDay = fromOrdinalDate year 1
+        -- 0-based year day of first monday of the year
+        zbFirstMonday = (5 - toModifiedJulianDay firstDay) `mod` 7
+        -- 0-based week of year
+        zbWeek = w - 1
+        -- 0-based day of week
+        zbDay = d - 1
+        -- 0-based day in year
+        zbYearDay = zbFirstMonday + 7 * toInteger zbWeek + toInteger zbDay
+    in
+        addDays zbYearDay firstDay
 
 fromMondayStartWeekValid ::
     -- | Year.
@@ -173,18 +175,20 @@ fromSundayStartWeek ::
     -- Sunday is 0, Saturday is 6 (as @%w@ in 'Data.Time.Format.formatTime').
     Int ->
     Day
-fromSundayStartWeek year w d = let
-    -- first day of the year
-    firstDay = fromOrdinalDate year 1
-    -- 0-based year day of first monday of the year
-    zbFirstSunday = (4 - toModifiedJulianDay firstDay) `mod` 7
-    -- 0-based week of year
-    zbWeek = w - 1
-    -- 0-based day of week
-    zbDay = d
-    -- 0-based day in year
-    zbYearDay = zbFirstSunday + 7 * toInteger zbWeek + toInteger zbDay
-    in addDays zbYearDay firstDay
+fromSundayStartWeek year w d =
+    let
+        -- first day of the year
+        firstDay = fromOrdinalDate year 1
+        -- 0-based year day of first monday of the year
+        zbFirstSunday = (4 - toModifiedJulianDay firstDay) `mod` 7
+        -- 0-based week of year
+        zbWeek = w - 1
+        -- 0-based day of week
+        zbDay = d
+        -- 0-based day in year
+        zbYearDay = zbFirstSunday + 7 * toInteger zbWeek + toInteger zbDay
+    in
+        addDays zbYearDay firstDay
 
 fromSundayStartWeekValid ::
     -- | Year.

@@ -15,7 +15,9 @@ showCompare a1 b a2 = "DIFF: " ++ (show a1) ++ " -> " ++ b ++ " -> " ++ (show a2
 testMonthDay :: TestTree
 testMonthDay =
     testCase "testMonthDay" $
-        assertEqual "" testMonthDayRef $ concat $ map (\isL -> unlines (leap isL : yearDays isL)) [False, True]
+        assertEqual "" testMonthDayRef $
+            concat $
+                map (\isL -> unlines (leap isL : yearDays isL)) [False, True]
   where
     leap isLeap =
         if isLeap
@@ -28,6 +30,7 @@ testMonthDay =
                     (m, d) = dayOfYearToMonthAndDay isLeap yd
                     yd' = monthAndDayToDayOfYear isLeap m d
                     mdtext = show m ++ "-" ++ show d
-                    in showCompare yd mdtext yd'
+                in
+                    showCompare yd mdtext yd'
             )
             [-2 .. 369]

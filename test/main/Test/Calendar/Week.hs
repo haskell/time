@@ -13,7 +13,8 @@ import Test.TestUtil
 testDay :: TestTree
 testDay =
     nameTest "day" $ do
-        let day = fromGregorian 2018 1 9
+        let
+            day = fromGregorian 2018 1 9
         assertEqual "" (ModifiedJulianDay 58127) day
         assertEqual "" (2018, 2, 2) $ toWeekDate day
         assertEqual "" Tuesday $ dayOfWeek day
@@ -40,8 +41,8 @@ testSequences =
             assertEqual "" [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday] [Sunday .. Saturday]
         , nameTest "[Thursday .. Wednesday]" $
             assertEqual "" [Thursday, Friday, Saturday, Sunday, Monday, Tuesday, Wednesday] [Thursday .. Wednesday]
-        , nameTest "[Tuesday ..]" $
-            assertEqual
+        , nameTest "[Tuesday ..]"
+            $ assertEqual
                 ""
                 [ Tuesday
                 , Wednesday
@@ -59,9 +60,9 @@ testSequences =
                 , Monday
                 , Tuesday
                 ]
-                $ take 15 [Tuesday ..]
-        , nameTest "[Wednesday, Tuesday ..]" $
-            assertEqual
+            $ take 15 [Tuesday ..]
+        , nameTest "[Wednesday, Tuesday ..]"
+            $ assertEqual
                 ""
                 [ Wednesday
                 , Tuesday
@@ -79,7 +80,7 @@ testSequences =
                 , Thursday
                 , Wednesday
                 ]
-                $ take 15 [Wednesday, Tuesday ..]
+            $ take 15 [Wednesday, Tuesday ..]
         , nameTest "[Sunday, Friday ..]" $
             assertEqual "" [Sunday, Friday, Wednesday, Monday, Saturday, Thursday, Tuesday, Sunday] $
                 take 8 [Sunday, Friday ..]
@@ -99,27 +100,35 @@ prop_firstDayOfWeekOnAfter_Day :: DayOfWeek -> Day -> Bool
 prop_firstDayOfWeekOnAfter_Day dw d = dayOfWeek (firstDayOfWeekOnAfter dw d) == dw
 
 prop_toFromWeekCalendar :: FirstWeekType -> DayOfWeek -> Day -> Bool
-prop_toFromWeekCalendar wt ws d = let
-    (y, wy, dw) = toWeekCalendar wt ws d
-    in fromWeekCalendar wt ws y wy dw == d
+prop_toFromWeekCalendar wt ws d =
+    let
+        (y, wy, dw) = toWeekCalendar wt ws d
+    in
+        fromWeekCalendar wt ws y wy dw == d
 
 prop_weekChanges :: FirstWeekType -> DayOfWeek -> Day -> Bool
-prop_weekChanges wt ws d = let
-    (_, wy0, _) = toWeekCalendar wt ws d
-    (_, wy1, dw) = toWeekCalendar wt ws $ succ d
-    in if dw == ws then wy0 /= wy1 else wy0 == wy1
+prop_weekChanges wt ws d =
+    let
+        (_, wy0, _) = toWeekCalendar wt ws d
+        (_, wy1, dw) = toWeekCalendar wt ws $ succ d
+    in
+        if dw == ws then wy0 /= wy1 else wy0 == wy1
 
 prop_weekYearWholeStart :: DayOfWeek -> Year -> Bool
-prop_weekYearWholeStart ws y = let
-    d = fromWeekCalendar FirstWholeWeek ws y 1 ws
-    (y', dy) = toOrdinalDate d
-    in y == y' && dy >= 1 && dy <= 7
+prop_weekYearWholeStart ws y =
+    let
+        d = fromWeekCalendar FirstWholeWeek ws y 1 ws
+        (y', dy) = toOrdinalDate d
+    in
+        y == y' && dy >= 1 && dy <= 7
 
 prop_weekYearMostStart :: DayOfWeek -> Year -> Bool
-prop_weekYearMostStart ws y = let
-    d = fromWeekCalendar FirstMostWeek ws y 2 ws
-    (y', dy) = toOrdinalDate d
-    in y == y' && dy >= 5 && dy <= 11
+prop_weekYearMostStart ws y =
+    let
+        d = fromWeekCalendar FirstMostWeek ws y 2 ws
+        (y', dy) = toOrdinalDate d
+    in
+        y == y' && dy >= 5 && dy <= 11
 
 testDiff :: TestTree
 testDiff =
