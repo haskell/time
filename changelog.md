@@ -5,6 +5,10 @@
 - add Generic instances to all types that have exposed constructors
 - fix show of CalendarDiffTime
 - fix diffGregorianDurationRollOver, diffJulianDurationRollOver
+- Parsing is now maximal munch rather than ambiguous for
+  - digits of %q and %Q specifiers
+  - optional timezone for UTCTime
+  - optional specifiers in ISO8601 formats
 
 ## [1.12.2] - 2022-05-14
 - add weekFirstDay, weekLastDay, weekAllDays

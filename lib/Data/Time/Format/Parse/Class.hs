@@ -10,7 +10,9 @@ module Data.Time.Format.Parse.Class (
     durationParseTimeSpecifier,
 ) where
 
+import Control.Monad
 import Data.Char
+import Data.Foldable
 import Data.Maybe
 import Data.Proxy
 import Data.Time.Format.Locale
@@ -105,81 +107,111 @@ data PaddingSide
     = PrePadding
     | PostPadding
 
-allowEmptyParser :: Bool -> ReadP String
-allowEmptyParser False = many1 (satisfy isDigit)
-allowEmptyParser True = many (satisfy isDigit)
+data EmptyOption = AllowEmptyOption | ForbidEmptyOption
 
-parsePaddedDigits :: PaddingSide -> ParseNumericPadding -> Bool -> Int -> ReadP String
-parsePaddedDigits _ ZeroPadding _ n = count n (satisfy isDigit)
-parsePaddedDigits PrePadding SpacePadding allowEmpty _n = skipSpaces >> allowEmptyParser allowEmpty
-parsePaddedDigits PostPadding SpacePadding allowEmpty _n = do
-    r <- allowEmptyParser allowEmpty
+checkEmptyOption :: EmptyOption -> String -> ReadP ()
+checkEmptyOption ForbidEmptyOption "" = mzero
+checkEmptyOption _ _ = return ()
+
+data MunchType = AmbiguousMunchType | MaximalMunchType
+
+data Munch = InexactMunch MunchType | ExactMunch Int
+
+munchDigits :: MunchType -> ReadP String
+munchDigits AmbiguousMunchType = many $ satisfy isDigit
+munchDigits MaximalMunchType = munch isDigit
+
+checkAll :: (a -> Bool) -> [a] -> ReadP ()
+checkAll f l = for_ l $ \c -> if f c then return () else mzero
+
+parseAnyPaddedDigits :: Maybe PaddingSide -> Munch -> ReadP String
+parseAnyPaddedDigits mpad (ExactMunch n) = do
+    chars <- count n get
+    case mpad of
+        Nothing -> do
+            checkAll isDigit chars
+            return chars
+        Just PrePadding -> do
+            let
+                digits = dropWhile isSpace chars
+            checkAll isDigit digits
+            return digits
+        Just PostPadding -> do
+            let
+                (digits, spaces) = span isDigit chars
+            checkAll isSpace spaces
+            return digits
+parseAnyPaddedDigits Nothing (InexactMunch munchtype) = munchDigits munchtype
+parseAnyPaddedDigits (Just PrePadding) (InexactMunch munchtype) = do
+    skipSpaces
+    munchDigits munchtype
+parseAnyPaddedDigits (Just PostPadding) (InexactMunch munchtype) = do
+    r <- munchDigits munchtype
     skipSpaces
     return r
-parsePaddedDigits _ NoPadding False _n = many1 (satisfy isDigit)
-parsePaddedDigits _ NoPadding True _n = many (satisfy isDigit)
 
-parsePaddedSignedDigits :: ParseNumericPadding -> Int -> ReadP String
-parsePaddedSignedDigits pad n = do
-    sign <- option "" $ char '-' >> return "-"
-    digits <- parsePaddedDigits PrePadding pad False n
-    return $ sign ++ digits
+parsePaddedDigits :: Maybe PaddingSide -> Munch -> EmptyOption -> ReadP String
+parsePaddedDigits mps mn eo = do
+    digits <- parseAnyPaddedDigits mps mn
+    checkEmptyOption eo digits
+    return digits
 
-parseSignedDecimal :: ReadP String
-parseSignedDecimal = do
-    sign <- option "" $ char '-' >> return "-"
-    skipSpaces
-    digits <- many1 $ satisfy isDigit
-    decimaldigits <-
-        option "" $ do
-            _ <- char '.'
-            dd <- many $ satisfy isDigit
-            return $ '.' : dd
-    return $ sign ++ digits ++ decimaldigits
+parsePaddingDigits :: PaddingSide -> ParseNumericPadding -> EmptyOption -> MunchType -> Int -> ReadP String
+parsePaddingDigits _ps NoPadding eo mt _n = parsePaddedDigits Nothing (InexactMunch mt) eo
+parsePaddingDigits _ps ZeroPadding eo _mt n = parsePaddedDigits Nothing (ExactMunch n) eo
+parsePaddingDigits ps SpacePadding eo mt _n = parsePaddedDigits (Just ps) (InexactMunch mt) eo
+
+allowNegative :: ReadP String -> ReadP String
+allowNegative p = do
+    sign <- option "" $ fmap pure $ char '-'
+    val <- p
+    return $ sign ++ val
 
 timeParseTimeSpecifier :: TimeLocale -> Maybe ParseNumericPadding -> Char -> ReadP String
 timeParseTimeSpecifier l mpad c =
     let
-        digits' ps pad = parsePaddedDigits ps (fromMaybe pad mpad)
-        digits pad = digits' PrePadding pad False
+        parseDigits :: PaddingSide -> ParseNumericPadding -> EmptyOption -> MunchType -> Int -> ReadP String
+        parseDigits ps pad = parsePaddingDigits ps $ fromMaybe pad mpad
+
+        parseDigitsUsual :: ParseNumericPadding -> Int -> ReadP String
+        parseDigitsUsual pad = parseDigits PrePadding pad ForbidEmptyOption AmbiguousMunchType
+
         oneOf = choice . map stringCI
         numericTZ = do
             s <- choice [char '+', char '-']
-            h <- parsePaddedDigits PrePadding ZeroPadding False 2
+            h <- parseDigitsUsual ZeroPadding 2
             optional (char ':')
-            m <- parsePaddedDigits PrePadding ZeroPadding False 2
+            m <- parseDigitsUsual ZeroPadding 2
             return (s : h ++ m)
-        allowNegative :: ReadP String -> ReadP String
-        allowNegative p = (char '-' >> fmap ('-' :) p) <++ p
     in
         case c of
             -- century
-            'C' -> allowNegative $ digits SpacePadding 2
-            'f' -> allowNegative $ digits SpacePadding 2
+            'C' -> allowNegative $ parseDigitsUsual SpacePadding 2
+            'f' -> allowNegative $ parseDigitsUsual SpacePadding 2
             -- year
-            'Y' -> allowNegative $ digits SpacePadding 4
-            'G' -> allowNegative $ digits SpacePadding 4
+            'Y' -> allowNegative $ parseDigitsUsual SpacePadding 4
+            'G' -> allowNegative $ parseDigitsUsual SpacePadding 4
             -- year of century
-            'y' -> digits ZeroPadding 2
-            'g' -> digits ZeroPadding 2
+            'y' -> parseDigitsUsual ZeroPadding 2
+            'g' -> parseDigitsUsual ZeroPadding 2
             -- month of year
             'B' -> oneOf (map fst (months l))
             'b' -> oneOf (map snd (months l))
-            'm' -> digits ZeroPadding 2
+            'm' -> parseDigitsUsual ZeroPadding 2
             -- day of month
-            'd' -> digits ZeroPadding 2
-            'e' -> digits SpacePadding 2
+            'd' -> parseDigitsUsual ZeroPadding 2
+            'e' -> parseDigitsUsual SpacePadding 2
             -- week of year
-            'V' -> digits ZeroPadding 2
-            'U' -> digits ZeroPadding 2
-            'W' -> digits ZeroPadding 2
+            'V' -> parseDigitsUsual ZeroPadding 2
+            'U' -> parseDigitsUsual ZeroPadding 2
+            'W' -> parseDigitsUsual ZeroPadding 2
             -- day of week
             'u' -> oneOf $ map (: []) ['1' .. '7']
             'a' -> oneOf (map snd (wDays l))
             'A' -> oneOf (map fst (wDays l))
             'w' -> oneOf $ map (: []) ['0' .. '6']
             -- day of year
-            'j' -> digits ZeroPadding 3
+            'j' -> parseDigitsUsual ZeroPadding 3
             -- dayhalf of day (i.e. AM or PM)
             'P' ->
                 oneOf
@@ -196,18 +228,18 @@ timeParseTimeSpecifier l mpad c =
                         [am, pm]
                     )
             -- hour of day (i.e. 24h)
-            'H' -> digits ZeroPadding 2
-            'k' -> digits SpacePadding 2
+            'H' -> parseDigitsUsual ZeroPadding 2
+            'k' -> parseDigitsUsual SpacePadding 2
             -- hour of dayhalf (i.e. 12h)
-            'I' -> digits ZeroPadding 2
-            'l' -> digits SpacePadding 2
+            'I' -> parseDigitsUsual ZeroPadding 2
+            'l' -> parseDigitsUsual SpacePadding 2
             -- minute of hour
-            'M' -> digits ZeroPadding 2
+            'M' -> parseDigitsUsual ZeroPadding 2
             -- second of minute
-            'S' -> digits ZeroPadding 2
+            'S' -> parseDigitsUsual ZeroPadding 2
             -- picosecond of second
-            'q' -> digits' PostPadding ZeroPadding True 12
-            'Q' -> (char '.' >> digits' PostPadding NoPadding True 12) <++ return ""
+            'q' -> parseDigits PostPadding NoPadding AllowEmptyOption MaximalMunchType 12
+            'Q' -> (char '.' >> parseDigits PostPadding NoPadding AllowEmptyOption MaximalMunchType 12) <++ return ""
             -- time zone
             'z' -> numericTZ
             'Z' -> munch1 isAlpha <++ numericTZ
@@ -230,19 +262,31 @@ timeSubstituteTimeSpecifier _ _ = Nothing
 durationParseTimeSpecifier :: TimeLocale -> Maybe ParseNumericPadding -> Char -> ReadP String
 durationParseTimeSpecifier _ mpad c =
     let
-        padopt = parsePaddedSignedDigits $ fromMaybe NoPadding mpad
+        parsePaddedSignedDigits :: Int -> ReadP String
+        parsePaddedSignedDigits n = allowNegative $ do
+            parsePaddingDigits PrePadding (fromMaybe NoPadding mpad) ForbidEmptyOption MaximalMunchType n
+
+        parseSignedDecimal :: ReadP String
+        parseSignedDecimal = allowNegative $ do
+            digits <- munch1 isDigit
+            decimaldigits <-
+                option "" $ do
+                    _ <- char '.'
+                    dd <- munch isDigit
+                    return $ '.' : dd
+            return $ digits ++ decimaldigits
     in
         case c of
-            'y' -> padopt 1
-            'b' -> padopt 1
-            'B' -> padopt 2
-            'w' -> padopt 1
-            'd' -> padopt 1
-            'D' -> padopt 1
-            'h' -> padopt 1
-            'H' -> padopt 2
-            'm' -> padopt 1
-            'M' -> padopt 2
+            'y' -> parsePaddedSignedDigits 1
+            'b' -> parsePaddedSignedDigits 1
+            'B' -> parsePaddedSignedDigits 2
+            'w' -> parsePaddedSignedDigits 1
+            'd' -> parsePaddedSignedDigits 1
+            'D' -> parsePaddedSignedDigits 1
+            'h' -> parsePaddedSignedDigits 1
+            'H' -> parsePaddedSignedDigits 2
+            'm' -> parsePaddedSignedDigits 1
+            'M' -> parsePaddedSignedDigits 2
             's' -> parseSignedDecimal
             'S' -> parseSignedDecimal
             _ -> fail $ "Unknown format character: " ++ show c

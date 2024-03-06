@@ -15,7 +15,6 @@ module Data.Time.Format.Parse (
     module Data.Time.Format.Locale,
 ) where
 
-import Control.Applicative ((<|>))
 import Control.Monad.Fail
 import Data.Char
 import Data.Proxy
@@ -236,10 +235,14 @@ instance Read TimeZone where
 instance Read ZonedTime where
     readsPrec n = readParen False $ \s -> [(ZonedTime t z, r2) | (t, r1) <- readsPrec n s, (z, r2) <- readsPrec n r1]
 
+(<||) :: [a] -> [a] -> [a]
+[] <|| b = b
+a <|| _ = a
+
 instance Read UTCTime where
     readsPrec n s = do
         (lt, s') <- readsPrec n s
-        (tz, s'') <- readsPrec n s' <|> pure (utc, s')
+        (tz, s'') <- readsPrec n s' <|| pure (utc, s')
         return (localTimeToUTC tz lt, s'')
 
 instance Read UniversalTime where

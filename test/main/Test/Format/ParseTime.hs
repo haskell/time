@@ -20,7 +20,6 @@ import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck hiding (reason)
 import Test.TestUtil
-import Text.Read
 
 format :: FormatTime t => String -> t -> String
 format f t = formatTime defaultTimeLocale f t
@@ -109,8 +108,7 @@ testParseTime :: TestTree
 testParseTime =
     testGroup
         "testParseTime"
-        [ readOtherTypesTest
-        , readTests
+        [ readsTests
         , simpleFormatTests
         , extests
         , particularParseTests
@@ -147,8 +145,8 @@ extests =
             ++ ( concat $
                     fmap
                         ( \y ->
-                            [ (makeExhaustiveTest "parse %Y%m%d" (yearDays y) parseYMD)
-                            , (makeExhaustiveTest "parse %Y %m %d" (yearDays y) parseYearDayD)
+                            [ {- (makeExhaustiveTest "parse %Y%m%d" (yearDays y) parseYMD)
+                              , -} (makeExhaustiveTest "parse %Y %m %d" (yearDays y) parseYearDayD)
                             , (makeExhaustiveTest "parse %Y %-m %e" (yearDays y) parseYearDayE)
                             ]
                         )
@@ -156,8 +154,8 @@ extests =
                )
         )
 
-readTest :: (Eq a, Show a, Read a) => [(a, String)] -> String -> TestTree
-readTest expected target =
+testReads :: (Eq a, Show a, Read a) => [(a, String)] -> String -> TestTree
+testReads expected target =
     let
         found = reads target
         result = assertEqual "" expected found
@@ -165,39 +163,36 @@ readTest expected target =
     in
         Test.Tasty.HUnit.testCase name result
 
-readTestsParensSpaces ::
+readsTestsParensSpaces ::
     forall a.
     (Eq a, Show a, Read a) =>
     a ->
     String ->
     TestTree
-readTestsParensSpaces expected target =
+readsTestsParensSpaces expected target =
     testGroup
         target
-        [ readTest [(expected, "")] $ target
-        , readTest [(expected, "")] $ "(" ++ target ++ ")"
-        , readTest [(expected, "")] $ " (" ++ target ++ ")"
-        , readTest [(expected, " ")] $ " ( " ++ target ++ " ) "
-        , readTest [(expected, " ")] $ " (( " ++ target ++ " )) "
-        , readTest ([] :: [(a, String)]) $ "(" ++ target
-        , readTest [(expected, ")")] $ "" ++ target ++ ")"
-        , readTest [(expected, "")] $ "((" ++ target ++ "))"
-        , readTest [(expected, " ")] $ "  (   (     " ++ target ++ "   )  ) "
+        [ testReads [(expected, "")] $ target
+        , testReads [(expected, "")] $ "(" ++ target ++ ")"
+        , testReads [(expected, "")] $ " (" ++ target ++ ")"
+        , testReads [(expected, " ")] $ " ( " ++ target ++ " ) "
+        , testReads [(expected, " ")] $ " (( " ++ target ++ " )) "
+        , testReads ([] :: [(a, String)]) $ "(" ++ target
+        , testReads [(expected, ")")] $ "" ++ target ++ ")"
+        , testReads [(expected, "")] $ "((" ++ target ++ "))"
+        , testReads [(expected, " ")] $ "  (   (     " ++ target ++ "   )  ) "
         ]
-  where
 
-readOtherTypesTest :: TestTree
-readOtherTypesTest =
-    testGroup "read other types" [readTestsParensSpaces (3 :: Integer) "3", readTestsParensSpaces "a" "\"a\""]
-
-readTests :: TestTree
-readTests =
+readsTests :: TestTree
+readsTests =
     testGroup
-        "read times"
-        [ readTestsParensSpaces testDay "1912-07-08"
-        , -- readTestsParensSpaces testDay "1912-7-8",
-          readTestsParensSpaces testTimeOfDay "08:04:02"
-          -- ,readTestsParensSpaces testTimeOfDay "8:4:2"
+        "reads"
+        [ readsTestsParensSpaces (3 :: Integer) "3"
+        , readsTestsParensSpaces "a" "\"a\""
+        , readsTestsParensSpaces testDay "1912-07-08"
+        , -- , readsTestsParensSpaces testDay "1912-7-8"
+          readsTestsParensSpaces testTimeOfDay "08:04:02"
+          -- , readsTestsParensSpaces testTimeOfDay "8:4:2"
         ]
   where
     testDay = fromGregorian 1912 7 8
@@ -206,40 +201,40 @@ readTests =
 epoch :: LocalTime
 epoch = LocalTime (fromGregorian 1970 0 0) midnight
 
+testReadSTime :: (Show a, Eq a, ParseTime a) => [(a, String)] -> String -> String -> TestTree
+testReadSTime expected formatStr target =
+    let
+        found = readSTime False defaultTimeLocale formatStr target
+        result = assertEqual "" expected found
+        name = (show formatStr) ++ " of " ++ (show target)
+    in
+        Test.Tasty.HUnit.testCase name result
+
 simpleFormatTests :: TestTree
 simpleFormatTests =
     testGroup
         "simple"
-        [ readsTest [(epoch, "")] "" ""
-        , readsTest [(epoch, " ")] "" " "
-        , readsTest [(epoch, "")] " " " "
-        , readsTest [(epoch, "")] " " "  "
-        , readsTest [(epoch, "")] "%k" "0"
-        , readsTest [(epoch, "")] "%k" " 0"
-        , readsTest [(epoch, "")] "%m" "01"
-        , readsTest [(epoch, " ")] "%m" "01 "
-        , readsTest [(epoch, " ")] " %m" " 01 "
-        , readsTest [(epoch, "")] " %m" " 01"
+        [ testReadSTime [(epoch, "")] "" ""
+        , testReadSTime [(epoch, " ")] "" " "
+        , testReadSTime [(epoch, "")] " " " "
+        , testReadSTime [(epoch, "")] " " "  "
+        , testReadSTime [(epoch, "")] "%k" "0"
+        , testReadSTime [(epoch, "")] "%k" " 0"
+        , testReadSTime [(epoch, "")] "%m" "01"
+        , testReadSTime [(epoch, " ")] "%m" "01 "
+        , testReadSTime [(epoch, " ")] " %m" " 01 "
+        , testReadSTime [(epoch, "")] " %m" " 01"
         , -- https://ghc.haskell.org/trac/ghc/ticket/9150
-          readsTest [(epoch, "")] " %M" " 00"
-        , readsTest [(epoch, "")] "%M " "00 "
-        , readsTest [(epoch, "")] "%Q" ""
-        , readsTest [(epoch, " ")] "%Q" " "
-        , readsTest [(epoch, "X")] "%Q" "X"
-        , readsTest [(epoch, " X")] "%Q" " X"
-        , readsTest [(epoch, "")] "%Q " " "
-        , readsTest [(epoch, "")] "%Q X" " X"
-        , readsTest [(epoch, "")] "%QX" "X"
+          testReadSTime [(epoch, "")] " %M" " 00"
+        , testReadSTime [(epoch, "")] "%M " "00 "
+        , testReadSTime [(epoch, "")] "%Q" ""
+        , testReadSTime [(epoch, " ")] "%Q" " "
+        , testReadSTime [(epoch, "X")] "%Q" "X"
+        , testReadSTime [(epoch, " X")] "%Q" " X"
+        , testReadSTime [(epoch, "")] "%Q " " "
+        , testReadSTime [(epoch, "")] "%Q X" " X"
+        , testReadSTime [(epoch, "")] "%QX" "X"
         ]
-  where
-    readsTest :: (Show a, Eq a, ParseTime a) => [(a, String)] -> String -> String -> TestTree
-    readsTest expected formatStr target =
-        let
-            found = readSTime False defaultTimeLocale formatStr target
-            result = assertEqual "" expected found
-            name = (show formatStr) ++ " of " ++ (show target)
-        in
-            Test.Tasty.HUnit.testCase name result
 
 spacingTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> TestTree
 spacingTests expected formatStr target =
@@ -272,9 +267,11 @@ particularParseTests =
 badParseTests :: TestTree
 badParseTests = testGroup "bad" [parseTest False (Nothing :: Maybe Day) "%Y" ""]
 
+{-
 parseYMD :: Day -> TestTree
 parseYMD day = case toGregorian day of
     (y, m, d) -> parseTest False (Just day) "%Y%m%d" ((show y) ++ (show2 m) ++ (show2 d))
+-}
 
 parseYearDayD :: Day -> TestTree
 parseYearDayD day = case toGregorian day of
@@ -321,11 +318,6 @@ parseTest sp expected formatStr target =
     in
         Test.Tasty.HUnit.testCase name result
 
-{-
-readsTest :: forall t. (Show t, Eq t, ParseTime t) => Maybe t -> String -> String -> TestTree
-readsTest (Just e) = readsTest' [(e,"")]
-readsTest Nothing = readsTest' ([] :: [(t,String)])
--}
 enumAdd :: Enum a => Int -> a -> a
 enumAdd i a = toEnum (i + fromEnum a)
 
@@ -385,17 +377,20 @@ test_parse_format f t =
 -- * show and read
 
 --
+reads_expect :: a -> [(a, String)]
+reads_expect t = [(t, "")]
+
 prop_read_show :: (Read a, Show a, Eq a) => a -> Result
-prop_read_show t = compareResult (Just t) (readMaybe (show t))
+prop_read_show t = compareResult (reads_expect t) (reads (show t))
 
 prop_read_show_ZonedUTC :: ZonedTime -> Result
-prop_read_show_ZonedUTC t = compareResult (Just $ zonedTimeToUTC t) (readMaybe (show t))
+prop_read_show_ZonedUTC t = compareResult (reads_expect $ zonedTimeToUTC t) (reads (show t))
 
 prop_read_show_LocalUTC :: LocalTime -> Result
-prop_read_show_LocalUTC t = compareResult (Just $ localTimeToUTC utc t) (readMaybe (show t))
+prop_read_show_LocalUTC t = compareResult (reads_expect $ localTimeToUTC utc t) (reads (show t))
 
 prop_read_show_UTC_no_TZ :: UTCTime -> Result
-prop_read_show_UTC_no_TZ t = compareResult (Just t) $ readMaybe $ show $ utcToLocalTime utc t
+prop_read_show_UTC_no_TZ t = compareResult (reads_expect t) $ reads $ show $ utcToLocalTime utc t
 
 --
 

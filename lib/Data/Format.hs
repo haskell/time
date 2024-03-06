@@ -173,7 +173,7 @@ specialCaseFormat (val, str) (MkFormat s r) =
         s' t
             | t == val = Just str
         s' t = s t
-        r' = (string str >> return val) +++ r
+        r' = r <++ (string str >> return val)
     in
         MkFormat s' r'
 
@@ -211,14 +211,14 @@ readNumber signOpt mdigitcount allowDecimal = do
     digits <-
         case mdigitcount of
             Just digitcount -> count digitcount $ satisfy isDigit
-            Nothing -> many1 $ satisfy isDigit
+            Nothing -> munch1 isDigit
     moredigits <-
         case allowDecimal of
             False -> return ""
             True ->
                 option "" $ do
                     _ <- char '.' +++ char ','
-                    dd <- many1 (satisfy isDigit)
+                    dd <- munch1 isDigit
                     return $ '.' : dd
     return $ sign $ read $ digits ++ moredigits
 
