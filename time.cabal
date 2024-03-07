@@ -141,6 +141,7 @@ test-suite test-main
     default-language: Haskell2010
     default-extensions:
         Rank2Types
+        TypeApplications
         GeneralizedNewtypeDeriving
         DeriveDataTypeable
         StandaloneDeriving

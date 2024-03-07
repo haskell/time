@@ -111,6 +111,7 @@ testParseTime =
         [ readsTests
         , simpleFormatTests
         , extests
+        , spacingTests
         , particularParseTests
         , badParseTests
         , defaultTimeZoneTests
@@ -236,10 +237,10 @@ simpleFormatTests =
         , testReadSTime [(epoch, "")] "%QX" "X"
         ]
 
-spacingTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> TestTree
-spacingTests expected formatStr target =
+spacingForFormatTests :: (Show t, Eq t, ParseTime t) => t -> String -> String -> TestTree
+spacingForFormatTests expected formatStr target =
     testGroup
-        "particular"
+        formatStr
         [ parseTest False (Just expected) formatStr target
         , parseTest True (Just expected) formatStr target
         , parseTest False (Just expected) (formatStr ++ " ") (target ++ " ")
@@ -250,18 +251,26 @@ spacingTests expected formatStr target =
         , parseTest True (Just expected) (" " ++ formatStr) ("  " ++ target)
         ]
 
+spacingTests :: TestTree
+spacingTests =
+    testGroup
+        "spacing"
+        [ spacingForFormatTests epoch "%Q" ""
+        , spacingForFormatTests epoch "%Q" ".0"
+        , spacingForFormatTests epoch "%k" " 0"
+        , spacingForFormatTests epoch "%M" "00"
+        , spacingForFormatTests epoch "%m" "01"
+        , spacingForFormatTests (TimeZone 120 False "") "%z" "+0200"
+        , spacingForFormatTests (TimeZone 120 False "") "%Z" "+0200"
+        , spacingForFormatTests (TimeZone (-480) False "PST") "%Z" "PST"
+        ]
+
 particularParseTests :: TestTree
 particularParseTests =
     testGroup
         "particular"
-        [ spacingTests epoch "%Q" ""
-        , spacingTests epoch "%Q" ".0"
-        , spacingTests epoch "%k" " 0"
-        , spacingTests epoch "%M" "00"
-        , spacingTests epoch "%m" "01"
-        , spacingTests (TimeZone 120 False "") "%z" "+0200"
-        , spacingTests (TimeZone 120 False "") "%Z" "+0200"
-        , spacingTests (TimeZone (-480) False "PST") "%Z" "PST"
+        [ parseTest @Day True Nothing "%-d%-m%0Y" "2122012" -- ISSUE #232
+        , parseTest @Day True Nothing "%-d%-m%0Y" "2132012" -- ISSUE #232
         ]
 
 badParseTests :: TestTree
@@ -302,7 +311,7 @@ parseCentury :: String -> Integer -> TestTree
 parseCentury int c =
     parseTest False (Just (fromGregorian (c * 100) 1 1)) ("%-C" ++ int ++ "%y") ((show c) ++ int ++ "00")
 
-parseTest :: (Show t, Eq t, ParseTime t) => Bool -> Maybe t -> String -> String -> TestTree
+parseTest :: forall t. (Show t, Eq t, ParseTime t) => Bool -> Maybe t -> String -> String -> TestTree
 parseTest sp expected formatStr target =
     let
         found = parse sp formatStr target

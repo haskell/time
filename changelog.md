@@ -50,6 +50,7 @@
 - add instance Ord DayOfWeek
 - add instance Read DiffTime (and NominalDiffTime)
 - change instance Read UTCTime to allow omitted timezone
+- parsing dates rejects ambiguity based on digits, even if there's only one valid date
 
 ## [1.10] - 2020-03-13
 - remove deprecated functions parseTime, readTime, readsTime
