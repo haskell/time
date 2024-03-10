@@ -19,7 +19,6 @@ tested-with:
 x-follows-version-policy:
 
 extra-source-files:
-    changelog.md
     aclocal.m4
     configure.ac
     configure
@@ -32,6 +31,8 @@ extra-tmp-files:
     config.status
     autom4te.cache
     lib/include/HsTimeConfig.h
+extra-doc-files:
+    changelog.md
 
 source-repository head
     type:     git
