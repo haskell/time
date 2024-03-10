@@ -78,9 +78,9 @@ import Text.Read (Read (..), lift)
 import Prelude hiding (fail)
 
 data FormatExtension
-    = -- | ISO 8601:2004(E) sec. 2.3.4. Use hyphens and colons.
+    = -- | Use hyphens and colons. [ISO 8601:2004(E) sec. 2.3.4]
       ExtendedFormat
-    | -- | ISO 8601:2004(E) sec. 2.3.3. Omit hyphens and colons. "The basic format should be avoided in plain text."
+    | -- | Omit hyphens and colons. "The basic format should be avoided in plain text." [ISO 8601:2004(E) sec. 2.3.3]
       BasicFormat
 
 -- | Read a value in either extended or basic format
@@ -175,65 +175,65 @@ isoMakeTimeOfDayValid h m s = makeTimeOfDayValid h m s
 mapTimeOfDay :: Format (Int, (Int, Pico)) -> Format TimeOfDay
 mapTimeOfDay = mapMFormat (\(h, (m, s)) -> isoMakeTimeOfDayValid h m s) (\(TimeOfDay h m s) -> Just (h, (m, s)))
 
--- | ISO 8601:2004(E) sec. 4.1.2.2
+-- | @yyyy-mm-dd@ (extended), @yyyymmdd@ (basic) [ISO 8601:2004(E) sec. 4.1.2.2]
 calendarFormat :: FormatExtension -> Format Day
 calendarFormat fe = mapGregorian $ extDashFormat fe yearFormat $ extDashFormat fe monthFormat dayOfMonthFormat
 
--- | ISO 8601:2004(E) sec. 4.1.2.3(a)
+-- | @yyyy-mm@ [ISO 8601:2004(E) sec. 4.1.2.3(a)]
 yearMonthFormat :: Format (Integer, Int)
 yearMonthFormat = yearFormat <**> literalFormat "-" **> monthFormat
 
--- | ISO 8601:2004(E) sec. 4.1.2.3(b)
+-- | @yyyy@ [ISO 8601:2004(E) sec. 4.1.2.3(b)]
 yearFormat :: Format Integer
 yearFormat = yearFormat'
 
--- | ISO 8601:2004(E) sec. 4.1.2.3(c)
+-- | @yy@ [ISO 8601:2004(E) sec. 4.1.2.3(c)]
 centuryFormat :: Format Integer
 centuryFormat = integerFormat NegSign (Just 2)
 
--- | ISO 8601:2004(E) sec. 4.1.2.4(a)
+-- | @±__y__yyyy-mm-dd@ (extended), @±__y__yyyymmdd@ (basic) [ISO 8601:2004(E) sec. 4.1.2.4(a)]
 expandedCalendarFormat :: Int -> FormatExtension -> Format Day
 expandedCalendarFormat n fe =
     mapGregorian $ extDashFormat fe (expandedYearFormat n) $ extDashFormat fe monthFormat dayOfMonthFormat
 
--- | ISO 8601:2004(E) sec. 4.1.2.4(b)
+-- | @±__y__yyyy-mm@ [ISO 8601:2004(E) sec. 4.1.2.4(b)]
 expandedYearMonthFormat :: Int -> Format (Integer, Int)
 expandedYearMonthFormat n = dashFormat (expandedYearFormat n) monthFormat
 
--- | ISO 8601:2004(E) sec. 4.1.2.4(c)
+-- | @±__y__yyyy@ [ISO 8601:2004(E) sec. 4.1.2.4(c)]
 expandedYearFormat :: Int -> Format Integer
 expandedYearFormat = expandedYearFormat'
 
--- | ISO 8601:2004(E) sec. 4.1.2.4(d)
+-- | @±__y__yy@ [ISO 8601:2004(E) sec. 4.1.2.4(d)]
 expandedCenturyFormat :: Int -> Format Integer
 expandedCenturyFormat n = integerFormat PosNegSign (Just n)
 
--- | ISO 8601:2004(E) sec. 4.1.3.2
+-- | @yyyy-ddd@ (extended), @yyyyddd@ (basic) [ISO 8601:2004(E) sec. 4.1.3.2]
 ordinalDateFormat :: FormatExtension -> Format Day
 ordinalDateFormat fe = mapOrdinalDate $ extDashFormat fe yearFormat dayOfYearFormat
 
--- | ISO 8601:2004(E) sec. 4.1.3.3
+-- | @__y__yyyy-ddd@ (extended), @__y__yyyyddd@ (basic) [ISO 8601:2004(E) sec. 4.1.3.3]
 expandedOrdinalDateFormat :: Int -> FormatExtension -> Format Day
 expandedOrdinalDateFormat n fe = mapOrdinalDate $ extDashFormat fe (expandedYearFormat n) dayOfYearFormat
 
--- | ISO 8601:2004(E) sec. 4.1.4.2
+-- | @yyyy-Www-D@ (extended), @yyyyWwwd@ (basic) [ISO 8601:2004(E) sec. 4.1.4.2]
 weekDateFormat :: FormatExtension -> Format Day
 weekDateFormat fe = mapWeekDate $ extDashFormat fe yearFormat $ extDashFormat fe weekOfYearFormat dayOfWeekFormat
 
--- | ISO 8601:2004(E) sec. 4.1.4.3
+-- | @yyyy-Www@ (extended), @yyyyWww@ (basic) [ISO 8601:2004(E) sec. 4.1.4.3]
 yearWeekFormat :: FormatExtension -> Format (Integer, Int)
 yearWeekFormat fe = extDashFormat fe yearFormat weekOfYearFormat
 
--- | ISO 8601:2004(E) sec. 4.1.4.2
+-- | @±__y__yyyy-Www-d@ (extended), @±__y__yyyyWwwD@ (basic) [ISO 8601:2004(E) sec. 4.1.4.4]
 expandedWeekDateFormat :: Int -> FormatExtension -> Format Day
 expandedWeekDateFormat n fe =
     mapWeekDate $ extDashFormat fe (expandedYearFormat n) $ extDashFormat fe weekOfYearFormat dayOfWeekFormat
 
--- | ISO 8601:2004(E) sec. 4.1.4.3
+-- | @±__y__yyyy-Www@ (extended), @±__y__yyyyWww@ (basic) [ISO 8601:2004(E) sec. 4.1.4.4]
 expandedYearWeekFormat :: Int -> FormatExtension -> Format (Integer, Int)
 expandedYearWeekFormat n fe = extDashFormat fe (expandedYearFormat n) weekOfYearFormat
 
--- | ISO 8601:2004(E) sec. 4.2.2.2, 4.2.2.4(a)
+-- | @hh:mm:ss[.s__s__]@ (extended), @hhmmss[.s__s__]@ (basic) [ISO 8601:2004(E) sec. 4.2.2.2, 4.2.2.4(a)]
 timeOfDayFormat :: FormatExtension -> Format TimeOfDay
 timeOfDayFormat fe = mapTimeOfDay $ extColonFormat fe hourFormat' $ extColonFormat fe minuteFormat secondFormat
 
@@ -241,7 +241,7 @@ timeOfDayFormat fe = mapTimeOfDay $ extColonFormat fe hourFormat' $ extColonForm
 fromRationalRound :: Rational -> NominalDiffTime
 fromRationalRound r = fromRational $ round (r * 1000000000000) % 1000000000000
 
--- | ISO 8601:2004(E) sec. 4.2.2.3(a), 4.2.2.4(b)
+-- | @hh:mm[.m__m__]@ (extended), @hhmm[.m__m__]@ (basic) [ISO 8601:2004(E) sec. 4.2.2.3(a), 4.2.2.4(b)]
 hourMinuteFormat :: FormatExtension -> Format TimeOfDay
 hourMinuteFormat fe =
     let
@@ -258,7 +258,7 @@ hourMinuteFormat fe =
     in
         mapMFormat toTOD fromTOD $ extColonFormat fe hourFormat' $ minuteDecimalFormat
 
--- | ISO 8601:2004(E) sec. 4.2.2.3(b), 4.2.2.4(c)
+-- | @hh[.h__h__]@ [ISO 8601:2004(E) sec. 4.2.2.3(b), 4.2.2.4(c)]
 hourFormat :: Format TimeOfDay
 hourFormat =
     let
@@ -270,15 +270,15 @@ hourFormat =
     in
         mapMFormat toTOD fromTOD $ hourDecimalFormat
 
--- | ISO 8601:2004(E) sec. 4.2.2.5
+-- | @Tx@ [ISO 8601:2004(E) sec. 4.2.2.5]
 withTimeDesignator :: Format t -> Format t
 withTimeDesignator f = literalFormat "T" **> f
 
--- | ISO 8601:2004(E) sec. 4.2.4
+-- | @xZ@ [ISO 8601:2004(E) sec. 4.2.4]
 withUTCDesignator :: Format t -> Format t
 withUTCDesignator f = f <** literalFormat "Z"
 
--- | ISO 8601:2004(E) sec. 4.2.5.1
+-- | @±hh:mm@ (extended), @±hhmm@ (basic) [ISO 8601:2004(E) sec. 4.2.5.1]
 timeOffsetFormat :: FormatExtension -> Format TimeZone
 timeOffsetFormat fe =
     let
@@ -298,31 +298,31 @@ timeOffsetFormat fe =
         isoMap toTimeZone fromTimeZone $
             mandatorySignFormat <**> (digits2 <++> extColonFormat fe digits2 digits2)
 
--- | ISO 8601:2004(E) sec. 4.2.5.2
+-- | @hh:mm:ss±hh:mm@ (extended), @hhmmss±hhmm@ (basic) [ISO 8601:2004(E) sec. 4.2.5.2]
 timeOfDayAndOffsetFormat :: FormatExtension -> Format (TimeOfDay, TimeZone)
 timeOfDayAndOffsetFormat fe = timeOfDayFormat fe <**> timeOffsetFormat fe
 
--- | ISO 8601:2004(E) sec. 4.3.2
+-- | @xTy@ [ISO 8601:2004(E) sec. 4.3.2]
 localTimeFormat :: Format Day -> Format TimeOfDay -> Format LocalTime
 localTimeFormat fday ftod =
-    isoMap (\(day, tod) -> LocalTime day tod) (\(LocalTime day tod) -> (day, tod)) $ fday <**> withTimeDesignator ftod
+    isoMap (\(day, tod) -> LocalTime day tod) (\(LocalTime day tod) -> (day, tod)) $ dayAndTimeFormat fday ftod
 
--- | ISO 8601:2004(E) sec. 4.3.2
+-- | @xTy±hh:mm@ (extended), @xTy±hhmm@ (basic) [ISO 8601:2004(E) sec. 4.3.2]
 zonedTimeFormat :: Format Day -> Format TimeOfDay -> FormatExtension -> Format ZonedTime
 zonedTimeFormat fday ftod fe =
     isoMap (\(lt, tz) -> ZonedTime lt tz) (\(ZonedTime lt tz) -> (lt, tz)) $
         timeAndOffsetFormat (localTimeFormat fday ftod) fe
 
--- | ISO 8601:2004(E) sec. 4.3.2
+-- | @xTyZ@ [ISO 8601:2004(E) sec. 4.3.2]
 utcTimeFormat :: Format Day -> Format TimeOfDay -> Format UTCTime
 utcTimeFormat fday ftod =
     isoMap (localTimeToUTC utc) (utcToLocalTime utc) $ withUTCDesignator $ localTimeFormat fday ftod
 
--- | ISO 8601:2004(E) sec. 4.3.3
+-- | @xTy@ [ISO 8601:2004(E) sec. 4.3.3]
 dayAndTimeFormat :: Format Day -> Format time -> Format (Day, time)
-dayAndTimeFormat fday ft = fday <**> withTimeDesignator ft
+dayAndTimeFormat fday ftod = fday <**> withTimeDesignator ftod
 
--- | ISO 8601:2004(E) sec. 4.3.3
+-- | @x±hh:mm@ (extended), @x±hhmm@ (basic) [ISO 8601:2004(E) sec. 4.3.3]
 timeAndOffsetFormat :: Format t -> FormatExtension -> Format (t, TimeZone)
 timeAndOffsetFormat ft fe = ft <**> timeOffsetFormat fe
 
@@ -340,11 +340,11 @@ daysDesigs =
     in
         isoMap toCD fromCD $ intDesignator 'Y' <**> intDesignator 'M' <**> intDesignator 'W' <**> intDesignator 'D'
 
--- | ISO 8601:2004(E) sec. 4.4.3.2
+-- | @PyyYmmMddD@ [ISO 8601:2004(E) sec. 4.4.3.2]
 durationDaysFormat :: Format CalendarDiffDays
 durationDaysFormat = (**>) (literalFormat "P") $ specialCaseShowFormat (mempty, "0D") $ daysDesigs
 
--- | ISO 8601:2004(E) sec. 4.4.3.2
+-- | @PyyYmmMddDThhHmmMss[.s__s__]S@ [ISO 8601:2004(E) sec. 4.4.3.2]
 durationTimeFormat :: Format CalendarDiffTime
 durationTimeFormat =
     let
@@ -363,7 +363,7 @@ durationTimeFormat =
                         optionalFormat (0, (0, 0)) $
                             literalFormat "T" **> intDesignator 'H' <**> intDesignator 'M' <**> decDesignator 'S'
 
--- | ISO 8601:2004(E) sec. 4.4.3.3
+-- | @Pyyyy-mm-dd@ (extended), @Pyyyymmdd@ (basic) [ISO 8601:2004(E) sec. 4.4.3.3]
 alternativeDurationDaysFormat :: FormatExtension -> Format CalendarDiffDays
 alternativeDurationDaysFormat fe =
     let
@@ -376,7 +376,7 @@ alternativeDurationDaysFormat fe =
                     extDashFormat fe (clipFormat (0, 12) $ integerFormat NegSign $ Just 2) $
                         (clipFormat (0, 30) $ integerFormat NegSign $ Just 2)
 
--- | ISO 8601:2004(E) sec. 4.4.3.3
+-- | @Pyyyy-mm-ddThh:mm:ss@ (extended), @PyyyymmddThhmmss@ (basic) [ISO 8601:2004(E) sec. 4.4.3.3]
 alternativeDurationTimeFormat :: FormatExtension -> Format CalendarDiffTime
 alternativeDurationTimeFormat fe =
     let
@@ -395,11 +395,11 @@ alternativeDurationTimeFormat fe =
                         extColonFormat fe (clipFormat (0, 60) $ integerFormat NegSign (Just 2)) $
                             (clipFormat (0, 60) $ decimalFormat NegSign (Just 2))
 
--- | ISO 8601:2004(E) sec. 4.4.4.1
+-- | @x\/y@ [ISO 8601:2004(E) sec. 4.4.4.1]
 intervalFormat :: Format a -> Format b -> Format (a, b)
 intervalFormat = sepFormat "/"
 
--- | ISO 8601:2004(E) sec. 4.5
+-- | @Rn\/x\/y@ [ISO 8601:2004(E) sec. 4.5]
 recurringIntervalFormat :: Format a -> Format b -> Format (Int, a, b)
 recurringIntervalFormat fa fb =
     isoMap (\(r, (a, b)) -> (r, a, b)) (\(r, a, b) -> (r, (a, b))) $
@@ -418,35 +418,35 @@ iso8601Show = formatShow iso8601Format
 iso8601ParseM :: (MonadFail m, ISO8601 t) => String -> m t
 iso8601ParseM = formatParseM iso8601Format
 
--- | @yyyy-mm-dd@ (ISO 8601:2004(E) sec. 4.1.2.2 extended format)
+-- | @yyyy-mm-dd@ [ISO 8601:2004(E) sec. 4.1.2.2 extended format]
 instance ISO8601 Day where
     iso8601Format = calendarFormat ExtendedFormat
 
--- | @hh:mm:ss[.sss]@ (ISO 8601:2004(E) sec. 4.2.2.2, 4.2.2.4(a) extended format)
+-- | @hh:mm:ss[.s__s__]@ [ISO 8601:2004(E) sec. 4.2.2.2, 4.2.2.4(a) extended format]
 instance ISO8601 TimeOfDay where
     iso8601Format = timeOfDayFormat ExtendedFormat
 
--- | @±hh:mm@ (ISO 8601:2004(E) sec. 4.2.5.1 extended format)
+-- | @±hh:mm@ [ISO 8601:2004(E) sec. 4.2.5.1 extended format]
 instance ISO8601 TimeZone where
     iso8601Format = timeOffsetFormat ExtendedFormat
 
--- | @yyyy-mm-ddThh:mm:ss[.sss]@ (ISO 8601:2004(E) sec. 4.3.2 extended format)
+-- | @yyyy-mm-ddThh:mm:ss[.s__s__]@ [ISO 8601:2004(E) sec. 4.3.2 extended format]
 instance ISO8601 LocalTime where
     iso8601Format = localTimeFormat iso8601Format iso8601Format
 
--- | @yyyy-mm-ddThh:mm:ss[.sss]±hh:mm@ (ISO 8601:2004(E) sec. 4.3.2 extended format)
+-- | @yyyy-mm-ddThh:mm:ss[.s__s__]±hh:mm@ [ISO 8601:2004(E) sec. 4.3.2 extended format]
 instance ISO8601 ZonedTime where
     iso8601Format = zonedTimeFormat iso8601Format iso8601Format ExtendedFormat
 
--- | @yyyy-mm-ddThh:mm:ss[.sss]Z@ (ISO 8601:2004(E) sec. 4.3.2 extended format)
+-- | @yyyy-mm-ddThh:mm:ss[.s__s__]Z@ [ISO 8601:2004(E) sec. 4.3.2 extended format]
 instance ISO8601 UTCTime where
     iso8601Format = utcTimeFormat iso8601Format iso8601Format
 
--- | @PyYmMdD@ (ISO 8601:2004(E) sec. 4.4.3.2)
+-- | @PyYmMdD@ [ISO 8601:2004(E) sec. 4.4.3.2]
 instance ISO8601 CalendarDiffDays where
     iso8601Format = durationDaysFormat
 
--- | @PyYmMdDThHmMs[.sss]S@ (ISO 8601:2004(E) sec. 4.4.3.2)
+-- | @PyYmMdDThHmMs[.s__s__]S@ [ISO 8601:2004(E) sec. 4.4.3.2]
 instance ISO8601 CalendarDiffTime where
     iso8601Format = durationTimeFormat
 
