@@ -8,7 +8,7 @@ ghcup install cabal latest
 ghcup set cabal latest
 
 # check unsupported versions do not select this version of time
-for c in 9.2.8
+for c in 8.10.7 9.2.8
 do
 ghcup install ghc $c
 ghcup set ghc $c
