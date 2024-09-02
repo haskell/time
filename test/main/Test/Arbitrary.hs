@@ -23,8 +23,13 @@ instance Arbitrary FirstWeekType where
 
 deriving instance Show FirstWeekType
 
+deriving instance Random Month
+
+supportedMonthRange :: (Month, Month)
+supportedMonthRange = (YearMonth (-9899) 1, YearMonth 9999 12)
+
 instance Arbitrary Month where
-    arbitrary = liftM MkMonth $ choose (-30000, 200000)
+    arbitrary = choose supportedMonthRange
 
 instance Arbitrary Quarter where
     arbitrary = liftM MkQuarter $ choose (-30000, 200000)

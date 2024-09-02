@@ -1,5 +1,10 @@
 # Change Log
 
+## Unreleased
+
+- add instance ParseTime DayOfWeek
+- make use of %s specifiers in parsing various types
+
 ## [1.14] - 2024-03-10
 - add Lift instances to all types
 - add Generic instances to all types that have exposed constructors

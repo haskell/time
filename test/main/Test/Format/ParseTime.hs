@@ -480,6 +480,12 @@ instance HasFormatCodes Day where
 instance HasFormatCodes TimeOfDay where
     allFormatCodes _ = [(False, s) | s <- "RTXrPpHkIlMSqQ"]
 
+instance HasFormatCodes DayOfWeek where
+    allFormatCodes _ = [(False, s) | s <- "uwaA"]
+
+instance HasFormatCodes Month where
+    allFormatCodes _ = [(False, s) | s <- "YyCBbhm"]
+
 instance HasFormatCodes LocalTime where
     allFormatCodes _ = allFormatCodes (Proxy :: Proxy Day) ++ allFormatCodes (Proxy :: Proxy TimeOfDay)
 
@@ -563,6 +569,8 @@ allTypes ::
 allTypes f =
     [ f "Day" (Proxy :: Proxy Day)
     , f "TimeOfDay" (Proxy :: Proxy TimeOfDay)
+    , f "DayOfWeek" (Proxy :: Proxy DayOfWeek)
+    , f "Month" (Proxy :: Proxy Month)
     , f "LocalTime" (Proxy :: Proxy LocalTime)
     , f "TimeZone" (Proxy :: Proxy TimeZone)
     , f "ZonedTime" (Proxy :: Proxy ZonedTime)
@@ -604,6 +612,55 @@ parseEmptyTest _ =
 
 parseEmptyTests :: TestTree
 parseEmptyTests = nameTest "parse empty" $ allTypes $ \name p -> nameTest name $ parseEmptyTest p
+
+prop_parse_s :: forall a. (Eq a, Show a, ParseTime a) => (UTCTime -> a) -> UTCTime -> Result
+prop_parse_s f t =
+    let
+        str = format "%s%Q" t
+        found = parse False "%s%Q" str
+        expected = f t
+    in
+        compareResult (Just expected) found
+
+prop_parse_sz :: forall a. (Eq a, Show a, ParseTime a) => (ZonedTime -> a) -> ZonedTime -> Result
+prop_parse_sz f t =
+    let
+        str = format "%s%Q %z" t
+        found = parse False "%s%Q %z" str
+        expected = f t
+    in
+        compareResult (Just expected) found
+
+zeroTimeZone :: TimeZone
+zeroTimeZone = TimeZone 0 False ""
+
+parse_s_tests :: TestTree
+parse_s_tests =
+    nameTest
+        "parse_s"
+        [ nameTest "UTCTime" $ prop_parse_s @UTCTime id
+        , nameTest "ZonedTime" $ prop_parse_s @ZonedTime $ utcToZonedTime zeroTimeZone
+        , nameTest "TimeZone" $ prop_parse_s @TimeZone $ \_ -> zeroTimeZone
+        , nameTest "LocalTime" $ prop_parse_s @LocalTime $ utcToLocalTime zeroTimeZone
+        , nameTest "Day" $ prop_parse_s @Day utctDay
+        , nameTest "Month" $ prop_parse_s @Month $ (\(MonthDay m _) -> m) . utctDay
+        , nameTest "DayOfWeek" $ prop_parse_s @DayOfWeek $ dayOfWeek . utctDay
+        , nameTest "TimeOfDay" $ prop_parse_s @TimeOfDay $ localTimeOfDay . utcToLocalTime zeroTimeZone
+        ]
+
+parse_sz_tests :: TestTree
+parse_sz_tests =
+    nameTest
+        "parse_sz"
+        [ nameTest "UTCTime" $ prop_parse_sz @UTCTime zonedTimeToUTC
+        , nameTest "ZonedTime" $ prop_parse_sz @ZonedTime id
+        , nameTest "TimeZone" $ prop_parse_sz @TimeZone zonedTimeZone
+        , nameTest "LocalTime" $ prop_parse_sz @LocalTime zonedTimeToLocalTime
+        , nameTest "Day" $ prop_parse_sz @Day $ localDay . zonedTimeToLocalTime
+        , nameTest "Month" $ prop_parse_sz @Month $ (\(MonthDay m _) -> m) . localDay . zonedTimeToLocalTime
+        , nameTest "DayOfWeek" $ prop_parse_sz @DayOfWeek $ dayOfWeek . localDay . zonedTimeToLocalTime
+        , nameTest "TimeOfDay" $ prop_parse_sz @TimeOfDay $ localTimeOfDay . zonedTimeToLocalTime
+        ]
 
 formatParseFormatTests :: TestTree
 formatParseFormatTests =
@@ -680,6 +737,8 @@ propertyTests =
             , nameTest "parse_format_lower" $ typedTests prop_parse_format_lower
             , nameTest "parse_format_upper" $ typedTests prop_parse_format_upper
             , parseEmptyTests
+            , parse_s_tests
+            , parse_sz_tests
             , formatParseFormatTests
             , badInputTests
             ]

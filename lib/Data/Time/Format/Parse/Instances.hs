@@ -10,6 +10,7 @@ import Control.Applicative ((<|>))
 import Data.Char
 import Data.Fixed
 import Data.List (elemIndex, find)
+import Data.Maybe
 import Data.Ratio
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
@@ -43,11 +44,23 @@ data DayComponent
     | DCYearWeek
         WeekType
         WeekOfYear -- 1-53 or 0-53
+    | DCUTCTime UTCTime
+    | DCTimeZone TimeZone
 
 data WeekType
     = ISOWeek
     | SundayWeek
     | MondayWeek
+
+readSpec_z :: String -> Maybe Int
+readSpec_z = readTzOffset
+
+readSpec_Z :: TimeLocale -> String -> Maybe TimeZone
+readSpec_Z _ str | Just offset <- readTzOffset str = Just $ TimeZone offset False ""
+readSpec_Z l str | Just zone <- getKnownTimeZone l str = Just zone
+readSpec_Z _ "UTC" = Just utc
+readSpec_Z _ [c] | Just zone <- getMilZone c = Just zone
+readSpec_Z _ _ = Nothing
 
 makeDayComponent :: TimeLocale -> Char -> String -> Maybe [DayComponent]
 makeDayComponent l c x =
@@ -162,6 +175,16 @@ makeDayComponent l c x =
                 raw <- ra
                 a <- clipValid 1 366 raw
                 return [DCYearDay a]
+            -- %s: number of whole seconds since the Unix epoch.
+            's' -> do
+                raw <- ra
+                return [DCUTCTime $ posixSecondsToUTCTime $ fromInteger raw]
+            'z' -> do
+                a <- readSpec_z x
+                return [DCTimeZone $ TimeZone a False ""]
+            'Z' -> do
+                a <- readSpec_Z l x
+                return [DCTimeZone a]
             -- unrecognised, pass on to other parsers
             _ -> return []
 
@@ -170,8 +193,59 @@ makeDayComponents l pairs = do
     components <- for pairs $ \(c, x) -> makeDayComponent l c x
     return $ concat components
 
+lastM :: [a] -> Maybe a
+lastM [] = Nothing
+lastM [a] = Just a
+lastM (_ : aa) = lastM aa
+
 safeLast :: a -> [a] -> a
-safeLast x xs = last (x : xs)
+safeLast x xs = fromMaybe x $ lastM xs
+
+dcYear :: [DayComponent] -> Integer
+dcYear cs =
+    let
+        d = safeLast 70 [x | DCCenturyYear x <- cs]
+        c =
+            safeLast
+                ( if d >= 69
+                    then 19
+                    else 20
+                )
+                [x | DCCentury x <- cs]
+    in
+        100 * c + d
+
+dcMatchLocalTime :: DayComponent -> Maybe ([DayComponent] -> LocalTime)
+dcMatchLocalTime (DCUTCTime t) = Just $ \cs ->
+    let
+        zone = safeLast utc [x | DCTimeZone x <- cs]
+    in
+        utcToLocalTime zone t
+dcMatchLocalTime _ = Nothing
+
+dcMatchDay :: DayComponent -> Maybe ([DayComponent] -> Maybe Day)
+dcMatchDay (DCYearMonth m) = Just $ \cs ->
+    let
+        y = dcYear cs
+        d = safeLast 1 [x | DCMonthDay x <- cs]
+    in
+        fromGregorianValid y m d
+dcMatchDay (DCYearDay d) = Just $ \cs ->
+    let
+        y = dcYear cs
+    in
+        fromOrdinalDateValid y d
+dcMatchDay (DCYearWeek wt w) = Just $ \cs ->
+    let
+        y = dcYear cs
+        d = safeLast 4 [x | DCWeekDay x <- cs]
+    in
+        case wt of
+            ISOWeek -> fromWeekDateValid y w d
+            SundayWeek -> fromSundayStartWeekValid y w (d `mod` 7)
+            MondayWeek -> fromMondayStartWeekValid y w d
+dcMatchDay comp | Just f <- dcMatchLocalTime comp = Just $ \cs -> return $ localDay $ f cs
+dcMatchDay _ = Nothing
 
 instance ParseTime Day where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
@@ -181,35 +255,30 @@ instance ParseTime Day where
         -- 'Nothing' indicates a parse failure,
         -- while 'Just []' means no information
         let
-            y =
-                let
-                    d = safeLast 70 [x | DCCenturyYear x <- cs]
-                    c =
-                        safeLast
-                            ( if d >= 69
-                                then 19
-                                else 20
-                            )
-                            [x | DCCentury x <- cs]
-                in
-                    100 * c + d
-            rest (DCYearMonth m : _) =
-                let
-                    d = safeLast 1 [x | DCMonthDay x <- cs]
-                in
-                    fromGregorianValid y m d
-            rest (DCYearDay d : _) = fromOrdinalDateValid y d
-            rest (DCYearWeek wt w : _) =
-                let
-                    d = safeLast 4 [x | DCWeekDay x <- cs]
-                in
-                    case wt of
-                        ISOWeek -> fromWeekDateValid y w d
-                        SundayWeek -> fromSundayStartWeekValid y w (d `mod` 7)
-                        MondayWeek -> fromMondayStartWeekValid y w d
+            rest (comp : _) | Just f <- dcMatchDay comp = f cs
             rest (_ : xs) = rest xs
             rest [] = rest [DCYearMonth 1]
         rest cs
+
+instance ParseTime DayOfWeek where
+    substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
+    parseTimeSpecifier _ = timeParseTimeSpecifier
+    buildTime l pairs = do
+        cs <- makeDayComponents l pairs
+        -- 'Nothing' indicates a parse failure,
+        -- while 'Just []' means no information
+        case lastM [x | DCWeekDay x <- cs] of
+            Just x -> return $ toEnum x
+            Nothing ->
+                let
+                    rest (comp : _) | Just f <- dcMatchDay comp = fmap dayOfWeek $ f cs
+                    rest (_ : xs) = rest xs
+                    rest [] = rest [DCYearMonth 1]
+                in
+                    rest cs
+
+dayMonth :: Day -> Month
+dayMonth (MonthDay m _) = m
 
 instance ParseTime Month where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
@@ -219,19 +288,9 @@ instance ParseTime Month where
         -- 'Nothing' indicates a parse failure,
         -- while 'Just []' means no information
         let
-            y =
-                let
-                    d = safeLast 70 [x | DCCenturyYear x <- cs]
-                    c =
-                        safeLast
-                            ( if d >= 69
-                                then 19
-                                else 20
-                            )
-                            [x | DCCentury x <- cs]
-                in
-                    100 * c + d
+            y = dcYear cs
             rest (DCYearMonth m : _) = fromYearMonthValid y m
+            rest (comp : _) | Just f <- dcMatchDay comp = fmap dayMonth $ f cs
             rest (_ : xs) = rest xs
             rest [] = fromYearMonthValid y 1
         rest cs
@@ -245,74 +304,115 @@ mfoldl f =
     in
         foldl mf
 
+data AMPM = AM | PM
+
+data TimeComponent
+    = TCAMPM AMPM
+    | TCHour Int
+    | TCMinute Int
+    | TCSecondInt Int
+    | TCSecondFraction Pico
+    | TCUTCTime UTCTime
+    | TCTimeZone TimeZone
+
+makeTimeComponent :: TimeLocale -> Char -> String -> Maybe [TimeComponent]
+makeTimeComponent l c x =
+    let
+        ra :: Read a => Maybe a
+        ra = readMaybe x
+        getAmPm =
+            let
+                upx = map toUpper x
+                (amStr, pmStr) = amPm l
+            in
+                if upx == amStr
+                    then Just [TCAMPM AM]
+                    else
+                        if upx == pmStr
+                            then Just [TCAMPM PM]
+                            else Nothing
+    in
+        case c of
+            'P' -> getAmPm
+            'p' -> getAmPm
+            'H' -> do
+                raw <- ra
+                a <- clipValid 0 23 raw
+                return [TCHour a]
+            'I' -> do
+                raw <- ra
+                a <- clipValid 1 12 raw
+                return [TCHour a]
+            'k' -> do
+                raw <- ra
+                a <- clipValid 0 23 raw
+                return [TCHour a]
+            'l' -> do
+                raw <- ra
+                a <- clipValid 1 12 raw
+                return [TCHour a]
+            'M' -> do
+                raw <- ra
+                a <- clipValid 0 59 raw
+                return [TCMinute a]
+            'S' -> do
+                raw <- ra
+                a <- clipValid 0 60 raw
+                return [TCSecondInt $ fromInteger a]
+            'q' -> do
+                ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
+                return [TCSecondFraction $ mkPico 0 ps]
+            'Q' ->
+                if null x
+                    then return []
+                    else do
+                        ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
+                        return [TCSecondFraction $ mkPico 0 ps]
+            's' -> do
+                raw <- ra
+                return [TCUTCTime $ posixSecondsToUTCTime $ fromInteger raw]
+            'z' -> do
+                a <- readSpec_z x
+                return [TCTimeZone $ TimeZone a False ""]
+            'Z' -> do
+                a <- readSpec_Z l x
+                return [TCTimeZone a]
+            _ -> return []
+
+makeTimeComponents :: TimeLocale -> [(Char, String)] -> Maybe [TimeComponent]
+makeTimeComponents l pairs = do
+    components <- for pairs $ \(c, x) -> makeTimeComponent l c x
+    return $ concat components
+
 instance ParseTime TimeOfDay where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
-    buildTime l =
-        let
-            f t@(TimeOfDay h m s) (c, x) =
+    buildTime l pairs = do
+        cs <- makeTimeComponents l pairs
+        -- 'Nothing' indicates a parse failure,
+        -- while 'Just []' means no information
+        case lastM [x | TCUTCTime x <- cs] of
+            Just t ->
                 let
-                    ra :: Read a => Maybe a
-                    ra = readMaybe x
-                    getAmPm =
-                        let
-                            upx = map toUpper x
-                            (amStr, pmStr) = amPm l
-                        in
-                            if upx == amStr
-                                then Just $ TimeOfDay (h `mod` 12) m s
-                                else
-                                    if upx == pmStr
-                                        then
-                                            Just $
-                                                TimeOfDay
-                                                    ( if h < 12
-                                                        then h + 12
-                                                        else h
-                                                    )
-                                                    m
-                                                    s
-                                        else Nothing
+                    zone = safeLast utc [x | TCTimeZone x <- cs]
+                    sf = safeLast 0 [x | TCSecondFraction x <- cs]
+                    TimeOfDay h m s = localTimeOfDay $ utcToLocalTime zone t
                 in
-                    case c of
-                        'P' -> getAmPm
-                        'p' -> getAmPm
-                        'H' -> do
-                            raw <- ra
-                            a <- clipValid 0 23 raw
-                            return $ TimeOfDay a m s
-                        'I' -> do
-                            raw <- ra
-                            a <- clipValid 1 12 raw
-                            return $ TimeOfDay a m s
-                        'k' -> do
-                            raw <- ra
-                            a <- clipValid 0 23 raw
-                            return $ TimeOfDay a m s
-                        'l' -> do
-                            raw <- ra
-                            a <- clipValid 1 12 raw
-                            return $ TimeOfDay a m s
-                        'M' -> do
-                            raw <- ra
-                            a <- clipValid 0 59 raw
-                            return $ TimeOfDay h a s
-                        'S' -> do
-                            raw <- ra
-                            a <- clipValid 0 60 raw
-                            return $ TimeOfDay h m (fromInteger a)
-                        'q' -> do
-                            ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
-                            return $ TimeOfDay h m (mkPico (floor s) ps)
-                        'Q' ->
-                            if null x
-                                then Just t
-                                else do
-                                    ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
-                                    return $ TimeOfDay h m (mkPico (floor s) ps)
-                        _ -> Just t
-        in
-            mfoldl f (Just midnight)
+                    return $ TimeOfDay h m $ s + sf
+            Nothing ->
+                let
+                    h = safeLast 0 [x | TCHour x <- cs]
+                    m = safeLast 0 [x | TCMinute x <- cs]
+                    si = safeLast 0 [x | TCSecondInt x <- cs]
+                    sf = safeLast 0 [x | TCSecondFraction x <- cs]
+                    s :: Pico
+                    s = fromIntegral si + sf
+                    h' = case lastM [x | TCAMPM x <- cs] of
+                        Nothing -> h
+                        Just AM -> mod h 12
+                        Just PM -> if h < 12 then h + 12 else h
+                in
+                    return $ TimeOfDay h' m s
 
 rpad :: Int -> a -> [a] -> [a]
 rpad n c xs = xs ++ replicate (n - length xs) c
@@ -359,17 +459,10 @@ instance ParseTime TimeZone where
     buildTime l =
         let
             f :: Char -> String -> TimeZone -> Maybe TimeZone
-            f 'z' str (TimeZone _ dst name)
-                | Just offset <- readTzOffset str = Just $ TimeZone offset dst name
-            f 'z' _ _ = Nothing
-            f 'Z' str _
-                | Just offset <- readTzOffset str = Just $ TimeZone offset False ""
-            f 'Z' str _
-                | Just zone <- getKnownTimeZone l str = Just zone
-            f 'Z' "UTC" _ = Just utc
-            f 'Z' [c] _
-                | Just zone <- getMilZone c = Just zone
-            f 'Z' _ _ = Nothing
+            f 'z' str (TimeZone _ dst name) = do
+                offset <- readSpec_z str
+                return $ TimeZone offset dst name
+            f 'Z' str _ = readSpec_Z l str
             f _ _ tz = Just tz
         in
             foldl (\mt (c, s) -> mt >>= f c s) (Just $ minutesToTimeZone 0)
