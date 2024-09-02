@@ -613,23 +613,53 @@ parseEmptyTest _ =
 parseEmptyTests :: TestTree
 parseEmptyTests = nameTest "parse empty" $ allTypes $ \name p -> nameTest name $ parseEmptyTest p
 
-prop_parse_s :: forall a. (Eq a, Show a, ParseTime a) => (UTCTime -> a) -> UTCTime -> Result
-prop_parse_s f t =
-    let
-        str = format "%s%Q" t
-        found = parse False "%s%Q" str
-        expected = f t
-    in
-        compareResult (Just expected) found
+class (Eq a, Show a, ParseTime a) => TestParse a where
+    nonPosixValue :: a -> Bool
+    nonPosixValue _ = False
 
-prop_parse_sz :: forall a. (Eq a, Show a, ParseTime a) => (ZonedTime -> a) -> ZonedTime -> Result
+instance TestParse UTCTime where
+    nonPosixValue (UTCTime _ dt) = dt >= 86400 || dt < 0
+
+instance TestParse ZonedTime where
+    nonPosixValue (ZonedTime t _) = nonPosixValue t
+
+instance TestParse TimeZone
+
+instance TestParse LocalTime where
+    nonPosixValue (LocalTime _ t) = nonPosixValue t
+
+instance TestParse Day
+
+instance TestParse Month
+
+instance TestParse DayOfWeek
+
+instance TestParse TimeOfDay where
+    nonPosixValue (TimeOfDay _ _ s) = s >= 60 || s < 0
+
+prop_parse_s :: forall a. TestParse a => (UTCTime -> a) -> UTCTime -> Result
+prop_parse_s f t =
+    if nonPosixValue t
+        then succeeded
+        else
+            let
+                str = format "%s%Q" t
+                found = parse False "%s%Q" str
+                expected = f t
+            in
+                compareResult (Just expected) found
+
+prop_parse_sz :: forall a. TestParse a => (ZonedTime -> a) -> ZonedTime -> Result
 prop_parse_sz f t =
-    let
-        str = format "%s%Q %z" t
-        found = parse False "%s%Q %z" str
-        expected = f t
-    in
-        compareResult (Just expected) found
+    if nonPosixValue t
+        then succeeded
+        else
+            let
+                str = format "%s%Q %z" t
+                found = parse False "%s%Q %z" str
+                expected = f t
+            in
+                compareResult (Just expected) found
 
 zeroTimeZone :: TimeZone
 zeroTimeZone = TimeZone 0 False ""
