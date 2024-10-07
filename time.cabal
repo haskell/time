@@ -54,7 +54,8 @@ library
     build-depends:
         base >= 4.15 && < 5,
         deepseq >= 1.1,
-        template-haskell >= 2.17,
+    if impl(ghc)
+        build-depends: template-haskell >= 2.17,
     if os(windows)
         build-depends: Win32
     exposed-modules:

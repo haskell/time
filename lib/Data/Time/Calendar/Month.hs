@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -- | An absolute count of common calendar months.
@@ -5,10 +6,12 @@ module Data.Time.Calendar.Month (
     Month (..),
     addMonths,
     diffMonths,
+#if __GLASGOW_HASKELL__
     pattern YearMonth,
     fromYearMonthValid,
     pattern MonthDay,
     fromMonthDayValid,
+#endif
 ) where
 
 import Control.DeepSeq
@@ -18,14 +21,20 @@ import Data.Ix
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Private
+#if __GLASGOW_HASKELL__
 import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
+#endif
 import Text.ParserCombinators.ReadP
 import Text.Read
 
 -- | An absolute count of common calendar months.
 -- Number is equal to @(year * 12) + (monthOfYear - 1)@.
-newtype Month = MkMonth Integer deriving (Eq, Ord, Data, Typeable, TH.Lift, Generic)
+newtype Month = MkMonth Integer deriving (Eq, Ord, Data, Typeable
+#if __GLASGOW_HASKELL__
+                                                                 , TH.Lift, Generic
+#endif
+                                                                                   )
 
 instance NFData Month where
     rnf (MkMonth m) = rnf m
@@ -47,6 +56,7 @@ instance Ix Month where
     inRange (MkMonth a, MkMonth b) (MkMonth c) = inRange (a, b) c
     rangeSize (MkMonth a, MkMonth b) = rangeSize (a, b)
 
+#ifdef __GLASGOW_HASKELL__
 -- | Show as @yyyy-mm@.
 instance Show Month where
     show (YearMonth y m) = show4 y ++ "-" ++ show2 m
@@ -63,6 +73,7 @@ instance DayPeriod Month where
     periodFirstDay (YearMonth y m) = YearMonthDay y m 1
     periodLastDay (YearMonth y m) = YearMonthDay y m 31 -- clips to correct day
     dayPeriod (YearMonthDay y my _) = YearMonth y my
+#endif
 
 addMonths :: Integer -> Month -> Month
 addMonths n (MkMonth a) = MkMonth $ a + n
@@ -70,6 +81,7 @@ addMonths n (MkMonth a) = MkMonth $ a + n
 diffMonths :: Month -> Month -> Integer
 diffMonths (MkMonth a) (MkMonth b) = a - b
 
+#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor.
 -- Invalid months of year will be clipped to the correct range.
 pattern YearMonth :: Year -> MonthOfYear -> Month
@@ -97,3 +109,4 @@ fromMonthDayValid :: Month -> DayOfMonth -> Maybe Day
 fromMonthDayValid = periodToDayValid
 
 {-# COMPLETE MonthDay #-}
+#endif

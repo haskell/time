@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -23,6 +24,9 @@ import Data.Time.Clock.Internal.AbsoluteTime
 import Data.Time.Clock.Internal.SystemTime
 import Data.Time.Clock.System
 import Data.Time.LocalTime
+#ifdef __MHS__
+import Data.Tuple.Instances
+#endif
 
 instance Show AbsoluteTime where
     show t = show (utcToLocalTime utc (fromJust (taiToUTCTime (const (Just 0)) t))) ++ " TAI" -- ugly, but standard apparently

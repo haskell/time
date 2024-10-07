@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TemplateHaskell #-}
@@ -13,8 +14,10 @@ module Data.Time.Clock.Internal.NominalDiffTime (
 import Control.DeepSeq
 import Data.Data
 import Data.Fixed
+#ifdef __GLASGOW_HASKELL__
 import GHC.Read
 import qualified Language.Haskell.TH.Syntax as TH
+#endif
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
 
@@ -45,10 +48,12 @@ secondsToNominalDiffTime = MkNominalDiffTime
 nominalDiffTimeToSeconds :: NominalDiffTime -> Pico
 nominalDiffTimeToSeconds (MkNominalDiffTime t) = t
 
+#ifdef __GLASGOW_HASKELL__
 -- Let GHC derive the instances when 'Fixed' has 'TH.Lift' instance.
 instance TH.Lift NominalDiffTime where
     liftTyped :: TH.Quote m => NominalDiffTime -> TH.Code m NominalDiffTime
     liftTyped (MkNominalDiffTime (MkFixed a)) = [||MkNominalDiffTime (MkFixed $$(TH.liftTyped a))||]
+#endif
 
 instance NFData NominalDiffTime where
     rnf (MkNominalDiffTime t) = rnf t
