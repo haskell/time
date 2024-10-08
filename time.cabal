@@ -93,7 +93,6 @@ library
         Data.Time.Clock.Internal.SystemTime,
         Data.Time.Clock.Internal.UTCTime,
         Data.Time.Clock.Internal.CTimeval,
-        Data.Time.Clock.Internal.CTimespec,
         Data.Time.Clock.Internal.UTCDiff,
         Data.Time.LocalTime.Internal.TimeZone,
         Data.Time.LocalTime.Internal.TimeOfDay,
@@ -106,6 +105,10 @@ library
         Data.Time.Format.Format.Instances,
         Data.Time.Format.Parse.Class,
         Data.Time.Format.Parse.Instances
+-- This should be !impl(mhs), but Hackage does not allow mhs yet.
+    if impl(ghc)
+        other-modules:
+            Data.Time.Clock.Internal.CTimespec
     include-dirs: lib/include
     if os(windows)
         install-includes:
