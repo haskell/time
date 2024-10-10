@@ -94,7 +94,7 @@ instance Ix Quarter where
     inRange (MkQuarter a, MkQuarter b) (MkQuarter c) = inRange (a, b) c
     rangeSize (MkQuarter a, MkQuarter b) = rangeSize (a, b)
 
-#if __GLASGOW_HASKELL__
+#ifdef __GLASGOW_HASKELL__
 -- | Show as @yyyy-Qn@.
 instance Show Quarter where
     show (YearQuarter y qy) = show4 y ++ "-" ++ show qy
@@ -129,7 +129,7 @@ addQuarters n (MkQuarter a) = MkQuarter $ a + n
 diffQuarters :: Quarter -> Quarter -> Integer
 diffQuarters (MkQuarter a) (MkQuarter b) = a - b
 
-#if __GLASGOW_HASKELL__
+#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor.
 pattern YearQuarter :: Year -> QuarterOfYear -> Quarter
 pattern YearQuarter y qy <-
@@ -147,7 +147,7 @@ monthOfYearQuarter my | my <= 6 = Q2
 monthOfYearQuarter my | my <= 9 = Q3
 monthOfYearQuarter _ = Q4
 
-#if __GLASGOW_HASKELL__
+#ifdef __GLASGOW_HASKELL__
 -- | The 'Quarter' this 'Month' is in.
 monthQuarter :: Month -> Quarter
 monthQuarter (YearMonth y my) = YearQuarter y $ monthOfYearQuarter my
