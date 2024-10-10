@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.Week (
@@ -16,8 +17,10 @@ import Data.Data
 import Data.Fixed
 import Data.Ix
 import Data.Time.Calendar.Days
+#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 data DayOfWeek
     = Monday
@@ -27,7 +30,11 @@ data DayOfWeek
     | Friday
     | Saturday
     | Sunday
-    deriving (Eq, Show, Read, Data, Typeable, Ord, Ix, TH.Lift, Generic)
+    deriving (Eq, Show, Read, Data, Typeable, Ord, Ix
+#ifdef __GLASGOW_HASKELL__
+                                                     , TH.Lift, Generic
+#endif
+                                                                       )
 
 instance NFData DayOfWeek where
     rnf Monday = ()

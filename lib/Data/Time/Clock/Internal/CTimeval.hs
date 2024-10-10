@@ -26,7 +26,7 @@ instance Storable CTimeval where
         pokeElemOff (castPtr p) 0 s
         pokeElemOff (castPtr p) 1 mus
 
-#if defined(javascript_HOST_ARCH)
+#if defined(javascript_HOST_ARCH) || defined(__MHS__)
 
 foreign import ccall unsafe "sys/time.h gettimeofday" gettimeofday :: Ptr CTimeval -> Ptr () -> IO CInt
 

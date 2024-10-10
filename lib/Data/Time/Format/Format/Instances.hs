@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -111,6 +112,7 @@ instance FormatTime DayOfWeek where
     formatCharacter _ _ = Nothing
 
 instance FormatTime Month where
+#ifdef __GLASGOW_HASKELL__
     -- Year Count
     formatCharacter _ 'Y' = Just $ formatNumber False 4 '0' $ \(YearMonth y _) -> y
     formatCharacter _ 'y' = Just $ formatNumber True 2 '0' $ \(YearMonth y _) -> mod100 y
@@ -123,6 +125,7 @@ instance FormatTime Month where
     formatCharacter _ 'h' =
         Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (my - 1)
     formatCharacter _ 'm' = Just $ formatNumber True 2 '0' $ \(YearMonth _ m) -> m
+#endif
     -- Default
     formatCharacter _ _ = Nothing
 
@@ -132,6 +135,7 @@ instance FormatTime Day where
     formatCharacter _ 'F' = Just $ formatString $ \locale -> formatTime locale "%Y-%m-%d"
     formatCharacter _ 'x' = Just $ formatString $ \locale -> formatTime locale (dateFmt locale)
     -- Day of Month
+#ifdef __GLASGOW_HASKELL__
     formatCharacter _ 'd' = Just $ formatNumber True 2 '0' $ \(YearMonthDay _ _ dm) -> dm
     formatCharacter _ 'e' = Just $ formatNumber True 2 ' ' $ \(YearMonthDay _ _ dm) -> dm
     -- Day of Year
@@ -142,6 +146,7 @@ instance FormatTime Day where
     formatCharacter _ 'f' = Just $ formatNumber False 2 '0' $ \(YearWeekDay y _ _) -> div100 y
     formatCharacter _ 'V' = Just $ formatNumber True 2 '0' $ \(YearWeekDay _ wy _) -> wy
     formatCharacter _ 'u' = Just $ formatNumber True 1 '0' $ \(YearWeekDay _ _ dw) -> fromEnum dw
+#endif
     -- Day of week
     formatCharacter _ 'a' = Just $ formatString $ \locale -> snd . ((wDays locale) !!) . snd . sundayStartWeek
     formatCharacter _ 'A' = Just $ formatString $ \locale -> fst . ((wDays locale) !!) . snd . sundayStartWeek
@@ -149,7 +154,9 @@ instance FormatTime Day where
     formatCharacter _ 'w' = Just $ formatNumber True 1 '0' $ snd . sundayStartWeek
     formatCharacter _ 'W' = Just $ formatNumber True 2 '0' $ fst . mondayStartWeek
     -- Default
+#ifdef __GLASGOW_HASKELL__
     formatCharacter alt c = mapFormatCharacter (\(MonthDay m _) -> m) $ formatCharacter alt c
+#endif
 
 instance FormatTime UTCTime where
     formatCharacter alt c = mapFormatCharacter (utcToZonedTime utc) $ formatCharacter alt c

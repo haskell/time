@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -16,7 +17,9 @@ import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
 import Data.Time.LocalTime.Internal.LocalTime
 import Data.Time.LocalTime.Internal.TimeZone
+#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
+#endif
 
 -- | A local time together with a time zone.
 --
@@ -27,7 +30,11 @@ data ZonedTime = ZonedTime
     { zonedTimeToLocalTime :: LocalTime
     , zonedTimeZone :: TimeZone
     }
-    deriving (Data, Typeable, Generic)
+    deriving (Data, Typeable
+#ifdef __GLASGOW_HASKELL__
+                            , Generic
+#endif
+                                     )
 
 instance NFData ZonedTime where
     rnf (ZonedTime lt z) = rnf lt `seq` rnf z `seq` ()

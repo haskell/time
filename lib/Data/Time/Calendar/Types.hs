@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.Types where
@@ -5,6 +6,7 @@ module Data.Time.Calendar.Types where
 -- | Year of Common Era (when positive).
 type Year = Integer
 
+#ifdef __GLASGOW_HASKELL__
 -- | Also known as Anno Domini.
 pattern CommonEra :: Integer -> Year
 pattern CommonEra n <-
@@ -22,10 +24,12 @@ pattern BeforeCommonEra n <-
         BeforeCommonEra n = 1 - n
 
 {-# COMPLETE CommonEra, BeforeCommonEra #-}
+#endif
 
 -- | Month of year, in range 1 (January) to 12 (December).
 type MonthOfYear = Int
 
+#ifdef __GLASGOW_HASKELL__
 pattern January :: MonthOfYear
 pattern January = 1
 
@@ -64,6 +68,7 @@ pattern December :: MonthOfYear
 pattern December = 12
 
 {-# COMPLETE January, February, March, April, May, June, July, August, September, October, November, December #-}
+#endif
 
 -- | Day of month, in range 1 to 31.
 type DayOfMonth = Int

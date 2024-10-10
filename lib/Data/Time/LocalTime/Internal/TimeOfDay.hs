@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.LocalTime.Internal.TimeOfDay (
@@ -25,7 +26,9 @@ import Data.Time.Calendar.Private
 import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.LocalTime.Internal.TimeZone
+#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
+#endif
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 --
@@ -40,7 +43,11 @@ data TimeOfDay = TimeOfDay
     -- ^ Note that 0 <= 'todSec' < 61, accomodating leap seconds.
     -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
     }
-    deriving (Eq, Ord, Data, Typeable, Generic)
+    deriving (Eq, Ord, Data, Typeable
+#ifdef __GLASGOW_HASKELL__
+                                     , Generic
+#endif
+                                              )
 
 instance NFData TimeOfDay where
     rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` rnf s `seq` ()
