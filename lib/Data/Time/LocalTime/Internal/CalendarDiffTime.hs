@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.LocalTime.Internal.CalendarDiffTime where
@@ -10,7 +11,11 @@ import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.Clock.Internal.UTCDiff
 import Data.Time.Clock.Internal.UTCTime
 import GHC.Generics
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer

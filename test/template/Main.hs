@@ -1,7 +1,12 @@
+{-# LANGUAGE CPP #-}
 module Main (main) where
 
 import Data.Time.Clock
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 import Test.Tasty
 import Test.Tasty.HUnit
 

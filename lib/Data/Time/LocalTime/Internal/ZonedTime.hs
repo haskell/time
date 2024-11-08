@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -12,7 +13,11 @@ import Data.Time.LocalTime.Internal.Foreign
 import Data.Time.LocalTime.Internal.LocalTime
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 -- | A local time together with a time zone.
 --

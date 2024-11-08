@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Clock.Internal.UTCTime where
@@ -7,7 +8,11 @@ import Data.Data
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.DiffTime
 import GHC.Generics
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 -- | This is the simplest representation of UTC.
 -- It consists of the day number, and a time offset from midnight.

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.CalendarDiffDays where
@@ -5,7 +6,11 @@ module Data.Time.Calendar.CalendarDiffDays where
 import Control.DeepSeq
 import Data.Data
 import GHC.Generics
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 data CalendarDiffDays = CalendarDiffDays
     { cdMonths :: Integer

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -- | Week-based calendars
@@ -23,7 +24,11 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Week
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 data FirstWeekType
     = -- | first week is the first whole week of the year

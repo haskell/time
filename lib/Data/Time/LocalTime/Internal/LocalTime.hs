@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -16,7 +17,11 @@ import Data.Time.LocalTime.Internal.CalendarDiffTime
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.

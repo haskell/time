@@ -10,7 +10,11 @@ import Data.Fixed
 import GHC.Read
 #endif
 import Data.Time.Clock.Internal.DiffTime
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
 
