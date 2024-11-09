@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP  #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Format (
@@ -26,6 +27,9 @@ module Data.Format (
 
 import Control.Monad.Fail
 import Data.Char
+#if MIN_VERSION_base(4,19,0)
+import Data.List (unsnoc)
+#endif
 import Data.Void
 import Text.ParserCombinators.ReadP
 import Prelude hiding (fail)
@@ -227,11 +231,17 @@ zeroPad Nothing s = s
 zeroPad (Just i) s = replicate (i - length s) '0' ++ s
 
 trimTrailing :: String -> String
-trimTrailing "" = ""
 trimTrailing "." = ""
-trimTrailing s
-    | last s == '0' = trimTrailing $ init s
-trimTrailing s = s
+trimTrailing s = case unsnoc s of
+    Nothing -> ""
+    Just (initial, '0') -> trimTrailing initial
+    _ -> s
+
+#if !MIN_VERSION_base(4,19,0)
+unsnoc :: [a] -> Maybe ([a], a)
+unsnoc = foldr (\x -> Just . maybe ([], x) (\(~(a, b)) -> (x : a, b))) Nothing
+{-# INLINABLE unsnoc #-}
+#endif
 
 showNumber :: Show t => SignOption -> Maybe Int -> t -> Maybe String
 showNumber signOpt mdigitcount t =
