@@ -105,8 +105,7 @@ library
         Data.Time.Format.Format.Instances,
         Data.Time.Format.Parse.Class,
         Data.Time.Format.Parse.Instances
--- This should be !impl(mhs), but Hackage does not allow mhs yet.
-    if impl(ghc)
+    if !impl(mhs)
         other-modules:
             Data.Time.Clock.Internal.CTimespec
     include-dirs: lib/include
