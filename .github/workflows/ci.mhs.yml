@@ -28,6 +28,8 @@ jobs:
 # I'll make it nicer with mcabal later.
     - name: compile time package
       run: |
+        echo $HOME
+        pwd
         cd mhs
         MHSCPPHS=./bin/cpphs ./bin/mhs -Ptime-test -otime-test.pkg -i../time/lib -idist-mcabal/autogen -I../time/lib/include '-DVERSION_base=\"4.19.1.0\"' '-DMIN_VERSION_base(x,y,z)=((x)<4||(x)==4&&(y)<19||(x)==4&&(y)==19&&(z)<=1)' '-DVERSION_deepseq=\"1.5.0.0\"' '-DMIN_VERSION_deepseq(x,y,z)=((x)<1||(x)==1&&(y)<5||(x)==1&&(y)==5&&(z)<=0)' Data.Time.Calendar Data.Time.Calendar.MonthDay Data.Time.Calendar.OrdinalDate Data.Time.Calendar.WeekDate Data.Time.Calendar.Julian Data.Time.Calendar.Easter Data.Time.Calendar.Month Data.Time.Calendar.Quarter Data.Time.Clock Data.Time.Clock.System Data.Time.Clock.POSIX Data.Time.Clock.TAI Data.Time.LocalTime Data.Time.Format Data.Time.Format.Internal Data.Time.Format.ISO8601 Data.Time
     - name: run ShowDefaultTZAbbreviations test
