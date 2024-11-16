@@ -43,4 +43,4 @@ jobs:
         ./ShowTime
     - name: cleanup
       run: |
-        rm -rf $(HOME)/.cabal
+        rm -rf $HOME/.cabal
