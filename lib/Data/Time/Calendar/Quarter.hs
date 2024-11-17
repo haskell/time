@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -- | Year quarters.
@@ -6,12 +7,18 @@ module Data.Time.Calendar.Quarter (
     addQuarters,
     diffQuarters,
     Quarter (..),
+#ifdef __GLASGOW_HASKELL__
     pattern YearQuarter,
+#endif
     monthOfYearQuarter,
+#ifdef __GLASGOW_HASKELL__
     monthQuarter,
     dayQuarter,
+#endif
     DayOfQuarter,
+#ifdef __GLASGOW_HASKELL__
     pattern QuarterDay,
+#endif
 ) where
 
 import Control.DeepSeq
@@ -22,13 +29,19 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Types
+#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
+#endif
 import Text.ParserCombinators.ReadP
 import Text.Read
 
 -- | Quarters of each year. Each quarter corresponds to three months.
-data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Data, Typeable, Read, Show, Ix, TH.Lift, Generic)
+data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Data, Typeable, Read, Show, Ix
+#ifdef __GLASGOW_HASKELL__
+                                                                                        , TH.Lift, Generic
+#endif
+                                                                                                          )
 
 -- | maps Q1..Q4 to 1..4
 instance Enum QuarterOfYear where
@@ -55,7 +68,11 @@ instance NFData QuarterOfYear where
 
 -- | An absolute count of year quarters.
 -- Number is equal to @(year * 4) + (quarterOfYear - 1)@.
-newtype Quarter = MkQuarter Integer deriving (Eq, Ord, Data, Typeable, Generic)
+newtype Quarter = MkQuarter Integer deriving (Eq, Ord, Data, Typeable
+#ifdef __GLASGOW_HASKELL__
+                                                                     , Generic
+#endif
+                                                                              )
 
 instance NFData Quarter where
     rnf (MkQuarter m) = rnf m
@@ -77,6 +94,7 @@ instance Ix Quarter where
     inRange (MkQuarter a, MkQuarter b) (MkQuarter c) = inRange (a, b) c
     rangeSize (MkQuarter a, MkQuarter b) = rangeSize (a, b)
 
+#ifdef __GLASGOW_HASKELL__
 -- | Show as @yyyy-Qn@.
 instance Show Quarter where
     show (YearQuarter y qy) = show4 y ++ "-" ++ show qy
@@ -103,6 +121,7 @@ instance DayPeriod Quarter where
             Q3 -> periodLastDay $ YearMonth y September
             Q4 -> periodLastDay $ YearMonth y December
     dayPeriod (MonthDay m _) = monthQuarter m
+#endif
 
 addQuarters :: Integer -> Quarter -> Quarter
 addQuarters n (MkQuarter a) = MkQuarter $ a + n
@@ -110,6 +129,7 @@ addQuarters n (MkQuarter a) = MkQuarter $ a + n
 diffQuarters :: Quarter -> Quarter -> Integer
 diffQuarters (MkQuarter a) (MkQuarter b) = a - b
 
+#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor.
 pattern YearQuarter :: Year -> QuarterOfYear -> Quarter
 pattern YearQuarter y qy <-
@@ -118,6 +138,7 @@ pattern YearQuarter y qy <-
         YearQuarter y qy = MkQuarter $ (y * 4) + toInteger (pred $ fromEnum qy)
 
 {-# COMPLETE YearQuarter #-}
+#endif
 
 -- | The 'QuarterOfYear' this 'MonthOfYear' is in.
 monthOfYearQuarter :: MonthOfYear -> QuarterOfYear
@@ -126,6 +147,7 @@ monthOfYearQuarter my | my <= 6 = Q2
 monthOfYearQuarter my | my <= 9 = Q3
 monthOfYearQuarter _ = Q4
 
+#ifdef __GLASGOW_HASKELL__
 -- | The 'Quarter' this 'Month' is in.
 monthQuarter :: Month -> Quarter
 monthQuarter (YearMonth y my) = YearQuarter y $ monthOfYearQuarter my
@@ -145,3 +167,4 @@ pattern QuarterDay q dq <-
         QuarterDay = periodToDay
 
 {-# COMPLETE QuarterDay #-}
+#endif

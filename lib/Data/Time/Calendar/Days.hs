@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.Days (
@@ -18,14 +19,20 @@ module Data.Time.Calendar.Days (
 import Control.DeepSeq
 import Data.Data
 import Data.Ix
+#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 -- | The Modified Julian Day is a standard count of days, with zero being the day 1858-11-17.
 newtype Day = ModifiedJulianDay
     { toModifiedJulianDay :: Integer
     }
-    deriving (Eq, Ord, Data, Typeable, TH.Lift, Generic)
+    deriving (Eq, Ord, Data, Typeable
+#ifdef __GLASGOW_HASKELL__
+             , TH.Lift, Generic
+#endif
+             )
 
 instance NFData Day where
     rnf (ModifiedJulianDay a) = rnf a

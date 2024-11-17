@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -- | Fast access to the system clock.
@@ -29,8 +30,10 @@ truncateSystemTimeLeapSecond t = t
 systemToUTCTime :: SystemTime -> UTCTime
 systemToUTCTime (MkSystemTime seconds nanoseconds) =
     let
+#ifdef __GLASGOW_HASKELL__
         days :: Int64
         timeSeconds :: Int64
+#endif
         (days, timeSeconds) = seconds `divMod` 86400
         day :: Day
         day = addDays (fromIntegral days) systemEpochDay
@@ -53,8 +56,10 @@ utcToSystemTime (UTCTime day time) =
         timePicoseconds = fromIntegral $ diffTimeToPicoseconds time
         timeNanoseconds :: Int64
         timeNanoseconds = timePicoseconds `div` 1000
+#ifdef __GLASGOW_HASKELL__
         timeSeconds :: Int64
         nanoseconds :: Int64
+#endif
         (timeSeconds, nanoseconds) =
             if timeNanoseconds >= 86400000000000
                 then (86399, timeNanoseconds - 86399000000000)

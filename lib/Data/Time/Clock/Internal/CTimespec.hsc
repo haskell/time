@@ -6,7 +6,7 @@ module Data.Time.Clock.Internal.CTimespec where
 
 #include "HsTimeConfig.h"
 
-#if !defined(mingw32_HOST_OS) && HAVE_CLOCK_GETTIME
+#if !defined(mingw32_HOST_OS) && HAVE_CLOCK_GETTIME && !defined(__MHS__)
 
 import Foreign
 import Foreign.C
@@ -37,14 +37,14 @@ foreign import ccall unsafe "time.h clock_gettime"
 foreign import ccall unsafe "time.h clock_getres"
     clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
 
-#else
+#else /* defined(javascript_HOST_ARCH) */
 
 foreign import capi unsafe "time.h clock_gettime"
     clock_gettime :: ClockID -> Ptr CTimespec -> IO CInt
 foreign import capi unsafe "time.h clock_getres"
     clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
 
-#endif
+#endif /* defined(javascript_HOST_ARCH) */
 
 -- | Get the resolution of the given clock.
 clockGetRes :: ClockID -> IO (Either Errno CTimespec)
@@ -69,17 +69,17 @@ clockGetTime clockid = alloca (\ptspec -> do
 -- JS backend doesn't support foreign imports with capi convention
 clock_REALTIME :: ClockID
 clock_REALTIME = #{const CLOCK_REALTIME}
-#else
+#else /* defined(javascript_HOST_ARCH) */
 foreign import capi unsafe "HsTime.h value HS_CLOCK_REALTIME" clock_REALTIME :: ClockID
-#endif
+#endif /* defined(javascript_HOST_ARCH) */
 
 clock_TAI :: Maybe ClockID
 clock_TAI =
 #if defined(CLOCK_TAI)
     Just #{const CLOCK_TAI}
-#else
+#else /* defined(CLOCK_TAI) */
     Nothing
-#endif
+#endif /* defined(CLOCK_TAI) */
 
 realtimeRes :: CTimespec
 realtimeRes = unsafePerformIO $ do
@@ -95,4 +95,5 @@ clockResolution clockid = unsafePerformIO $ do
         Left _ -> return Nothing
         Right res -> return $ Just res
 
-#endif
+#endif /* !defined(mingw32_HOST_OS) && HAVE_CLOCK_GETTIME */
+

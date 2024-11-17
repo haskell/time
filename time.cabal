@@ -54,7 +54,8 @@ library
     build-depends:
         base >= 4.15 && < 5,
         deepseq >= 1.1,
-        template-haskell >= 2.17,
+    if impl(ghc)
+        build-depends: template-haskell >= 2.17,
     if os(windows)
         build-depends: Win32
     exposed-modules:
@@ -92,7 +93,6 @@ library
         Data.Time.Clock.Internal.SystemTime,
         Data.Time.Clock.Internal.UTCTime,
         Data.Time.Clock.Internal.CTimeval,
-        Data.Time.Clock.Internal.CTimespec,
         Data.Time.Clock.Internal.UTCDiff,
         Data.Time.LocalTime.Internal.TimeZone,
         Data.Time.LocalTime.Internal.TimeOfDay,
@@ -105,6 +105,9 @@ library
         Data.Time.Format.Format.Instances,
         Data.Time.Format.Parse.Class,
         Data.Time.Format.Parse.Instances
+    if !impl(mhs)
+        other-modules:
+            Data.Time.Clock.Internal.CTimespec
     include-dirs: lib/include
     if os(windows)
         install-includes:

@@ -1,7 +1,7 @@
 #ifndef __HSTIME_H__
 #define __HSTIME_H__
 
-#if defined(_MSC_VER) || defined(__MINGW32__) || defined(_WIN32)
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(_WIN32) || defined(__MHS__)
 #define HAVE_TIME_H 1
 #else
 

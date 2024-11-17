@@ -35,7 +35,7 @@ long int get_current_timezone_seconds (time_t t,int* pdst,char const* * pname)
         *pname = dst ? _tzname[1] : _tzname[0];
         return - (dst ? _timezone - 3600 : _timezone);
 #else
-# if HAVE_TZNAME
+# if HAVE_TZNAME || defined(__MHS__)
         *pname = *tzname;
 # else
 #  error "Don't know how to get timezone name on your OS"
