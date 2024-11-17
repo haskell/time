@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support MicroHs
 - add instance ParseTime DayOfWeek
 - make use of %s specifiers in parsing various types
 
