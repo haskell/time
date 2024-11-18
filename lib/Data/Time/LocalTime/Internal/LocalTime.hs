@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -25,9 +24,7 @@ import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.TimeZone
-#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
-#endif
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
@@ -37,11 +34,7 @@ data LocalTime = LocalTime
     { localDay :: Day
     , localTimeOfDay :: TimeOfDay
     }
-    deriving (Eq, Ord, Data, Typeable
-#ifdef __GLASGOW_HASKELL__
-                                     , Generic
-#endif
-                                              )
+    deriving (Eq, Ord, Data, Typeable, Generic)
 
 instance NFData LocalTime where
     rnf (LocalTime d t) = rnf d `seq` rnf t `seq` ()

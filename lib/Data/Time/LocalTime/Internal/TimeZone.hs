@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE Safe #-}
 
@@ -24,9 +23,7 @@ import Data.Time.Clock.POSIX
 import Data.Time.Clock.System
 import Foreign
 import Foreign.C
-#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
-#endif
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone
@@ -37,11 +34,7 @@ data TimeZone = TimeZone
     , timeZoneName :: String
     -- ^ The name of the zone, typically a three- or four-letter acronym.
     }
-    deriving (Eq, Ord, Data, Typeable
-#ifdef __GLASGOW_HASKELL__
-                                     , Generic
-#endif
-                                              )
+    deriving (Eq, Ord, Data, Typeable, Generic)
 
 instance NFData TimeZone where
     rnf (TimeZone m so n) = rnf m `seq` rnf so `seq` rnf n `seq` ()

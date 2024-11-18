@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.LocalTime.Internal.CalendarDiffTime (
@@ -10,9 +9,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Clock.Internal.NominalDiffTime
-#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
-#endif
 
 data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer
@@ -24,9 +21,7 @@ data CalendarDiffTime = CalendarDiffTime
           Data
         , -- | @since 1.9.2
           Typeable
-#ifdef __GLASGOW_HASKELL__
         , Generic
-#endif
         )
 
 instance NFData CalendarDiffTime where

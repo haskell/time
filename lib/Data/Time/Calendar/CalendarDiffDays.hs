@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.CalendarDiffDays (
@@ -8,10 +7,8 @@ module Data.Time.Calendar.CalendarDiffDays (
 
 import Control.DeepSeq
 import Data.Data
-#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
-#endif
 
 data CalendarDiffDays = CalendarDiffDays
     { cdMonths :: Integer
@@ -23,12 +20,10 @@ data CalendarDiffDays = CalendarDiffDays
           Data
         , -- | @since 1.9.2
           Typeable
-#ifdef __GLASGOW_HASKELL__
         , -- | @since 1.14
           TH.Lift
         , -- | @since 1.14
           Generic
-#endif
         )
 
 instance NFData CalendarDiffDays where
