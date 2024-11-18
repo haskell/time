@@ -29,19 +29,13 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Types
-#ifdef __GLASGOW_HASKELL__
 import GHC.Generics
 import qualified Language.Haskell.TH.Syntax as TH
-#endif
 import Text.ParserCombinators.ReadP
 import Text.Read
 
 -- | Quarters of each year. Each quarter corresponds to three months.
-data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Data, Typeable, Read, Show, Ix
-#ifdef __GLASGOW_HASKELL__
-                                                                                        , TH.Lift, Generic
-#endif
-                                                                                                          )
+data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Data, Typeable, Read, Show, Ix, TH.Lift, Generic)
 
 -- | maps Q1..Q4 to 1..4
 instance Enum QuarterOfYear where
@@ -68,11 +62,7 @@ instance NFData QuarterOfYear where
 
 -- | An absolute count of year quarters.
 -- Number is equal to @(year * 4) + (quarterOfYear - 1)@.
-newtype Quarter = MkQuarter Integer deriving (Eq, Ord, Data, Typeable
-#ifdef __GLASGOW_HASKELL__
-                                                                     , Generic
-#endif
-                                                                              )
+newtype Quarter = MkQuarter Integer deriving (Eq, Ord, Data, Typeable, Generic)
 
 instance NFData Quarter where
     rnf (MkQuarter m) = rnf m
