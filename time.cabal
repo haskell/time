@@ -73,7 +73,6 @@ library
         Data.Time.Clock.TAI,
         Data.Time.LocalTime,
         Data.Time.Format,
-        Data.Time.Format.Internal,
         Data.Time.Format.ISO8601,
         Data.Time
     other-modules:
@@ -85,6 +84,7 @@ library
         Data.Time.Calendar.Private,
         Data.Time.Calendar.Types,
         Data.Time.Calendar.Week,
+        Data.Time.Format.Internal,
         Data.Time.Clock.Internal.DiffTime,
         Data.Time.Clock.Internal.AbsoluteTime,
         Data.Time.Clock.Internal.NominalDiffTime,
