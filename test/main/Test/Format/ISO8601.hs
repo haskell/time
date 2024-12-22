@@ -4,10 +4,10 @@ module Test.Format.ISO8601 (
     testISO8601,
 ) where
 
+import Data.Coerce
 import Data.Ratio
 import Data.Time
 import Data.Time.Format.ISO8601
-import Data.Time.Format.Internal
 import Test.Arbitrary ()
 import Test.QuickCheck.Property
 import Test.Tasty
@@ -57,7 +57,7 @@ readShowTestsCheck skip fmts = readBoth $ \fe -> readShowTestCheck skip $ fmts f
 readShowTests :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (FormatExtension -> Format a) -> [TestTree]
 readShowTests = readShowTestsCheck $ \_ -> False
 
-newtype Durational t = MkDurational {unDurational :: t}
+newtype Durational t = MkDurational t
     deriving (Eq)
 
 instance Show t => Show (Durational t) where
@@ -81,7 +81,7 @@ instance Arbitrary (Durational CalendarDiffTime) where
                 return $ MkDurational $ CalendarDiffTime mm $ fromRational $ ss % picofactor
 
 durationalFormat :: Format a -> Format (Durational a)
-durationalFormat (MkFormat sa ra) = MkFormat (\b -> sa $ unDurational b) (fmap MkDurational ra)
+durationalFormat = coerce
 
 testReadShowFormat :: TestTree
 testReadShowFormat =
