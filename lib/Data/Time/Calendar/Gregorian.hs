@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
@@ -185,10 +184,8 @@ diffGregorianDurationRollOver day2 day1 =
 instance Show Day where
     show = showGregorian
 
-#ifdef __GLASGOW_HASKELL__
 -- orphan instance
 instance DayPeriod Year where
     periodFirstDay y = YearMonthDay y January 1
     periodLastDay y = YearMonthDay y December 31
     dayPeriod (YearMonthDay y _ _) = y
-#endif

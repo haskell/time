@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -- | Week-based calendars
@@ -24,20 +23,14 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Week
-#ifdef __GLASGOW_HASKELL__
 import qualified Language.Haskell.TH.Syntax as TH
-#endif
 
 data FirstWeekType
     = -- | first week is the first whole week of the year
       FirstWholeWeek
     | -- | first week is the first week with four days in the year
       FirstMostWeek
-    deriving (Eq
-#ifdef __GLASGOW_HASKELL__
-                , TH.Lift
-#endif
-                         )
+    deriving (Eq, TH.Lift)
 
 firstDayOfWeekCalendar :: FirstWeekType -> DayOfWeek -> Year -> Day
 firstDayOfWeekCalendar wt dow year =

@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -278,7 +277,6 @@ instance ParseTime DayOfWeek where
                 in
                     rest cs
 
-#ifdef __GLASGOW_HASKELL__
 dayMonth :: Day -> Month
 dayMonth (MonthDay m _) = m
 
@@ -296,7 +294,6 @@ instance ParseTime Month where
             rest (_ : xs) = rest xs
             rest [] = fromYearMonthValid y 1
         rest cs
-#endif
 
 mfoldl :: Monad m => (a -> b -> m a) -> m a -> [b] -> m a
 mfoldl f =
