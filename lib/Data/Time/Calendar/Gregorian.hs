@@ -7,12 +7,9 @@
 module Data.Time.Calendar.Gregorian (
     -- * Year, month and day
     Year,
-#ifdef __GLASGOW_HASKELL__
     pattern CommonEra,
     pattern BeforeCommonEra,
-#endif
     MonthOfYear,
-#ifdef __GLASGOW_HASKELL__
     pattern January,
     pattern February,
     pattern March,
@@ -25,15 +22,12 @@ module Data.Time.Calendar.Gregorian (
     pattern October,
     pattern November,
     pattern December,
-#endif
     DayOfMonth,
 
     -- * Gregorian calendar
     toGregorian,
     fromGregorian,
-#ifdef __GLASGOW_HASKELL__
     pattern YearMonthDay,
-#endif
     fromGregorianValid,
     showGregorian,
     gregorianMonthLength,
@@ -70,7 +64,6 @@ toGregorian date = (year, month, day)
 fromGregorian :: Year -> MonthOfYear -> DayOfMonth -> Day
 fromGregorian year month day = fromOrdinalDate year (monthAndDayToDayOfYear (isLeapYear year) month day)
 
-#if __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor for the proleptic Gregorian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
 pattern YearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
@@ -78,7 +71,6 @@ pattern YearMonthDay y m d <-
     (toGregorian -> (y, m, d))
     where
         YearMonthDay y m d = fromGregorian y m d
-#endif
 
 {-# COMPLETE YearMonthDay #-}
 

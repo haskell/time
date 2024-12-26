@@ -3,7 +3,6 @@
 
 module Data.Time.Calendar.MonthDay (
     MonthOfYear,
-#ifdef __GLASGOW_HASKELL__
     pattern January,
     pattern February,
     pattern March,
@@ -16,7 +15,6 @@ module Data.Time.Calendar.MonthDay (
     pattern October,
     pattern November,
     pattern December,
-#endif
     DayOfMonth,
     DayOfYear,
     monthAndDayToDayOfYear,

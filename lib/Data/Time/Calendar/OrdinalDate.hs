@@ -46,7 +46,6 @@ fromOrdinalDate year day = ModifiedJulianDay mjd
             + (div y 400)
             - 678576
 
-#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor for ISO 8601 Ordinal Date format.
 -- Invalid day numbers will be clipped to the correct range (1 to 365 or 366).
 pattern YearDay :: Year -> DayOfYear -> Day
@@ -56,7 +55,6 @@ pattern YearDay y d <-
         YearDay y d = fromOrdinalDate y d
 
 {-# COMPLETE YearDay #-}
-#endif
 
 -- | Convert from ISO 8601 Ordinal Date format.
 -- Invalid day numbers return 'Nothing'

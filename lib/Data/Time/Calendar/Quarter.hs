@@ -7,18 +7,12 @@ module Data.Time.Calendar.Quarter (
     addQuarters,
     diffQuarters,
     Quarter (..),
-#ifdef __GLASGOW_HASKELL__
     pattern YearQuarter,
-#endif
     monthOfYearQuarter,
-#ifdef __GLASGOW_HASKELL__
     monthQuarter,
     dayQuarter,
-#endif
     DayOfQuarter,
-#ifdef __GLASGOW_HASKELL__
     pattern QuarterDay,
-#endif
 ) where
 
 import Control.DeepSeq
@@ -84,7 +78,6 @@ instance Ix Quarter where
     inRange (MkQuarter a, MkQuarter b) (MkQuarter c) = inRange (a, b) c
     rangeSize (MkQuarter a, MkQuarter b) = rangeSize (a, b)
 
-#ifdef __GLASGOW_HASKELL__
 -- | Show as @yyyy-Qn@.
 instance Show Quarter where
     show (YearQuarter y qy) = show4 y ++ "-" ++ show qy
@@ -111,7 +104,6 @@ instance DayPeriod Quarter where
             Q3 -> periodLastDay $ YearMonth y September
             Q4 -> periodLastDay $ YearMonth y December
     dayPeriod (MonthDay m _) = monthQuarter m
-#endif
 
 addQuarters :: Integer -> Quarter -> Quarter
 addQuarters n (MkQuarter a) = MkQuarter $ a + n
@@ -119,16 +111,14 @@ addQuarters n (MkQuarter a) = MkQuarter $ a + n
 diffQuarters :: Quarter -> Quarter -> Integer
 diffQuarters (MkQuarter a) (MkQuarter b) = a - b
 
-#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor.
 pattern YearQuarter :: Year -> QuarterOfYear -> Quarter
 pattern YearQuarter y qy <-
-    MkQuarter ((\q -> divMod' q 4) -> (y, toEnum . succ . fromInteger -> qy))
+    MkQuarter ((\q -> divMod' q 4) -> (y, (toEnum . succ . fromInteger -> qy)))
     where
         YearQuarter y qy = MkQuarter $ (y * 4) + toInteger (pred $ fromEnum qy)
 
 {-# COMPLETE YearQuarter #-}
-#endif
 
 -- | The 'QuarterOfYear' this 'MonthOfYear' is in.
 monthOfYearQuarter :: MonthOfYear -> QuarterOfYear
@@ -137,7 +127,6 @@ monthOfYearQuarter my | my <= 6 = Q2
 monthOfYearQuarter my | my <= 9 = Q3
 monthOfYearQuarter _ = Q4
 
-#ifdef __GLASGOW_HASKELL__
 -- | The 'Quarter' this 'Month' is in.
 monthQuarter :: Month -> Quarter
 monthQuarter (YearMonth y my) = YearQuarter y $ monthOfYearQuarter my
@@ -157,4 +146,3 @@ pattern QuarterDay q dq <-
         QuarterDay = periodToDay
 
 {-# COMPLETE QuarterDay #-}
-#endif

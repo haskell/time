@@ -15,9 +15,7 @@ module Data.Time.Calendar.WeekDate (
     -- * ISO 8601 Week Date format
     toWeekDate,
     fromWeekDate,
-#ifdef __GLASGOW_HASKELL__
     pattern YearWeekDay,
-#endif
     fromWeekDateValid,
     showWeekDate,
 ) where
@@ -129,17 +127,15 @@ toWeekDate d =
 fromWeekDate :: Year -> WeekOfYear -> Int -> Day
 fromWeekDate y wy dw = fromWeekCalendar FirstMostWeek Monday y wy (toEnum $ clip 1 7 dw)
 
-#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor for ISO 8601 Week Date format.
 -- Invalid week values will be clipped to the correct range.
 pattern YearWeekDay :: Year -> WeekOfYear -> DayOfWeek -> Day
 pattern YearWeekDay y wy dw <-
-    (toWeekDate -> (y, wy, toEnum -> dw))
+    (toWeekDate -> (y, wy, (toEnum -> dw)))
     where
         YearWeekDay y wy dw = fromWeekDate y wy (fromEnum dw)
 
 {-# COMPLETE YearWeekDay #-}
-#endif
 
 -- | Convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will return Nothing.
