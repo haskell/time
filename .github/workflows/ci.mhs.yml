@@ -16,7 +16,7 @@ jobs:
         path: time
     - name: checkout mhs repo
       # workaround for `act`: https://github.com/nektos/act/issues/678#issuecomment-1693751996
-      run: git clone https://github.com/augustss/MicroHs.git --branch stable-2 mhs
+      run: git clone https://github.com/augustss/MicroHs.git --branch stable-4 mhs
     - name: make and install mhs
       run: |
         cd mhs
