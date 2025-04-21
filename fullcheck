@@ -1,14 +1,26 @@
 #!/bin/bash -e
 git clean -dXf
-git pull
+#git pull
 autoreconf -i
 PATH=$HOME/.ghcup/bin:$PATH
 ghcup upgrade
 ghcup install cabal latest
 ghcup set cabal latest
 
+# check supported versions
+for c in 9.8.4 9.10.1 9.12.2
+do
+ghcup install ghc $c
+ghcup set ghc $c
+cabal update
+cabal v1-install --only-dependencies --enable-tests
+cabal v1-configure --enable-tests
+cabal v1-test
+cabal v1-haddock
+done
+
 # check unsupported versions do not select this version of time
-for c in 8.10.7 9.2.8
+for c in 9.4.8 9.6.7
 do
 ghcup install ghc $c
 ghcup set ghc $c
@@ -20,17 +32,5 @@ then
 else
     echo "time correctly deselected with unsupported GHC version $c"
 fi
-done
-
-# check supported versions
-for c in 9.4.8 9.6.4 9.8.2
-do
-ghcup install ghc $c
-ghcup set ghc $c
-cabal update
-cabal v1-install --only-dependencies --enable-tests
-cabal v1-configure --enable-tests
-cabal v1-test
-cabal v1-haddock
 done
 echo OK

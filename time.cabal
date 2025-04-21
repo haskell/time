@@ -13,9 +13,9 @@ description:    Time, clocks and calendars
 category:       Time
 build-type:     Configure
 tested-with:
-    GHC == 9.4.8,
-    GHC == 9.6.4,
-    GHC == 9.8.2
+    GHC == 9.8.4,
+    GHC == 9.10.1,
+    GHC == 9.12.2
 x-follows-version-policy:
 
 extra-source-files:
@@ -52,7 +52,7 @@ library
     ghc-options: -Wall -fwarn-tabs
     c-sources: lib/cbits/HsTime.c
     build-depends:
-        base >= 4.15 && < 5,
+        base >= 4.19 && < 5,
         deepseq >= 1.1,
     if impl(ghc)
         build-depends: template-haskell >= 2.17,
