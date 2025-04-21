@@ -11,3 +11,9 @@ RUN ghcup install cabal
 RUN ghcup install ghc 9.8.4
 RUN ghcup install ghc 9.10.1
 RUN ghcup install ghc 9.12.2
+
+RUN apt-get install -y zstd
+RUN curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | SKIP_GHC=1 sh
+RUN source ~/.ghc-wasm/env
+RUN ghcup config add-release-channel https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/ghcup-wasm-0.0.9.yaml
+RUN ghcup install ghc wasm32-wasi-9.12.2.20250327 -- $CONFIGURE_ARGS
