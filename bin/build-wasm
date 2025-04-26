@@ -1,0 +1,5 @@
+#!/bin/bash -e
+cabal update
+rm -rf dist-newstyle
+autoreconf -i
+cabal --with-compiler=wasm32-wasi-ghc --with-hc-pkg=wasm32-wasi-ghc-pkg --with-hsc2hs=wasm32-wasi-hsc2hs build --disable-tests
