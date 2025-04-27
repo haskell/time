@@ -1,5 +1,6 @@
 #!/bin/bash -e
 git clean -dXf
+cabal update
 
 for V in $GHC_PLAIN_VERSIONS
 do
@@ -10,7 +11,6 @@ done
 for V in $GHC_PLAIN_BAD_VERSIONS
 do
 ghcup set ghc $V
-cabal update
 if cabal v1-configure --enable-tests;
 then
     echo "time incorrectly selected with unsupported GHC version $V"
@@ -24,4 +24,10 @@ for V in $GHC_WASM_VERSIONS
 do
 ghcup set ghc $V
 build-wasm
+done
+
+for V in $GHC_JS_VERSIONS
+do
+ghcup set ghc $V
+build-js
 done

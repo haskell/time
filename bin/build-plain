@@ -1,6 +1,4 @@
 #!/bin/bash -e
-cabal update
-rm -rf dist
 autoreconf -i
 cabal v1-install --only-dependencies --enable-tests
 cabal v1-configure --enable-tests
