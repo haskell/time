@@ -1,7 +1,0 @@
-#!/bin/bash -e
-if [ "$1" == "-b" ]
-then stack --stack-yaml stack.tools.yaml install --no-test --no-bench --no-haddock fourmolu
-fi
-
-`stack --stack-yaml stack.tools.yaml path --local-bin`/fourmolu -i -o -XPatternSynonyms \
-    `find -name '*.hs' -not -path '*.stack-work/*' -not -path '*/dist/*' -not -path '*/dist-newstyle/*' | grep -xvf .format.ignore`

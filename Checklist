@@ -42,7 +42,7 @@ Before release:
 
 8. Format source
 
-    ./format-all -b
+    just format
 
 9. Build & test
 

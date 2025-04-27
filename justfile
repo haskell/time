@@ -1,13 +1,18 @@
-default: fullbuild
+default: build
 
 container-build:
-    devcontainer --workspace-folder . build
+    devcontainer build --workspace-folder .
 
 container-up:
-    devcontainer --workspace-folder . up
+    devcontainer up --workspace-folder .
 
 shell: container-up
-    devcontainer --workspace-folder . exec bash
+    devcontainer exec --workspace-folder . bash
 
-fullbuild: container-up
-    devcontainer --workspace-folder . exec fullbuild
+format: container-up
+    devcontainer exec --workspace-folder . format-all
+
+build: container-up
+    devcontainer exec --workspace-folder . fullbuild
+
+fullbuild: container-build format build

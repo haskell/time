@@ -35,4 +35,9 @@ RUN ./emsdk install 3.1.74
 RUN ./emsdk activate 3.1.74
 RUN . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-9.12.1
 
-ENV PATH=/workspaces/time/bin:$PATH
+# fourmolu
+RUN ghcup set ghc 9.12.2
+ENV LC_ALL=en_US.utf-8
+RUN cabal install fourmolu-0.18.0.0
+
+ENV PATH=/workspaces/time/bin:/home/vscode/.cabal/bin:$PATH
