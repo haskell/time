@@ -139,6 +139,16 @@ test-suite ShowTime
         time
     main-is: ShowTime.hs
 
+test-suite ForeignCalls
+    type: exitcode-stdio-1.0
+    hs-source-dirs: test
+    default-language: Haskell2010
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+        base,
+        time
+    main-is: ForeignCalls.hs
+
 test-suite test-main
     type: exitcode-stdio-1.0
     hs-source-dirs: test/main
