@@ -58,7 +58,7 @@ readShowTests :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (FormatExte
 readShowTests = readShowTestsCheck $ \_ -> False
 
 newtype Durational t = MkDurational {unDurational :: t}
-    deriving (Eq)
+    deriving Eq
 
 instance Show t => Show (Durational t) where
     show (MkDurational t) = show t

@@ -19,8 +19,8 @@ import Data.Fixed
 import GHC.Read
 #endif
 import qualified Language.Haskell.TH.Syntax as TH
-import Text.Read
 import Text.ParserCombinators.ReadP
+import Text.Read
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions such as 'fromInteger' and 'realToFrac' will treat it as seconds.
