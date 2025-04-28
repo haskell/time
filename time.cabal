@@ -217,7 +217,7 @@ test-suite test-main
         Test.LocalTime.TimeRef
 
 test-suite test-unix
-    if os(windows)
+    if os(windows) || arch (javascript)
         buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/unix
