@@ -14,6 +14,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
+import Data.Time.LocalTime.Internal.Foreign
 import Data.Time.LocalTime.Internal.LocalTime
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics

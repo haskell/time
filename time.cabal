@@ -49,7 +49,10 @@ library
         StandaloneDeriving
         PatternSynonyms
         ViewPatterns
-    ghc-options: -Wall -fwarn-tabs
+    ghc-options:
+        -Wall
+        -fwarn-tabs
+        -Wno-deriving-typeable
     c-sources: lib/cbits/HsTime.c
     build-depends:
         base >= 4.18 && < 5,
@@ -94,6 +97,7 @@ library
         Data.Time.Clock.Internal.UTCTime,
         Data.Time.Clock.Internal.CTimeval,
         Data.Time.Clock.Internal.UTCDiff,
+        Data.Time.LocalTime.Internal.Foreign,
         Data.Time.LocalTime.Internal.TimeZone,
         Data.Time.LocalTime.Internal.TimeOfDay,
         Data.Time.LocalTime.Internal.CalendarDiffTime,
@@ -150,6 +154,8 @@ test-suite ForeignCalls
     main-is: ForeignCalls.hs
 
 test-suite test-main
+    if arch (javascript)
+        buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/main
     default-language: Haskell2010

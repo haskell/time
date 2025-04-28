@@ -19,6 +19,7 @@ module Data.Time.LocalTime (
 
 import Data.Time.Format ()
 import Data.Time.LocalTime.Internal.CalendarDiffTime
+import Data.Time.LocalTime.Internal.Foreign
 import Data.Time.LocalTime.Internal.LocalTime
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.TimeZone hiding (timeZoneOffsetString'')
