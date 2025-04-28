@@ -2,15 +2,15 @@ module Main (main) where
 
 import Control.Exception
 import Control.Monad
-import Data.Monoid
 import Data.Foldable
-import Data.Traversable
-import System.Exit
-import System.IO
+import Data.Monoid
 import Data.Time
 import Data.Time.Clock.POSIX
 import Data.Time.Clock.System
 import Data.Time.Clock.TAI
+import Data.Traversable
+import System.Exit
+import System.IO
 
 data Test = MkTest String (IO ())
 
