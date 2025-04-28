@@ -40,4 +40,10 @@ RUN ghcup set ghc 9.12.2
 ENV LC_ALL=en_US.utf-8
 RUN cabal install fourmolu-0.18.0.0
 
-ENV PATH=/workspaces/time/bin:/home/vscode/.cabal/bin:$PATH
+# mhs
+WORKDIR /home/vscode
+RUN git clone https://github.com/augustss/MicroHs.git --branch stable-4 mhs
+WORKDIR /home/vscode/mhs
+RUN make minstall
+
+ENV PATH=/workspaces/time/bin:/home/vscode/.mcabal/bin:/home/vscode/.cabal/bin:$PATH
