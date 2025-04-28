@@ -34,17 +34,30 @@ instance Storable CTimespec where
 
 foreign import ccall unsafe "time.h clock_gettime"
     clock_gettime :: ClockID -> Ptr CTimespec -> IO CInt
-foreign import ccall unsafe "time.h clock_getres"
-    clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
 
 #else /* defined(javascript_HOST_ARCH) */
 
 foreign import capi unsafe "time.h clock_gettime"
     clock_gettime :: ClockID -> Ptr CTimespec -> IO CInt
-foreign import capi unsafe "time.h clock_getres"
-    clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
 
 #endif /* defined(javascript_HOST_ARCH) */
+
+-- | Get the current time from the given clock.
+clockGetTime :: ClockID -> IO CTimespec
+clockGetTime clockid = alloca (\ptspec -> do
+    throwErrnoIfMinus1_ "clock_gettime" $ clock_gettime clockid ptspec
+    peek ptspec
+    )
+
+#if defined(javascript_HOST_ARCH)
+
+clockGetRes :: ClockID -> IO (Either Errno CTimespec)
+clockGetRes _ = return $ Right $ MkCTimespec 0 0
+
+#else /* defined(javascript_HOST_ARCH) */
+
+foreign import capi unsafe "time.h clock_getres"
+    clock_getres :: ClockID -> Ptr CTimespec -> IO CInt
 
 -- | Get the resolution of the given clock.
 clockGetRes :: ClockID -> IO (Either Errno CTimespec)
@@ -58,12 +71,7 @@ clockGetRes clockid = alloca $ \ptspec -> do
             errno <- getErrno
             return $ Left errno
 
--- | Get the current time from the given clock.
-clockGetTime :: ClockID -> IO CTimespec
-clockGetTime clockid = alloca (\ptspec -> do
-    throwErrnoIfMinus1_ "clock_gettime" $ clock_gettime clockid ptspec
-    peek ptspec
-    )
+#endif /* defined(javascript_HOST_ARCH) */
 
 #if defined(javascript_HOST_ARCH)
 -- JS backend doesn't support foreign imports with capi convention
