@@ -4,4 +4,5 @@ cabal \
     --with-compiler=javascript-unknown-ghcjs-ghc \
     --with-hc-pkg=javascript-unknown-ghcjs-ghc-pkg \
     --with-hsc2hs=javascript-unknown-ghcjs-hsc2hs \
-    test
+    test \
+    --ghc-options='-Werror'

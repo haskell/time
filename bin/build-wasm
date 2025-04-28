@@ -5,4 +5,5 @@ cabal \
     --with-hc-pkg=wasm32-wasi-ghc-pkg \
     --with-hsc2hs=wasm32-wasi-hsc2hs \
     build \
+    --ghc-options='-Werror' \
     --disable-tests
