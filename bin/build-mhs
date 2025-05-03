@@ -1,0 +1,10 @@
+#!/bin/bash -e
+autoreconf -i
+mcabal install
+mkdir -p dist-mcabal/bin
+mhs test/ForeignCalls.hs -odist-mcabal/bin/ForeignCalls
+dist-mcabal/bin/ForeignCalls
+mhs test/ShowDefaultTZAbbreviations.hs -odist-mcabal/bin/ShowDefaultTZAbbreviations
+dist-mcabal/bin/ShowDefaultTZAbbreviations
+mhs test/ShowTime.hs -odist-mcabal/bin/ShowTime
+dist-mcabal/bin/ShowTime

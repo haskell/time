@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- support MicroHs
+- support GHC backends (with CI):
+  - JavaScript
+  - WebAssembly
+  - MicroHs
 - add instance ParseTime DayOfWeek
 - make use of %s specifiers in parsing various types
 

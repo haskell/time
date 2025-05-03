@@ -1,4 +1,5 @@
 #!/bin/bash -e
+ghcup set ghc $1
 autoreconf -i
 cabal \
     --with-compiler=javascript-unknown-ghcjs-ghc \

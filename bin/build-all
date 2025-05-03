@@ -1,0 +1,25 @@
+#!/bin/bash -e
+git clean -dXf
+cabal update
+
+for V in $GHC_NATIVE_VERSIONS
+do
+build-native $V
+done
+
+for V in $GHC_NATIVE_BAD_VERSIONS
+do
+build-native-bad $V
+done
+
+for V in $GHC_WASM_VERSIONS
+do
+build-wasm $V
+done
+
+for V in $GHC_JS_VERSIONS
+do
+build-js $V
+done
+
+build-mhs

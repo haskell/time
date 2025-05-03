@@ -154,7 +154,7 @@ test-suite ForeignCalls
     main-is: ForeignCalls.hs
 
 test-suite test-main
-    if arch (javascript)
+    if arch (javascript) || arch (wasm32)
         buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/main
@@ -223,7 +223,7 @@ test-suite test-main
         Test.LocalTime.TimeRef
 
 test-suite test-unix
-    if os(windows) || arch (javascript)
+    if os(windows) || arch (javascript) || arch (wasm32)
         buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/unix

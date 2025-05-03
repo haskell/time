@@ -1,9 +1,11 @@
 #!/bin/bash -e
+ghcup set ghc $1
 autoreconf -i
+source /home/vscode/.ghc-wasm/env
 cabal \
     --with-compiler=wasm32-wasi-ghc \
     --with-hc-pkg=wasm32-wasi-ghc-pkg \
     --with-hsc2hs=wasm32-wasi-hsc2hs \
-    build \
-    --ghc-options='-Werror' \
-    --disable-tests
+    --test-wrapper=wasmtime \
+    test \
+    --ghc-options='-Werror'

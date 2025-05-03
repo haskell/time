@@ -10,9 +10,9 @@ shell: container-up
     devcontainer exec --workspace-folder . bash
 
 format: container-up
-    devcontainer exec --workspace-folder . format-all
+    devcontainer exec --workspace-folder . format
 
 build: container-up
-    devcontainer exec --workspace-folder . fullbuild
+    devcontainer exec --workspace-folder . build-all
 
 fullbuild: container-build format build

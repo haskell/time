@@ -1,3 +1,4 @@
 #!/bin/bash -e
+ghcup set ghc $1
 autoreconf -i
 cabal test --ghc-options='-Werror'
