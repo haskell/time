@@ -155,6 +155,9 @@ test-suite ForeignCalls
 
 test-suite test-main
     if arch (javascript) || arch (wasm32)
+        -- blocked by splitmix
+        -- https://github.com/haskellari/splitmix/issues/92
+        -- https://github.com/haskellari/splitmix/issues/93
         buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/main
