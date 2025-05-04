@@ -62,3 +62,4 @@ ENV PATH=/home/vscode/.mcabal/bin:$PATH
 # build commands
 RUN sudo apt-get install -y autoconf
 ENV PATH=/workspaces/time/bin:$PATH
+ENV TZ="America/Los_Angeles"
