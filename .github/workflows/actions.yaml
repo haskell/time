@@ -38,4 +38,7 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/haskell/time-build
+          cacheFrom: ghcr.io/haskell/time-build
+          push: always
+          #refFilterForPush: refs/head/master
           runCmd: "build-${{matrix.ghc}}"
