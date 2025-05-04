@@ -4,6 +4,10 @@ on:
   #pull_request: {}
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-new:
     runs-on: ubuntu-latest
