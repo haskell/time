@@ -41,7 +41,7 @@ jobs:
       - name: Build and run dev container task
         uses: devcontainers/ci@v0.3
         with:
-          #imageName: ghcr.io/haskell/time-build
+          imageName: ghcr.io/haskell/time-build
           cacheFrom: ghcr.io/haskell/time-build
           #push: always
           #refFilterForPush: refs/head/master
