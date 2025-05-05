@@ -31,26 +31,6 @@ RUN sudo apt-get install -y zstd
 WORKDIR /home/vscode
 RUN curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | SKIP_GHC=1 sh
 RUN ghcup config add-release-channel https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/ghcup-wasm-0.0.9.yaml
-RUN . /home/vscode/.ghc-wasm/env && for V in $GHC_WASM_VERSIONS; do ghcup install ghc $V -- $CONFIGURE_ARGS; done
-RUN curl -LO https://github.com/bytecodealliance/wasmtime/releases/download/dev/wasmtime-dev-x86_64-linux.tar.xz
-RUN xz -d wasmtime-dev-x86_64-linux.tar.xz
-RUN tar xvf wasmtime-dev-x86_64-linux.tar
-ENV PATH=/home/vscode/wasmtime-dev-x86_64-linux:$PATH
-
-# JavaScript back-end
-ENV GHC_JS_VERSIONS="javascript-unknown-ghcjs-9.10.0.20240413 javascript-unknown-ghcjs-9.12.1"
-RUN sudo apt-get install -y nodejs
-WORKDIR /home/vscode
-RUN ghcup config add-release-channel cross
-RUN git clone https://github.com/emscripten-core/emsdk.git
-WORKDIR /home/vscode/emsdk
-RUN sudo apt-get install -y python3
-RUN ./emsdk install 3.1.57
-RUN ./emsdk activate 3.1.57
-RUN . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-9.10.0.20240413
-RUN ./emsdk install 3.1.74
-RUN ./emsdk activate 3.1.74
-RUN . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-9.12.1
 
 # MicroHs back-end
 WORKDIR /home/vscode

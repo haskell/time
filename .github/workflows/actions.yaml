@@ -45,4 +45,4 @@ jobs:
           cacheFrom: ghcr.io/haskell/time-build
           push: always
           #refFilterForPush: refs/head/master
-          runCmd: "build-${{matrix.ghc}}"
+          runCmd: "true"
