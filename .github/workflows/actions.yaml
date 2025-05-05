@@ -46,3 +46,4 @@ jobs:
           push: always
           #refFilterForPush: refs/head/master
           runCmd: "build-${{matrix.ghc}}"
+          buildOptions: "--memory=14g"
