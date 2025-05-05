@@ -18,7 +18,7 @@ ENV GHC_NATIVE_VERSIONS="9.8.4 9.10.1 9.12.2"
 ENV GHC_NATIVE_BAD_VERSIONS="9.4.8 9.6.7"
 RUN ghcup install cabal --set latest
 ENV PATH=/home/vscode/.cabal/bin:$PATH
-RUN for V in $GHC_NATIVE_VERSIONS $GHC_NATIVE_BAD_VERSIONS; do ghcup install $V; done
+RUN for V in $GHC_NATIVE_VERSIONS $GHC_NATIVE_BAD_VERSIONS; do ghcup install ghc $V; done
 RUN sudo apt-get install -y libgmp-dev
 
 # formatter
