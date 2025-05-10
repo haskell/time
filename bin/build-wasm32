@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ghcup set ghc $1
 autoreconf -i
-source /home/vscode/.ghc-wasm/env
+source $HOME/.ghc-wasm/env
 cabal \
     --with-compiler=wasm32-wasi-ghc \
     --with-hc-pkg=wasm32-wasi-ghc-pkg \

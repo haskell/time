@@ -7,14 +7,14 @@ do
 build-native $V
 done
 
-for V in $GHC_NATIVE_BAD_VERSIONS
+for V in $GHC_NATIVE_EXPIRED_VERSIONS
 do
-build-native-bad $V
+build-native-expired $V
 done
 
-for V in $GHC_WASM_VERSIONS
+for V in $GHC_WASM32_VERSIONS
 do
-build-wasm $V
+build-wasm32 $V
 done
 
 for V in $GHC_JS_VERSIONS

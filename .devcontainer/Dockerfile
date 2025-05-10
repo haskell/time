@@ -10,15 +10,20 @@ WORKDIR /home/vscode
 ENV LC_ALL=en_US.utf-8
 
 # ghcup
+ARG BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+ARG BOOTSTRAP_HASKELL_MINIMAL=1
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ENV PATH=/home/vscode/.ghcup/bin:$PATH
 
+# cabal
+RUN ghcup install cabal --set latest
+RUN cabal update
+ENV PATH=/home/vscode/.cabal/bin:$PATH
+
 # native back-end
 ENV GHC_NATIVE_VERSIONS="9.8.4 9.10.1 9.12.2"
-ENV GHC_NATIVE_BAD_VERSIONS="9.4.8 9.6.7"
-RUN ghcup install cabal --set latest
-ENV PATH=/home/vscode/.cabal/bin:$PATH
-RUN for V in $GHC_NATIVE_VERSIONS $GHC_NATIVE_BAD_VERSIONS; do ghcup install ghc $V; done
+ENV GHC_NATIVE_EXPIRED_VERSIONS="9.4.8 9.6.7"
+RUN for V in $GHC_NATIVE_VERSIONS $GHC_NATIVE_EXPIRED_VERSIONS; do ghcup install ghc $V; done
 RUN sudo apt-get install -y libgmp-dev
 
 # formatter
@@ -26,12 +31,12 @@ RUN ghcup set ghc 9.12.2
 RUN cabal install fourmolu-0.18.0.0
 
 # WebAssembly back-end
-ENV GHC_WASM_VERSIONS="wasm32-wasi-9.8.4.20250206 wasm32-wasi-9.10.1.20250327 wasm32-wasi-9.12.2.20250327"
+ENV GHC_WASM32_VERSIONS="wasm32-wasi-9.8.4.20250206 wasm32-wasi-9.10.1.20250327 wasm32-wasi-9.12.2.20250327"
 RUN sudo apt-get install -y zstd
 WORKDIR /home/vscode
 RUN curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | SKIP_GHC=1 sh
 RUN ghcup config add-release-channel https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/ghcup-wasm-0.0.9.yaml
-RUN . /home/vscode/.ghc-wasm/env && for V in $GHC_WASM_VERSIONS; do ghcup install ghc $V -- $CONFIGURE_ARGS; done
+RUN . /home/vscode/.ghc-wasm/env && for V in $GHC_WASM32_VERSIONS; do ghcup install ghc $V -- $CONFIGURE_ARGS; done
 RUN curl -LO https://github.com/bytecodealliance/wasmtime/releases/download/dev/wasmtime-dev-x86_64-linux.tar.xz
 RUN xz -d wasmtime-dev-x86_64-linux.tar.xz
 RUN tar xvf wasmtime-dev-x86_64-linux.tar
