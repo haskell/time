@@ -97,6 +97,8 @@ jobs:
         export PATH=$HOME/.ghcup/bin:$PATH
         sudo apt-get update
         sudo apt-get install -y nodejs
+        pwd
+        env | sort
         ghcup config add-release-channel cross
         git clone https://github.com/emscripten-core/emsdk.git
         cd emsdk
@@ -118,6 +120,8 @@ jobs:
 
     - name: "Build js"
       run: |
+        pwd
+        env | sort
         export PATH=$HOME/.ghcup/bin:$PATH
         export PATH=`pwd`/bin:$PATH
         build-js javascript-unknown-ghcjs-${{matrix.ghc}}
