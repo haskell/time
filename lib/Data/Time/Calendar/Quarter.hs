@@ -28,7 +28,7 @@ import Text.ParserCombinators.ReadP
 import Text.Read
 
 -- | Quarters of each year. Each quarter corresponds to three months.
-data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Data, Typeable, Read, Show, Ix, TH.Lift, Generic)
+data QuarterOfYear = Q1 | Q2 | Q3 | Q4 deriving (Eq, Ord, Read, Show, Ix, Typeable, Data, Generic, TH.Lift)
 
 -- | maps Q1..Q4 to 1..4
 instance Enum QuarterOfYear where
@@ -55,7 +55,7 @@ instance NFData QuarterOfYear where
 
 -- | An absolute count of year quarters.
 -- Number is equal to @(year * 4) + (quarterOfYear - 1)@.
-newtype Quarter = MkQuarter Integer deriving (Eq, Ord, Data, Typeable, Generic)
+newtype Quarter = MkQuarter Integer deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData Quarter where
     rnf (MkQuarter m) = rnf m

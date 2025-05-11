@@ -27,7 +27,7 @@ data DayOfWeek
     | Friday
     | Saturday
     | Sunday
-    deriving (Eq, Show, Read, Data, Typeable, Ord, Ix, TH.Lift, Generic)
+    deriving (Eq, Ord, Ix, Show, Read, Typeable, Data, Generic, TH.Lift)
 
 instance NFData DayOfWeek where
     rnf Monday = ()

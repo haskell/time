@@ -15,6 +15,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.Private
 import GHC.Generics
+import qualified Language.Haskell.TH.Syntax as TH
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone
@@ -25,7 +26,7 @@ data TimeZone = TimeZone
     , timeZoneName :: String
     -- ^ The name of the zone, typically a three- or four-letter acronym.
     }
-    deriving (Eq, Ord, Data, Typeable, Generic)
+    deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData TimeZone where
     rnf (TimeZone m so n) = rnf m `seq` rnf so `seq` rnf n `seq` ()

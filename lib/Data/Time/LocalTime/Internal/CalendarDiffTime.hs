@@ -10,19 +10,13 @@ import Data.Data
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Clock.Internal.NominalDiffTime
 import GHC.Generics
+import qualified Language.Haskell.TH.Syntax as TH
 
 data CalendarDiffTime = CalendarDiffTime
     { ctMonths :: Integer
     , ctTime :: NominalDiffTime
     }
-    deriving
-        ( Eq
-        , -- | @since 1.9.2
-          Data
-        , -- | @since 1.9.2
-          Typeable
-        , Generic
-        )
+    deriving (Eq, Typeable, Data, Generic, TH.Lift)
 
 instance NFData CalendarDiffTime where
     rnf (CalendarDiffTime m t) = rnf m `seq` rnf t `seq` ()

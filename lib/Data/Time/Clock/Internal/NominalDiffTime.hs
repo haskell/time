@@ -34,7 +34,7 @@ import Text.ParserCombinators.ReadPrec
 -- regardless of whether a leap-second intervened.
 newtype NominalDiffTime
     = MkNominalDiffTime Pico
-    deriving (Eq, Ord, Data, Typeable)
+    deriving (Eq, Ord, Typeable, Data, TH.Lift)
 
 -- | Create a 'NominalDiffTime' from a number of seconds.
 --
@@ -47,13 +47,6 @@ secondsToNominalDiffTime = MkNominalDiffTime
 -- @since 1.9.1
 nominalDiffTimeToSeconds :: NominalDiffTime -> Pico
 nominalDiffTimeToSeconds (MkNominalDiffTime t) = t
-
-#ifdef __GLASGOW_HASKELL__
--- Let GHC derive the instances when 'Fixed' has 'TH.Lift' instance.
-instance TH.Lift NominalDiffTime where
-    liftTyped :: TH.Quote m => NominalDiffTime -> TH.Code m NominalDiffTime
-    liftTyped (MkNominalDiffTime (MkFixed a)) = [||MkNominalDiffTime (MkFixed $$(TH.liftTyped a))||]
-#endif
 
 instance NFData NominalDiffTime where
     rnf (MkNominalDiffTime t) = rnf t

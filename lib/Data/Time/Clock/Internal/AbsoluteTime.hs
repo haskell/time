@@ -19,7 +19,7 @@ import qualified Language.Haskell.TH.Syntax as TH
 -- | AbsoluteTime is TAI, time as measured by a clock.
 newtype AbsoluteTime
     = MkAbsoluteTime DiffTime
-    deriving (Eq, Ord, Data, Typeable, TH.Lift)
+    deriving (Eq, Ord, Typeable, Data, TH.Lift)
 
 instance NFData AbsoluteTime where
     rnf (MkAbsoluteTime a) = rnf a

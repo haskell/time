@@ -25,6 +25,7 @@ import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics
+import qualified Language.Haskell.TH.Syntax as TH
 
 -- | A simple day and time aggregate, where the day is of the specified parameter,
 -- and the time is a TimeOfDay.
@@ -34,7 +35,7 @@ data LocalTime = LocalTime
     { localDay :: Day
     , localTimeOfDay :: TimeOfDay
     }
-    deriving (Eq, Ord, Data, Typeable, Generic)
+    deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData LocalTime where
     rnf (LocalTime d t) = rnf d `seq` rnf t `seq` ()

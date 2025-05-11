@@ -25,7 +25,7 @@ import Text.Read
 
 -- | An absolute count of common calendar months.
 -- Number is equal to @(year * 12) + (monthOfYear - 1)@.
-newtype Month = MkMonth Integer deriving (Eq, Ord, Data, Typeable, TH.Lift, Generic)
+newtype Month = MkMonth Integer deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData Month where
     rnf (MkMonth m) = rnf m

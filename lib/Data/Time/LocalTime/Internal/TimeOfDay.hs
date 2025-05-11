@@ -26,6 +26,7 @@ import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics
+import qualified Language.Haskell.TH.Syntax as TH
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 --
@@ -40,7 +41,7 @@ data TimeOfDay = TimeOfDay
     -- ^ Note that 0 <= 'todSec' < 61, accomodating leap seconds.
     -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
     }
-    deriving (Eq, Ord, Data, Typeable, Generic)
+    deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData TimeOfDay where
     rnf (TimeOfDay h m s) = rnf h `seq` rnf m `seq` rnf s `seq` ()
