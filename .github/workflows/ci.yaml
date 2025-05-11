@@ -19,6 +19,7 @@ jobs:
     steps:
     - name: "Install ghcup & cabal"
       run: |
+        cd $HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -28,6 +29,7 @@ jobs:
 
     - name: "Install GHC native"
       run: |
+        cd $HOME
         export PATH=$HOME/.ghcup/bin:$PATH
         ghcup install ghc ${{matrix.ghc}}
         sudo apt-get install -y libgmp-dev
@@ -52,6 +54,7 @@ jobs:
     steps:
     - name: "Install ghcup & cabal"
       run: |
+        cd $HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -61,6 +64,7 @@ jobs:
 
     - name: "Install GHC native"
       run: |
+        cd $HOME
         export PATH=$HOME/.ghcup/bin:$PATH
         ghcup install ghc ${{matrix.ghc}}
         sudo apt-get install -y libgmp-dev
@@ -85,6 +89,7 @@ jobs:
     steps:
     - name: "Install ghcup & cabal"
       run: |
+        cd $HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -94,11 +99,10 @@ jobs:
 
     - name: "Install GHC js"
       run: |
+        cd $HOME
         export PATH=$HOME/.ghcup/bin:$PATH
         sudo apt-get update
         sudo apt-get install -y nodejs
-        pwd
-        env | sort
         ghcup config add-release-channel cross
         git clone https://github.com/emscripten-core/emsdk.git
         cd emsdk
@@ -113,15 +117,14 @@ jobs:
         esac
         ./emsdk install $EMSDK_VERSION
         ./emsdk activate $EMSDK_VERSION
-        . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-${{matrix.ghc}}
+        . ./emsdk_env.sh
+        emconfigure ghcup install ghc javascript-unknown-ghcjs-${{matrix.ghc}}
 
     - name: "Checkout"
       uses: actions/checkout@v4
 
     - name: "Build js"
       run: |
-        pwd
-        env | sort
         export PATH=$HOME/.ghcup/bin:$PATH
         export PATH=`pwd`/bin:$PATH
         build-js javascript-unknown-ghcjs-${{matrix.ghc}}
@@ -138,6 +141,7 @@ jobs:
     steps:
     - name: "Install ghcup & cabal"
       run: |
+        cd $HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -147,9 +151,9 @@ jobs:
 
     - name: "Install GHC wasm32"
       run: |
+        cd $HOME
         export PATH=$HOME/.ghcup/bin:$PATH
         sudo apt-get install -y zstd
-        cd $HOME
         curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | SKIP_GHC=1 sh
         ghcup config add-release-channel https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/ghcup-wasm-0.0.9.yaml
         . $HOME/.ghc-wasm/env && ghcup install ghc wasm32-wasi-${{matrix.ghc}} -- $CONFIGURE_ARGS
@@ -172,6 +176,7 @@ jobs:
     steps:
     - name: "Install MicroHs"
       run: |
+        cd $HOME
         git clone https://github.com/augustss/MicroHs.git --branch stable-7 mhs
         cd mhs
         make minstall

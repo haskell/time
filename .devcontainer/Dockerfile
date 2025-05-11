@@ -23,17 +23,19 @@ ENV PATH=/home/vscode/.cabal/bin:$PATH
 # native back-end
 ENV GHC_NATIVE_VERSIONS="9.8.4 9.10.1 9.12.2"
 ENV GHC_NATIVE_EXPIRED_VERSIONS="9.4.8 9.6.7"
+WORKDIR /home/vscode
 RUN for V in $GHC_NATIVE_VERSIONS $GHC_NATIVE_EXPIRED_VERSIONS; do ghcup install ghc $V; done
 RUN sudo apt-get install -y libgmp-dev
 
 # formatter
+WORKDIR /home/vscode
 RUN ghcup set ghc 9.12.2
 RUN cabal install fourmolu-0.18.0.0
 
 # WebAssembly back-end
 ENV GHC_WASM32_VERSIONS="wasm32-wasi-9.8.4.20250206 wasm32-wasi-9.10.1.20250327 wasm32-wasi-9.12.2.20250327"
-RUN sudo apt-get install -y zstd
 WORKDIR /home/vscode
+RUN sudo apt-get install -y zstd
 RUN curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | SKIP_GHC=1 sh
 RUN ghcup config add-release-channel https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/ghcup-wasm-0.0.9.yaml
 RUN . /home/vscode/.ghc-wasm/env && for V in $GHC_WASM32_VERSIONS; do ghcup install ghc $V -- $CONFIGURE_ARGS; done
@@ -44,8 +46,8 @@ ENV PATH=/home/vscode/wasmtime-dev-x86_64-linux:$PATH
 
 # JavaScript back-end
 ENV GHC_JS_VERSIONS="javascript-unknown-ghcjs-9.10.0.20240413 javascript-unknown-ghcjs-9.12.1"
-RUN sudo apt-get install -y nodejs
 WORKDIR /home/vscode
+RUN sudo apt-get install -y nodejs
 RUN ghcup config add-release-channel cross
 RUN git clone https://github.com/emscripten-core/emsdk.git
 WORKDIR /home/vscode/emsdk
@@ -65,6 +67,7 @@ RUN make minstall
 ENV PATH=/home/vscode/.mcabal/bin:$PATH
 
 # build commands
+WORKDIR /home/vscode
 RUN sudo apt-get install -y autoconf
 ENV PATH=/workspaces/time/bin:$PATH
 ENV TZ="America/Los_Angeles"
