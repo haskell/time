@@ -276,7 +276,6 @@ jobs:
 
   build-freebsd:
     # See https://github.com/marketplace/actions/freebsd-vm.
-    if: false
     runs-on: ubuntu-latest
     steps:
     - name: "Checkout"
