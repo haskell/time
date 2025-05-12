@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## [1.15] - Unreleased
 
 - support GHC backends (with CI):
   - JavaScript
