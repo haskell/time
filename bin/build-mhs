@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env -S bash -e
 autoreconf -i
 mcabal install
 mkdir -p dist-mcabal/bin
