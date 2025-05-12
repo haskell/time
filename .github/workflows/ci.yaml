@@ -277,6 +277,11 @@ jobs:
   build-freebsd:
     # See https://github.com/marketplace/actions/freebsd-vm.
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.12"
     steps:
     - name: "Checkout"
       uses: actions/checkout@v4
@@ -287,8 +292,16 @@ jobs:
       with:
         usesh: true
         mem: 4096
-        prepare: pkg install -y ghc hs-cabal-install git autoconf
-        run: |
+        prepare: |
+          pkg install -y bash curl gcc gmp gmake ncurses perl5 libffi libiconv git autoconf
+          export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+          export BOOTSTRAP_HASKELL_MINIMAL=1
+          curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+          export PATH=$HOME/.ghcup/bin:$PATH
+          ghcup install cabal --set latest
           cabal update
-          autoreconf -i
-          cabal test --ghc-options='-Werror'
+          ghcup install ghc ${{matrix.ghc}}
+        run: |
+          export PATH=$HOME/.ghcup/bin:$PATH
+          export PATH=`pwd`/bin:$PATH
+          build-native ${{matrix.ghc}}
