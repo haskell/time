@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# OPTIONS -fno-warn-orphans #-}
 
 module Test.Format.Format (
@@ -6,6 +7,9 @@ module Test.Format.Format (
 
 import Data.Char
 import Data.Fixed as F
+#if MIN_VERSION_base(4,19,0)
+import Data.List (unsnoc)
+#endif
 import Data.Time
 import Data.Time.Clock.POSIX
 import Foreign
@@ -151,16 +155,25 @@ unixWorkarounds fmt s
 unixWorkarounds _ s = s
 
 compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
-compareFormat _modUnix fmt zone _time
-    | last fmt == 'Z' && timeZoneName zone == "" = rejected
-compareFormat modUnix fmt zone time =
-    let
-        ctime = utcToZonedTime zone time
-        haskellText = formatTime locale fmt ctime
-        unixText = unixFormatTime fmt zone time
-        expectedText = unixWorkarounds fmt (modUnix unixText)
-    in
-        assertEqualQC (show time ++ " with " ++ show zone) expectedText haskellText
+compareFormat modUnix fmt zone time = case unsnoc fmt of
+    Nothing ->
+        error "compareFormat: The impossible happened! Format string is \"\"."
+    Just (_, lastChar)
+      | lastChar == 'Z' && timeZoneName zone == "" -> rejected
+      | otherwise ->
+            let
+                ctime = utcToZonedTime zone time
+                haskellText = formatTime locale fmt ctime
+                unixText = unixFormatTime fmt zone time
+                expectedText = unixWorkarounds fmt (modUnix unixText)
+            in
+                assertEqualQC (show time ++ " with " ++ show zone) expectedText haskellText
+
+#if !MIN_VERSION_base(4,19,0)
+unsnoc :: [a] -> Maybe ([a], a)
+unsnoc = foldr (\x -> Just . maybe ([], x) (\(~(a, b)) -> (x : a, b))) Nothing
+{-# INLINABLE unsnoc #-}
+#endif
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 -- plus FgGklz
