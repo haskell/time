@@ -13,9 +13,9 @@ description:    Time, clocks and calendars
 category:       Time
 build-type:     Configure
 tested-with:
-    GHC == 9.4.8,
-    GHC == 9.6.4,
-    GHC == 9.8.2
+    GHC == 9.8.4,
+    GHC == 9.10.1,
+    GHC == 9.12.2
 x-follows-version-policy:
 
 extra-source-files:
@@ -49,10 +49,13 @@ library
         StandaloneDeriving
         PatternSynonyms
         ViewPatterns
-    ghc-options: -Wall -fwarn-tabs
+    ghc-options:
+        -Wall
+        -fwarn-tabs
+        -Wno-deriving-typeable
     c-sources: lib/cbits/HsTime.c
     build-depends:
-        base >= 4.15 && < 5,
+        base >= 4.18 && < 5,
         deepseq >= 1.1,
     if impl(ghc)
         build-depends: template-haskell >= 2.17,
@@ -94,6 +97,7 @@ library
         Data.Time.Clock.Internal.UTCTime,
         Data.Time.Clock.Internal.CTimeval,
         Data.Time.Clock.Internal.UTCDiff,
+        Data.Time.LocalTime.Internal.Foreign,
         Data.Time.LocalTime.Internal.TimeZone,
         Data.Time.LocalTime.Internal.TimeOfDay,
         Data.Time.LocalTime.Internal.CalendarDiffTime,
@@ -139,7 +143,22 @@ test-suite ShowTime
         time
     main-is: ShowTime.hs
 
+test-suite ForeignCalls
+    type: exitcode-stdio-1.0
+    hs-source-dirs: test
+    default-language: Haskell2010
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+        base,
+        time
+    main-is: ForeignCalls.hs
+
 test-suite test-main
+    if arch (javascript) || arch (wasm32)
+        -- blocked by splitmix
+        -- https://github.com/haskellari/splitmix/issues/92
+        -- https://github.com/haskellari/splitmix/issues/93
+        buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/main
     default-language: Haskell2010
@@ -207,7 +226,7 @@ test-suite test-main
         Test.LocalTime.TimeRef
 
 test-suite test-unix
-    if os(windows)
+    if os(windows) || arch (javascript) || arch (wasm32)
         buildable: False
     type: exitcode-stdio-1.0
     hs-source-dirs: test/unix

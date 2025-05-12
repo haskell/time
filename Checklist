@@ -42,11 +42,11 @@ Before release:
 
 8. Format source
 
-    ./format-all -b
+    just format
 
 9. Build & test
 
-    ./fullcheck
+    just fullbuild
 
 10. Run benchmarks
 
@@ -70,12 +70,12 @@ Before release:
 13b. Build and test on 32-bit Linux machine
 
     git switch master
-    ./fullcheck
+    just fullbuild
 
 13c. Build and test on FreeBSD machine
 
     git switch master
-    ./fullcheck
+    just fullbuild
 
 13d. Build and test on Windows
 

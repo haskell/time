@@ -16,25 +16,25 @@ import Data.Data
 import Data.Fixed
 #ifdef __GLASGOW_HASKELL__
 import GHC.Read
-import qualified Language.Haskell.TH.Syntax as TH
 #endif
+import qualified Language.Haskell.TH.Syntax as TH
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
 
 -- | This is a length of time, as measured by UTC.
--- It has a precision of 10^-12 s.
+-- It has a precision of one picosecond (10^-12 s).
 --
 -- Conversion functions such as 'fromInteger' and 'realToFrac' will treat it as seconds.
 -- For example, @(0.010 :: NominalDiffTime)@ corresponds to 10 milliseconds.
 --
--- It has a precision of one picosecond (= 10^-12 s). Enumeration functions will treat it as picoseconds.
+-- Enumeration functions will treat it as picoseconds.
 --
 -- It ignores leap-seconds, so it's not necessarily a fixed amount of clock time.
 -- For instance, 23:00 UTC + 2 hours of NominalDiffTime = 01:00 UTC (+ 1 day),
 -- regardless of whether a leap-second intervened.
 newtype NominalDiffTime
     = MkNominalDiffTime Pico
-    deriving (Eq, Ord, Data, Typeable)
+    deriving (Eq, Ord, Typeable, Data, TH.Lift)
 
 -- | Create a 'NominalDiffTime' from a number of seconds.
 --
@@ -47,13 +47,6 @@ secondsToNominalDiffTime = MkNominalDiffTime
 -- @since 1.9.1
 nominalDiffTimeToSeconds :: NominalDiffTime -> Pico
 nominalDiffTimeToSeconds (MkNominalDiffTime t) = t
-
-#ifdef __GLASGOW_HASKELL__
--- Let GHC derive the instances when 'Fixed' has 'TH.Lift' instance.
-instance TH.Lift NominalDiffTime where
-    liftTyped :: TH.Quote m => NominalDiffTime -> TH.Code m NominalDiffTime
-    liftTyped (MkNominalDiffTime (MkFixed a)) = [||MkNominalDiffTime (MkFixed $$(TH.liftTyped a))||]
-#endif
 
 instance NFData NominalDiffTime where
     rnf (MkNominalDiffTime t) = rnf t

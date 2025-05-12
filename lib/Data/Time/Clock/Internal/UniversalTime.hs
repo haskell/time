@@ -17,7 +17,7 @@ import qualified Language.Haskell.TH.Syntax as TH
 newtype UniversalTime = ModJulianDate
     { getModJulianDate :: Rational
     }
-    deriving (Eq, Ord, Data, Typeable, TH.Lift, Generic)
+    deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData UniversalTime where
     rnf (ModJulianDate a) = rnf a

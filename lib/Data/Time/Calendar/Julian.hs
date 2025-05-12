@@ -1,10 +1,8 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Calendar.Julian (
     Year,
     MonthOfYear,
-#ifdef __GLASGOW_HASKELL__
     pattern January,
     pattern February,
     pattern March,
@@ -17,15 +15,12 @@ module Data.Time.Calendar.Julian (
     pattern October,
     pattern November,
     pattern December,
-#endif
     DayOfMonth,
     DayOfYear,
     module Data.Time.Calendar.JulianYearDay,
     toJulian,
     fromJulian,
-#ifdef __GLASGOW_HASKELL__
     pattern JulianYearMonthDay,
-#endif
     fromJulianValid,
     showJulian,
     julianMonthLength,
@@ -60,7 +55,6 @@ toJulian date = (year, month, day)
 fromJulian :: Year -> MonthOfYear -> DayOfMonth -> Day
 fromJulian year month day = fromJulianYearAndDay year (monthAndDayToDayOfYear (isJulianLeapYear year) month day)
 
-#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor for the proleptic Julian calendar.
 -- Invalid values will be clipped to the correct range, month first, then day.
 pattern JulianYearMonthDay :: Year -> MonthOfYear -> DayOfMonth -> Day
@@ -70,7 +64,6 @@ pattern JulianYearMonthDay y m d <-
         JulianYearMonthDay y m d = fromJulian y m d
 
 {-# COMPLETE JulianYearMonthDay #-}
-#endif
 
 -- | Convert from proleptic Julian calendar.
 -- Invalid values will return Nothing.

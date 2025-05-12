@@ -1,0 +1,307 @@
+name: ci
+on:
+  push: {}
+  pull_request: {}
+  workflow_dispatch: {}
+
+jobs:
+  # Steps are intended to parallel the Dockerfile
+
+  build-native:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.12"
+        - "9.10"
+        - "9.8"
+    steps:
+    - name: "Install ghcup & cabal"
+      run: |
+        cd $HOME
+        export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+        export BOOTSTRAP_HASKELL_MINIMAL=1
+        curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+        export PATH=$HOME/.ghcup/bin:$PATH
+        ghcup install cabal --set latest
+        cabal update
+
+    - name: "Install GHC native"
+      run: |
+        cd $HOME
+        export PATH=$HOME/.ghcup/bin:$PATH
+        ghcup install ghc ${{matrix.ghc}}
+        sudo apt-get install -y libgmp-dev
+
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build native"
+      run: |
+        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=`pwd`/bin:$PATH
+        build-native ${{matrix.ghc}}
+
+  build-native-expired:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.6"
+        - "9.4"
+    steps:
+    - name: "Install ghcup & cabal"
+      run: |
+        cd $HOME
+        export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+        export BOOTSTRAP_HASKELL_MINIMAL=1
+        curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+        export PATH=$HOME/.ghcup/bin:$PATH
+        ghcup install cabal --set latest
+        cabal update
+
+    - name: "Install GHC native"
+      run: |
+        cd $HOME
+        export PATH=$HOME/.ghcup/bin:$PATH
+        ghcup install ghc ${{matrix.ghc}}
+        sudo apt-get install -y libgmp-dev
+
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build native expired"
+      run: |
+        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=`pwd`/bin:$PATH
+        build-native-expired ${{matrix.ghc}}
+
+  build-js:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.12"
+        - "9.10"
+    steps:
+    - name: "Install ghcup & cabal"
+      run: |
+        cd $HOME
+        export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+        export BOOTSTRAP_HASKELL_MINIMAL=1
+        curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+        export PATH=$HOME/.ghcup/bin:$PATH
+        ghcup install cabal --set latest
+        cabal update
+
+    - name: "Install GHC js"
+      run: |
+        cd $HOME
+        export PATH=$HOME/.ghcup/bin:$PATH
+        sudo apt-get update
+        sudo apt-get install -y nodejs
+        ghcup config add-release-channel cross
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        sudo apt-get install -y python3
+        case ${{matrix.ghc}} in
+          9.12)
+              export EMSDK_VERSION=3.1.74
+              ;;
+          9.10)
+              export EMSDK_VERSION=3.1.57
+              ;;
+        esac
+        ./emsdk install $EMSDK_VERSION
+        ./emsdk activate $EMSDK_VERSION
+        . ./emsdk_env.sh
+        emconfigure ghcup install ghc javascript-unknown-ghcjs-${{matrix.ghc}}
+
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build js"
+      run: |
+        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=`pwd`/bin:$PATH
+        build-js javascript-unknown-ghcjs-${{matrix.ghc}}
+
+  build-wasm32:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.12"
+        - "9.10"
+        - "9.8"
+    steps:
+    - name: "Install ghcup & cabal"
+      run: |
+        cd $HOME
+        export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+        export BOOTSTRAP_HASKELL_MINIMAL=1
+        curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+        export PATH=$HOME/.ghcup/bin:$PATH
+        ghcup install cabal --set latest
+        cabal update
+
+    - name: "Install GHC wasm32"
+      run: |
+        cd $HOME
+        export PATH=$HOME/.ghcup/bin:$PATH
+        sudo apt-get install -y zstd
+        curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | SKIP_GHC=1 sh
+        ghcup config add-release-channel https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/ghcup-wasm-0.0.9.yaml
+        . $HOME/.ghc-wasm/env && ghcup install ghc wasm32-wasi-${{matrix.ghc}} -- $CONFIGURE_ARGS
+        curl -LO https://github.com/bytecodealliance/wasmtime/releases/download/dev/wasmtime-dev-x86_64-linux.tar.xz
+        xz -d wasmtime-dev-x86_64-linux.tar.xz
+        tar xvf wasmtime-dev-x86_64-linux.tar
+
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build wasm32"
+      run: |
+        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$HOME/wasmtime-dev-x86_64-linux:$PATH
+        export PATH=`pwd`/bin:$PATH
+        build-wasm32 wasm32-wasi-${{matrix.ghc}}
+
+  build-mhs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Install MicroHs"
+      run: |
+        cd $HOME
+        git clone https://github.com/augustss/MicroHs.git --branch stable-7 mhs
+        cd mhs
+        make minstall
+
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build MicroHs"
+      run: |
+        export PATH=$HOME/.mcabal/bin:$PATH
+        export PATH=`pwd`/bin:$PATH
+        build-mhs
+
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.12"
+        - "9.10"
+        - "9.8"
+    steps:
+    - name: "Install GHC & cabal"
+      uses: haskell-actions/setup@v2
+      id: setup-haskell-cabal
+      with:
+        ghc-version: ${{matrix.ghc}}
+
+    - name: "Cache cabal stuff"
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{steps.setup-haskell-cabal.outputs.cabal-store}}
+          dist-newstyle
+        key: ${{runner.os}}-${{matrix.ghc}}
+
+    - name: "MSYS2"
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        path-type: inherit
+        install: autoconf
+
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build"
+      run: |
+        cabal update
+        autoreconf -i
+        cabal test --ghc-options='-Werror'
+
+    - name: "Haddock"
+      run: cabal v1-haddock
+
+  build-macos:
+    runs-on: macOS-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.12"
+        - "9.10"
+        - "9.8"
+    steps:
+    - name: "Install autoconf"
+      run: |
+        brew install autoconf
+
+    - name: "Install GHC & cabal"
+      uses: haskell-actions/setup@v2
+      id: setup-haskell-cabal
+      with:
+        ghc-version: ${{matrix.ghc}}
+
+    - name: "Cache cabal stuff"
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{steps.setup-haskell-cabal.outputs.cabal-store}}
+          dist-newstyle
+        key: ${{runner.os}}-${{matrix.ghc}}
+
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build"
+      run: |
+        cabal update
+        autoreconf -i
+        cabal test --ghc-options='-Werror'
+
+  build-freebsd:
+    # See https://github.com/marketplace/actions/freebsd-vm.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc:
+        - "9.12"
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Build"
+      id: build-freebsd
+      uses: vmactions/freebsd-vm@v1
+      with:
+        usesh: true
+        mem: 4096
+        prepare: |
+          pkg install -y bash curl gcc gmp gmake ncurses perl5 libffi libiconv git autoconf
+          export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+          export BOOTSTRAP_HASKELL_MINIMAL=1
+          curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+          export PATH=$HOME/.ghcup/bin:$PATH
+          ghcup install cabal --set latest
+          cabal update
+          ghcup install ghc ${{matrix.ghc}}
+        run: |
+          export PATH=$HOME/.ghcup/bin:$PATH
+          export PATH=`pwd`/bin:$PATH
+          build-native ${{matrix.ghc}}

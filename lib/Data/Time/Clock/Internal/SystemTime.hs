@@ -43,7 +43,7 @@ data SystemTime = MkSystemTime
     { systemSeconds :: {-# UNPACK #-} !Int64
     , systemNanoseconds :: {-# UNPACK #-} !Word32
     }
-    deriving (Eq, Ord, Show, Data, Typeable, TH.Lift, Generic)
+    deriving (Eq, Ord, Show, Typeable, Data, Generic, TH.Lift)
 
 instance NFData SystemTime where
     rnf a = a `seq` ()

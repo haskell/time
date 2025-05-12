@@ -1,0 +1,10 @@
+#!/usr/bin/env -S bash -e
+ghcup set ghc $1
+autoreconf -i
+if cabal v1-configure --enable-tests;
+then
+    echo "time incorrectly selected with unsupported GHC version $1"
+    exit 1
+else
+    echo "time correctly deselected with unsupported GHC version $1"
+fi

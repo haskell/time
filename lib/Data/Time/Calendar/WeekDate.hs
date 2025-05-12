@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -- | Week-based calendars
@@ -15,9 +14,7 @@ module Data.Time.Calendar.WeekDate (
     -- * ISO 8601 Week Date format
     toWeekDate,
     fromWeekDate,
-#ifdef __GLASGOW_HASKELL__
     pattern YearWeekDay,
-#endif
     fromWeekDateValid,
     showWeekDate,
 ) where
@@ -26,20 +23,14 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Week
-#ifdef __GLASGOW_HASKELL__
 import qualified Language.Haskell.TH.Syntax as TH
-#endif
 
 data FirstWeekType
     = -- | first week is the first whole week of the year
       FirstWholeWeek
     | -- | first week is the first week with four days in the year
       FirstMostWeek
-    deriving (Eq
-#ifdef __GLASGOW_HASKELL__
-                , TH.Lift
-#endif
-                         )
+    deriving (Eq, TH.Lift)
 
 firstDayOfWeekCalendar :: FirstWeekType -> DayOfWeek -> Year -> Day
 firstDayOfWeekCalendar wt dow year =
@@ -129,17 +120,15 @@ toWeekDate d =
 fromWeekDate :: Year -> WeekOfYear -> Int -> Day
 fromWeekDate y wy dw = fromWeekCalendar FirstMostWeek Monday y wy (toEnum $ clip 1 7 dw)
 
-#ifdef __GLASGOW_HASKELL__
 -- | Bidirectional abstract constructor for ISO 8601 Week Date format.
 -- Invalid week values will be clipped to the correct range.
 pattern YearWeekDay :: Year -> WeekOfYear -> DayOfWeek -> Day
 pattern YearWeekDay y wy dw <-
-    (toWeekDate -> (y, wy, toEnum -> dw))
+    (toWeekDate -> (y, wy, (toEnum -> dw)))
     where
         YearWeekDay y wy dw = fromWeekDate y wy (fromEnum dw)
 
 {-# COMPLETE YearWeekDay #-}
-#endif
 
 -- | Convert from ISO 8601 Week Date format. First argument is year, second week number (1-52 or 53), third day of week (1 for Monday to 7 for Sunday).
 -- Invalid week and day values will return Nothing.

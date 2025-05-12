@@ -25,7 +25,7 @@ import qualified Language.Haskell.TH.Syntax as TH
 newtype Day = ModifiedJulianDay
     { toModifiedJulianDay :: Integer
     }
-    deriving (Eq, Ord, Data, Typeable, TH.Lift, Generic)
+    deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData Day where
     rnf (ModifiedJulianDay a) = rnf a

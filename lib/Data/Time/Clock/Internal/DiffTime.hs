@@ -17,10 +17,10 @@ import Data.Data
 import Data.Fixed
 #ifdef __GLASGOW_HASKELL__
 import GHC.Read
-import qualified Language.Haskell.TH.Syntax as TH
 #endif
-import Text.Read
+import qualified Language.Haskell.TH.Syntax as TH
 import Text.ParserCombinators.ReadP
+import Text.Read
 
 -- | This is a length of time, as measured by a clock.
 -- Conversion functions such as 'fromInteger' and 'realToFrac' will treat it as seconds.
@@ -29,7 +29,7 @@ import Text.ParserCombinators.ReadP
 -- It has a precision of one picosecond (= 10^-12 s). Enumeration functions will treat it as picoseconds.
 newtype DiffTime
     = MkDiffTime Pico
-    deriving (Eq, Ord, Data, Typeable)
+    deriving (Eq, Ord, Typeable, Data, TH.Lift)
 
 instance NFData DiffTime where
     rnf (MkDiffTime t) = rnf t
@@ -80,13 +80,6 @@ instance RealFrac DiffTime where
     round (MkDiffTime a) = round a
     ceiling (MkDiffTime a) = ceiling a
     floor (MkDiffTime a) = floor a
-
-#ifdef __GLASGOW_HASKELL__
--- Let GHC derive the instances when 'Fixed' has 'TH.Lift' instance.
-instance TH.Lift DiffTime where
-    liftTyped :: TH.Quote m => DiffTime -> TH.Code m DiffTime
-    liftTyped (MkDiffTime (MkFixed a)) = [||MkDiffTime (MkFixed $$(TH.liftTyped a))||]
-#endif
 
 -- | Create a 'DiffTime' which represents an integral number of seconds.
 secondsToDiffTime :: Integer -> DiffTime

@@ -30,16 +30,7 @@ data UTCTime = UTCTime
     , utctDayTime :: DiffTime
     -- ^ the time from midnight, 0 <= t < 86401s (because of leap-seconds)
     }
-    deriving (Data, Typeable, TH.Lift, Generic)
+    deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
 
 instance NFData UTCTime where
     rnf (UTCTime d t) = rnf d `seq` rnf t `seq` ()
-
-instance Eq UTCTime where
-    (UTCTime da ta) == (UTCTime db tb) = (da == db) && (ta == tb)
-
-instance Ord UTCTime where
-    compare (UTCTime da ta) (UTCTime db tb) =
-        case (compare da db) of
-            EQ -> compare ta tb
-            cmp -> cmp

@@ -1,0 +1,3 @@
+#!/usr/bin/env -S bash -e
+fourmolu -i -o -XPatternSynonyms \
+    `find -name '*.hs' -not -path '*.stack-work/*' -not -path '*/dist/*' -not -path '*/dist-newstyle/*' | grep -xvf .format.ignore`

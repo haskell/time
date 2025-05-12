@@ -1,0 +1,11 @@
+#!/usr/bin/env -S bash -e
+ghcup set ghc $1
+autoreconf -i
+source $HOME/.ghc-wasm/env
+cabal \
+    --with-compiler=wasm32-wasi-ghc \
+    --with-hc-pkg=wasm32-wasi-ghc-pkg \
+    --with-hsc2hs=wasm32-wasi-hsc2hs \
+    --test-wrapper=wasmtime \
+    test \
+    --ghc-options='-Werror'

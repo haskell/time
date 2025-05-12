@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
@@ -15,18 +14,12 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.DiffTime
-#ifdef __GLASGOW_HASKELL__
 import qualified Language.Haskell.TH.Syntax as TH
-#endif
 
 -- | AbsoluteTime is TAI, time as measured by a clock.
 newtype AbsoluteTime
     = MkAbsoluteTime DiffTime
-    deriving (Eq, Ord, Data, Typeable
-#ifdef __GLASGOW_HASKELL__
-                                     , TH.Lift
-#endif
-                                              )
+    deriving (Eq, Ord, Typeable, Data, TH.Lift)
 
 instance NFData AbsoluteTime where
     rnf (MkAbsoluteTime a) = rnf a

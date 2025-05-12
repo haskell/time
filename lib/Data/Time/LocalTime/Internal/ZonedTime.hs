@@ -14,9 +14,11 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.POSIX
+import Data.Time.LocalTime.Internal.Foreign
 import Data.Time.LocalTime.Internal.LocalTime
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics
+import qualified Language.Haskell.TH.Syntax as TH
 
 -- | A local time together with a time zone.
 --
@@ -27,7 +29,7 @@ data ZonedTime = ZonedTime
     { zonedTimeToLocalTime :: LocalTime
     , zonedTimeZone :: TimeZone
     }
-    deriving (Data, Typeable, Generic)
+    deriving (Typeable, Data, Generic, TH.Lift)
 
 instance NFData ZonedTime where
     rnf (ZonedTime lt z) = rnf lt `seq` rnf z `seq` ()
