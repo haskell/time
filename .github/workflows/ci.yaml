@@ -304,4 +304,6 @@ jobs:
         run: |
           export PATH=$HOME/.ghcup/bin:$PATH
           export PATH=`pwd`/bin:$PATH
+          pwd
+          env | sort
           build-native ${{matrix.ghc}}
