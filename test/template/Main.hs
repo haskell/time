@@ -1,8 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
-
-module Test.Clock.Lift (
-    testLift,
-) where
+module Main (main) where
 
 import Data.Time.Clock
 import qualified Language.Haskell.TH.Syntax as TH
@@ -16,3 +12,13 @@ testLift =
         [ testCase "DiffTime" $ $$(TH.liftTyped (secondsToDiffTime 100)) @?= secondsToDiffTime 100
         , testCase "NominalDiffTime" $ $$(TH.liftTyped (secondsToNominalDiffTime 100)) @?= secondsToNominalDiffTime 100
         ]
+
+tests :: TestTree
+tests =
+    testGroup
+        "time-template"
+        [ testLift
+        ]
+
+main :: IO ()
+main = defaultMain tests

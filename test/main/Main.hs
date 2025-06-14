@@ -15,7 +15,6 @@ import Test.Calendar.Valid
 import Test.Calendar.Week
 import Test.Calendar.Year
 import Test.Clock.Conversion
-import Test.Clock.Lift (testLift)
 import Test.Clock.Resolution
 import Test.Clock.TAI
 import Test.Format.Compile ()
@@ -49,7 +48,7 @@ tests =
             , testYear
             , testDuration
             ]
-        , testGroup "Clock" [testClockConversion, testResolutions, testTAI, testLift]
+        , testGroup "Clock" [testClockConversion, testResolutions, testTAI]
         , testGroup "Format" [testFormat, testParseTime, testISO8601]
         , testGroup "LocalTime" [testTime, testTimeOfDay, testCalendarDiffTime]
         ]

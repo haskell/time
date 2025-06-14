@@ -1,2 +1,4 @@
 packages: time.cabal
 tests: true
+constraints:
+    splitmix >= 0.1.2

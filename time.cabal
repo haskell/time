@@ -154,9 +154,8 @@ test-suite ForeignCalls
     main-is: ForeignCalls.hs
 
 test-suite test-main
-    if arch (javascript) || arch (wasm32)
+    if arch (javascript)
         -- blocked by splitmix
-        -- https://github.com/haskellari/splitmix/issues/92
         -- https://github.com/haskellari/splitmix/issues/93
         buildable: False
     type: exitcode-stdio-1.0
@@ -213,7 +212,6 @@ test-suite test-main
         Test.Calendar.Week
         Test.Calendar.Year
         Test.Clock.Conversion
-        Test.Clock.Lift
         Test.Clock.Resolution
         Test.Clock.TAI
         Test.Format.Compile
@@ -224,6 +222,40 @@ test-suite test-main
         Test.LocalTime.Time
         Test.LocalTime.TimeOfDay
         Test.LocalTime.TimeRef
+
+test-suite test-template
+    if arch (wasm32)
+        buildable: False
+    type: exitcode-stdio-1.0
+    hs-source-dirs: test/template
+    default-language: Haskell2010
+    default-extensions:
+        Rank2Types
+        TypeApplications
+        GeneralizedNewtypeDeriving
+        DeriveDataTypeable
+        StandaloneDeriving
+        DerivingStrategies
+        ExistentialQuantification
+        MultiParamTypeClasses
+        FlexibleInstances
+        UndecidableInstances
+        ScopedTypeVariables
+        TupleSections
+        RecordWildCards
+        TemplateHaskell
+    ghc-options: -Wall -fwarn-tabs
+    build-depends:
+        base,
+        deepseq,
+        time,
+        random,
+        QuickCheck,
+        tasty,
+        tasty-hunit,
+        tasty-quickcheck,
+        template-haskell
+    main-is: Main.hs
 
 test-suite test-unix
     if os(windows) || arch (javascript) || arch (wasm32)
