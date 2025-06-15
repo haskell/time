@@ -45,19 +45,17 @@ RUN tar xvf wasmtime-dev-x86_64-linux.tar
 ENV PATH=/home/vscode/wasmtime-dev-x86_64-linux:$PATH
 
 # JavaScript back-end
-ENV GHC_JS_VERSIONS="javascript-unknown-ghcjs-9.10.0.20240413 javascript-unknown-ghcjs-9.12.1"
+ENV GHC_JS_VERSIONS="javascript-unknown-ghcjs-9.10.2 javascript-unknown-ghcjs-9.12.2"
 WORKDIR /home/vscode
 RUN sudo apt-get install -y nodejs
 RUN ghcup config add-release-channel cross
 RUN git clone https://github.com/emscripten-core/emsdk.git
 WORKDIR /home/vscode/emsdk
 RUN sudo apt-get install -y python3
-RUN ./emsdk install 3.1.57
-RUN ./emsdk activate 3.1.57
-RUN . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-9.10.0.20240413
 RUN ./emsdk install 3.1.74
 RUN ./emsdk activate 3.1.74
-RUN . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-9.12.1
+RUN . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-9.10.2
+RUN . ./emsdk_env.sh && emconfigure ghcup install ghc javascript-unknown-ghcjs-9.12.2
 
 # MicroHs back-end
 WORKDIR /home/vscode
