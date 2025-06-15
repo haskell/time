@@ -48,6 +48,7 @@ library
         DeriveGeneric
         StandaloneDeriving
         PatternSynonyms
+        TypeSynonymInstances
         ViewPatterns
     ghc-options:
         -Wall

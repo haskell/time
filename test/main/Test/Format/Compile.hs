@@ -1,6 +1,4 @@
 -- Tests succeed if module compiles
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-
 module Test.Format.Compile (
 
 ) where
