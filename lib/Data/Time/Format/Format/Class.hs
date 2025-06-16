@@ -241,9 +241,13 @@ showPaddedFixedFraction pado x =
 --
 -- [@%j@] day of year, 0-padded to three chars, @001@ - @366@
 --
--- [@%f@] century for Week Date format, no padding. Note @%0f@ and @%_f@ pad to two chars
+-- [@%G@] year for ISO 8601 Week Date format. Note @%0G@ and @%_G@ pad to four chars
 --
--- [@%V@] week of year for Week Date format, 0-padded to two chars, @01@ - @53@
+-- [@%g@] year of century for ISO 8601 Week Date format, 0-padded to two chars, @00@ - @99@
+--
+-- [@%f@] century for ISO 8601 Week Date format, no padding. Note @%0f@ and @%_f@ pad to two chars
+--
+-- [@%V@] week of year for ISO 8601 Week Date format, 0-padded to two chars, @01@ - @53@
 --
 -- [@%U@] week of year where weeks start on Sunday (as 'sundayStartWeek'), 0-padded to two chars, @00@ - @53@
 --
