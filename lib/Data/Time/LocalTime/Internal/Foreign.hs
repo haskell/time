@@ -22,7 +22,7 @@ import Data.Time.LocalTime.Internal.TimeOfDay
 
 #if defined(javascript_HOST_ARCH)
 
-foreign import javascript "((dy,dm,dd,th,tm,ts) => { new Date(dy,dm,dd,th,tm,ts).getTimezoneOffset(); })"
+foreign import javascript "((dy,dm,dd,th,tm,ts) => { return new Date(dy,dm,dd,th,tm,ts).getTimezoneOffset(); })"
   js_get_timezone_minutes :: Int -> Int -> Int -> Int -> Int -> Int -> IO Int
 
 get_timezone_minutes :: UTCTime -> IO Int
