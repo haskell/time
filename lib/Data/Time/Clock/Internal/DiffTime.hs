@@ -15,7 +15,7 @@ import Data.Fixed
 #ifdef __GLASGOW_HASKELL__
 import GHC.Read
 #endif
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 import Text.ParserCombinators.ReadP
 import Text.Read
 

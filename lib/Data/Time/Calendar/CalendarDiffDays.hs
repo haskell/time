@@ -8,7 +8,7 @@ module Data.Time.Calendar.CalendarDiffDays (
 import Control.DeepSeq
 import Data.Data
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 data CalendarDiffDays = CalendarDiffDays
     { cdMonths :: Integer

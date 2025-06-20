@@ -10,7 +10,7 @@ module Data.Time.Clock.Internal.UniversalTime (
 import Control.DeepSeq
 import Data.Data
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 -- | The Modified Julian Date is the day with the fraction of the day, measured from UT midnight.
 -- It's used to represent UT1, which is time as measured by the earth's rotation, adjusted for various wobbles.

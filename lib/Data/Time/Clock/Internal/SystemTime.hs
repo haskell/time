@@ -23,7 +23,7 @@ import Data.Int (Int64)
 import Data.Time.Clock.Internal.DiffTime
 import Data.Word
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 #ifdef mingw32_HOST_OS
 import qualified System.Win32.Time as Win32

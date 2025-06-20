@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Data.Time.Clock
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 import Test.Tasty
 import Test.Tasty.HUnit
 

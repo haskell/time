@@ -19,7 +19,7 @@ import Data.Data
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.DiffTime
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 -- | This is the simplest representation of UTC.
 -- It consists of the day number, and a time offset from midnight.

@@ -227,11 +227,11 @@ zeroPad Nothing s = s
 zeroPad (Just i) s = replicate (i - length s) '0' ++ s
 
 trimTrailing :: String -> String
-trimTrailing
-    = (\s -> if s == "." then "" else s)
-    . reverse
-    . dropWhile (== '0')
-    . reverse
+trimTrailing =
+    (\s -> if s == "." then "" else s)
+        . reverse
+        . dropWhile (== '0')
+        . reverse
 
 showNumber :: Show t => SignOption -> Maybe Int -> t -> Maybe String
 showNumber signOpt mdigitcount t =

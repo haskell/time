@@ -23,7 +23,7 @@ import Data.Time.Calendar.Days
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Week
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 data FirstWeekType
     = -- | first week is the first whole week of the year

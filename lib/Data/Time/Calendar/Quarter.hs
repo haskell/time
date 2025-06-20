@@ -23,7 +23,7 @@ import Data.Time.Calendar.Month
 import Data.Time.Calendar.Private
 import Data.Time.Calendar.Types
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 import Text.ParserCombinators.ReadP
 import Text.Read
 

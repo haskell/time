@@ -18,7 +18,7 @@ import Data.Time.LocalTime.Internal.Foreign
 import Data.Time.LocalTime.Internal.LocalTime
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 -- | A local time together with a time zone.
 --

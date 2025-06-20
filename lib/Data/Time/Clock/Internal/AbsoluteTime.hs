@@ -14,7 +14,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.Days
 import Data.Time.Clock.Internal.DiffTime
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 -- | AbsoluteTime is TAI, time as measured by a clock.
 newtype AbsoluteTime

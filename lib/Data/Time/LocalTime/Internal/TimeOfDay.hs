@@ -26,7 +26,7 @@ import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.LocalTime.Internal.TimeZone
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 -- | Time of day as represented in hour, minute and second (with picoseconds), typically used to express local time of day.
 --

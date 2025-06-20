@@ -15,7 +15,7 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.Private
 import GHC.Generics
-import qualified Language.Haskell.TH.Syntax as TH
+import Language.Haskell.TH.Syntax qualified as TH
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone
