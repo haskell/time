@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 {-# OPTIONS -fno-warn-orphans #-}
@@ -9,6 +10,7 @@ module Data.Time.Format.Parse.Instances (
 import Control.Applicative ((<|>))
 import Data.Char
 import Data.Fixed
+import Data.Kind
 import Data.List (elemIndex, find)
 import Data.Maybe
 import Data.Ratio
@@ -33,24 +35,59 @@ import Data.Time.LocalTime.Internal.TimeZone
 import Data.Time.LocalTime.Internal.ZonedTime
 import Data.Traversable
 import Text.Read (readMaybe)
+#ifdef __MHS__
+import Data.Type.Equality ((:~:)(..))
+#else
+import Data.Type.Equality ((:~:)(..), TestEquality (..))
+#endif
 
-data DayComponent
-    = DCCentury Integer -- century of all years
-    | DCCenturyYear Integer -- 0-99, last two digits of both real years and week years
-    | DCYearMonth MonthOfYear -- 1-12
-    | DCMonthDay DayOfMonth -- 1-31
-    | DCYearDay DayOfYear -- 1-366
-    | DCWeekDay Int -- 1-7 (mon-sun)
-    | DCYearWeek
-        WeekType
-        WeekOfYear -- 1-53 or 0-53
-    | DCUTCTime UTCTime
-    | DCTimeZone TimeZone
 
+#ifdef __MHS__
+-- MicroHs doesn't allow this to be polykinded
+class TestEquality (f :: Type -> Type) where
+    testEquality :: forall (a :: Type) (b :: Type). f a -> f b -> Maybe (a :~: b)
+#endif
+
+data SomeOf (w :: Type -> Type) = forall (a :: Type). MkSomeOf (w a) a
+{-
+getSomeOf :: forall w a. TestEquality w => SomeOf w -> w a -> Maybe a
+getSomeOf (MkSomeOf w1 a) w2 = do
+    Refl <- testEquality w1 w2
+    return a
+
+getSomeOfs :: forall w a. TestEquality w => [SomeOf w] -> w a -> Maybe a
+getSomeOfs ss wa = listToMaybe $ catMaybes $ fmap (\s -> getSomeOf s wa) ss
+-}
 data WeekType
     = ISOWeek
     | SundayWeek
     | MondayWeek
+    deriving Eq
+
+data DayQuery (t :: Type) where
+    CenturyDayQuery :: DayQuery Integer -- century of all years
+    YearOfCenturyDayQuery :: DayQuery Integer -- 0-99, last two digits of both real years and week years
+    MonthOfYearDayQuery :: DayQuery MonthOfYear -- 1-12
+    DayOfMonthDayQuery :: DayQuery DayOfMonth -- 1-31
+    DayOfYearDayQuery :: DayQuery DayOfYear -- 1-366
+    DayOfWeekDayQuery :: DayQuery DayOfWeek
+    WeekOfYearDayQuery :: WeekType -> DayQuery WeekOfYear -- 1-53 or 0-53
+    UTCTimeDayQuery :: DayQuery UTCTime
+    TimeZoneDayQuery :: DayQuery TimeZone
+
+instance TestEquality DayQuery where
+    testEquality CenturyDayQuery CenturyDayQuery = Just Refl
+    testEquality YearOfCenturyDayQuery YearOfCenturyDayQuery = Just Refl
+    testEquality MonthOfYearDayQuery MonthOfYearDayQuery = Just Refl
+    testEquality DayOfMonthDayQuery DayOfMonthDayQuery = Just Refl
+    testEquality DayOfYearDayQuery DayOfYearDayQuery = Just Refl
+    testEquality DayOfWeekDayQuery DayOfWeekDayQuery = Just Refl
+    testEquality (WeekOfYearDayQuery wa) (WeekOfYearDayQuery wb) | wa == wb = Just Refl
+    testEquality UTCTimeDayQuery UTCTimeDayQuery = Just Refl
+    testEquality TimeZoneDayQuery TimeZoneDayQuery = Just Refl
+    testEquality _ _ = Nothing
+
+type DayFact = SomeOf DayQuery
 
 readSpec_z :: String -> Maybe Int
 readSpec_z = readTzOffset
@@ -62,10 +99,10 @@ readSpec_Z _ "UTC" = Just utc
 readSpec_Z _ [c] | Just zone <- getMilZone c = Just zone
 readSpec_Z _ _ = Nothing
 
-makeDayComponent :: TimeLocale -> Char -> String -> Maybe [DayComponent]
+makeDayComponent :: TimeLocale -> Char -> String -> Maybe [DayFact]
 makeDayComponent l c x =
     let
-        ra :: Read a => Maybe a
+        ra :: forall a. Read a => Maybe a
         ra = readMaybe x
         zeroBasedListIndex :: [String] -> Maybe Int
         zeroBasedListIndex ss = elemIndex (map toUpper x) $ fmap (map toUpper) ss
@@ -78,117 +115,102 @@ makeDayComponent l c x =
             -- %C: century (all but the last two digits of the year), 00 - 99
             'C' -> do
                 a <- ra
-                return [DCCentury a]
+                return [MkSomeOf CenturyDayQuery a]
             -- %f century (all but the last two digits of the year), 00 - 99
             'f' -> do
                 a <- ra
-                return [DCCentury a]
+                return [MkSomeOf CenturyDayQuery a]
             -- %Y: year
             'Y' -> do
                 a <- ra
-                return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
+                return [MkSomeOf CenturyDayQuery $ a `div` 100, MkSomeOf YearOfCenturyDayQuery $ a `mod` 100]
             -- %G: year for Week Date format
             'G' -> do
                 a <- ra
-                return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
+                return [MkSomeOf CenturyDayQuery $ a `div` 100, MkSomeOf YearOfCenturyDayQuery $ a `mod` 100]
             -- %y: last two digits of year, 00 - 99
             'y' -> do
                 a <- ra
-                return [DCCenturyYear a]
+                return [MkSomeOf YearOfCenturyDayQuery a]
             -- %g: last two digits of year for Week Date format, 00 - 99
             'g' -> do
                 a <- ra
-                return [DCCenturyYear a]
+                return [MkSomeOf YearOfCenturyDayQuery a]
             -- %B: month name, long form (fst from months locale), January - December
             'B' -> do
                 a <- oneBasedListIndex $ fmap fst $ months l
-                return [DCYearMonth a]
+                return [MkSomeOf MonthOfYearDayQuery a]
             -- %b: month name, short form (snd from months locale), Jan - Dec
             'b' -> do
                 a <- oneBasedListIndex $ fmap snd $ months l
-                return [DCYearMonth a]
+                return [MkSomeOf MonthOfYearDayQuery a]
             -- %m: month of year, leading 0 as needed, 01 - 12
             'm' -> do
                 raw <- ra
                 a <- clipValid 1 12 raw
-                return [DCYearMonth a]
+                return [MkSomeOf MonthOfYearDayQuery a]
             -- %d: day of month, leading 0 as needed, 01 - 31
             'd' -> do
                 raw <- ra
                 a <- clipValid 1 31 raw
-                return [DCMonthDay a]
+                return [MkSomeOf DayOfMonthDayQuery a]
             -- %e: day of month, leading space as needed, 1 - 31
             'e' -> do
                 raw <- ra
                 a <- clipValid 1 31 raw
-                return [DCMonthDay a]
+                return [MkSomeOf DayOfMonthDayQuery a]
             -- %V: week for Week Date format, 01 - 53
             'V' -> do
                 raw <- ra
                 a <- clipValid 1 53 raw
-                return [DCYearWeek ISOWeek a]
+                return [MkSomeOf (WeekOfYearDayQuery ISOWeek) a]
             -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 00 - 53
             'U' -> do
                 raw <- ra
                 a <- clipValid 0 53 raw
-                return [DCYearWeek SundayWeek a]
+                return [MkSomeOf (WeekOfYearDayQuery SundayWeek) a]
             -- %W: week number of year, where weeks start on Monday (as mondayStartWeek), 00 - 53
             'W' -> do
                 raw <- ra
                 a <- clipValid 0 53 raw
-                return [DCYearWeek MondayWeek a]
+                return [MkSomeOf (WeekOfYearDayQuery MondayWeek) a]
             -- %u: day for Week Date format, 1 - 7
             'u' -> do
                 raw <- ra
                 a <- clipValid 1 7 raw
-                return [DCWeekDay a]
+                return [MkSomeOf DayOfWeekDayQuery $ toEnum a]
             -- %a: day of week, short form (snd from wDays locale), Sun - Sat
             'a' -> do
-                a' <- zeroBasedListIndex $ fmap snd $ wDays l
-                let
-                    a =
-                        if a' == 0
-                            then 7
-                            else a'
-                return [DCWeekDay a]
+                a <- zeroBasedListIndex $ fmap snd $ wDays l
+                return [MkSomeOf DayOfWeekDayQuery $ toEnum a]
             -- %A: day of week, long form (fst from wDays locale), Sunday - Saturday
             'A' -> do
-                a' <- zeroBasedListIndex $ fmap fst $ wDays l
-                let
-                    a =
-                        if a' == 0
-                            then 7
-                            else a'
-                return [DCWeekDay a]
+                a <- zeroBasedListIndex $ fmap fst $ wDays l
+                return [MkSomeOf DayOfWeekDayQuery $ toEnum a]
             -- %w: day of week number, 0 (= Sunday) - 6 (= Saturday)
             'w' -> do
                 raw <- ra
-                a' <- clipValid 0 6 raw
-                let
-                    a =
-                        if a' == 0
-                            then 7
-                            else a'
-                return [DCWeekDay a]
+                a <- clipValid 0 6 raw
+                return [MkSomeOf DayOfWeekDayQuery $ toEnum a]
             -- %j: day of year for Ordinal Date format, 001 - 366
             'j' -> do
                 raw <- ra
                 a <- clipValid 1 366 raw
-                return [DCYearDay a]
+                return [MkSomeOf DayOfYearDayQuery a]
             -- %s: number of whole seconds since the Unix epoch.
             's' -> do
                 raw <- ra
-                return [DCUTCTime $ posixSecondsToUTCTime $ fromInteger raw]
+                return [MkSomeOf UTCTimeDayQuery $ posixSecondsToUTCTime $ fromInteger raw]
             'z' -> do
                 a <- readSpec_z x
-                return [DCTimeZone $ TimeZone a False ""]
+                return [MkSomeOf TimeZoneDayQuery $ TimeZone a False ""]
             'Z' -> do
                 a <- readSpec_Z l x
-                return [DCTimeZone a]
+                return [MkSomeOf TimeZoneDayQuery a]
             -- unrecognised, pass on to other parsers
             _ -> return []
 
-makeDayComponents :: TimeLocale -> [(Char, String)] -> Maybe [DayComponent]
+makeDayComponents :: TimeLocale -> [(Char, String)] -> Maybe [DayFact]
 makeDayComponents l pairs = do
     components <- for pairs $ \(c, x) -> makeDayComponent l c x
     return $ concat components
@@ -201,44 +223,44 @@ lastM (_ : aa) = lastM aa
 safeLast :: a -> [a] -> a
 safeLast x xs = fromMaybe x $ lastM xs
 
-dcYear :: [DayComponent] -> Integer
+dcYear :: [DayFact] -> Integer
 dcYear cs =
     let
-        d = safeLast 70 [x | DCCenturyYear x <- cs]
+        d = safeLast 70 [x | MkSomeOf YearOfCenturyDayQuery x <- cs]
         c =
             safeLast
                 ( if d >= 69
                     then 19
                     else 20
                 )
-                [x | DCCentury x <- cs]
+                [x | MkSomeOf CenturyDayQuery x <- cs]
     in
         100 * c + d
 
-dcMatchLocalTime :: DayComponent -> Maybe ([DayComponent] -> LocalTime)
-dcMatchLocalTime (DCUTCTime t) = Just $ \cs ->
+dcMatchLocalTime :: DayFact -> Maybe ([DayFact] -> LocalTime)
+dcMatchLocalTime (MkSomeOf UTCTimeDayQuery t) = Just $ \cs ->
     let
-        zone = safeLast utc [x | DCTimeZone x <- cs]
+        zone = safeLast utc [x | MkSomeOf TimeZoneDayQuery x <- cs]
     in
         utcToLocalTime zone t
 dcMatchLocalTime _ = Nothing
 
-dcMatchDay :: DayComponent -> Maybe ([DayComponent] -> Maybe Day)
-dcMatchDay (DCYearMonth m) = Just $ \cs ->
+dcMatchDay :: DayFact -> Maybe ([DayFact] -> Maybe Day)
+dcMatchDay (MkSomeOf MonthOfYearDayQuery m) = Just $ \cs ->
     let
         y = dcYear cs
-        d = safeLast 1 [x | DCMonthDay x <- cs]
+        d = safeLast 1 [x | MkSomeOf DayOfMonthDayQuery x <- cs]
     in
         fromGregorianValid y m d
-dcMatchDay (DCYearDay d) = Just $ \cs ->
+dcMatchDay (MkSomeOf DayOfYearDayQuery d) = Just $ \cs ->
     let
         y = dcYear cs
     in
         fromOrdinalDateValid y d
-dcMatchDay (DCYearWeek wt w) = Just $ \cs ->
+dcMatchDay (MkSomeOf (WeekOfYearDayQuery wt) w) = Just $ \cs ->
     let
         y = dcYear cs
-        d = safeLast 4 [x | DCWeekDay x <- cs]
+        d = fromEnum $ safeLast Thursday [x | MkSomeOf DayOfWeekDayQuery x <- cs]
     in
         case wt of
             ISOWeek -> fromWeekDateValid y w d
@@ -257,7 +279,7 @@ instance ParseTime Day where
         let
             rest (comp : _) | Just f <- dcMatchDay comp = f cs
             rest (_ : xs) = rest xs
-            rest [] = rest [DCYearMonth 1]
+            rest [] = rest [MkSomeOf MonthOfYearDayQuery 1]
         rest cs
 
 instance ParseTime DayOfWeek where
@@ -267,13 +289,13 @@ instance ParseTime DayOfWeek where
         cs <- makeDayComponents l pairs
         -- 'Nothing' indicates a parse failure,
         -- while 'Just []' means no information
-        case lastM [x | DCWeekDay x <- cs] of
-            Just x -> return $ toEnum x
+        case lastM [x | MkSomeOf DayOfWeekDayQuery x <- cs] of
+            Just x -> return x
             Nothing ->
                 let
                     rest (comp : _) | Just f <- dcMatchDay comp = fmap dayOfWeek $ f cs
                     rest (_ : xs) = rest xs
-                    rest [] = rest [DCYearMonth 1]
+                    rest [] = rest [MkSomeOf MonthOfYearDayQuery 1]
                 in
                     rest cs
 
@@ -289,7 +311,7 @@ instance ParseTime Month where
         -- while 'Just []' means no information
         let
             y = dcYear cs
-            rest (DCYearMonth m : _) = fromYearMonthValid y m
+            rest (MkSomeOf MonthOfYearDayQuery m : _) = fromYearMonthValid y m
             rest (comp : _) | Just f <- dcMatchDay comp = fmap dayMonth $ f cs
             rest (_ : xs) = rest xs
             rest [] = fromYearMonthValid y 1

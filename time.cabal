@@ -42,6 +42,7 @@ library
     hs-source-dirs: lib
     default-language: GHC2021
     default-extensions:
+        GADTs
         NoGeneralizedNewtypeDeriving
         PatternSynonyms
         ViewPatterns
