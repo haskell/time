@@ -64,10 +64,10 @@ instance Arbitrary Day where
                             else []
             year10Shrink =
                 if y > 2010
-                    then fmap (\i -> fromGregorian (y - i) m d) [1..10]
+                    then fmap (\i -> fromGregorian (y - i) m d) [1 .. 10]
                     else
                         if y < 1990
-                            then fmap (\i -> fromGregorian (y + i) m d) [1..10]
+                            then fmap (\i -> fromGregorian (y + i) m d) [1 .. 10]
                             else []
             year100Shrink =
                 if y > 2100

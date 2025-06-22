@@ -63,7 +63,7 @@ data DayFact
     | TimeZoneDayFact TimeZone
 
 lastMatch :: (a -> Maybe b) -> [a] -> Maybe b
-lastMatch f aa = lastM $ catMaybes $ fmap f aa
+lastMatch f aa = listToMaybe $ reverse $ catMaybes $ fmap f aa
 
 dayFactGetCentury :: [DayFact] -> Maybe Integer
 dayFactGetCentury = lastMatch $ \case
@@ -246,14 +246,6 @@ makeDayFacts l pairs = do
     factss <- for pairs $ \(c, x) -> makeDayFact l c x
     return $ mconcat factss
 
-lastM :: [a] -> Maybe a
-lastM [] = Nothing
-lastM [a] = Just a
-lastM (_ : aa) = lastM aa
-
-safeLast :: a -> [a] -> a
-safeLast x xs = fromMaybe x $ lastM xs
-
 dayFactYear :: [DayFact] -> Integer
 dayFactYear facts =
     let
@@ -272,15 +264,24 @@ dayFactDay :: [DayFact] -> Maybe Day
 dayFactDay facts =
     case dayFactYear facts of
         y | Just doy <- dayFactGetDayOfYear facts -> fromOrdinalDateValid y doy
-        y | Just moy <- dayFactGetMonthOfYear facts -> let
-            dom = fromMaybe 1 $ dayFactGetDayOfMonth facts
-            in Just $ YearMonthDay y moy dom
-        y | Just (wt, woy) <- dayFactGetWeekOfYear facts -> let
-            dow = fromMaybe Thursday $ dayFactGetDayOfWeek facts
-            in mkDayFromWeekType wt y woy dow
-        _ | Just ut <- dayFactGetUTCTime facts -> let
-            tz = fromMaybe utc $ dayFactGetTimeZone facts
-            in Just $ localDay $ utcToLocalTime tz ut
+        y
+            | Just moy <- dayFactGetMonthOfYear facts ->
+                let
+                    dom = fromMaybe 1 $ dayFactGetDayOfMonth facts
+                in
+                    Just $ YearMonthDay y moy dom
+        y
+            | Just (wt, woy) <- dayFactGetWeekOfYear facts ->
+                let
+                    dow = fromMaybe Thursday $ dayFactGetDayOfWeek facts
+                in
+                    mkDayFromWeekType wt y woy dow
+        _
+            | Just ut <- dayFactGetUTCTime facts ->
+                let
+                    tz = fromMaybe utc $ dayFactGetTimeZone facts
+                in
+                    Just $ localDay $ utcToLocalTime tz ut
         y | Just dom <- dayFactGetDayOfMonth facts -> Just $ YearMonthDay y 1 dom
         y | Just dow <- dayFactGetDayOfWeek facts -> fromWeekDateValid y 1 $ fromEnum dow
         y -> fromOrdinalDateValid y 1
@@ -297,8 +298,8 @@ instance ParseTime DayOfWeek where
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
         facts <- makeDayFacts l pairs
-        dayFactGetDayOfWeek facts <|>
-            (fmap dayOfWeek $ dayFactDay facts)
+        dayFactGetDayOfWeek facts
+            <|> (fmap dayOfWeek $ dayFactDay facts)
 
 instance ParseTime Month where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
@@ -349,6 +350,41 @@ data TimeFact
     | FractSecondTimeFact Pico
     | UTCTimeFact UTCTime
     | ZoneTimeFact TimeZone
+
+timeFactGetAMPM :: [TimeFact] -> Maybe AMPM
+timeFactGetAMPM = lastMatch $ \case
+    AMAPMTimeFact x -> Just x
+    _ -> Nothing
+
+timeFactGetHour :: [TimeFact] -> Maybe Int
+timeFactGetHour = lastMatch $ \case
+    HourTimeFact x -> Just x
+    _ -> Nothing
+
+timeFactGetMinute :: [TimeFact] -> Maybe Int
+timeFactGetMinute = lastMatch $ \case
+    MinuteTimeFact x -> Just x
+    _ -> Nothing
+
+timeFactGetWholeSecond :: [TimeFact] -> Maybe Int
+timeFactGetWholeSecond = lastMatch $ \case
+    WholeSecondTimeFact x -> Just x
+    _ -> Nothing
+
+timeFactGetFractSecond :: [TimeFact] -> Maybe Pico
+timeFactGetFractSecond = lastMatch $ \case
+    FractSecondTimeFact x -> Just x
+    _ -> Nothing
+
+timeFactGetUTC :: [TimeFact] -> Maybe UTCTime
+timeFactGetUTC = lastMatch $ \case
+    UTCTimeFact x -> Just x
+    _ -> Nothing
+
+timeFactGetZone :: [TimeFact] -> Maybe TimeZone
+timeFactGetZone = lastMatch $ \case
+    ZoneTimeFact x -> Just x
+    _ -> Nothing
 
 makeTimeFact :: TimeLocale -> Char -> String -> Maybe [TimeFact]
 makeTimeFact l c x =
@@ -423,26 +459,26 @@ instance ParseTime TimeOfDay where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
-        cs <- makeTimeFacts l pairs
+        facts <- makeTimeFacts l pairs
         -- 'Nothing' indicates a parse failure,
         -- while 'Just []' means no information
-        case lastM [x | UTCTimeFact x <- cs] of
+        case timeFactGetUTC facts of
             Just t ->
                 let
-                    zone = safeLast utc [x | ZoneTimeFact x <- cs]
-                    sf = safeLast 0 [x | FractSecondTimeFact x <- cs]
+                    zone = fromMaybe utc $ timeFactGetZone facts
+                    sf = fromMaybe 0 $ timeFactGetFractSecond facts
                     TimeOfDay h m s = localTimeOfDay $ utcToLocalTime zone t
                 in
                     return $ TimeOfDay h m $ s + sf
             Nothing ->
                 let
-                    h = safeLast 0 [x | HourTimeFact x <- cs]
-                    m = safeLast 0 [x | MinuteTimeFact x <- cs]
-                    si = safeLast 0 [x | WholeSecondTimeFact x <- cs]
-                    sf = safeLast 0 [x | FractSecondTimeFact x <- cs]
+                    h = fromMaybe 0 $ timeFactGetHour facts
+                    m = fromMaybe 0 $ timeFactGetMinute facts
+                    si = fromMaybe 0 $ timeFactGetWholeSecond facts
+                    sf = fromMaybe 0 $ timeFactGetFractSecond facts
                     s :: Pico
                     s = fromIntegral si + sf
-                    h' = case lastM [x | AMAPMTimeFact x <- cs] of
+                    h' = case timeFactGetAMPM facts of
                         Nothing -> h
                         Just AM -> mod h 12
                         Just PM -> if h < 12 then h + 12 else h
