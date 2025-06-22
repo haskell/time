@@ -9,12 +9,12 @@ import Test.Tasty.HUnit
 import Test.TestUtil
 
 -- as found in http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
--- plus FgGklz
+-- plus FgGklvz
 -- f not supported
 -- P not always supported
 -- s time-zone dependent
 chars :: [Char]
-chars = "aAbBcCdDeFgGhHIjklmMnprRStTuUVwWxXyYzZ%"
+chars = "aAbBcCdDeFgGhHIjklmMnprRStTuUvVwWxXyYzZ%"
 
 -- as found in "man strftime" on a glibc system. '#' is different, though
 modifiers :: [Char]

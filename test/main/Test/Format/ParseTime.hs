@@ -486,6 +486,12 @@ instance HasFormatCodes DayOfWeek where
 instance HasFormatCodes Month where
     allFormatCodes _ = [(False, s) | s <- "YyCBbhm"]
 
+instance HasFormatCodes QuarterOfYear where
+    allFormatCodes _ = [(False, s) | s <- "v"]
+
+instance HasFormatCodes Quarter where
+    allFormatCodes _ = allFormatCodes (Proxy :: Proxy QuarterOfYear) ++ [(False, s) | s <- "YyC"]
+
 instance HasFormatCodes LocalTime where
     allFormatCodes _ = allFormatCodes (Proxy :: Proxy Day) ++ allFormatCodes (Proxy :: Proxy TimeOfDay)
 
@@ -548,6 +554,7 @@ typedTests :: (forall t. (Eq t, FormatTime t, ParseTime t, Show t) => FormatStri
 typedTests prop =
     [ nameTest "Day" $ tgroup dayFormats prop
     , nameTest "Month" $ tgroup monthFormats prop
+    , nameTest "Quarter" $ tgroup quarterFormats prop
     , nameTest "TimeOfDay" $ tgroup timeOfDayFormats prop
     , nameTest "LocalTime" $ tgroup localTimeFormats prop
     , nameTest "TimeZone" $ tgroup timeZoneFormats prop
@@ -571,6 +578,8 @@ allTypes f =
     , f "TimeOfDay" (Proxy :: Proxy TimeOfDay)
     , f "DayOfWeek" (Proxy :: Proxy DayOfWeek)
     , f "Month" (Proxy :: Proxy Month)
+    , f "QuarterOfYear" (Proxy :: Proxy QuarterOfYear)
+    , f "Quarter" (Proxy :: Proxy Quarter)
     , f "LocalTime" (Proxy :: Proxy LocalTime)
     , f "TimeZone" (Proxy :: Proxy TimeZone)
     , f "ZonedTime" (Proxy :: Proxy ZonedTime)
@@ -841,6 +850,22 @@ monthFormats =
         , "%C-%y-%B"
         , "%C-%y-%b"
         , "%C-%y-%h"
+        ]
+
+quarterFormats :: [FormatString Quarter]
+quarterFormats =
+    map
+        FormatString
+        -- numeric year, quarter
+        [ "%Y-%v"
+        , "%Y-Q%v"
+        , "%YQ%v"
+        , "%C%y%v"
+        , "%Y %v"
+        , "%v/%Y"
+        , "%v/%Y"
+        , "%Y/%vm"
+        , "%C %y %v"
         ]
 
 timeOfDayFormats :: [FormatString TimeOfDay]
