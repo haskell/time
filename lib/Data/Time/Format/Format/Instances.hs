@@ -15,6 +15,7 @@ import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
+import Data.Time.Calendar.Quarter
 import Data.Time.Calendar.Week
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.Internal.DiffTime
@@ -110,11 +111,20 @@ instance FormatTime DayOfWeek where
     formatCharacter _ 'A' = Just $ formatString $ \locale wd -> fst $ (wDays locale) !! (mod (fromEnum wd) 7)
     formatCharacter _ _ = Nothing
 
-instance FormatTime Month where
+instance FormatTime QuarterOfYear where
+    -- Quarter of Year
+    formatCharacter _ 'v' = Just $ formatNumber False 1 '0' fromEnum
+    formatCharacter _ _ = Nothing
+
+instance FormatTime Quarter where
     -- Year Count
-    formatCharacter _ 'Y' = Just $ formatNumber False 4 '0' $ \(YearMonth y _) -> y
-    formatCharacter _ 'y' = Just $ formatNumber True 2 '0' $ \(YearMonth y _) -> mod100 y
-    formatCharacter _ 'C' = Just $ formatNumber False 2 '0' $ \(YearMonth y _) -> div100 y
+    formatCharacter _ 'Y' = Just $ formatNumber False 4 '0' $ \(YearQuarter y _) -> y
+    formatCharacter _ 'y' = Just $ formatNumber True 2 '0' $ \(YearQuarter y _) -> mod100 y
+    formatCharacter _ 'C' = Just $ formatNumber False 2 '0' $ \(YearQuarter y _) -> div100 y
+    -- Default
+    formatCharacter alt c = mapFormatCharacter (\(YearQuarter _ q) -> q) $ formatCharacter alt c
+
+instance FormatTime Month where
     -- Month of Year
     formatCharacter _ 'B' =
         Just $ formatString $ \locale (YearMonth _ my) -> fst $ (months locale) !! (my - 1)
@@ -124,7 +134,7 @@ instance FormatTime Month where
         Just $ formatString $ \locale (YearMonth _ my) -> snd $ (months locale) !! (my - 1)
     formatCharacter _ 'm' = Just $ formatNumber True 2 '0' $ \(YearMonth _ m) -> m
     -- Default
-    formatCharacter _ _ = Nothing
+    formatCharacter alt c = mapFormatCharacter monthQuarter $ formatCharacter alt c
 
 instance FormatTime Day where
     -- Aggregate

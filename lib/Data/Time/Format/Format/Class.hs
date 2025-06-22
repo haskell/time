@@ -211,14 +211,25 @@ showPaddedFixedFraction pado x =
 --
 -- [@%A@] day of week, long form ('fst' from 'wDays' @locale@), @Sunday@ - @Saturday@
 --
--- === 'Month'
--- For 'Month' (and 'Day' and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
+-- === 'QuarterOfYear'
+-- For 'QuarterOfYear' (and 'Quarter' and 'Month' and 'Day' and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
+--
+-- [@%v@] quarter number, @1@ - @4@
+--
+-- === 'Quarter'
+-- For 'Quarter' (and 'Month' and 'Day' and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%Y@] year, no padding. Note @%0Y@ and @%_Y@ pad to four chars
 --
 -- [@%y@] year of century, 0-padded to two chars, @00@ - @99@
 --
 -- [@%C@] century, no padding. Note @%0C@ and @%_C@ pad to two chars
+--
+-- [@%v@] quarter number, @1@ - @4@
+--
+--
+-- === 'Month'
+-- For 'Month' (and 'Day' and 'LocalTime' and 'ZonedTime' and 'UTCTime' and 'UniversalTime'):
 --
 -- [@%B@] month name, long form ('fst' from 'months' @locale@), @January@ - @December@
 --

@@ -62,8 +62,22 @@ instance Arbitrary Day where
                         if y < 2000
                             then [fromGregorian (y + 1) m d]
                             else []
+            year10Shrink =
+                if y > 2010
+                    then fmap (\i -> fromGregorian (y - i) m d) [1..10]
+                    else
+                        if y < 1990
+                            then fmap (\i -> fromGregorian (y + i) m d) [1..10]
+                            else []
+            year100Shrink =
+                if y > 2100
+                    then [fromGregorian (y - 100) m d]
+                    else
+                        if y < 1900
+                            then [fromGregorian (y + 100) m d]
+                            else []
         in
-            dayShrink ++ monthShrink ++ yearShrink
+            dayShrink ++ monthShrink ++ year100Shrink ++ year10Shrink ++ yearShrink
 
 instance CoArbitrary Day where
     coarbitrary (ModifiedJulianDay d) = coarbitrary d

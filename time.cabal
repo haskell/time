@@ -43,6 +43,7 @@ library
     default-language: GHC2021
     default-extensions:
         NoGeneralizedNewtypeDeriving
+        LambdaCase
         PatternSynonyms
         ViewPatterns
     ghc-options:

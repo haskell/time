@@ -18,6 +18,7 @@ import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Month
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private (clipValid)
+import Data.Time.Calendar.Quarter
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime
@@ -34,23 +35,85 @@ import Data.Time.LocalTime.Internal.ZonedTime
 import Data.Traversable
 import Text.Read (readMaybe)
 
-data DayComponent
-    = DCCentury Integer -- century of all years
-    | DCCenturyYear Integer -- 0-99, last two digits of both real years and week years
-    | DCYearMonth MonthOfYear -- 1-12
-    | DCMonthDay DayOfMonth -- 1-31
-    | DCYearDay DayOfYear -- 1-366
-    | DCWeekDay Int -- 1-7 (mon-sun)
-    | DCYearWeek
-        WeekType
-        WeekOfYear -- 1-53 or 0-53
-    | DCUTCTime UTCTime
-    | DCTimeZone TimeZone
-
 data WeekType
     = ISOWeek
     | SundayWeek
     | MondayWeek
+    deriving Eq
+
+mkDayFromWeekType :: WeekType -> Year -> WeekOfYear -> DayOfWeek -> Maybe Day
+mkDayFromWeekType wt y woy dow =
+    case wt of
+        ISOWeek -> fromWeekDateValid y woy $ fromEnum dow
+        SundayWeek -> fromSundayStartWeekValid y woy $ mod (fromEnum dow) 7
+        MondayWeek -> fromMondayStartWeekValid y woy $ fromEnum dow
+
+data DayFact
+    = CenturyDayFact Integer -- century of all years
+    | YearOfCenturyDayFact Integer -- 0-99, last two digits of both real years and week years
+    | QuarterOfYearDayFact QuarterOfYear
+    | MonthOfYearDayFact MonthOfYear -- 1-12
+    | DayOfMonthDayFact DayOfMonth -- 1-31
+    | DayOfYearDayFact DayOfYear -- 1-366
+    | DayOfWeekDayFact DayOfWeek
+    | WeekOfYearDayFact
+        WeekType
+        WeekOfYear -- 1-53 or 0-53
+    | UTCTimeDayFact UTCTime
+    | TimeZoneDayFact TimeZone
+
+lastMatch :: (a -> Maybe b) -> [a] -> Maybe b
+lastMatch f aa = lastM $ catMaybes $ fmap f aa
+
+dayFactGetCentury :: [DayFact] -> Maybe Integer
+dayFactGetCentury = lastMatch $ \case
+    CenturyDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetYearOfCentury :: [DayFact] -> Maybe Integer
+dayFactGetYearOfCentury = lastMatch $ \case
+    YearOfCenturyDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetQuarterOfYear :: [DayFact] -> Maybe QuarterOfYear
+dayFactGetQuarterOfYear = lastMatch $ \case
+    QuarterOfYearDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetMonthOfYear :: [DayFact] -> Maybe MonthOfYear
+dayFactGetMonthOfYear = lastMatch $ \case
+    MonthOfYearDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetDayOfMonth :: [DayFact] -> Maybe DayOfMonth
+dayFactGetDayOfMonth = lastMatch $ \case
+    DayOfMonthDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetDayOfYear :: [DayFact] -> Maybe DayOfYear
+dayFactGetDayOfYear = lastMatch $ \case
+    DayOfYearDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetDayOfWeek :: [DayFact] -> Maybe DayOfWeek
+dayFactGetDayOfWeek = lastMatch $ \case
+    DayOfWeekDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetWeekOfYear :: [DayFact] -> Maybe (WeekType, WeekOfYear)
+dayFactGetWeekOfYear = lastMatch $ \case
+    WeekOfYearDayFact wt x -> Just (wt, x)
+    _ -> Nothing
+
+dayFactGetUTCTime :: [DayFact] -> Maybe UTCTime
+dayFactGetUTCTime = lastMatch $ \case
+    UTCTimeDayFact x -> Just x
+    _ -> Nothing
+
+dayFactGetTimeZone :: [DayFact] -> Maybe TimeZone
+dayFactGetTimeZone = lastMatch $ \case
+    TimeZoneDayFact x -> Just x
+    _ -> Nothing
 
 readSpec_z :: String -> Maybe Int
 readSpec_z = readTzOffset
@@ -62,8 +125,8 @@ readSpec_Z _ "UTC" = Just utc
 readSpec_Z _ [c] | Just zone <- getMilZone c = Just zone
 readSpec_Z _ _ = Nothing
 
-makeDayComponent :: TimeLocale -> Char -> String -> Maybe [DayComponent]
-makeDayComponent l c x =
+makeDayFact :: TimeLocale -> Char -> String -> Maybe [DayFact]
+makeDayFact l c x =
     let
         ra :: Read a => Maybe a
         ra = readMaybe x
@@ -78,120 +141,110 @@ makeDayComponent l c x =
             -- %C: century (all but the last two digits of the year), 00 - 99
             'C' -> do
                 a <- ra
-                return [DCCentury a]
+                return [CenturyDayFact a]
             -- %f century (all but the last two digits of the year), 00 - 99
             'f' -> do
                 a <- ra
-                return [DCCentury a]
+                return [CenturyDayFact a]
             -- %Y: year
             'Y' -> do
                 a <- ra
-                return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
+                return [CenturyDayFact (a `div` 100), YearOfCenturyDayFact (a `mod` 100)]
             -- %G: year for Week Date format
             'G' -> do
                 a <- ra
-                return [DCCentury (a `div` 100), DCCenturyYear (a `mod` 100)]
+                return [CenturyDayFact (a `div` 100), YearOfCenturyDayFact (a `mod` 100)]
             -- %y: last two digits of year, 00 - 99
             'y' -> do
                 a <- ra
-                return [DCCenturyYear a]
+                return [YearOfCenturyDayFact a]
             -- %g: last two digits of year for Week Date format, 00 - 99
             'g' -> do
                 a <- ra
-                return [DCCenturyYear a]
+                return [YearOfCenturyDayFact a]
+            -- %v: quarter of year, 1 - 4
+            'v' -> do
+                raw <- ra
+                a <- clipValid 1 4 raw
+                return [QuarterOfYearDayFact $ toEnum a]
             -- %B: month name, long form (fst from months locale), January - December
             'B' -> do
                 a <- oneBasedListIndex $ fmap fst $ months l
-                return [DCYearMonth a]
+                return [MonthOfYearDayFact a]
             -- %b: month name, short form (snd from months locale), Jan - Dec
             'b' -> do
                 a <- oneBasedListIndex $ fmap snd $ months l
-                return [DCYearMonth a]
+                return [MonthOfYearDayFact a]
             -- %m: month of year, leading 0 as needed, 01 - 12
             'm' -> do
                 raw <- ra
                 a <- clipValid 1 12 raw
-                return [DCYearMonth a]
+                return [MonthOfYearDayFact a]
             -- %d: day of month, leading 0 as needed, 01 - 31
             'd' -> do
                 raw <- ra
                 a <- clipValid 1 31 raw
-                return [DCMonthDay a]
+                return [DayOfMonthDayFact a]
             -- %e: day of month, leading space as needed, 1 - 31
             'e' -> do
                 raw <- ra
                 a <- clipValid 1 31 raw
-                return [DCMonthDay a]
+                return [DayOfMonthDayFact a]
             -- %V: week for Week Date format, 01 - 53
             'V' -> do
                 raw <- ra
                 a <- clipValid 1 53 raw
-                return [DCYearWeek ISOWeek a]
+                return [WeekOfYearDayFact ISOWeek a]
             -- %U: week number of year, where weeks start on Sunday (as sundayStartWeek), 00 - 53
             'U' -> do
                 raw <- ra
                 a <- clipValid 0 53 raw
-                return [DCYearWeek SundayWeek a]
+                return [WeekOfYearDayFact SundayWeek a]
             -- %W: week number of year, where weeks start on Monday (as mondayStartWeek), 00 - 53
             'W' -> do
                 raw <- ra
                 a <- clipValid 0 53 raw
-                return [DCYearWeek MondayWeek a]
+                return [WeekOfYearDayFact MondayWeek a]
             -- %u: day for Week Date format, 1 - 7
             'u' -> do
                 raw <- ra
                 a <- clipValid 1 7 raw
-                return [DCWeekDay a]
+                return [DayOfWeekDayFact $ toEnum a]
             -- %a: day of week, short form (snd from wDays locale), Sun - Sat
             'a' -> do
-                a' <- zeroBasedListIndex $ fmap snd $ wDays l
-                let
-                    a =
-                        if a' == 0
-                            then 7
-                            else a'
-                return [DCWeekDay a]
+                a <- zeroBasedListIndex $ fmap snd $ wDays l
+                return [DayOfWeekDayFact $ toEnum a]
             -- %A: day of week, long form (fst from wDays locale), Sunday - Saturday
             'A' -> do
-                a' <- zeroBasedListIndex $ fmap fst $ wDays l
-                let
-                    a =
-                        if a' == 0
-                            then 7
-                            else a'
-                return [DCWeekDay a]
+                a <- zeroBasedListIndex $ fmap fst $ wDays l
+                return [DayOfWeekDayFact $ toEnum a]
             -- %w: day of week number, 0 (= Sunday) - 6 (= Saturday)
             'w' -> do
                 raw <- ra
-                a' <- clipValid 0 6 raw
-                let
-                    a =
-                        if a' == 0
-                            then 7
-                            else a'
-                return [DCWeekDay a]
+                a <- clipValid 0 6 raw
+                return [DayOfWeekDayFact $ toEnum a]
             -- %j: day of year for Ordinal Date format, 001 - 366
             'j' -> do
                 raw <- ra
                 a <- clipValid 1 366 raw
-                return [DCYearDay a]
+                return [DayOfYearDayFact a]
             -- %s: number of whole seconds since the Unix epoch.
             's' -> do
                 raw <- ra
-                return [DCUTCTime $ posixSecondsToUTCTime $ fromInteger raw]
+                return [UTCTimeDayFact $ posixSecondsToUTCTime $ fromInteger raw]
             'z' -> do
                 a <- readSpec_z x
-                return [DCTimeZone $ TimeZone a False ""]
+                return [TimeZoneDayFact $ TimeZone a False ""]
             'Z' -> do
                 a <- readSpec_Z l x
-                return [DCTimeZone a]
+                return [TimeZoneDayFact a]
             -- unrecognised, pass on to other parsers
             _ -> return []
 
-makeDayComponents :: TimeLocale -> [(Char, String)] -> Maybe [DayComponent]
-makeDayComponents l pairs = do
-    components <- for pairs $ \(c, x) -> makeDayComponent l c x
-    return $ concat components
+makeDayFacts :: TimeLocale -> [(Char, String)] -> Maybe [DayFact]
+makeDayFacts l pairs = do
+    factss <- for pairs $ \(c, x) -> makeDayFact l c x
+    return $ mconcat factss
 
 lastM :: [a] -> Maybe a
 lastM [] = Nothing
@@ -201,99 +254,81 @@ lastM (_ : aa) = lastM aa
 safeLast :: a -> [a] -> a
 safeLast x xs = fromMaybe x $ lastM xs
 
-dcYear :: [DayComponent] -> Integer
-dcYear cs =
+dayFactYear :: [DayFact] -> Integer
+dayFactYear facts =
     let
-        d = safeLast 70 [x | DCCenturyYear x <- cs]
+        d = fromMaybe 70 $ dayFactGetYearOfCentury facts
         c =
-            safeLast
+            fromMaybe
                 ( if d >= 69
                     then 19
                     else 20
                 )
-                [x | DCCentury x <- cs]
+                $ dayFactGetCentury facts
     in
         100 * c + d
 
-dcMatchLocalTime :: DayComponent -> Maybe ([DayComponent] -> LocalTime)
-dcMatchLocalTime (DCUTCTime t) = Just $ \cs ->
-    let
-        zone = safeLast utc [x | DCTimeZone x <- cs]
-    in
-        utcToLocalTime zone t
-dcMatchLocalTime _ = Nothing
-
-dcMatchDay :: DayComponent -> Maybe ([DayComponent] -> Maybe Day)
-dcMatchDay (DCYearMonth m) = Just $ \cs ->
-    let
-        y = dcYear cs
-        d = safeLast 1 [x | DCMonthDay x <- cs]
-    in
-        fromGregorianValid y m d
-dcMatchDay (DCYearDay d) = Just $ \cs ->
-    let
-        y = dcYear cs
-    in
-        fromOrdinalDateValid y d
-dcMatchDay (DCYearWeek wt w) = Just $ \cs ->
-    let
-        y = dcYear cs
-        d = safeLast 4 [x | DCWeekDay x <- cs]
-    in
-        case wt of
-            ISOWeek -> fromWeekDateValid y w d
-            SundayWeek -> fromSundayStartWeekValid y w (d `mod` 7)
-            MondayWeek -> fromMondayStartWeekValid y w d
-dcMatchDay comp | Just f <- dcMatchLocalTime comp = Just $ \cs -> return $ localDay $ f cs
-dcMatchDay _ = Nothing
+dayFactDay :: [DayFact] -> Maybe Day
+dayFactDay facts =
+    case dayFactYear facts of
+        y | Just doy <- dayFactGetDayOfYear facts -> fromOrdinalDateValid y doy
+        y | Just moy <- dayFactGetMonthOfYear facts -> let
+            dom = fromMaybe 1 $ dayFactGetDayOfMonth facts
+            in Just $ YearMonthDay y moy dom
+        y | Just (wt, woy) <- dayFactGetWeekOfYear facts -> let
+            dow = fromMaybe Thursday $ dayFactGetDayOfWeek facts
+            in mkDayFromWeekType wt y woy dow
+        _ | Just ut <- dayFactGetUTCTime facts -> let
+            tz = fromMaybe utc $ dayFactGetTimeZone facts
+            in Just $ localDay $ utcToLocalTime tz ut
+        y | Just dom <- dayFactGetDayOfMonth facts -> Just $ YearMonthDay y 1 dom
+        y | Just dow <- dayFactGetDayOfWeek facts -> fromWeekDateValid y 1 $ fromEnum dow
+        y -> fromOrdinalDateValid y 1
 
 instance ParseTime Day where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
-        cs <- makeDayComponents l pairs
-        -- 'Nothing' indicates a parse failure,
-        -- while 'Just []' means no information
-        let
-            rest (comp : _) | Just f <- dcMatchDay comp = f cs
-            rest (_ : xs) = rest xs
-            rest [] = rest [DCYearMonth 1]
-        rest cs
+        facts <- makeDayFacts l pairs
+        dayFactDay facts
 
 instance ParseTime DayOfWeek where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
-        cs <- makeDayComponents l pairs
-        -- 'Nothing' indicates a parse failure,
-        -- while 'Just []' means no information
-        case lastM [x | DCWeekDay x <- cs] of
-            Just x -> return $ toEnum x
-            Nothing ->
-                let
-                    rest (comp : _) | Just f <- dcMatchDay comp = fmap dayOfWeek $ f cs
-                    rest (_ : xs) = rest xs
-                    rest [] = rest [DCYearMonth 1]
-                in
-                    rest cs
-
-dayMonth :: Day -> Month
-dayMonth (MonthDay m _) = m
+        facts <- makeDayFacts l pairs
+        dayFactGetDayOfWeek facts <|>
+            (fmap dayOfWeek $ dayFactDay facts)
 
 instance ParseTime Month where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
-        cs <- makeDayComponents l pairs
-        -- 'Nothing' indicates a parse failure,
-        -- while 'Just []' means no information
+        facts <- makeDayFacts l pairs
+        ( do
+                let
+                    y = dayFactYear facts
+                moy <- dayFactGetMonthOfYear facts
+                return $ YearMonth y moy
+            )
+            <|> (fmap dayPeriod $ dayFactDay facts)
+
+instance ParseTime QuarterOfYear where
+    substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
+    parseTimeSpecifier _ = timeParseTimeSpecifier
+    buildTime l pairs = do
+        facts <- makeDayFacts l pairs
+        return $ fromMaybe Q1 $ dayFactGetQuarterOfYear facts
+
+instance ParseTime Quarter where
+    substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
+    parseTimeSpecifier _ = timeParseTimeSpecifier
+    buildTime l pairs = do
+        facts <- makeDayFacts l pairs
         let
-            y = dcYear cs
-            rest (DCYearMonth m : _) = fromYearMonthValid y m
-            rest (comp : _) | Just f <- dcMatchDay comp = fmap dayMonth $ f cs
-            rest (_ : xs) = rest xs
-            rest [] = fromYearMonthValid y 1
-        rest cs
+            qoy = fromMaybe Q1 $ dayFactGetQuarterOfYear facts
+            y = dayFactYear facts
+        return $ YearQuarter y qoy
 
 mfoldl :: Monad m => (a -> b -> m a) -> m a -> [b] -> m a
 mfoldl f =
@@ -306,17 +341,17 @@ mfoldl f =
 
 data AMPM = AM | PM
 
-data TimeComponent
-    = TCAMPM AMPM
-    | TCHour Int
-    | TCMinute Int
-    | TCSecondInt Int
-    | TCSecondFraction Pico
-    | TCUTCTime UTCTime
-    | TCTimeZone TimeZone
+data TimeFact
+    = AMAPMTimeFact AMPM
+    | HourTimeFact Int
+    | MinuteTimeFact Int
+    | WholeSecondTimeFact Int
+    | FractSecondTimeFact Pico
+    | UTCTimeFact UTCTime
+    | ZoneTimeFact TimeZone
 
-makeTimeComponent :: TimeLocale -> Char -> String -> Maybe [TimeComponent]
-makeTimeComponent l c x =
+makeTimeFact :: TimeLocale -> Char -> String -> Maybe [TimeFact]
+makeTimeFact l c x =
     let
         ra :: Read a => Maybe a
         ra = readMaybe x
@@ -326,10 +361,10 @@ makeTimeComponent l c x =
                 (amStr, pmStr) = amPm l
             in
                 if upx == amStr
-                    then Just [TCAMPM AM]
+                    then Just [AMAPMTimeFact AM]
                     else
                         if upx == pmStr
-                            then Just [TCAMPM PM]
+                            then Just [AMAPMTimeFact PM]
                             else Nothing
     in
         case c of
@@ -338,76 +373,76 @@ makeTimeComponent l c x =
             'H' -> do
                 raw <- ra
                 a <- clipValid 0 23 raw
-                return [TCHour a]
+                return [HourTimeFact a]
             'I' -> do
                 raw <- ra
                 a <- clipValid 1 12 raw
-                return [TCHour a]
+                return [HourTimeFact a]
             'k' -> do
                 raw <- ra
                 a <- clipValid 0 23 raw
-                return [TCHour a]
+                return [HourTimeFact a]
             'l' -> do
                 raw <- ra
                 a <- clipValid 1 12 raw
-                return [TCHour a]
+                return [HourTimeFact a]
             'M' -> do
                 raw <- ra
                 a <- clipValid 0 59 raw
-                return [TCMinute a]
+                return [MinuteTimeFact a]
             'S' -> do
                 raw <- ra
                 a <- clipValid 0 60 raw
-                return [TCSecondInt $ fromInteger a]
+                return [WholeSecondTimeFact $ fromInteger a]
             'q' -> do
                 ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
-                return [TCSecondFraction $ mkPico 0 ps]
+                return [FractSecondTimeFact $ mkPico 0 ps]
             'Q' ->
                 if null x
                     then return []
                     else do
                         ps <- (readMaybe $ take 12 $ rpad 12 '0' x) <|> return 0
-                        return [TCSecondFraction $ mkPico 0 ps]
+                        return [FractSecondTimeFact $ mkPico 0 ps]
             's' -> do
                 raw <- ra
-                return [TCUTCTime $ posixSecondsToUTCTime $ fromInteger raw]
+                return [UTCTimeFact $ posixSecondsToUTCTime $ fromInteger raw]
             'z' -> do
                 a <- readSpec_z x
-                return [TCTimeZone $ TimeZone a False ""]
+                return [ZoneTimeFact $ TimeZone a False ""]
             'Z' -> do
                 a <- readSpec_Z l x
-                return [TCTimeZone a]
+                return [ZoneTimeFact a]
             _ -> return []
 
-makeTimeComponents :: TimeLocale -> [(Char, String)] -> Maybe [TimeComponent]
-makeTimeComponents l pairs = do
-    components <- for pairs $ \(c, x) -> makeTimeComponent l c x
-    return $ concat components
+makeTimeFacts :: TimeLocale -> [(Char, String)] -> Maybe [TimeFact]
+makeTimeFacts l pairs = do
+    factss <- for pairs $ \(c, x) -> makeTimeFact l c x
+    return $ mconcat factss
 
 instance ParseTime TimeOfDay where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
-        cs <- makeTimeComponents l pairs
+        cs <- makeTimeFacts l pairs
         -- 'Nothing' indicates a parse failure,
         -- while 'Just []' means no information
-        case lastM [x | TCUTCTime x <- cs] of
+        case lastM [x | UTCTimeFact x <- cs] of
             Just t ->
                 let
-                    zone = safeLast utc [x | TCTimeZone x <- cs]
-                    sf = safeLast 0 [x | TCSecondFraction x <- cs]
+                    zone = safeLast utc [x | ZoneTimeFact x <- cs]
+                    sf = safeLast 0 [x | FractSecondTimeFact x <- cs]
                     TimeOfDay h m s = localTimeOfDay $ utcToLocalTime zone t
                 in
                     return $ TimeOfDay h m $ s + sf
             Nothing ->
                 let
-                    h = safeLast 0 [x | TCHour x <- cs]
-                    m = safeLast 0 [x | TCMinute x <- cs]
-                    si = safeLast 0 [x | TCSecondInt x <- cs]
-                    sf = safeLast 0 [x | TCSecondFraction x <- cs]
+                    h = safeLast 0 [x | HourTimeFact x <- cs]
+                    m = safeLast 0 [x | MinuteTimeFact x <- cs]
+                    si = safeLast 0 [x | WholeSecondTimeFact x <- cs]
+                    sf = safeLast 0 [x | FractSecondTimeFact x <- cs]
                     s :: Pico
                     s = fromIntegral si + sf
-                    h' = case lastM [x | TCAMPM x <- cs] of
+                    h' = case lastM [x | AMAPMTimeFact x <- cs] of
                         Nothing -> h
                         Just AM -> mod h 12
                         Just PM -> if h < 12 then h + 12 else h
@@ -509,6 +544,8 @@ instance ParseTime UniversalTime where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l xs = localTimeToUT1 0 <$> buildTime l xs
+
+--- Duration
 
 buildTimeMonths :: [(Char, String)] -> Maybe Integer
 buildTimeMonths xs = do
