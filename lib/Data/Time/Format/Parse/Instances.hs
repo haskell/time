@@ -269,20 +269,31 @@ dayFactDay facts =
                 let
                     dom = fromMaybe 1 $ dayFactGetDayOfMonth facts
                 in
-                    Just $ YearMonthDay y moy dom
+                    fromGregorianValid y moy dom
         y
             | Just (wt, woy) <- dayFactGetWeekOfYear facts ->
                 let
                     dow = fromMaybe Thursday $ dayFactGetDayOfWeek facts
                 in
                     mkDayFromWeekType wt y woy dow
+        y
+            | Just qoy <- dayFactGetQuarterOfYear facts ->
+                let
+                    moy = case qoy of
+                        Q1 -> 1
+                        Q2 -> 4
+                        Q3 -> 7
+                        Q4 -> 10
+                    dom = fromMaybe 1 $ dayFactGetDayOfMonth facts
+                in
+                    fromGregorianValid y moy dom
         _
             | Just ut <- dayFactGetUTCTime facts ->
                 let
                     tz = fromMaybe utc $ dayFactGetTimeZone facts
                 in
                     Just $ localDay $ utcToLocalTime tz ut
-        y | Just dom <- dayFactGetDayOfMonth facts -> Just $ YearMonthDay y 1 dom
+        y | Just dom <- dayFactGetDayOfMonth facts -> fromGregorianValid y 1 dom
         y | Just dow <- dayFactGetDayOfWeek facts -> fromWeekDateValid y 1 $ fromEnum dow
         y -> fromOrdinalDateValid y 1
 
@@ -306,30 +317,33 @@ instance ParseTime Month where
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
         facts <- makeDayFacts l pairs
-        ( do
-                let
+        case dayFactGetMonthOfYear facts of
+            Just moy -> let
                     y = dayFactYear facts
-                moy <- dayFactGetMonthOfYear facts
-                return $ YearMonth y moy
-            )
-            <|> (fmap dayPeriod $ dayFactDay facts)
+                in Just $ YearMonth y moy
+            Nothing -> fmap dayPeriod $ dayFactDay facts
 
 instance ParseTime QuarterOfYear where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
         facts <- makeDayFacts l pairs
-        return $ fromMaybe Q1 $ dayFactGetQuarterOfYear facts
+        case dayFactGetQuarterOfYear facts of
+            Just qoy -> Just qoy
+            Nothing -> do
+                QuarterDay (YearQuarter _ qoy) _ <- dayFactDay facts
+                return qoy
 
 instance ParseTime Quarter where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
     parseTimeSpecifier _ = timeParseTimeSpecifier
     buildTime l pairs = do
         facts <- makeDayFacts l pairs
-        let
-            qoy = fromMaybe Q1 $ dayFactGetQuarterOfYear facts
-            y = dayFactYear facts
-        return $ YearQuarter y qoy
+        case dayFactGetQuarterOfYear facts of
+            Just qoy -> let
+                    y = dayFactYear facts
+                in Just $ YearQuarter y qoy
+            Nothing -> fmap dayPeriod $ dayFactDay facts
 
 mfoldl :: Monad m => (a -> b -> m a) -> m a -> [b] -> m a
 mfoldl f =

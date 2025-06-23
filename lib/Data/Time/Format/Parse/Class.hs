@@ -194,6 +194,8 @@ timeParseTimeSpecifier l mpad c =
             -- year of century
             'y' -> parseDigitsUsual ZeroPadding 2
             'g' -> parseDigitsUsual ZeroPadding 2
+            -- quarter of year
+            'v' -> parseDigitsUsual ZeroPadding 1
             -- month of year
             'B' -> oneOf (map fst (months l))
             'b' -> oneOf (map snd (months l))
