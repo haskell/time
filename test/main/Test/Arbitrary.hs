@@ -59,7 +59,7 @@ instance Arbitrary Month where
     arbitrary = choose supportedMonthRange
 
 instance Arbitrary Quarter where
-    arbitrary = liftM MkQuarter $ choose (-30000, 200000)
+    arbitrary = fmap monthQuarter arbitrary
     shrink (YearQuarter y qoy) =
         fmap (\y' -> YearQuarter y' qoy) (shrinkYear y)
             <> fmap (YearQuarter y) (shrink qoy)
