@@ -1,6 +1,6 @@
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Test.Arbitrary where
+module Test.Arbitrary (supportedDayRange) where
 
 import Control.Monad
 import Data.Fixed
@@ -28,14 +28,46 @@ deriving instance Random Month
 supportedMonthRange :: (Month, Month)
 supportedMonthRange = (YearMonth (-9899) 1, YearMonth 9999 12)
 
+shrinkYear :: Integer -> [Integer]
+shrinkYear y =
+    let
+        yearShrink =
+            if y > 2000
+                then [pred y]
+                else
+                    if y < 2000
+                        then [succ y]
+                        else []
+        year10Shrink =
+            if y > 2010
+                then fmap (\i -> y - i) [1 .. 10]
+                else
+                    if y < 1990
+                        then fmap (\i -> y + i) [1 .. 10]
+                        else []
+        year100Shrink =
+            if y > 2100
+                then [y - 100]
+                else
+                    if y < 1900
+                        then [y + 100]
+                        else []
+    in
+        year100Shrink <> year10Shrink <> yearShrink
+
 instance Arbitrary Month where
     arbitrary = choose supportedMonthRange
 
 instance Arbitrary Quarter where
     arbitrary = liftM MkQuarter $ choose (-30000, 200000)
+    shrink (YearQuarter y qoy) =
+        fmap (\y' -> YearQuarter y' qoy) (shrinkYear y)
+            <> fmap (YearQuarter y) (shrink qoy)
 
 instance Arbitrary QuarterOfYear where
     arbitrary = liftM toEnum $ choose (1, 4)
+    shrink Q1 = []
+    shrink _ = [Q1]
 
 deriving instance Random Day
 
@@ -55,29 +87,8 @@ instance Arbitrary Day where
                 if m > 1
                     then [fromGregorian y (m - 1) d]
                     else []
-            yearShrink =
-                if y > 2000
-                    then [fromGregorian (y - 1) m d]
-                    else
-                        if y < 2000
-                            then [fromGregorian (y + 1) m d]
-                            else []
-            year10Shrink =
-                if y > 2010
-                    then fmap (\i -> fromGregorian (y - i) m d) [1 .. 10]
-                    else
-                        if y < 1990
-                            then fmap (\i -> fromGregorian (y + i) m d) [1 .. 10]
-                            else []
-            year100Shrink =
-                if y > 2100
-                    then [fromGregorian (y - 100) m d]
-                    else
-                        if y < 1900
-                            then [fromGregorian (y + 100) m d]
-                            else []
         in
-            dayShrink ++ monthShrink ++ year100Shrink ++ year10Shrink ++ yearShrink
+            dayShrink <> monthShrink <> fmap (\y' -> fromGregorian y' m d) (shrinkYear y)
 
 instance CoArbitrary Day where
     coarbitrary (ModifiedJulianDay d) = coarbitrary d

@@ -318,9 +318,11 @@ instance ParseTime Month where
     buildTime l pairs = do
         facts <- makeDayFacts l pairs
         case dayFactGetMonthOfYear facts of
-            Just moy -> let
+            Just moy ->
+                let
                     y = dayFactYear facts
-                in Just $ YearMonth y moy
+                in
+                    Just $ YearMonth y moy
             Nothing -> fmap dayPeriod $ dayFactDay facts
 
 instance ParseTime QuarterOfYear where
@@ -340,9 +342,11 @@ instance ParseTime Quarter where
     buildTime l pairs = do
         facts <- makeDayFacts l pairs
         case dayFactGetQuarterOfYear facts of
-            Just qoy -> let
+            Just qoy ->
+                let
                     y = dayFactYear facts
-                in Just $ YearQuarter y qoy
+                in
+                    Just $ YearQuarter y qoy
             Nothing -> fmap dayPeriod $ dayFactDay facts
 
 mfoldl :: Monad m => (a -> b -> m a) -> m a -> [b] -> m a
