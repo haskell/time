@@ -159,6 +159,7 @@ test-suite test-main
     hs-source-dirs: test/main
     default-language: GHC2021
     default-extensions:
+        DefaultSignatures
         DerivingStrategies
         RecordWildCards
         UndecidableInstances
