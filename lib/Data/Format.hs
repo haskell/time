@@ -15,6 +15,7 @@ module Data.Format (
     literalFormat,
     specialCaseShowFormat,
     specialCaseFormat,
+    specialCaseReadFormat,
     optionalFormat,
     casesFormat,
     optionalSignFormat,
@@ -177,6 +178,13 @@ specialCaseFormat (val, str) (MkFormat s r) =
     in
         MkFormat s' r'
 
+specialCaseReadFormat :: (a, String) -> Format a -> Format a
+specialCaseReadFormat (val, str) (MkFormat s r) =
+    let
+        r' = r <++ (string str >> return val)
+    in
+        MkFormat s r'
+
 optionalFormat :: Eq a => a -> Format a -> Format a
 optionalFormat val = specialCaseFormat (val, "")
 
@@ -222,9 +230,15 @@ readNumber signOpt mdigitcount allowDecimal = do
                     return $ '.' : dd
     return $ sign $ read $ digits ++ moredigits
 
-zeroPad :: Maybe Int -> String -> String
-zeroPad Nothing s = s
-zeroPad (Just i) s = replicate (i - length s) '0' ++ s
+zeroPad :: Maybe Int -> String -> Maybe String
+zeroPad Nothing s = Just s
+zeroPad (Just i) s =
+    let
+        padCount = i - length s
+    in
+        if padCount >= 0
+            then Just $ replicate padCount '0' ++ s
+            else Nothing
 
 trimTrailing :: String -> String
 trimTrailing =
@@ -236,22 +250,24 @@ trimTrailing =
 showNumber :: Show t => SignOption -> Maybe Int -> t -> Maybe String
 showNumber signOpt mdigitcount t =
     let
-        showIt str =
+        showIt str = do
             let
                 (intPart, decPart) = break ((==) '.') str
-            in
-                (zeroPad mdigitcount intPart) ++ trimTrailing decPart
+            paddedIntPart <- zeroPad mdigitcount intPart
+            return $ paddedIntPart ++ trimTrailing decPart
     in
         case show t of
             ('-' : str) ->
                 case signOpt of
                     NoSign -> Nothing
-                    _ -> Just $ '-' : showIt str
-            str ->
-                Just $
-                    case signOpt of
-                        PosNegSign -> '+' : showIt str
-                        _ -> showIt str
+                    _ -> do
+                        s <- showIt str
+                        return $ '-' : s
+            str -> do
+                s <- showIt str
+                return $ case signOpt of
+                    PosNegSign -> '+' : s
+                    _ -> s
 
 integerFormat :: (Show t, Read t, Num t) => SignOption -> Maybe Int -> Format t
 integerFormat signOpt mdigitcount = MkFormat (showNumber signOpt mdigitcount) (readNumber signOpt mdigitcount False)

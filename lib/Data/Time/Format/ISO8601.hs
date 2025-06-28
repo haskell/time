@@ -276,7 +276,7 @@ withTimeDesignator f = literalFormat "T" **> f
 
 -- | @xZ@ [ISO 8601:2004(E) sec. 4.2.4]
 withUTCDesignator :: Format t -> Format t
-withUTCDesignator f = f <** literalFormat "Z"
+withUTCDesignator f = f <** specialCaseReadFormat ((), "") (literalFormat "Z")
 
 -- | @±hh:mm@ (extended), @±hhmm@ (basic) [ISO 8601:2004(E) sec. 4.2.5.1]
 timeOffsetFormat :: FormatExtension -> Format TimeZone
@@ -295,8 +295,10 @@ timeOffsetFormat fe =
                 (signum mm, Right (h, m))
         digits2 = integerFormat NoSign (Just 2)
     in
-        isoMap toTimeZone fromTimeZone $
-            mandatorySignFormat <**> (digits2 <++> extColonFormat fe digits2 digits2)
+        specialCaseReadFormat (utc, "") $
+            specialCaseReadFormat (utc, "Z") $
+                isoMap toTimeZone fromTimeZone $
+                    mandatorySignFormat <**> (digits2 <++> extColonFormat fe digits2 digits2)
 
 -- | @hh:mm:ss±hh:mm@ (extended), @hhmmss±hhmm@ (basic) [ISO 8601:2004(E) sec. 4.2.5.2]
 timeOfDayAndOffsetFormat :: FormatExtension -> Format (TimeOfDay, TimeZone)
