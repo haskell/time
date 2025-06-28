@@ -2,12 +2,17 @@
 
 ## [1.15] - Unreleased
 
-- support GHC backends (with CI):
+- support compiler / GHC backends (with CI):
   - JavaScript
   - WebAssembly
   - MicroHs
-- add instance ParseTime DayOfWeek
-- make use of %s specifiers in parsing various types
+- UNIXish formatting/parsing:
+  - add instance ParseTime DayOfWeek
+  - make use of %s specifiers in parsing various types
+  - instances for Quarter and QuarterOfYear
+  - %v specifier for quarter-of-year
+- ISO8601 formatting/parsing:
+  - loosen up parsing time-zone modifiers
 - add Lift instances to all types (really this time)
 - hide Data.Time.Format.Internal
 

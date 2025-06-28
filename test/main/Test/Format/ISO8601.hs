@@ -33,28 +33,41 @@ readShowProperty _ fmt val =
                         else failed{reason = show str ++ ": expected " ++ (show expected) ++ ", found " ++ (show found)}
 
 class SpecialTestValues a where
+    testGen :: Gen a
+    default testGen :: Arbitrary a => Gen a
+    testGen = arbitrary
+
     -- | values that should always be tested
     specialTestValues :: [a]
-
-instance {-# OVERLAPPABLE #-} SpecialTestValues a where
     specialTestValues = []
+
+instance {-# OVERLAPPABLE #-} Arbitrary a => SpecialTestValues a
 
 instance SpecialTestValues TimeOfDay where
     specialTestValues = [TimeOfDay 0 0 0, TimeOfDay 0 0 60, TimeOfDay 1 0 60, TimeOfDay 24 0 0]
 
-readShowTestCheck :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (a -> Bool) -> Format a -> [TestTree]
-readShowTestCheck skip fmt = [nameTest "random" $ readShowProperty skip fmt, nameTest "special" $ fmap (\a -> nameTest (show a) $ readShowProperty skip fmt a) $ filter (not . skip) specialTestValues]
+instance SpecialTestValues (Integer, Int) where
+    testGen = do
+        Small y <- arbitrary
+        woy <- choose (-10, 120)
+        pure (y, woy)
 
-readShowTest :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => Format a -> [TestTree]
+readShowTestCheck :: (Eq a, Show a, SpecialTestValues a) => (a -> Bool) -> Format a -> [TestTree]
+readShowTestCheck skip fmt =
+    [ nameTest "random" $ fmap (readShowProperty skip fmt) testGen
+    , nameTest "special" $ fmap (\a -> nameTest (show a) $ readShowProperty skip fmt a) $ filter (not . skip) specialTestValues
+    ]
+
+readShowTest :: (Eq a, Show a, SpecialTestValues a) => Format a -> [TestTree]
 readShowTest = readShowTestCheck $ \_ -> False
 
 readBoth :: NameTest t => (FormatExtension -> t) -> [TestTree]
 readBoth fmts = [nameTest "extended" $ fmts ExtendedFormat, nameTest "basic" $ fmts BasicFormat]
 
-readShowTestsCheck :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (a -> Bool) -> (FormatExtension -> Format a) -> [TestTree]
+readShowTestsCheck :: (Eq a, Show a, SpecialTestValues a) => (a -> Bool) -> (FormatExtension -> Format a) -> [TestTree]
 readShowTestsCheck skip fmts = readBoth $ \fe -> readShowTestCheck skip $ fmts fe
 
-readShowTests :: (Eq a, Show a, Arbitrary a, SpecialTestValues a) => (FormatExtension -> Format a) -> [TestTree]
+readShowTests :: (Eq a, Show a, SpecialTestValues a) => (FormatExtension -> Format a) -> [TestTree]
 readShowTests = readShowTestsCheck $ \_ -> False
 
 newtype Durational t = MkDurational t
@@ -85,55 +98,56 @@ durationalFormat = coerce
 
 testReadShowFormat :: TestTree
 testReadShowFormat =
-    nameTest
-        "read-show format"
-        [ nameTest "calendarFormat" $ readShowTests $ calendarFormat
-        , nameTest "yearMonthFormat" $ readShowTest $ yearMonthFormat
-        , nameTest "yearFormat" $ readShowTest $ yearFormat
-        , nameTest "centuryFormat" $ readShowTest $ centuryFormat
-        , nameTest "expandedCalendarFormat" $ readShowTests $ expandedCalendarFormat 6
-        , nameTest "expandedYearMonthFormat" $ readShowTest $ expandedYearMonthFormat 6
-        , nameTest "expandedYearFormat" $ readShowTest $ expandedYearFormat 6
-        , nameTest "expandedCenturyFormat" $ readShowTest $ expandedCenturyFormat 4
-        , nameTest "ordinalDateFormat" $ readShowTests $ ordinalDateFormat
-        , nameTest "expandedOrdinalDateFormat" $ readShowTests $ expandedOrdinalDateFormat 6
-        , nameTest "weekDateFormat" $ readShowTests $ weekDateFormat
-        , nameTest "yearWeekFormat" $ readShowTests $ yearWeekFormat
-        , nameTest "expandedWeekDateFormat" $ readShowTests $ expandedWeekDateFormat 6
-        , nameTest "expandedYearWeekFormat" $ readShowTests $ expandedYearWeekFormat 6
-        , nameTest "timeOfDayFormat" $ readShowTests $ timeOfDayFormat
-        , nameTest "hourMinuteFormat" $ readShowTestsCheck (\(TimeOfDay _ _ s) -> s >= 60) $ hourMinuteFormat
-        , nameTest "hourFormat" $ readShowTestCheck (\(TimeOfDay _ _ s) -> s >= 60) $ hourFormat
-        , nameTest "withTimeDesignator" $ readShowTests $ \fe -> withTimeDesignator $ timeOfDayFormat fe
-        , nameTest "withUTCDesignator" $ readShowTests $ \fe -> withUTCDesignator $ timeOfDayFormat fe
-        , nameTest "timeOffsetFormat" $ readShowTests $ timeOffsetFormat
-        , nameTest "timeOfDayAndOffsetFormat" $ readShowTests $ timeOfDayAndOffsetFormat
-        , nameTest "localTimeFormat" $
-            readShowTests $
-                \fe -> localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
-        , nameTest "zonedTimeFormat" $
-            readShowTests $
-                \fe -> zonedTimeFormat (calendarFormat fe) (timeOfDayFormat fe) fe
-        , nameTest "utcTimeFormat" $ readShowTests $ \fe -> utcTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
-        , nameTest "dayAndTimeFormat" $
-            readShowTests $
-                \fe -> dayAndTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
-        , nameTest "timeAndOffsetFormat" $ readShowTests $ \fe -> timeAndOffsetFormat (timeOfDayFormat fe) fe
-        , nameTest "durationDaysFormat" $ readShowTest $ durationDaysFormat
-        , nameTest "durationTimeFormat" $ readShowTest $ durationTimeFormat
-        , nameTest "alternativeDurationDaysFormat" $
-            readBoth $
-                \fe -> readShowTest (durationalFormat $ alternativeDurationDaysFormat fe)
-        , nameTest "alternativeDurationTimeFormat" $
-            readBoth $
-                \fe -> readShowTest (durationalFormat $ alternativeDurationTimeFormat fe)
-        , nameTest "intervalFormat" $
-            readShowTests $ \fe ->
-                intervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
-        , nameTest "recurringIntervalFormat" $
-            readShowTests $ \fe ->
-                recurringIntervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
-        ]
+    localOption (QuickCheckTests 1000) $
+        nameTest
+            "read-show format"
+            [ nameTest "calendarFormat" $ readShowTests $ calendarFormat
+            , nameTest "yearMonthFormat" $ readShowTest $ yearMonthFormat
+            , nameTest "yearFormat" $ readShowTest $ yearFormat
+            , nameTest "centuryFormat" $ readShowTest $ centuryFormat
+            , nameTest "expandedCalendarFormat" $ readShowTests $ expandedCalendarFormat 6
+            , nameTest "expandedYearMonthFormat" $ readShowTest $ expandedYearMonthFormat 6
+            , nameTest "expandedYearFormat" $ readShowTest $ expandedYearFormat 6
+            , nameTest "expandedCenturyFormat" $ readShowTest $ expandedCenturyFormat 4
+            , nameTest "ordinalDateFormat" $ readShowTests $ ordinalDateFormat
+            , nameTest "expandedOrdinalDateFormat" $ readShowTests $ expandedOrdinalDateFormat 6
+            , nameTest "weekDateFormat" $ readShowTests $ weekDateFormat
+            , nameTest "yearWeekFormat" $ readShowTests $ yearWeekFormat
+            , nameTest "expandedWeekDateFormat" $ readShowTests $ expandedWeekDateFormat 6
+            , nameTest "expandedYearWeekFormat" $ readShowTests $ expandedYearWeekFormat 6
+            , nameTest "timeOfDayFormat" $ readShowTests $ timeOfDayFormat
+            , nameTest "hourMinuteFormat" $ readShowTestsCheck (\(TimeOfDay _ _ s) -> s >= 60) $ hourMinuteFormat
+            , nameTest "hourFormat" $ readShowTestCheck (\(TimeOfDay _ _ s) -> s >= 60) $ hourFormat
+            , nameTest "withTimeDesignator" $ readShowTests $ \fe -> withTimeDesignator $ timeOfDayFormat fe
+            , nameTest "withUTCDesignator" $ readShowTests $ \fe -> withUTCDesignator $ timeOfDayFormat fe
+            , nameTest "timeOffsetFormat" $ readShowTests $ timeOffsetFormat
+            , nameTest "timeOfDayAndOffsetFormat" $ readShowTests $ timeOfDayAndOffsetFormat
+            , nameTest "localTimeFormat" $
+                readShowTests $
+                    \fe -> localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+            , nameTest "zonedTimeFormat" $
+                readShowTests $
+                    \fe -> zonedTimeFormat (calendarFormat fe) (timeOfDayFormat fe) fe
+            , nameTest "utcTimeFormat" $ readShowTests $ \fe -> utcTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+            , nameTest "dayAndTimeFormat" $
+                readShowTests $
+                    \fe -> dayAndTimeFormat (calendarFormat fe) (timeOfDayFormat fe)
+            , nameTest "timeAndOffsetFormat" $ readShowTests $ \fe -> timeAndOffsetFormat (timeOfDayFormat fe) fe
+            , nameTest "durationDaysFormat" $ readShowTest $ durationDaysFormat
+            , nameTest "durationTimeFormat" $ readShowTest $ durationTimeFormat
+            , nameTest "alternativeDurationDaysFormat" $
+                readBoth $
+                    \fe -> readShowTest (durationalFormat $ alternativeDurationDaysFormat fe)
+            , nameTest "alternativeDurationTimeFormat" $
+                readBoth $
+                    \fe -> readShowTest (durationalFormat $ alternativeDurationTimeFormat fe)
+            , nameTest "intervalFormat" $
+                readShowTests $ \fe ->
+                    intervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
+            , nameTest "recurringIntervalFormat" $
+                readShowTests $ \fe ->
+                    recurringIntervalFormat (localTimeFormat (calendarFormat fe) (timeOfDayFormat fe)) durationTimeFormat
+            ]
 
 testShowReadFormat :: (Show t, Eq t) => String -> Format t -> String -> t -> TestTree
 testShowReadFormat name fmt str val =
@@ -281,6 +295,16 @@ testShowFormats =
             iso8601Format
             "2024-07-06T08:45:56.553+06"
             (ZonedTime (LocalTime (fromGregorian 2024 07 06) (TimeOfDay 8 45 56.553)) (minutesToTimeZone 360))
+        , testReadFormat
+            "zonedTimeFormat"
+            iso8601Format
+            "2024-05-30T16:15:18Z"
+            (ZonedTime (LocalTime (fromGregorian 2024 05 30) (TimeOfDay 16 15 18)) utc)
+        , testReadFormat
+            "zonedTimeFormat"
+            iso8601Format
+            "2024-05-30T16:15:18"
+            (ZonedTime (LocalTime (fromGregorian 2024 05 30) (TimeOfDay 16 15 18)) utc)
         , testShowReadFormat
             "utcTimeFormat"
             iso8601Format
@@ -290,6 +314,11 @@ testShowFormats =
             "utcTimeFormat"
             iso8601Format
             "2028-12-31T23:59:60.9Z"
+            (UTCTime (fromGregorian 2028 12 31) (timeOfDayToTime $ TimeOfDay 23 59 60.9))
+        , testReadFormat
+            "utcTimeFormat"
+            iso8601Format
+            "2028-12-31T23:59:60.9"
             (UTCTime (fromGregorian 2028 12 31) (timeOfDayToTime $ TimeOfDay 23 59 60.9))
         , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1994-W52-7" (fromGregorian 1995 1 1)
         , testShowReadFormat "weekDateFormat" (weekDateFormat ExtendedFormat) "1995-W01-1" (fromGregorian 1995 1 2)
