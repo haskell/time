@@ -164,6 +164,8 @@ test-suite test-main
         RecordWildCards
         UndecidableInstances
     ghc-options: -Wall -fwarn-tabs
+    if !arch (wasm32)
+        ghc-options: -threaded -rtsopts -with-rtsopts=-N
     build-depends:
         base,
         deepseq,
@@ -244,6 +246,8 @@ test-suite test-unix
     default-extensions:
         UndecidableInstances
     ghc-options: -Wall -fwarn-tabs
+    if !arch (wasm32)
+        ghc-options: -threaded -rtsopts -with-rtsopts=-N
     c-sources: test/unix/Test/Format/FormatStuff.c
     build-depends:
         base,
