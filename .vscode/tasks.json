@@ -1,41 +1,22 @@
 {
-  "version": "2.0.0",
-  "presentation": {
-    "echo": true,
-    "reveal": "always",
-    "focus": false,
-    "panel": "shared",
-    "showReuseMessage": false,
-    "clear": true
-  },
-  "tasks": [
-    {
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "label": "Build",
-      "type": "shell",
-      "command": "cd ${workspaceRoot} && stack build && echo OK",
-      "problemMatcher": [
+    "version": "2.0.0",
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+    },
+    "tasks": [
         {
-          "owner": "stack",
-          "fileLocation": "absolute",
-          "pattern": [
-            {
-              "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):",
-              "file": 1,
-              "line": 2,
-              "column": 3,
-              "severity": 4
+            "group": {
+                "kind": "build",
+                "isDefault": true
             },
-            {
-              "regexp": "^\\s+(.*)$",
-              "message": 1
-            }
-          ]
+            "label": "Full Build",
+            "type": "shell",
+            "command": "cd ${workspaceRoot} && just fullbuild",
         }
-      ]
-    }
-  ]
+    ]
 }

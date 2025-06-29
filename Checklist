@@ -20,96 +20,58 @@ Before release:
     date -u
     changelog.md
 
-5. Use latest LTS resolver
-
-    https://www.stackage.org/lts
-    stack.yaml
-
-6. Use correct & latest GHC versions
+5. Use correct & latest GHC versions
 
     https://www.haskell.org/ghc/download.html
-    fullcheck
-    fullcheck.ps1
     time.cabal
         - tested-with
         - base dependency lower bound
+    .devcontainer/Dockerfile
     .github/workflows/ci.yml
 
-7. Use latest stack
-
-    stack upgrade
-    stack --version
-
-8. Format source
-
-    just format
-
-9. Build & test
+6. Format, build & test
 
     just fullbuild
 
-10. Run benchmarks
-
-    stack bench
-
-11. Inspect generated haddock, if necessary
+7. Inspect generated haddock, if necessary
 
     dist/doc/html/time/index.html
 
-12. Commit and push changes to repo
+8. Commit and push changes to repo
 
     git commit -a
     git push
 
-13. Check builds (these can be done in parallel)
-
-13a. Check GitHub build
+9. Check GitHub builds
 
     https://github.com/haskell/time/actions
 
-13b. Build and test on 32-bit Linux machine
-
-    git switch master
-    just fullbuild
-
-13c. Build and test on FreeBSD machine
-
-    git switch master
-    just fullbuild
-
-13d. Build and test on Windows
-
-    (in PowerShell)
-    Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-    git switch master
-    .\fullcheck
-
-14.  Upload to Hackage
+10.  Upload to Hackage
 
     git clean -dXf
     autoreconf -i
     stack upload .
     http://hackage.haskell.org/package/time
 
-15.  Tag commit
+11.  Tag commit
 
     git tag -a -s VERSION -m "Version VERSION"
     git push --tags
 
-16.  Update ghc branch
+12.  Update ghc branch
 
     git switch ghc
     git merge master
     git push
 
-17.  Restore local branch for next development
+13.  Restore local branch for next development
 
     git switch master
 
-18.  Close completed milestone
+14.  Close completed milestone
 
     https://github.com/haskell/time/milestones
 
-19.  Inform GHC team
+15.  Inform GHC team
 
     https://gitlab.haskell.org/ghc/ghc/-/issues
