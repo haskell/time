@@ -35,7 +35,7 @@ Before release:
 
 7. Inspect generated haddock, if necessary
 
-    dist/doc/html/time/index.html
+    dist-newstyle/build/*/ghc-*/time-*/doc/html/time/index.html
 
 8. Commit and push changes to repo
 

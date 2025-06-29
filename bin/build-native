@@ -2,3 +2,4 @@
 ghcup set ghc $1
 autoreconf -i
 cabal test --ghc-options='-Werror'
+cabal haddock --ghc-options='-Werror'
