@@ -150,9 +150,14 @@ unixWorkarounds fmt s
     isPadChar _ = False
 unixWorkarounds _ s = s
 
+lastM :: [a] -> Maybe a
+lastM [] = Nothing
+lastM [a] = Just a
+lastM (_:aa) = lastM aa
+
 compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
 compareFormat _modUnix fmt zone _time
-    | last fmt == 'Z' && timeZoneName zone == "" = rejected
+    | lastM fmt == Just 'Z' && timeZoneName zone == "" = rejected
 compareFormat modUnix fmt zone time =
     let
         ctime = utcToZonedTime zone time
