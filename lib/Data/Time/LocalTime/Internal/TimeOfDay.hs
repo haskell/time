@@ -14,6 +14,7 @@ module Data.Time.LocalTime.Internal.TimeOfDay (
     pastMidnight,
     timeOfDayToTime,
     sinceMidnight,
+    diffTimeOfDay,
     dayFractionToTimeOfDay,
     timeOfDayToDayFraction,
 ) where
@@ -127,3 +128,6 @@ dayFractionToTimeOfDay df = timeToTimeOfDay (realToFrac (df * 86400))
 -- | Get the fraction of a day since midnight given a time of day.
 timeOfDayToDayFraction :: TimeOfDay -> Rational
 timeOfDayToDayFraction tod = realToFrac (timeOfDayToTime tod) / realToFrac posixDayLength
+
+diffTimeOfDay :: TimeOfDay -> TimeOfDay -> NominalDiffTime
+diffTimeOfDay t1 t2 = realToFrac $ daysAndTimeOfDayToTime 0 t1 - daysAndTimeOfDayToTime 0 t2

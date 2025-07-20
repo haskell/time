@@ -12,6 +12,11 @@ module Data.Time.LocalTime.Internal.LocalTime (
     localTimeToUTC,
     ut1ToLocalTime,
     localTimeToUT1,
+    -- using CalendarDiffTime
+    addLocalDurationClip,
+    addLocalDurationRollOver,
+    diffLocalDurationClip,
+    diffLocalDurationRollOver,
 ) where
 
 import Control.DeepSeq
@@ -24,6 +29,7 @@ import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.TimeZone
+import Data.Time.LocalTime.Internal.CalendarDiffTime
 import GHC.Generics
 import Language.Haskell.TH.Syntax qualified as TH
 
@@ -80,3 +86,23 @@ localTimeToUT1 long (LocalTime (ModifiedJulianDay localMJD) tod) =
 -- orphan instance
 instance Show UniversalTime where
     show t = show (ut1ToLocalTime 0 t)
+
+addLocalDurationClip :: CalendarDiffTime -> LocalTime -> LocalTime
+addLocalDurationClip (CalendarDiffTime m d) (LocalTime day t) =
+    addLocalTime d $ LocalTime (addGregorianMonthsClip m day) t
+
+addLocalDurationRollOver :: CalendarDiffTime -> LocalTime -> LocalTime
+addLocalDurationRollOver (CalendarDiffTime m d) (LocalTime day t) =
+    addLocalTime d $ LocalTime (addGregorianMonthsRollOver m day) t
+
+diffLocalDurationClip :: LocalTime -> LocalTime -> CalendarDiffTime
+diffLocalDurationClip (LocalTime day1 t1) (LocalTime day2 t2) =
+    let
+    CalendarDiffTime m t = calendarTimeDays $ diffGregorianDurationClip day1 day2
+    in CalendarDiffTime m $ t + diffTimeOfDay t1 t2
+
+diffLocalDurationRollOver :: LocalTime -> LocalTime -> CalendarDiffTime
+diffLocalDurationRollOver (LocalTime day1 t1) (LocalTime day2 t2) =
+    let
+    CalendarDiffTime m t = calendarTimeDays $ diffGregorianDurationRollOver day1 day2
+    in CalendarDiffTime m $ t + diffTimeOfDay t1 t2
