@@ -3,6 +3,7 @@
 
 module Data.Time.Clock.Internal.NominalDiffTime (
     NominalDiffTime,
+    pattern Nominal,
     secondsToNominalDiffTime,
     nominalDiffTimeToSeconds,
     nominalDay,
@@ -18,6 +19,8 @@ import Language.Haskell.TH.Syntax qualified as TH
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
 
+import Data.Time.Clock.Internal.DiffTime
+
 -- | This is a length of time, as measured by UTC.
 -- It has a precision of one picosecond (10^-12 s).
 --
@@ -32,6 +35,12 @@ import Text.ParserCombinators.ReadPrec
 newtype NominalDiffTime
     = MkNominalDiffTime Pico
     deriving (Eq, Ord, Typeable, Data, TH.Lift)
+
+-- | convert from DiffTime
+pattern Nominal :: DiffTime -> NominalDiffTime
+pattern Nominal dt <- MkNominalDiffTime (realToFrac -> dt) where
+    Nominal dt = MkNominalDiffTime $ realToFrac dt
+{-# COMPLETE Nominal #-}
 
 -- | Create a 'NominalDiffTime' from a number of seconds.
 --

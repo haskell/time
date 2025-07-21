@@ -202,6 +202,7 @@ test-suite test-main
         Test.Calendar.Week
         Test.Calendar.Year
         Test.Clock.Conversion
+        Test.Clock.Pattern
         Test.Clock.Resolution
         Test.Clock.TAI
         Test.Format.Compile

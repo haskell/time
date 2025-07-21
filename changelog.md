@@ -8,6 +8,7 @@
   - MicroHs
 - add diffTimeOfDay
 - add \[add/diff\]\[UTC/Local\]Duration\[Clip/Rollover\]
+- add patterns for DiffTime & NominalDiffTime
 - UNIXish formatting/parsing:
   - add instance ParseTime DayOfWeek
   - make use of %s specifiers in parsing various types

@@ -4,6 +4,10 @@
 module Data.Time.Clock.Internal.DiffTime (
     -- * Absolute intervals
     DiffTime,
+    pattern Picoseconds,
+    pattern Seconds,
+    pattern Minutes,
+    pattern Hours,
     secondsToDiffTime,
     picosecondsToDiffTime,
     diffTimeToPicoseconds,
@@ -77,6 +81,25 @@ instance RealFrac DiffTime where
     round (MkDiffTime a) = round a
     ceiling (MkDiffTime a) = ceiling a
     floor (MkDiffTime a) = floor a
+
+pattern Picoseconds :: Integer -> DiffTime
+pattern Picoseconds a <- (diffTimeToPicoseconds -> a)
+    where Picoseconds a = picosecondsToDiffTime a
+{-# COMPLETE Picoseconds #-}
+
+pattern Seconds :: Pico -> DiffTime
+pattern Seconds a = MkDiffTime a
+{-# COMPLETE Seconds #-}
+
+pattern Minutes :: Pico -> DiffTime
+pattern Minutes a <- Seconds ((/ 60) -> a)
+    where Minutes a = Seconds $ a * 60
+{-# COMPLETE Minutes #-}
+
+pattern Hours :: Pico -> DiffTime
+pattern Hours a <- Minutes ((/ 60) -> a)
+    where Hours a = Minutes $ a * 60
+{-# COMPLETE Hours #-}
 
 -- | Create a 'DiffTime' which represents an integral number of seconds.
 secondsToDiffTime :: Integer -> DiffTime
