@@ -12,12 +12,14 @@ module Data.Time.Calendar.Days (
     periodLength,
     periodFromDay,
     periodToDay,
+    periodToDayClip,
     periodToDayValid,
 ) where
 
 import Control.DeepSeq
 import Data.Data
 import Data.Ix
+import Data.Time.Calendar.Private
 import GHC.Generics
 import Language.Haskell.TH.Syntax qualified as TH
 
@@ -96,6 +98,9 @@ periodFromDay d =
 -- @since 1.12.1
 periodToDay :: DayPeriod p => p -> Int -> Day
 periodToDay p i = addDays (toInteger $ pred i) $ periodFirstDay p
+
+periodToDayClip :: DayPeriod p => p -> Int -> Day
+periodToDayClip p i = periodToDay p $ clip 1 (periodLength p) i
 
 -- | Validating inverse of 'periodFromDay'.
 --

@@ -91,7 +91,7 @@ pattern MonthDay :: Month -> DayOfMonth -> Day
 pattern MonthDay m dm <-
     (periodFromDay -> (m, dm))
     where
-        MonthDay = periodToDay
+        MonthDay = periodToDayClip
 
 fromMonthDayValid :: Month -> DayOfMonth -> Maybe Day
 fromMonthDayValid = periodToDayValid

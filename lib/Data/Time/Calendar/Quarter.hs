@@ -142,6 +142,6 @@ pattern QuarterDay :: Quarter -> DayOfQuarter -> Day
 pattern QuarterDay q dq <-
     (periodFromDay -> (q, dq))
     where
-        QuarterDay = periodToDay
+        QuarterDay = periodToDayClip
 
 {-# COMPLETE QuarterDay #-}

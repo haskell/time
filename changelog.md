@@ -18,6 +18,7 @@
   - loosen up parsing time-zone modifiers
 - add Lift instances to all types (really this time)
 - hide Data.Time.Format.Internal
+- fix MonthDay and QuarterDay clipping
 
 ## [1.14] - 2024-03-10
 - add Lift instances to all types
