@@ -84,21 +84,28 @@ instance RealFrac DiffTime where
 
 pattern Picoseconds :: Integer -> DiffTime
 pattern Picoseconds a <- (diffTimeToPicoseconds -> a)
-    where Picoseconds a = picosecondsToDiffTime a
+    where
+        Picoseconds a = picosecondsToDiffTime a
+
 {-# COMPLETE Picoseconds #-}
 
 pattern Seconds :: Pico -> DiffTime
 pattern Seconds a = MkDiffTime a
+
 {-# COMPLETE Seconds #-}
 
 pattern Minutes :: Pico -> DiffTime
 pattern Minutes a <- Seconds ((/ 60) -> a)
-    where Minutes a = Seconds $ a * 60
+    where
+        Minutes a = Seconds $ a * 60
+
 {-# COMPLETE Minutes #-}
 
 pattern Hours :: Pico -> DiffTime
 pattern Hours a <- Minutes ((/ 60) -> a)
-    where Hours a = Minutes $ a * 60
+    where
+        Hours a = Minutes $ a * 60
+
 {-# COMPLETE Hours #-}
 
 -- | Create a 'DiffTime' which represents an integral number of seconds.

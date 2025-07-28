@@ -27,9 +27,9 @@ import Data.Time.Clock.Internal.NominalDiffTime
 import Data.Time.Clock.Internal.UTCDiff
 import Data.Time.Clock.Internal.UTCTime
 import Data.Time.Clock.Internal.UniversalTime
+import Data.Time.LocalTime.Internal.CalendarDiffTime
 import Data.Time.LocalTime.Internal.TimeOfDay
 import Data.Time.LocalTime.Internal.TimeZone
-import Data.Time.LocalTime.Internal.CalendarDiffTime
 import GHC.Generics
 import Language.Haskell.TH.Syntax qualified as TH
 
@@ -98,11 +98,13 @@ addLocalDurationRollOver (CalendarDiffTime m d) (LocalTime day t) =
 diffLocalDurationClip :: LocalTime -> LocalTime -> CalendarDiffTime
 diffLocalDurationClip (LocalTime day1 t1) (LocalTime day2 t2) =
     let
-    CalendarDiffTime m t = calendarTimeDays $ diffGregorianDurationClip day1 day2
-    in CalendarDiffTime m $ t + diffTimeOfDay t1 t2
+        CalendarDiffTime m t = calendarTimeDays $ diffGregorianDurationClip day1 day2
+    in
+        CalendarDiffTime m $ t + diffTimeOfDay t1 t2
 
 diffLocalDurationRollOver :: LocalTime -> LocalTime -> CalendarDiffTime
 diffLocalDurationRollOver (LocalTime day1 t1) (LocalTime day2 t2) =
     let
-    CalendarDiffTime m t = calendarTimeDays $ diffGregorianDurationRollOver day1 day2
-    in CalendarDiffTime m $ t + diffTimeOfDay t1 t2
+        CalendarDiffTime m t = calendarTimeDays $ diffGregorianDurationRollOver day1 day2
+    in
+        CalendarDiffTime m $ t + diffTimeOfDay t1 t2

@@ -15,11 +15,10 @@ import Data.Fixed
 #ifdef __GLASGOW_HASKELL__
 import GHC.Read
 #endif
+import Data.Time.Clock.Internal.DiffTime
 import Language.Haskell.TH.Syntax qualified as TH
 import Text.ParserCombinators.ReadP
 import Text.ParserCombinators.ReadPrec
-
-import Data.Time.Clock.Internal.DiffTime
 
 -- | This is a length of time, as measured by UTC.
 -- It has a precision of one picosecond (10^-12 s).
@@ -38,8 +37,10 @@ newtype NominalDiffTime
 
 -- | convert from DiffTime
 pattern Nominal :: DiffTime -> NominalDiffTime
-pattern Nominal dt <- MkNominalDiffTime (realToFrac -> dt) where
-    Nominal dt = MkNominalDiffTime $ realToFrac dt
+pattern Nominal dt <- MkNominalDiffTime (realToFrac -> dt)
+    where
+        Nominal dt = MkNominalDiffTime $ realToFrac dt
+
 {-# COMPLETE Nominal #-}
 
 -- | Create a 'NominalDiffTime' from a number of seconds.

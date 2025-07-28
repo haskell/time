@@ -153,7 +153,7 @@ unixWorkarounds _ s = s
 lastM :: [a] -> Maybe a
 lastM [] = Nothing
 lastM [a] = Just a
-lastM (_:aa) = lastM aa
+lastM (_ : aa) = lastM aa
 
 compareFormat :: (String -> String) -> String -> TimeZone -> UTCTime -> Result
 compareFormat _modUnix fmt zone _time
