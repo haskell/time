@@ -21,4 +21,4 @@ testYearQuarter = nameTest "YearQuarter" $ \q -> case q of
     YearQuarter y qy -> q == YearQuarter y qy
 
 testCalendarProps :: TestTree
-testCalendarProps = nameTest "calender-props" [testYearMonth, testMonthDay, testYearQuarter]
+testCalendarProps = nameTest "calendar-props" [testYearMonth, testMonthDay, testYearQuarter]

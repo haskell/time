@@ -565,7 +565,7 @@ typedTests prop =
     , nameTest "UTCTime" $ tgroup utcTimeAlmostFormats $ \fmt t -> utctDayTime t < 86400 ==> prop fmt t
     , nameTest "UniversalTime" $ tgroup universalTimeFormats prop
     , nameTest "CalendarDiffDays" $ tgroup calendarDiffDaysFormats prop
-    , nameTest "CalenderDiffTime" $ tgroup calendarDiffTimeFormats prop
+    , nameTest "CalendarDiffTime" $ tgroup calendarDiffTimeFormats prop
     , nameTest "DiffTime" $ tgroup diffTimeFormats prop
     , nameTest "NominalDiffTime" $ tgroup nominalDiffTimeFormats prop
     ]

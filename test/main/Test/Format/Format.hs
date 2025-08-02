@@ -163,20 +163,20 @@ testDiffTime =
         , testAFormat "%3ES" "01.245" (61.24582 :: DiffTime)
         ]
 
-testCalenderDiffDays :: TestTree
-testCalenderDiffDays =
+testCalendarDiffDays :: TestTree
+testCalendarDiffDays =
     testGroup
-        "CalenderDiffDays"
+        "CalendarDiffDays"
         [ testAFormat "%yy%Bm%ww%Dd" "5y4m3w2d" $ CalendarDiffDays 64 23
         , testAFormat "%bm %dd" "64m 23d" $ CalendarDiffDays 64 23
         , testAFormat "%yy%Bm%ww%Dd" "-5y-4m-3w-2d" $ CalendarDiffDays (-64) (-23)
         , testAFormat "%bm %dd" "-64m -23d" $ CalendarDiffDays (-64) (-23)
         ]
 
-testCalenderDiffTime :: TestTree
-testCalenderDiffTime =
+testCalendarDiffTime :: TestTree
+testCalendarDiffTime =
     testGroup
-        "CalenderDiffTime"
+        "CalendarDiffTime"
         [ testAFormat "%yy%Bm%ww%Dd%Hh%Mm%Ss" "5y4m3w2d2h22m8s" $ CalendarDiffTime 64 $ 23 * 86400 + 8528.21
         , testAFormat "%yy%Bm%ww%Dd%Hh%Mm%ESs" "5y4m3w2d2h22m8.21s" $ CalendarDiffTime 64 $ 23 * 86400 + 8528.21
         , testAFormat "%yy%Bm%ww%Dd%Hh%Mm%0ESs" "5y4m3w2d2h22m08.210000000000s" $
@@ -207,6 +207,6 @@ testFormat =
         , testTimeZone
         , testNominalDiffTime
         , testDiffTime
-        , testCalenderDiffDays
-        , testCalenderDiffTime
+        , testCalendarDiffDays
+        , testCalendarDiffTime
         ]

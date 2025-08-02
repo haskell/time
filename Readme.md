@@ -1,7 +1,7 @@
 # time
 
-This is the haskell time library that is bundled with [GHC][GHC] the Glasgow/
-Glorious Haskell compiler.
+This is the Haskell time library that is bundled with [GHC][GHC], the
+Glasgow/Glorious Haskell compiler.
 
 To build this package using Cabal directly from git, you must run
 "autoreconf" before the usual Cabal build steps (configure/build/install).
