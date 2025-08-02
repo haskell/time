@@ -39,7 +39,7 @@ data TimeOfDay = TimeOfDay
     , todMin :: Int
     -- ^ range 0 - 59
     , todSec :: Pico
-    -- ^ Note that 0 <= 'todSec' < 61, accomodating leap seconds.
+    -- ^ Note that 0 <= 'todSec' < 61, accommodating leap seconds.
     -- Any local minute may have a leap second, since leap seconds happen in all zones simultaneously
     }
     deriving (Eq, Ord, Typeable, Data, Generic, TH.Lift)
