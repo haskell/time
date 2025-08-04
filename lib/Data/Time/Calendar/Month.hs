@@ -18,6 +18,7 @@ import Data.Ix
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Gregorian
 import Data.Time.Calendar.Private
+import Data.Time.Calendar.Types
 import GHC.Generics
 import Language.Haskell.TH.Syntax qualified as TH
 import Text.ParserCombinators.ReadP

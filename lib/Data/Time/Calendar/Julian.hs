@@ -17,6 +17,8 @@ module Data.Time.Calendar.Julian (
     pattern December,
     DayOfMonth,
     DayOfYear,
+
+    -- * Year and day format
     module Data.Time.Calendar.JulianYearDay,
     toJulian,
     fromJulian,

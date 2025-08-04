@@ -1,15 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.Week (
-    -- * Week
-    DayOfWeek (..),
-    dayOfWeek,
-    dayOfWeekDiff,
-    firstDayOfWeekOnAfter,
-    weekAllDays,
-    weekFirstDay,
-    weekLastDay,
-) where
+module Data.Time.Calendar.Week where
 
 import Control.DeepSeq
 import Data.Data

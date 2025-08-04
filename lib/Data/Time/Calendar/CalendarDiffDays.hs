@@ -1,9 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.CalendarDiffDays (
-    -- * Calendar Duration
-    module Data.Time.Calendar.CalendarDiffDays,
-) where
+module Data.Time.Calendar.CalendarDiffDays where
 
 import Control.DeepSeq
 import Data.Data

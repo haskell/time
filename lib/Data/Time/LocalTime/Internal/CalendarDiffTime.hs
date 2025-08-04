@@ -1,9 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.LocalTime.Internal.CalendarDiffTime (
-    -- * Calendar Duration
-    module Data.Time.LocalTime.Internal.CalendarDiffTime,
-) where
+module Data.Time.LocalTime.Internal.CalendarDiffTime where
 
 import Control.DeepSeq
 import Data.Data

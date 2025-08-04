@@ -1,14 +1,7 @@
 {-# LANGUAGE Safe #-}
 
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
-module Data.Time.Clock.Internal.AbsoluteTime (
-    -- TAI arithmetic
-    AbsoluteTime,
-    taiEpoch,
-    addAbsoluteTime,
-    diffAbsoluteTime,
-    taiNominalDayStart,
-) where
+module Data.Time.Clock.Internal.AbsoluteTime where
 
 import Control.DeepSeq
 import Data.Data

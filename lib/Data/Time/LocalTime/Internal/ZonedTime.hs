@@ -2,13 +2,7 @@
 
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.LocalTime.Internal.ZonedTime (
-    ZonedTime (..),
-    utcToZonedTime,
-    zonedTimeToUTC,
-    getZonedTime,
-    utcToLocalZonedTime,
-) where
+module Data.Time.LocalTime.Internal.ZonedTime where
 
 import Control.DeepSeq
 import Data.Data

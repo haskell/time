@@ -1,7 +1,6 @@
 {-# LANGUAGE Safe #-}
 
 module Data.Time.Format.Parse.Class (
-    -- * Parsing
     ParseNumericPadding (..),
     ParseTime (..),
     parseSpecifiers,

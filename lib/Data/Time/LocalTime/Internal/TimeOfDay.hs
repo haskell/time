@@ -1,23 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.LocalTime.Internal.TimeOfDay (
-    -- * Time of day
-    TimeOfDay (..),
-    midnight,
-    midday,
-    makeTimeOfDayValid,
-    timeToDaysAndTimeOfDay,
-    daysAndTimeOfDayToTime,
-    utcToLocalTimeOfDay,
-    localToUTCTimeOfDay,
-    timeToTimeOfDay,
-    pastMidnight,
-    timeOfDayToTime,
-    sinceMidnight,
-    diffTimeOfDay,
-    dayFractionToTimeOfDay,
-    timeOfDayToDayFraction,
-) where
+module Data.Time.LocalTime.Internal.TimeOfDay where
 
 import Control.DeepSeq
 import Data.Data

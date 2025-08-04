@@ -1,9 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.JulianYearDay (
-    -- * Year and day format
-    module Data.Time.Calendar.JulianYearDay,
-) where
+module Data.Time.Calendar.JulianYearDay where
 
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.Private

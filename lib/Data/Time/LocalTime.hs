@@ -11,10 +11,48 @@ module Data.Time.LocalTime (
     -- getting the locale time zone
     getTimeZone,
     getCurrentTimeZone,
-    module Data.Time.LocalTime.Internal.TimeOfDay,
+
+    -- * Time of day
+    TimeOfDay (..),
+    midnight,
+    midday,
+    makeTimeOfDayValid,
+    timeToDaysAndTimeOfDay,
+    daysAndTimeOfDayToTime,
+    utcToLocalTimeOfDay,
+    localToUTCTimeOfDay,
+    timeToTimeOfDay,
+    pastMidnight,
+    timeOfDayToTime,
+    sinceMidnight,
+    diffTimeOfDay,
+    dayFractionToTimeOfDay,
+    timeOfDayToDayFraction,
+
+    -- * Calendar Duration
     module Data.Time.LocalTime.Internal.CalendarDiffTime,
-    module Data.Time.LocalTime.Internal.LocalTime,
-    module Data.Time.LocalTime.Internal.ZonedTime,
+
+    -- * Local Time
+    LocalTime (..),
+    addLocalTime,
+    diffLocalTime,
+    -- converting UTC and UT1 times to LocalTime
+    utcToLocalTime,
+    localTimeToUTC,
+    ut1ToLocalTime,
+    localTimeToUT1,
+    -- using CalendarDiffTime
+    addLocalDurationClip,
+    addLocalDurationRollOver,
+    diffLocalDurationClip,
+    diffLocalDurationRollOver,
+
+    -- * Zoned Time
+    ZonedTime (..),
+    utcToZonedTime,
+    zonedTimeToUTC,
+    getZonedTime,
+    utcToLocalZonedTime,
 ) where
 
 import Data.Time.Format ()

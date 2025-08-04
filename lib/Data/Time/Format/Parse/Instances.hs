@@ -19,6 +19,7 @@ import Data.Time.Calendar.Month
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private (clipValid)
 import Data.Time.Calendar.Quarter
+import Data.Time.Calendar.Types
 import Data.Time.Calendar.WeekDate
 import Data.Time.Clock.Internal.DiffTime
 import Data.Time.Clock.Internal.NominalDiffTime

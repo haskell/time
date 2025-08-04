@@ -2,22 +2,7 @@
 
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.LocalTime.Internal.LocalTime (
-    -- * Local Time
-    LocalTime (..),
-    addLocalTime,
-    diffLocalTime,
-    -- converting UTC and UT1 times to LocalTime
-    utcToLocalTime,
-    localTimeToUTC,
-    ut1ToLocalTime,
-    localTimeToUT1,
-    -- using CalendarDiffTime
-    addLocalDurationClip,
-    addLocalDurationRollOver,
-    diffLocalDurationClip,
-    diffLocalDurationRollOver,
-) where
+module Data.Time.LocalTime.Internal.LocalTime where
 
 import Control.DeepSeq
 import Data.Data

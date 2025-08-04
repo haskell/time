@@ -5,11 +5,15 @@
 
 -- | TAI and leap-second maps for converting to UTC: most people won't need this module.
 module Data.Time.Clock.TAI (
-    -- TAI arithmetic
-    module Data.Time.Clock.Internal.AbsoluteTime,
-    -- leap-second map type
+    -- * Absolute Time
+    AbsoluteTime,
+    taiEpoch,
+    addAbsoluteTime,
+    diffAbsoluteTime,
+    taiNominalDayStart,
+
+    -- * Leap-Second Map
     LeapSecondMap,
-    -- conversion between UTC and TAI with map
     utcDayLength,
     utcToTAITime,
     taiToUTCTime,

@@ -1,11 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Clock.Internal.UniversalTime (
-    -- * Universal Time
-
-    -- | Time as measured by the Earth.
-    UniversalTime (..),
-) where
+module Data.Time.Clock.Internal.UniversalTime where
 
 import Control.DeepSeq
 import Data.Data

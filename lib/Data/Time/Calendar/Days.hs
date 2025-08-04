@@ -1,20 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Time.Calendar.Days (
-    -- * Days
-    Day (..),
-    addDays,
-    diffDays,
-
-    -- * DayPeriod
-    DayPeriod (..),
-    periodAllDays,
-    periodLength,
-    periodFromDay,
-    periodToDay,
-    periodToDayClip,
-    periodToDayValid,
-) where
+module Data.Time.Calendar.Days where
 
 import Control.DeepSeq
 import Data.Data

@@ -1,17 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Trustworthy #-}
 
-module Data.Time.Clock.Internal.DiffTime (
-    -- * Absolute intervals
-    DiffTime,
-    pattern Picoseconds,
-    pattern Seconds,
-    pattern Minutes,
-    pattern Hours,
-    secondsToDiffTime,
-    picosecondsToDiffTime,
-    diffTimeToPicoseconds,
-) where
+module Data.Time.Clock.Internal.DiffTime where
 
 import Control.DeepSeq
 import Data.Data

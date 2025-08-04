@@ -2,53 +2,13 @@
 
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.Calendar.Gregorian (
-    -- * Year, month and day
-    Year,
-    pattern CommonEra,
-    pattern BeforeCommonEra,
-    MonthOfYear,
-    pattern January,
-    pattern February,
-    pattern March,
-    pattern April,
-    pattern May,
-    pattern June,
-    pattern July,
-    pattern August,
-    pattern September,
-    pattern October,
-    pattern November,
-    pattern December,
-    DayOfMonth,
-
-    -- * Gregorian calendar
-    toGregorian,
-    fromGregorian,
-    pattern YearMonthDay,
-    fromGregorianValid,
-    showGregorian,
-    gregorianMonthLength,
-    -- calendrical arithmetic
-    -- e.g. "one month after March 31st"
-    addGregorianMonthsClip,
-    addGregorianMonthsRollOver,
-    addGregorianYearsClip,
-    addGregorianYearsRollOver,
-    addGregorianDurationClip,
-    addGregorianDurationRollOver,
-    diffGregorianDurationClip,
-    diffGregorianDurationRollOver,
-    -- re-exported from OrdinalDate
-    isLeapYear,
-) where
+module Data.Time.Calendar.Gregorian where
 
 import Data.Time.Calendar.CalendarDiffDays
 import Data.Time.Calendar.Days
 import Data.Time.Calendar.MonthDay
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.Calendar.Private
-import Data.Time.Calendar.Types
 
 -- | Convert to proleptic Gregorian calendar.
 toGregorian :: Day -> (Year, MonthOfYear, DayOfMonth)

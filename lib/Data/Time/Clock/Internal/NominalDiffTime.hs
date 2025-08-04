@@ -1,13 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Trustworthy #-}
 
-module Data.Time.Clock.Internal.NominalDiffTime (
-    NominalDiffTime,
-    pattern Nominal,
-    secondsToNominalDiffTime,
-    nominalDiffTimeToSeconds,
-    nominalDay,
-) where
+module Data.Time.Clock.Internal.NominalDiffTime where
 
 import Control.DeepSeq
 import Data.Data

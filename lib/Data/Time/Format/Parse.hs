@@ -2,18 +2,7 @@
 
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Data.Time.Format.Parse (
-    -- * UNIX-style parsing
-    parseTimeM,
-    parseTimeMultipleM,
-    parseTimeOrError,
-    readSTime,
-    readPTime,
-    ParseTime (),
-
-    -- * Locale
-    module Data.Time.Format.Locale,
-) where
+module Data.Time.Format.Parse where
 
 import Control.Monad.Fail
 import Data.Char
