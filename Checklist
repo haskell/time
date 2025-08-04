@@ -22,7 +22,7 @@ Before release:
 
 5. Use correct & latest GHC versions
 
-    https://www.haskell.org/ghc/download.html
+    https://gitlab.haskell.org/ghc/ghc/-/wikis/GHC%20Status
     time.cabal
         - tested-with
         - base dependency lower bound

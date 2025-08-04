@@ -21,7 +21,7 @@ RUN cabal update
 ENV PATH=/home/vscode/.cabal/bin:$PATH
 
 # native back-end
-ENV GHC_NATIVE_VERSIONS="9.8.4 9.10.1 9.12.2"
+ENV GHC_NATIVE_VERSIONS="9.8.4 9.10.2 9.12.2"
 ENV GHC_NATIVE_EXPIRED_VERSIONS="9.4.8 9.6.7"
 WORKDIR /home/vscode
 RUN for V in $GHC_NATIVE_VERSIONS $GHC_NATIVE_EXPIRED_VERSIONS; do ghcup install ghc $V; done
