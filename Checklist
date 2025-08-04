@@ -46,32 +46,40 @@ Before release:
 
     https://github.com/haskell/time/actions
 
-10.  Upload to Hackage
+10. Upload candidate to Hackage
 
     git clean -dXf
-    autoreconf -i
-    stack upload .
-    http://hackage.haskell.org/package/time
+    just shell
+      autoreconf -i
+      ghcup set ghc $LATESTGHC
+      cabal sdist
+      cabal upload dist-newstyle/sdist/time-*.tar.gz
 
-11.  Tag commit
+11. Examine Hackage candidate (?)
 
-    git tag -a -s VERSION -m "Version VERSION"
+    https://hackage.haskell.org/package/time-$VERSION/candidate
+
+12. Publish Hackage candidate
+
+13.  Tag commit
+
+    git tag -a -s $VERSION -m "Version $VERSION"
     git push --tags
 
-12.  Update ghc branch
+14.  Update ghc branch
 
     git switch ghc
     git merge master
     git push
 
-13.  Restore local branch for next development
+15.  Restore local branch for next development
 
     git switch master
 
-14.  Close completed milestone
+16.  Close completed milestone
 
     https://github.com/haskell/time/milestones
 
-15.  Inform GHC team
+17.  Inform GHC team
 
     https://gitlab.haskell.org/ghc/ghc/-/issues
