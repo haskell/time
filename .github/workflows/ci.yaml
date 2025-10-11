@@ -35,7 +35,7 @@ jobs:
         sudo apt-get install -y libgmp-dev
 
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build native"
       run: |
@@ -70,7 +70,7 @@ jobs:
         sudo apt-get install -y libgmp-dev
 
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build native expired"
       run: |
@@ -121,7 +121,7 @@ jobs:
         emconfigure ghcup install ghc javascript-unknown-ghcjs-${{matrix.ghc}}
 
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build js"
       run: |
@@ -162,7 +162,7 @@ jobs:
         tar xvf wasmtime-dev-x86_64-linux.tar
 
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build wasm32"
       run: |
@@ -182,7 +182,7 @@ jobs:
         make minstall
 
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build MicroHs"
       run: |
@@ -226,7 +226,7 @@ jobs:
         install: autoconf
 
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build"
       run: |
@@ -266,7 +266,7 @@ jobs:
         key: ${{runner.os}}-${{matrix.ghc}}
 
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build"
       run: |
@@ -284,7 +284,7 @@ jobs:
         - "9.12"
     steps:
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Build"
       id: build-freebsd
