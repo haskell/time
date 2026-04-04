@@ -297,7 +297,10 @@ jobs:
         usesh: true
         mem: 4096
         prepare: |
-          ntpd -g -N -w 60
+          pkg install -y net/chrony
+          cp .github/chrony.conf /usr/local/etc/chrony.conf
+          service chronyd onerestart
+          chronyc waitsync 60
           pkg install -y bash curl gcc gmp gmake ncurses perl5 libffi libiconv git autoconf misc/compat14x
           export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
           export BOOTSTRAP_HASKELL_MINIMAL=1
