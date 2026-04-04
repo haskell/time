@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -135,6 +136,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -177,7 +179,7 @@ jobs:
     - name: "Install MicroHs"
       run: |
         cd $HOME
-        git clone https://github.com/augustss/MicroHs.git --branch stable-7 mhs
+        git clone https://github.com/augustss/MicroHs.git --branch v0.15.4.0 mhs
         cd mhs
         make minstall
 
@@ -199,6 +201,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -243,6 +246,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -281,7 +285,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
-        - "9.12"
+        - "9.14"
     steps:
     - name: "Checkout"
       uses: actions/checkout@v6
