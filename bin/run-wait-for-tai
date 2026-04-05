@@ -1,0 +1,3 @@
+#!/usr/bin/env -S bash -e
+cc -o .github/wait-for-tai -Wall -Wextra -Werror .github/wait-for-tai.c
+.github/wait-for-tai
