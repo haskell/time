@@ -14,8 +14,8 @@ int main(void)
     puts("CLOCK_TAI is not defined on this platform; skipping TAI wait.");
     return 0;
 #else
-    long const timeout_seconds = 300;
-    long const poll_milliseconds = 1000;
+    long const timeout_seconds = 6000;   // 10 minutes
+    long const poll_milliseconds = 1000; // 1 second
     time_t start;
 
     start = time(NULL);
