@@ -55,8 +55,13 @@ library
     build-depends:
         base >= 4.19 && < 5,
         deepseq >= 1.1,
-    if impl(ghc)
-        build-depends: template-haskell >= 2.17,
+    -- template-haskell-lift was added as a boot library in GHC-9.14
+    -- once we no longer wish to backport releases to older major releases,
+    -- this conditional can be dropped
+    if impl(ghc < 9.14)
+        build-depends: template-haskell
+    elif impl(ghc)
+        build-depends: template-haskell-lift >= 0.1 && <0.2
     if os(windows)
         build-depends: Win32
     exposed-modules:
@@ -176,7 +181,10 @@ test-suite test-main
         tasty,
         tasty-hunit,
         tasty-quickcheck,
-        template-haskell
+    if impl(ghc < 9.14)
+        build-depends: template-haskell
+    elif impl(ghc)
+        build-depends: template-haskell-lift >= 0.1 && <0.2
     main-is: Main.hs
     other-modules:
         Test.Types
@@ -236,7 +244,10 @@ test-suite test-template
         tasty,
         tasty-hunit,
         tasty-quickcheck,
-        template-haskell
+    if impl(ghc < 9.14)
+        build-depends: template-haskell
+    elif impl(ghc)
+        build-depends: template-haskell-lift >= 0.1 && <0.2
     main-is: Main.hs
 
 test-suite test-unix
@@ -276,4 +287,8 @@ benchmark time-bench
         deepseq,
         time,
         criterion
+    if impl(ghc < 9.14)
+        build-depends: template-haskell
+    elif impl(ghc)
+        build-depends: template-haskell-lift >= 0.1 && <0.2
     main-is: Main.hs

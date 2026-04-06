@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 module Data.Time.LocalTime.Internal.TimeZone (
@@ -15,7 +16,11 @@ import Control.DeepSeq
 import Data.Data
 import Data.Time.Calendar.Private
 import GHC.Generics
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 -- | A TimeZone is a whole number of minutes offset from UTC, together with a name and a \"just for summer\" flag.
 data TimeZone = TimeZone

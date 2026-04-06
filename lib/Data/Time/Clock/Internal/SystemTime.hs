@@ -23,7 +23,11 @@ import Data.Int (Int64)
 import Data.Time.Clock.Internal.DiffTime
 import Data.Word
 import GHC.Generics
-import Language.Haskell.TH.Syntax qualified as TH
+#if __GLASGOW_HASKELL__ >= 914
+import qualified Language.Haskell.TH.Lift as TH
+#else
+import qualified Language.Haskell.TH.Syntax as TH
+#endif
 
 #ifdef mingw32_HOST_OS
 import qualified System.Win32.Time as Win32
