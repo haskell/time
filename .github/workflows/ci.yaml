@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -35,7 +36,7 @@ jobs:
         sudo apt-get install -y libgmp-dev
 
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build native"
       run: |
@@ -70,7 +71,7 @@ jobs:
         sudo apt-get install -y libgmp-dev
 
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build native expired"
       run: |
@@ -121,7 +122,7 @@ jobs:
         emconfigure ghcup install ghc javascript-unknown-ghcjs-${{matrix.ghc}}
 
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build js"
       run: |
@@ -135,6 +136,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -162,7 +164,7 @@ jobs:
         tar xvf wasmtime-dev-x86_64-linux.tar
 
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build wasm32"
       run: |
@@ -177,12 +179,12 @@ jobs:
     - name: "Install MicroHs"
       run: |
         cd $HOME
-        git clone https://github.com/augustss/MicroHs.git --branch stable-7 mhs
+        git clone https://github.com/augustss/MicroHs.git --branch v0.15.4.0 mhs
         cd mhs
         make minstall
 
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build MicroHs"
       run: |
@@ -199,6 +201,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -210,7 +213,7 @@ jobs:
         ghc-version: ${{matrix.ghc}}
 
     - name: "Cache cabal stuff"
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ${{steps.setup-haskell-cabal.outputs.cabal-store}}
@@ -226,7 +229,7 @@ jobs:
         install: autoconf
 
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build"
       run: |
@@ -243,6 +246,7 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
+        - "9.14"
         - "9.12"
         - "9.10"
         - "9.8"
@@ -258,7 +262,7 @@ jobs:
         ghc-version: ${{matrix.ghc}}
 
     - name: "Cache cabal stuff"
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ${{steps.setup-haskell-cabal.outputs.cabal-store}}
@@ -266,7 +270,7 @@ jobs:
         key: ${{runner.os}}-${{matrix.ghc}}
 
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build"
       run: |
@@ -281,10 +285,10 @@ jobs:
       fail-fast: false
       matrix:
         ghc:
-        - "9.12"
+        - "9.14"
     steps:
     - name: "Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: "Build"
       id: build-freebsd
@@ -293,7 +297,10 @@ jobs:
         usesh: true
         mem: 4096
         prepare: |
-          pkg install -y bash curl gcc gmp gmake ncurses perl5 libffi libiconv git autoconf
+          pkg install -y net/chrony
+          cp .github/chrony.conf /usr/local/etc/chrony.conf
+          service chronyd onerestart
+          pkg install -y bash curl gcc gmp gmake ncurses perl5 libffi libiconv git autoconf misc/compat14x
           export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
           export BOOTSTRAP_HASKELL_MINIMAL=1
           curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -304,4 +311,5 @@ jobs:
         run: |
           export PATH=$HOME/.ghcup/bin:$PATH
           export PATH=`pwd`/bin:$PATH
+          run-wait-for-tai
           build-native ${{matrix.ghc}}

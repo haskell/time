@@ -1,5 +1,6 @@
 #!/usr/bin/env -S bash -e
 autoreconf -i
+mcabal install ghc-compat
 mcabal install
 mkdir -p dist-mcabal/bin
 mhs test/ForeignCalls.hs -odist-mcabal/bin/ForeignCalls
