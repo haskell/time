@@ -90,7 +90,9 @@ addGregorianDurationClip (CalendarDiffDays m d) day = addDays d $ addGregorianMo
 addGregorianDurationRollOver :: CalendarDiffDays -> Day -> Day
 addGregorianDurationRollOver (CalendarDiffDays m d) day = addDays d $ addGregorianMonthsRollOver m day
 
--- | Calendrical difference, with as many whole months as possible
+-- | Calendrical difference, with as many whole months as possible.
+-- Has the property @addGregorianDurationClip (diffGregorianDurationClip d2 d1) d1 = d2@.
+-- For example, 2027-03-01 - 2027-01-31 = 1 month and 1 day.
 diffGregorianDurationClip :: Day -> Day -> CalendarDiffDays
 diffGregorianDurationClip day2 day1 =
     let
@@ -114,6 +116,8 @@ diffGregorianDurationClip day2 day1 =
         CalendarDiffDays ymAllowed $ diffDays day2 dayAllowed
 
 -- | Calendrical difference, with as many whole months as possible.
+-- Has the property @addGregorianDurationRollOver (diffGregorianDurationRollOver d2 d1) d1 = d2@.
+-- For example, 2027-03-01 - 2027-01-31 = 29 days.
 diffGregorianDurationRollOver :: Day -> Day -> CalendarDiffDays
 diffGregorianDurationRollOver day2 day1 =
     let

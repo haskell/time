@@ -15,6 +15,12 @@ format: container-up
 build: container-up
     devcontainer exec --workspace-folder . build-all
 
+repl: container-up
+    devcontainer exec --workspace-folder . cabal repl
+
+haddock: container-up
+    devcontainer exec --workspace-folder . cabal haddock
+
 fullbuild: container-build format build
 
 # to run this, your (classic) token must have "repo" and "read:packages"
