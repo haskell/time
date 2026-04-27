@@ -19,6 +19,7 @@ import Test.Clock.Pattern
 import Test.Clock.Resolution
 import Test.Clock.TAI
 import Test.Format.Compile ()
+import Test.Format.Duration
 import Test.Format.Format
 import Test.Format.ISO8601
 import Test.Format.ParseTime
@@ -50,7 +51,7 @@ tests =
             , testDuration
             ]
         , testGroup "Clock" [testClockPatterns, testClockConversion, testResolutions, testTAI]
-        , testGroup "Format" [testFormat, testParseTime, testISO8601]
+        , testGroup "Format" [testFormat, testParseTime, testISO8601, testISO8601Duration]
         , testGroup "LocalTime" [testTime, testTimeOfDay, testCalendarDiffTime]
         ]
 

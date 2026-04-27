@@ -80,6 +80,7 @@ library
         Data.Time.LocalTime,
         Data.Time.Format,
         Data.Time.Format.ISO8601,
+        Data.Time.Format.ISO8601.Duration,
         Data.Time
     other-modules:
         Data.Format,
@@ -216,6 +217,7 @@ test-suite test-main
         Test.Clock.Resolution
         Test.Clock.TAI
         Test.Format.Compile
+        Test.Format.Duration
         Test.Format.Format
         Test.Format.ParseTime
         Test.Format.ISO8601
