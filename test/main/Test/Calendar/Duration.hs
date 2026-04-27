@@ -4,31 +4,27 @@ module Test.Calendar.Duration (
 
 import Data.Time.Calendar
 import Data.Time.Calendar.Julian
+import Test.AddDiff
 import Test.Arbitrary ()
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck hiding (reason)
 
-data AddDiff = MkAddDiff
-    { adName :: String
-    , adAdd :: CalendarDiffDays -> Day -> Day
-    , adDifference :: Day -> Day -> CalendarDiffDays
-    , adFromYMD :: Integer -> Int -> Int -> Day
-    }
+type CalendarAddDiff = (AddDiff CalendarDiffDays Day, Integer -> Int -> Int -> Day)
 
-gregorianClip :: AddDiff
-gregorianClip = MkAddDiff "gregorianClip" addGregorianDurationClip diffGregorianDurationClip fromGregorian
+gregorianClip :: CalendarAddDiff
+gregorianClip = (MkAddDiff "gregorianClip" addGregorianDurationClip diffGregorianDurationClip, fromGregorian)
 
-gregorianRollOver :: AddDiff
-gregorianRollOver = MkAddDiff "gregorianRollOver" addGregorianDurationRollOver diffGregorianDurationRollOver fromGregorian
+gregorianRollOver :: CalendarAddDiff
+gregorianRollOver = (MkAddDiff "gregorianRollOver" addGregorianDurationRollOver diffGregorianDurationRollOver, fromGregorian)
 
-julianClip :: AddDiff
-julianClip = MkAddDiff "julianClip" addJulianDurationClip diffJulianDurationClip fromJulian
+julianClip :: CalendarAddDiff
+julianClip = (MkAddDiff "julianClip" addJulianDurationClip diffJulianDurationClip, fromJulian)
 
-julianRollOver :: AddDiff
-julianRollOver = MkAddDiff "julianRollOver" addJulianDurationRollOver diffJulianDurationRollOver fromJulian
+julianRollOver :: CalendarAddDiff
+julianRollOver = (MkAddDiff "julianRollOver" addJulianDurationRollOver diffJulianDurationRollOver, fromJulian)
 
-addDiffs :: [AddDiff]
+addDiffs :: [CalendarAddDiff]
 addDiffs =
     [ gregorianClip
     , gregorianRollOver
@@ -36,15 +32,11 @@ addDiffs =
     , julianRollOver
     ]
 
-testAddDiff :: AddDiff -> TestTree
-testAddDiff MkAddDiff{..} = testProperty adName $ \day1 day2 ->
-    adAdd (adDifference day2 day1) day1 == day2
-
 testAddDiffs :: TestTree
 testAddDiffs =
     testGroup
         "add-diff"
-        $ fmap testAddDiff addDiffs
+        $ fmap (testAddDiff . fst) addDiffs
 
 newtype Smallish = MkSmallish Integer deriving (Eq, Ord)
 
@@ -56,8 +48,8 @@ instance Arbitrary Smallish where
         n <- if b then choose (0, 60) else return 30
         return $ MkSmallish n
 
-testPositiveDiff :: AddDiff -> TestTree
-testPositiveDiff MkAddDiff{..} = testProperty adName $ \day1 (MkSmallish i) ->
+testPositiveDiff :: CalendarAddDiff -> TestTree
+testPositiveDiff (MkAddDiff{..}, _) = testProperty adName $ \day1 (MkSmallish i) ->
     let
         day2 = addDays i day1
         r = adDifference day2 day1
@@ -70,11 +62,11 @@ testPositiveDiffs =
         "positive-diff"
         $ fmap testPositiveDiff addDiffs
 
-testSpecific :: AddDiff -> (Integer, Int, Int) -> (Integer, Int, Int) -> (Integer, Integer) -> TestTree
-testSpecific MkAddDiff{..} (y2, m2, d2) (y1, m1, d1) (em, ed) =
+testSpecific :: CalendarAddDiff -> (Integer, Int, Int) -> (Integer, Int, Int) -> (Integer, Integer) -> TestTree
+testSpecific (MkAddDiff{..}, fromYMD) (y2, m2, d2) (y1, m1, d1) (em, ed) =
     let
-        day1 = adFromYMD y1 m1 d1
-        day2 = adFromYMD y2 m2 d2
+        day1 = fromYMD y1 m1 d1
+        day2 = fromYMD y2 m2 d2
         expected = CalendarDiffDays em ed
         found = adDifference day2 day1
     in

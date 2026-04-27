@@ -14,3 +14,4 @@ lib/include/HsTimeConfig.h
 lib/include/HsTimeConfig.h.in
 test-sdist
 .stack-work
+/.codex
