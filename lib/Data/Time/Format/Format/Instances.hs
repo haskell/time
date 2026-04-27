@@ -25,6 +25,7 @@ import Data.Time.Clock.Internal.UniversalTime
 import Data.Time.Clock.POSIX
 import Data.Time.Format.Format.Class
 import Data.Time.Format.Locale
+import Data.Time.Format.ISO8601.Duration (Duration, toCalendarDiffTime)
 import Data.Time.LocalTime.Internal.CalendarDiffTime
 import Data.Time.LocalTime.Internal.LocalTime
 import Data.Time.LocalTime.Internal.TimeOfDay
@@ -227,3 +228,9 @@ instance FormatTime CalendarDiffTime where
     formatCharacter _ 'b' = Just $ formatNumberStd 1 $ ctMonths
     formatCharacter _ 'B' = Just $ formatNumberStd 2 $ remBy 12 . ctMonths
     formatCharacter alt c = mapFormatCharacter ctTime $ formatCharacter alt c
+
+-- Delegates to the 'CalendarDiffTime' instance via the
+-- canonicalising 'toCalendarDiffTime', so e.g. @%y@ on a 'Duration'
+-- parsed from @P12M@ yields @1@, matching XSD 1.1 §E.2.
+instance FormatTime Duration where
+    formatCharacter alt c = mapFormatCharacter toCalendarDiffTime $ formatCharacter alt c
