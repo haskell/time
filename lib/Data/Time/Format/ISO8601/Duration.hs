@@ -302,24 +302,34 @@ zeroDuration =
         , durTime = Nothing
         }
 
--- | Spec-correct addition per XSD 1.1 §3.3.6.1: add 'months' axes,
--- add 'seconds' axes; the result is always in canonical form (see
--- 'normalizeDuration') because mixed-sign tuples cannot arise from
--- the sum of two well-formed durations of the same sign — and when
--- they /can/ arise (operands of opposite sign), the canonicalisation
--- in 'fromCalendarDiffTime' clamps to a representable form.
+-- | Spec-correct addition per XSD 1.1 §3.3.6.1: add the months
+-- axes and the seconds axes independently, then canonicalise the
+-- result via 'normalizeDuration' (XSD §E.2).  This matches the
+-- 'Semigroup' for 'CalendarDiffTime' on the 'toCalendarDiffTime'
+-- image and is the operation @xml-typelift@ et al. need to drop
+-- the @iso8601-duration@ \/ 'CalendarDiffTime' dependency entirely.
 --
--- Note: addition collapses the lexical structure.  The empty
--- duration acts as identity.  This is /not/ field-wise concatenation
--- (which would not be associative or canonical).
+-- __Mixed-sign edge case.__  Two same-signed operands always sum
+-- to a same-signed result, which 'fromCalendarDiffTime' accepts.
+-- Two opposite-signed operands can produce a 'CalendarDiffTime'
+-- with mixed-signed @(months, seconds)@; XSD §3.3.6.1 forbids this
+-- in the value space.  The instance resolves this by /absorbing
+-- the smaller-magnitude axis into the dominant one's sign/: the
+-- result keeps the magnitude of the larger axis and zeros the
+-- smaller.  This is the closest representable approximation to
+-- the 'CalendarDiffTime' sum within the XSD value space; it is a
+-- known lossy edge case, documented here.  In practice durations
+-- combined for dateTime arithmetic should pass through
+-- 'addUTCDurationClip' \/ 'addLocalDurationClip', not through
+-- @<>@, when this matters.
+--
+-- __Loss of lexical structure.__  Like all arithmetic on
+-- 'Duration', @<>@ collapses the structure.  @P1Y \<\> P12M@ is
+-- 'normalizeDuration'-equivalent to @P2Y@, not @P1Y12M@.  This
+-- is /not/ field-wise concatenation (which would not be
+-- associative or canonical).
 instance Semigroup Duration where
-    a <> b = case fromCalendarDiffTime (toCalendarDiffTime a <> toCalendarDiffTime b) of
-        Just d -> normalizeDuration d
-        -- Mixed-sign result: clamp by zeroing the smaller axis.
-        -- This case is unreachable when both operands are
-        -- 'normalizeDuration'-canonical and same-signed; for opposite
-        -- signs the canonical-map convention of XSD §E.2 applies.
-        Nothing -> zeroDuration
+    a <> b = normalizeDuration (canonicaliseFromCDT (toCalendarDiffTime a <> toCalendarDiffTime b))
 
 instance Monoid Duration where
     mempty = zeroDuration

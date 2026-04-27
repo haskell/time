@@ -459,11 +459,27 @@ testSemigroupMore =
                 assertEqual "" expected (showD (parseD a <> parseD b))
     in
         nameTest
-            "Semigroup edge cases"
+            "Semigroup edge cases (XSD sec.3.3.6.1)"
             [ check "P1Y" "-P1Y" "P0D"
             , check "PT30M" "-PT15M" "PT15M"
             , check "P1Y6M" "P6M" "P2Y"
             , check "P1W" "P1W" "P14D"
+            , check "P0D" "P0D" "P0D"
+              -- Mixed-sign sum: months axis dominates, time
+              -- absorbed.  XSD §3.3.6.1 forbids mixed-sign in the
+              -- value space; the Semigroup picks the dominant axis.
+            , check "P1Y" "-PT1H" "P1Y"
+            , check "P2Y" "-P1M" "P1Y11M"
+              -- Mixed-sign sum: time axis dominates, months absorbed.
+            , check "P1M" "-P1Y" "-P11M"
+            , nameTest "matches CalendarDiffTime <> on same-signed sum" $
+                let a = parseD "P1Y2M3DT4H5M6S"
+                    b = parseD "P3Y4M5DT6H7M8S"
+                    sumD = a <> b
+                    sumCDT = toCalendarDiffTime a <> toCalendarDiffTime b
+                in assertEqual ""
+                    sumCDT
+                    (toCalendarDiffTime sumD)
             , nameTest "left identity" $
                 let d = parseD "P1Y2M3DT4H5M6.78S"
                 in assertEqual "" (normalizeDuration d) (mempty <> d)
