@@ -65,6 +65,12 @@ class Ord p => DayPeriod p where
 periodAllDays :: DayPeriod p => p -> [Day]
 periodAllDays p = [periodFirstDay p .. periodLastDay p]
 
+-- | Test whether a day is in a given period
+--
+-- @since 1.16
+periodIn :: DayPeriod p => p -> Day -> Bool
+periodIn p d = (d >= periodFirstDay p) && (d <= periodLastDay p)
+
 -- | The number of days in this period.
 --
 -- @since 1.12.1
