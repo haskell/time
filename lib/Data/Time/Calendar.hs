@@ -9,6 +9,7 @@ module Data.Time.Calendar (
     -- * DayPeriod
     DayPeriod (..),
     periodAllDays,
+    periodIn,
     periodLength,
     periodFromDay,
     periodToDay,
