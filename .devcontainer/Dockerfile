@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/devcontainers/base:bookworm
 
 # Update this to force full rebuild
-RUN echo "2026-04-04" > /container.date
+RUN echo "2026-04-27" > /container.date
 
 # update Debian
 ENV DEBIAN_FRONTEND=noninteractive
