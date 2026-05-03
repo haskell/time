@@ -1,6 +1,9 @@
 {-# OPTIONS -fno-warn-orphans #-}
 
-module Test.Arbitrary (supportedDayRange) where
+module Test.Arbitrary (
+    supportedDayRange,
+    NoLeapSeconds (..),
+) where
 
 import Control.Monad
 import Data.Fixed
@@ -96,6 +99,16 @@ instance CoArbitrary Day where
 instance Arbitrary CalendarDiffDays where
     arbitrary = liftM2 CalendarDiffDays arbitrary arbitrary
 
+newtype NoLeapSeconds a = MkNoLeapSeconds {unNoLeapSeconds :: a}
+    deriving newtype (Eq, Ord, Show)
+
+arbitraryNoLeapSeconds :: Arbitrary (NoLeapSeconds a) => Gen a
+arbitraryNoLeapSeconds = fmap unNoLeapSeconds arbitrary
+
+instance {-# OVERLAPPABLE #-} Arbitrary t => Arbitrary (NoLeapSeconds t) where
+    arbitrary = fmap MkNoLeapSeconds arbitrary
+    shrink (MkNoLeapSeconds t) = fmap MkNoLeapSeconds $ shrink t
+
 instance Arbitrary DiffTime where
     arbitrary = oneof [intSecs, fracSecs] -- up to 1 leap second
       where
@@ -108,6 +121,17 @@ instance Arbitrary DiffTime where
 
 instance CoArbitrary DiffTime where
     coarbitrary t = coarbitrary (fromEnum t)
+
+instance Arbitrary (NoLeapSeconds DiffTime) where
+    arbitrary = fmap MkNoLeapSeconds $ oneof [intSecs, fracSecs] -- no leap second
+      where
+        intSecs = liftM secondsToDiffTime' $ choose (0, 86399)
+        fracSecs = liftM picosecondsToDiffTime' $ choose (0, 86399 * 10 ^ (12 :: Int))
+        secondsToDiffTime' :: Integer -> DiffTime
+        secondsToDiffTime' = fromInteger
+        picosecondsToDiffTime' :: Integer -> DiffTime
+        picosecondsToDiffTime' x = fromRational (x % 10 ^ (12 :: Int))
+    shrink (MkNoLeapSeconds t) = fmap MkNoLeapSeconds $ shrink t
 
 instance Arbitrary NominalDiffTime where
     arbitrary = oneof [intSecs, fracSecs]
@@ -156,6 +180,10 @@ instance Arbitrary TimeOfDay where
                 ++ [TimeOfDay h m' s | m' <- shrinkInt m]
                 ++ [TimeOfDay h m s' | s' <- shrinkPico s]
 
+instance Arbitrary (NoLeapSeconds TimeOfDay) where
+    arbitrary = fmap (MkNoLeapSeconds . timeToTimeOfDay) arbitraryNoLeapSeconds
+    shrink (MkNoLeapSeconds t) = fmap MkNoLeapSeconds $ shrink t
+
 instance CoArbitrary TimeOfDay where
     coarbitrary t = coarbitrary (timeOfDayToTime t)
 
@@ -165,6 +193,10 @@ instance Arbitrary LocalTime where
 
 instance CoArbitrary LocalTime where
     coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (localTimeToUTC utc t)) :: Integer)
+
+instance Arbitrary (NoLeapSeconds LocalTime) where
+    arbitrary = fmap MkNoLeapSeconds $ liftM2 LocalTime arbitraryNoLeapSeconds arbitraryNoLeapSeconds
+    shrink (MkNoLeapSeconds t) = fmap MkNoLeapSeconds $ shrink t
 
 instance Arbitrary TimeZone where
     arbitrary = liftM minutesToTimeZone $ choose (-720, 720)
@@ -181,12 +213,20 @@ instance Arbitrary ZonedTime where
 instance CoArbitrary ZonedTime where
     coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds (zonedTimeToUTC t)) :: Integer)
 
+instance Arbitrary (NoLeapSeconds ZonedTime) where
+    arbitrary = fmap MkNoLeapSeconds $ liftM2 ZonedTime arbitraryNoLeapSeconds arbitraryNoLeapSeconds
+    shrink (MkNoLeapSeconds t) = fmap MkNoLeapSeconds $ shrink t
+
 instance Arbitrary UTCTime where
     arbitrary = liftM2 UTCTime arbitrary arbitrary
     shrink t = fmap (localTimeToUTC utc) $ shrink $ utcToLocalTime utc t
 
 instance CoArbitrary UTCTime where
     coarbitrary t = coarbitrary (floor (utcTimeToPOSIXSeconds t) :: Integer)
+
+instance Arbitrary (NoLeapSeconds UTCTime) where
+    arbitrary = fmap MkNoLeapSeconds $ liftM2 UTCTime arbitraryNoLeapSeconds arbitraryNoLeapSeconds
+    shrink (MkNoLeapSeconds t) = fmap MkNoLeapSeconds $ shrink t
 
 instance Arbitrary UniversalTime where
     arbitrary = liftM (\n -> ModJulianDate $ n % k) $ choose (-313698 * k, 2973483 * k) -- 1000-01-1 to 9999-12-31
