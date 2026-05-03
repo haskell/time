@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.16] - CURRENT
+## [1.16] - 2026-05-03
 
 - add periodIn
 - use template-haskell-lift rather than template-haskell for Lift instances on GHC 9.14 and later
