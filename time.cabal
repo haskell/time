@@ -250,6 +250,8 @@ test-suite test-template
     elif impl(ghc)
         build-depends: template-haskell-lift >= 0.1 && <0.2
     main-is: Main.hs
+    other-modules:
+        Test.TastyWrapper
 
 test-suite test-unix
     if os(windows) || arch (javascript) || arch (wasm32)

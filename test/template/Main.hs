@@ -10,6 +10,7 @@ import qualified Language.Haskell.TH.Syntax as TH
 #endif
 import Test.Tasty
 import Test.Tasty.HUnit
+import Test.TastyWrapper
 
 testLift :: TestTree
 testLift =
@@ -27,4 +28,4 @@ tests =
         ]
 
 main :: IO ()
-main = defaultMain tests
+main = tastyWrapper $ defaultMain tests
