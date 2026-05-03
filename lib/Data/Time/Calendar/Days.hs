@@ -90,6 +90,9 @@ periodFromDay d =
 periodToDay :: DayPeriod p => p -> Int -> Day
 periodToDay p i = addDays (toInteger $ pred i) $ periodFirstDay p
 
+-- | Inverse of 'periodFromDay', clipping the day number to the period.
+--
+-- @since 1.15
 periodToDayClip :: DayPeriod p => p -> Int -> Day
 periodToDayClip p i = periodToDay p $ clip 1 (periodLength p) i
 
