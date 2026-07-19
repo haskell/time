@@ -21,6 +21,7 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -56,6 +57,7 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -91,6 +93,7 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -144,6 +147,7 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$HOME
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -301,6 +305,7 @@ jobs:
           cp .github/chrony.conf /usr/local/etc/chrony.conf
           service chronyd onerestart
           pkg install -y bash curl gcc gmp gmake ncurses perl5 libffi libiconv git autoconf misc/compat14x
+          export GHCUP_INSTALL_BASE_PREFIX=$HOME
           export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
           export BOOTSTRAP_HASKELL_MINIMAL=1
           curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
