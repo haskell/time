@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.16.0.1] - UNRELEASED
+
+- fix gregorianPaschalMoon and gregorianEaster
+
 ## [1.16] - 2026-05-03
 
 - add periodIn
