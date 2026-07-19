@@ -62,6 +62,20 @@ testPositiveDiffs =
         "positive-diff"
         $ fmap testPositiveDiff addDiffs
 
+testNegativeDiff :: CalendarAddDiff -> TestTree
+testNegativeDiff (MkAddDiff{..}, _) = testProperty adName $ \day1 (MkSmallish i) ->
+    let
+        day2 = addDays (negate i) day1
+        r = adDifference day2 day1
+    in
+        property $ cdMonths r <= 0 && cdDays r <= 0
+
+testNegativeDiffs :: TestTree
+testNegativeDiffs =
+    testGroup
+        "negative-diff"
+        $ fmap testNegativeDiff addDiffs
+
 testSpecific :: CalendarAddDiff -> (Integer, Int, Int) -> (Integer, Int, Int) -> (Integer, Integer) -> TestTree
 testSpecific (MkAddDiff{..}, fromYMD) (y2, m2, d2) (y1, m1, d1) (em, ed) =
     let
@@ -89,6 +103,7 @@ testSpecifics =
     testGroup
         "specific"
         [ testSpecificPair (2017, 04, 07) (2017, 04, 07) (0, 0) (0, 0)
+        , testSpecificPair (1999, 12, 31) (2000, 01, 01) (0, -1) (0, -1)
         , testSpecific gregorianClip (2017, 04, 07) (2017, 04, 01) (0, 6)
         , testSpecific gregorianClip (2017, 04, 01) (2017, 04, 07) (0, -6)
         , testSpecific gregorianClip (2017, 04, 07) (2017, 02, 01) (2, 6)
@@ -103,4 +118,4 @@ testSpecifics =
         ]
 
 testDuration :: TestTree
-testDuration = testGroup "CalendarDiffDays" [testAddDiffs, testPositiveDiffs, testSpecifics]
+testDuration = testGroup "CalendarDiffDays" [testAddDiffs, testPositiveDiffs, testNegativeDiffs, testSpecifics]
