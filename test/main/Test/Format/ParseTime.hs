@@ -271,7 +271,26 @@ particularParseTests =
         "particular"
         [ parseTest @Day True Nothing "%-d%-m%0Y" "2122012" -- ISSUE #232
         , parseTest @Day True Nothing "%-d%-m%0Y" "2132012" -- ISSUE #232
+        , Test.Tasty.HUnit.testCase "#303 lower-case AM/PM locale parses its own %p output" $
+            assertEqual
+                ""
+                (Just $ TimeOfDay 13 0 0)
+                (parseTimeM False lowerAmPmLocale "%I %p" "01 pm")
+        , Test.Tasty.HUnit.testCase "#303 UTC zone parsing is case-insensitive" $
+            assertEqual
+                ""
+                (Just utc)
+                (parseTimeM False defaultTimeLocale "%Z" "utc")
+        , Test.Tasty.HUnit.testCase "#303 known time zone names are case-insensitive" $
+            assertEqual
+                ""
+                (Just lowerKnownZone)
+                (parseTimeM False lowerKnownZoneLocale "%Z" "foo")
         ]
+  where
+    lowerAmPmLocale = defaultTimeLocale{amPm = ("am", "pm")}
+    lowerKnownZone = TimeZone 90 False "foo"
+    lowerKnownZoneLocale = defaultTimeLocale{knownTimeZones = [lowerKnownZone]}
 
 badParseTests :: TestTree
 badParseTests = testGroup "bad" [parseTest False (Nothing :: Maybe Day) "%Y" ""]
