@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.16.0.1] - UNRELEASED
+## [1.16.0.1] - 2026-07-20
 
 - fix gregorianPaschalMoon and gregorianEaster
 - fix negative rollover differences in diffGregorianDurationRollOver and diffJulianDurationRollOver
