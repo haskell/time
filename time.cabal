@@ -28,6 +28,7 @@ extra-source-files:
     test/main/Test/Calendar/EasterData/*
     test/unix/Test/Format/*.c
     test/unix/Test/Format/*.h
+    test/unix/Test/LocalTime/*.h
 extra-tmp-files:
     config.log
     config.status
@@ -264,7 +265,10 @@ test-suite test-unix
     ghc-options: -Wall -fwarn-tabs
     if !arch (wasm32)
         ghc-options: -threaded -rtsopts -with-rtsopts=-N
-    c-sources: test/unix/Test/Format/FormatStuff.c
+    include-dirs: test/unix/Test/LocalTime
+    c-sources:
+        test/unix/Test/Format/FormatStuff.c
+        test/unix/Test/LocalTime/TimeZoneFallback.c
     build-depends:
         base,
         deepseq,
