@@ -1,0 +1,2 @@
+#!/usr/bin/env -S bash -e
+exec wasmtime --dir . "$@"

@@ -37,7 +37,7 @@ gregorianPaschalMoon year = addDays (-adjustedEpact) (fromGregorian year 4 19)
     century = (div year 100) + 1
     shiftedEpact = mod (14 + 11 * (mod year 19) - (div (3 * century) 4) + (div (5 + 8 * century) 25)) 30
     adjustedEpact =
-        if shiftedEpact == 0 || ((shiftedEpact == 1) && (mod year 19 < 10))
+        if shiftedEpact == 0 || ((shiftedEpact == 1) && (mod year 19 > 10))
             then shiftedEpact + 1
             else shiftedEpact
 

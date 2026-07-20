@@ -21,17 +21,20 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$RUNNER_TEMP/ghcup
+        echo "GHCUP_INSTALL_BASE_PREFIX=$GHCUP_INSTALL_BASE_PREFIX" >> "$GITHUB_ENV"
+        echo "$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin" >> "$GITHUB_PATH"
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         ghcup install cabal --set latest
         cabal update
 
     - name: "Install GHC native"
       run: |
         cd $HOME
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         ghcup install ghc ${{matrix.ghc}}
         sudo apt-get install -y libgmp-dev
 
@@ -40,7 +43,7 @@ jobs:
 
     - name: "Build native"
       run: |
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         export PATH=`pwd`/bin:$PATH
         build-native ${{matrix.ghc}}
 
@@ -56,17 +59,20 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$RUNNER_TEMP/ghcup
+        echo "GHCUP_INSTALL_BASE_PREFIX=$GHCUP_INSTALL_BASE_PREFIX" >> "$GITHUB_ENV"
+        echo "$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin" >> "$GITHUB_PATH"
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         ghcup install cabal --set latest
         cabal update
 
     - name: "Install GHC native"
       run: |
         cd $HOME
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         ghcup install ghc ${{matrix.ghc}}
         sudo apt-get install -y libgmp-dev
 
@@ -75,7 +81,7 @@ jobs:
 
     - name: "Build native expired"
       run: |
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         export PATH=`pwd`/bin:$PATH
         build-native-expired ${{matrix.ghc}}
 
@@ -91,17 +97,20 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$RUNNER_TEMP/ghcup
+        echo "GHCUP_INSTALL_BASE_PREFIX=$GHCUP_INSTALL_BASE_PREFIX" >> "$GITHUB_ENV"
+        echo "$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin" >> "$GITHUB_PATH"
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         ghcup install cabal --set latest
         cabal update
 
     - name: "Install GHC js"
       run: |
         cd $HOME
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         sudo apt-get update
         sudo apt-get install -y nodejs
         ghcup config add-release-channel cross
@@ -126,7 +135,7 @@ jobs:
 
     - name: "Build js"
       run: |
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         export PATH=`pwd`/bin:$PATH
         build-js javascript-unknown-ghcjs-${{matrix.ghc}}
 
@@ -144,17 +153,20 @@ jobs:
     - name: "Install ghcup & cabal"
       run: |
         cd $HOME
+        export GHCUP_INSTALL_BASE_PREFIX=$RUNNER_TEMP/ghcup
+        echo "GHCUP_INSTALL_BASE_PREFIX=$GHCUP_INSTALL_BASE_PREFIX" >> "$GITHUB_ENV"
+        echo "$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin" >> "$GITHUB_PATH"
         export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
         export BOOTSTRAP_HASKELL_MINIMAL=1
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         ghcup install cabal --set latest
         cabal update
 
     - name: "Install GHC wasm32"
       run: |
         cd $HOME
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         sudo apt-get install -y zstd
         curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | SKIP_GHC=1 sh
         ghcup config add-release-channel https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/ghcup-wasm-0.0.9.yaml
@@ -168,7 +180,7 @@ jobs:
 
     - name: "Build wasm32"
       run: |
-        export PATH=$HOME/.ghcup/bin:$PATH
+        export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
         export PATH=$HOME/wasmtime-dev-x86_64-linux:$PATH
         export PATH=`pwd`/bin:$PATH
         build-wasm32 wasm32-wasi-${{matrix.ghc}}
@@ -301,6 +313,7 @@ jobs:
           cp .github/chrony.conf /usr/local/etc/chrony.conf
           service chronyd onerestart
           pkg install -y bash curl gcc gmp gmake ncurses perl5 libffi libiconv git autoconf misc/compat14x
+          export GHCUP_INSTALL_BASE_PREFIX=$HOME
           export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
           export BOOTSTRAP_HASKELL_MINIMAL=1
           curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
