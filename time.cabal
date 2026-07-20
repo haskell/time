@@ -25,7 +25,8 @@ extra-source-files:
     configure
     lib/include/HsTime.h
     lib/include/HsTimeConfig.h.in
-    test/main/Test/Calendar/EasterData/*
+    test/main/Test/Calendar/EasterData/*.csv
+    test/main/Test/Calendar/EasterData/*.txt
     test/unix/Test/Format/*.c
     test/unix/Test/Format/*.h
     test/unix/Test/LocalTime/*.h
