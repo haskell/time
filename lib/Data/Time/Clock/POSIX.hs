@@ -45,7 +45,12 @@ utcTimeToPOSIXSeconds (UTCTime d t) =
     (fromInteger (diffDays d systemEpochDay) * posixDayLength) + min posixDayLength (realToFrac t)
 
 systemToPOSIXTime :: SystemTime -> POSIXTime
-systemToPOSIXTime (MkSystemTime s ns) = (fromIntegral s) + (fromIntegral ns) * 1E-9
+systemToPOSIXTime (MkSystemTime s ns) =
+    let
+        (days, timeSeconds) = s `divMod` 86400
+        time = fromIntegral timeSeconds + fromIntegral ns * 1E-9
+    in
+        fromIntegral days * posixDayLength + min posixDayLength time
 
 -- | Get the current POSIX time from the system clock.
 getPOSIXTime :: IO POSIXTime

@@ -8,6 +8,7 @@
 - fix Unix timezone fallback offset sign and DST abbreviation
 - fix JavaScript getTimeZone offsets and summer flag around DST transitions
 - fix numeric parsers accepting overflowing bounded values
+- fix systemToPOSIXTime for SystemTime leap-second values
 
 ## [1.16] - 2026-05-03
 
