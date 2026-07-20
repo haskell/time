@@ -577,7 +577,7 @@ readTzOffset str =
         calc s h1 h2 m1 m2 = do
             sign <- getSign s
             h <- readMaybe [h1, h2]
-            m <- readMaybe [m1, m2]
+            m <- clipValid 0 59 =<< readMaybe [m1, m2]
             return $ sign * (60 * h + m)
     in
         case str of
