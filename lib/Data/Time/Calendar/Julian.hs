@@ -168,7 +168,7 @@ diffJulianDurationRollOver day2 day1 =
                 dayAllowed = addJulianDurationRollOver (CalendarDiffDays mdiff 0) day1
                 dd = diffDays day2 dayAllowed
             in
-                if dd <= 0 then CalendarDiffDays mdiff dd else findpos (succ mdiff)
+                if dd <= 0 then CalendarDiffDays mdiff dd else findneg (succ mdiff)
     in
         if day2 >= day1
             then findpos ymdiff
