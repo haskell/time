@@ -23,7 +23,8 @@ testClockConversion =
                 testGroup
                     (show st)
                     [ testCase "expected" $
-                        assertEqual (show st) pt $ systemToPOSIXTime st
+                        assertEqual (show st) pt $
+                            systemToPOSIXTime st
                     , testCase "matches systemToUTCTime" $
                         assertEqual
                             (show st)

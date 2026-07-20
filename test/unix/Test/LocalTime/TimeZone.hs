@@ -90,14 +90,14 @@ testFallback
     isDst
     expectedSeconds
     expectedName =
-    testCase name $
-        with 0 $ \pdst ->
-            with nullPtr $ \pcname -> do
-                test_time_zone_fallback_set_state timezoneSeconds altzoneSeconds isDst
-                seconds <- getTimezoneSeconds 0 pdst pcname
-                dst <- peek pdst
-                cname <- peek pcname
-                name' <- peekCString cname
-                assertEqual "seconds" expectedSeconds seconds
-                assertEqual "dst" isDst dst
-                assertEqual "name" expectedName name'
+        testCase name $
+            with 0 $ \pdst ->
+                with nullPtr $ \pcname -> do
+                    test_time_zone_fallback_set_state timezoneSeconds altzoneSeconds isDst
+                    seconds <- getTimezoneSeconds 0 pdst pcname
+                    dst <- peek pdst
+                    cname <- peek pcname
+                    name' <- peekCString cname
+                    assertEqual "seconds" expectedSeconds seconds
+                    assertEqual "dst" isDst dst
+                    assertEqual "name" expectedName name'
