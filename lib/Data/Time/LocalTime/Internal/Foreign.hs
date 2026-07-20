@@ -22,24 +22,35 @@ import Data.Time.LocalTime.Internal.TimeOfDay
 
 #if defined(javascript_HOST_ARCH)
 
-foreign import javascript "((dy,dm,dd,th,tm,ts) => { return new Date(dy,dm,dd,th,tm,ts).getTimezoneOffset(); })"
-  js_get_timezone_minutes :: Int -> Int -> Int -> Int -> Int -> Int -> IO Int
+foreign import javascript "((dy,dm,dd,th,tm,ts) => { const d = new Date(0); d.setUTCFullYear(dy,dm,dd); d.setUTCHours(th,tm,ts,0); return -d.getTimezoneOffset(); })"
+    js_get_timezone_minutes :: Int -> Int -> Int -> Int -> Int -> Int -> IO Int
 
-get_timezone_minutes :: UTCTime -> IO Int
-get_timezone_minutes ut = let
-    lt :: LocalTime
-    lt = utcToLocalTime utc ut
-    in case lt of
-        LocalTime (YearMonthDay dy dm dd) (TimeOfDay th tm ts) ->
-            js_get_timezone_minutes (fromInteger dy) (pred dm) dd th tm (floor ts)
+foreign import javascript "((dy,dm,dd,th,tm,ts) => { const d = new Date(0); d.setUTCFullYear(dy,dm,dd); d.setUTCHours(th,tm,ts,0); const jan = new Date(0); jan.setFullYear(d.getFullYear(),0,1); jan.setHours(0,0,0,0); const jul = new Date(0); jul.setFullYear(d.getFullYear(),6,1); jul.setHours(0,0,0,0); return d.getTimezoneOffset() < Math.max(jan.getTimezoneOffset(),jul.getTimezoneOffset()) ? 1 : 0; })"
+    js_get_timezone_summer :: Int -> Int -> Int -> Int -> Int -> Int -> IO Int
+
+get_timezone :: UTCTime -> IO (Int, Bool)
+get_timezone ut =
+    let
+        lt :: LocalTime
+        lt = utcToLocalTime utc ut
+    in
+        case lt of
+            LocalTime (YearMonthDay dy dm dd) (TimeOfDay th tm ts) -> do
+                let
+                    dy' = fromInteger dy
+                    dm' = pred dm
+                    ts' = floor ts
+                mins <- js_get_timezone_minutes dy' dm' dd th tm ts'
+                summer <- js_get_timezone_summer dy' dm' dd th tm ts'
+                return (mins, summer /= 0)
 
 getTimeZoneCTime :: CTime -> IO TimeZone
 getTimeZoneCTime ct = do
     let
         ut :: UTCTime
         ut = posixSecondsToUTCTime $ secondsToNominalDiffTime $ fromIntegral $ fromCTime ct
-    mins <- get_timezone_minutes ut
-    return $ TimeZone mins False ""
+    (mins, summer) <- get_timezone ut
+    return $ TimeZone mins summer ""
 
 fromCTime :: CTime -> Int64
 fromCTime (CTime tt) = fromIntegral tt

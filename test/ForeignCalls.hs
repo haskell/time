@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Main (main) where
 
 import Control.Exception
@@ -10,12 +12,22 @@ import Data.Time.Clock.System
 import Data.Time.Clock.TAI
 import Data.Traversable
 import System.Exit
+#if defined(javascript_HOST_ARCH)
+import System.Environment
+#endif
 import System.IO
 
 data Test = MkTest String (IO ())
 
 tests :: [Test]
 tests =
+    foreignCallTests
+#if defined(javascript_HOST_ARCH)
+        ++ jsTimezoneTests
+#endif
+
+foreignCallTests :: [Test]
+foreignCallTests =
     [ MkTest "getCurrentTime" $ void $ getCurrentTime
     , MkTest "getZonedTime" $ void $ getZonedTime
     , MkTest "getCurrentTimeZone" $ void $ getCurrentTimeZone
@@ -26,6 +38,40 @@ tests =
     , MkTest "taiClock time" $ for_ taiClock $ \(_, getTime) -> void $ getTime
     , MkTest "taiClock resolution" $ for_ taiClock $ \(res, _) -> void $ evaluate res
     ]
+
+#if defined(javascript_HOST_ARCH)
+jsTimezoneTests :: [Test]
+jsTimezoneTests =
+    [ MkTest "getTimeZone JavaScript DST transition" $ do
+        setEnv "TZ" "America/New_York"
+        let
+            transitionTime h m =
+                UTCTime (fromGregorian 2024 3 10) $
+                    secondsToDiffTime $
+                        h * 3600 + m * 60
+        zoneBefore <- getTimeZone $ transitionTime 6 30
+        assertTimeZone "before DST transition" (-300) False zoneBefore
+        zoneAfter <- getTimeZone $ transitionTime 7 30
+        assertTimeZone "after DST transition" (-240) True zoneAfter
+    ]
+
+assertTimeZone :: String -> Int -> Bool -> TimeZone -> IO ()
+assertTimeZone label expectedMinutes expectedSummer zone = do
+    when (timeZoneMinutes zone /= expectedMinutes) $
+        fail $
+            label
+                <> ": expected minutes "
+                <> show expectedMinutes
+                <> ", got "
+                <> show (timeZoneMinutes zone)
+    when (timeZoneSummerOnly zone /= expectedSummer) $
+        fail $
+            label
+                <> ": expected summer flag "
+                <> show expectedSummer
+                <> ", got "
+                <> show (timeZoneSummerOnly zone)
+#endif
 
 runTest :: Test -> IO Bool
 runTest (MkTest name action) = do
