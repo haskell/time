@@ -35,8 +35,9 @@ testTimeZone =
             setEnv "TZ" "EST+5"
             zone2 <- getTimeZone epoch
             assertBool "zone not changed" $ zone1 /= zone2
-        , testGroup
+        , dependentTestGroup
             "get_current_timezone_seconds fallback"
+            AllFinish
             [ testFallback
                 "without altzone, standard time"
                 test_get_current_timezone_seconds_no_altzone
@@ -81,7 +82,14 @@ testFallback ::
     CLong ->
     String ->
     TestTree
-testFallback name getTimezoneSeconds timezoneSeconds altzoneSeconds isDst expectedSeconds expectedName =
+testFallback
+    name
+    getTimezoneSeconds
+    timezoneSeconds
+    altzoneSeconds
+    isDst
+    expectedSeconds
+    expectedName =
     testCase name $
         with 0 $ \pdst ->
             with nullPtr $ \pcname -> do
