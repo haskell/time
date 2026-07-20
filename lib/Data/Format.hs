@@ -29,6 +29,7 @@ import Control.Monad.Fail
 import Data.Char
 import Data.Void
 import Text.ParserCombinators.ReadP
+import Text.Read (readMaybe)
 import Prelude hiding (fail)
 
 class IsoVariant f where
@@ -213,13 +214,40 @@ readSign NoSign = return id
 readSign NegSign = option id $ char '-' >> return negate
 readSign PosNegSign = (char '+' >> return id) +++ (char '-' >> return negate)
 
+readDigits :: Maybe Int -> ReadP String
+readDigits mdigitcount =
+    case mdigitcount of
+        Just digitcount -> count digitcount $ satisfy isDigit
+        Nothing -> munch1 isDigit
+
+readMaybeP :: Read t => String -> ReadP t
+readMaybeP str =
+    case readMaybe str of
+        Just t -> return t
+        Nothing -> pfail
+
+fromIntegerExact :: Integral t => Integer -> Maybe t
+fromIntegerExact i =
+    let
+        t = fromInteger i
+    in
+        if toInteger t == i
+            then Just t
+            else Nothing
+
+readIntegerNumber :: Integral t => SignOption -> Maybe Int -> ReadP t
+readIntegerNumber signOpt mdigitcount = do
+    sign <- readSign signOpt
+    digits <- readDigits mdigitcount
+    i <- readMaybeP digits
+    case fromIntegerExact $ sign i of
+        Just t -> return t
+        Nothing -> pfail
+
 readNumber :: (Num t, Read t) => SignOption -> Maybe Int -> Bool -> ReadP t
 readNumber signOpt mdigitcount allowDecimal = do
     sign <- readSign signOpt
-    digits <-
-        case mdigitcount of
-            Just digitcount -> count digitcount $ satisfy isDigit
-            Nothing -> munch1 isDigit
+    digits <- readDigits mdigitcount
     moredigits <-
         case allowDecimal of
             False -> return ""
@@ -228,7 +256,8 @@ readNumber signOpt mdigitcount allowDecimal = do
                     _ <- char '.' +++ char ','
                     dd <- munch1 isDigit
                     return $ '.' : dd
-    return $ sign $ read $ digits ++ moredigits
+    a <- readMaybeP $ digits ++ moredigits
+    return $ sign a
 
 zeroPad :: Maybe Int -> String -> Maybe String
 zeroPad Nothing s = Just s
@@ -269,8 +298,8 @@ showNumber signOpt mdigitcount t =
                     PosNegSign -> '+' : s
                     _ -> s
 
-integerFormat :: (Show t, Read t, Num t) => SignOption -> Maybe Int -> Format t
-integerFormat signOpt mdigitcount = MkFormat (showNumber signOpt mdigitcount) (readNumber signOpt mdigitcount False)
+integerFormat :: (Show t, Integral t) => SignOption -> Maybe Int -> Format t
+integerFormat signOpt mdigitcount = MkFormat (showNumber signOpt mdigitcount) (readIntegerNumber signOpt mdigitcount)
 
 decimalFormat :: (Show t, Read t, Num t) => SignOption -> Maybe Int -> Format t
 decimalFormat signOpt mdigitcount = MkFormat (showNumber signOpt mdigitcount) (readNumber signOpt mdigitcount True)
