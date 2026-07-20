@@ -4,6 +4,7 @@
 
 - fix gregorianPaschalMoon and gregorianEaster
 - fix negative rollover differences in diffGregorianDurationRollOver and diffJulianDurationRollOver
+- fix case-insensitive parsing for AM/PM markers, UTC, and known timezone names
 - fix Unix timezone fallback offset sign and DST abbreviation
 - fix JavaScript getTimeZone offsets and summer flag around DST transitions
 

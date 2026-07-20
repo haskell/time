@@ -122,9 +122,12 @@ readSpec_z = readTzOffset
 readSpec_Z :: TimeLocale -> String -> Maybe TimeZone
 readSpec_Z _ str | Just offset <- readTzOffset str = Just $ TimeZone offset False ""
 readSpec_Z l str | Just zone <- getKnownTimeZone l str = Just zone
-readSpec_Z _ "UTC" = Just utc
+readSpec_Z _ str | eqCI str "UTC" = Just utc
 readSpec_Z _ [c] | Just zone <- getMilZone c = Just zone
 readSpec_Z _ _ = Nothing
+
+eqCI :: String -> String -> Bool
+eqCI x y = map toUpper x == map toUpper y
 
 makeDayFact :: TimeLocale -> Char -> String -> Maybe [DayFact]
 makeDayFact l c x =
@@ -412,13 +415,12 @@ makeTimeFact l c x =
         ra = readMaybe x
         getAmPm =
             let
-                upx = map toUpper x
                 (amStr, pmStr) = amPm l
             in
-                if upx == amStr
+                if x `eqCI` amStr
                     then Just [AMAPMTimeFact AM]
                     else
-                        if upx == pmStr
+                        if x `eqCI` pmStr
                             then Just [AMAPMTimeFact PM]
                             else Nothing
     in
@@ -541,7 +543,7 @@ getMilZone c =
             return $ TimeZone (hours * 60) False [yc]
 
 getKnownTimeZone :: TimeLocale -> String -> Maybe TimeZone
-getKnownTimeZone locale x = find (\tz -> map toUpper x == timeZoneName tz) (knownTimeZones locale)
+getKnownTimeZone locale x = find (\tz -> x `eqCI` timeZoneName tz) (knownTimeZones locale)
 
 instance ParseTime TimeZone where
     substituteTimeSpecifier _ = timeSubstituteTimeSpecifier
