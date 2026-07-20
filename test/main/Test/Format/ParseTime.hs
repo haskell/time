@@ -286,6 +286,8 @@ particularParseTests =
                 ""
                 (Just lowerKnownZone)
                 (parseTimeM False lowerKnownZoneLocale "%Z" "foo")
+        , parseTest False (Just $ TimeZone 1440 False "") "%z" "+2400"
+        , parseTest False (Just $ TimeZone 5940 False "") "%z" "+9900"
         ]
   where
     lowerAmPmLocale = defaultTimeLocale{amPm = ("am", "pm")}
@@ -298,6 +300,10 @@ badParseTests =
         "bad"
         [ parseTest False (Nothing :: Maybe Day) "%Y" ""
         , parseTest False (Nothing :: Maybe TimeOfDay) "%-H" "18446744073709551616"
+        , parseTest False (Nothing :: Maybe TimeZone) "%z" "+2360"
+        , parseTest False (Nothing :: Maybe TimeZone) "%Ez" "+23:60"
+        , parseTest False (Nothing :: Maybe TimeZone) "%Z" "+2360"
+        , parseTest False (Nothing :: Maybe TimeZone) "%EZ" "+23:60"
         ]
 
 {-

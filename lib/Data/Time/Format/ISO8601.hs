@@ -282,22 +282,28 @@ withUTCDesignator f = f <** specialCaseReadFormat ((), "") (literalFormat "Z")
 timeOffsetFormat :: FormatExtension -> Format TimeZone
 timeOffsetFormat fe =
     let
-        toTimeZone (sign, ehm) =
-            minutesToTimeZone $
-                sign * case ehm of
-                    Left h -> h * 60
-                    Right (h, m) -> h * 60 + m
-        fromTimeZone tz =
+        toOffsetMinutes h m
+            | h < 0 || h > 24 = Nothing
+            | m < 0 || m > 59 = Nothing
+            | h == 24 && m /= 0 = Nothing
+            | otherwise = Just $ h * 60 + m
+        toTimeZone (sign, ehm) = do
+            offset <-
+                case ehm of
+                    Left h -> toOffsetMinutes h 0
+                    Right (h, m) -> toOffsetMinutes h m
+            return $ minutesToTimeZone $ sign * offset
+        fromTimeZone tz = do
             let
                 mm = timeZoneMinutes tz
                 (h, m) = quotRem (abs mm) 60
-            in
-                (signum mm, Right (h, m))
+            _ <- toOffsetMinutes h m
+            return (signum mm, Right (h, m))
         digits2 = integerFormat NoSign (Just 2)
     in
         specialCaseReadFormat (utc, "") $
             specialCaseReadFormat (utc, "Z") $
-                isoMap toTimeZone fromTimeZone $
+                mapMFormat toTimeZone fromTimeZone $
                     mandatorySignFormat <**> (digits2 <++> extColonFormat fe digits2 digits2)
 
 -- | @hh:mm:ss±hh:mm@ (extended), @hhmmss±hhmm@ (basic) [ISO 8601:2004(E) sec. 4.2.5.2]

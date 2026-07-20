@@ -163,6 +163,12 @@ testReadFormat name fmt str val = nameTest (name ++ ": " ++ str) $ assertEqual "
 testReadFormatFails :: (Show t, Eq t) => String -> Format t -> String -> TestTree
 testReadFormatFails name fmt str = nameTest (name ++ ": " ++ str) $ assertEqual "" Nothing $ formatParseM fmt str
 
+testReadFormatFails :: (Show t, Eq t) => String -> Format t -> String -> TestTree
+testReadFormatFails name fmt str = nameTest (name ++ ": " ++ str) $ assertEqual "" Nothing $ formatParseM fmt str
+
+testShowFormatFails :: Show t => String -> Format t -> t -> TestTree
+testShowFormatFails name fmt val = nameTest (name ++ ": " ++ show val) $ assertEqual "" Nothing $ formatShowM fmt val
+
 testShowFormats :: TestTree
 testShowFormats =
     nameTest
@@ -260,6 +266,18 @@ testShowFormats =
         , testReadFormat "timeOffsetFormat" (timeOffsetFormat BasicFormat) "+00" (minutesToTimeZone 0)
         , testReadFormat "timeOffsetFormat" (timeOffsetFormat BasicFormat) "-0000" (minutesToTimeZone 0)
         , testReadFormat "timeOffsetFormat" (timeOffsetFormat BasicFormat) "-00" (minutesToTimeZone 0)
+        , testShowReadFormat "timeOffsetFormat" iso8601Format "+24:00" (minutesToTimeZone 1440)
+        , testReadFormat "timeOffsetFormat" iso8601Format "+24" (minutesToTimeZone 1440)
+        , testShowReadFormat "timeOffsetFormat" (timeOffsetFormat BasicFormat) "-2400" (minutesToTimeZone (-1440))
+        , testReadFormat "timeOffsetFormat" (timeOffsetFormat BasicFormat) "-24" (minutesToTimeZone (-1440))
+        , testReadFormatFails "timeOffsetFormat" (iso8601Format :: Format TimeZone) "+23:60"
+        , testReadFormatFails "timeOffsetFormat" (iso8601Format :: Format TimeZone) "+24:01"
+        , testReadFormatFails "timeOffsetFormat" (iso8601Format :: Format TimeZone) "+25:00"
+        , testReadFormatFails "timeOffsetFormat" (timeOffsetFormat BasicFormat) "-2360"
+        , testReadFormatFails "timeOffsetFormat" (timeOffsetFormat BasicFormat) "-2401"
+        , testReadFormatFails "timeOffsetFormat" (timeOffsetFormat BasicFormat) "-2500"
+        , testShowFormatFails "timeOffsetFormat" (iso8601Format :: Format TimeZone) (minutesToTimeZone 1441)
+        , testShowFormatFails "timeOffsetFormat" (timeOffsetFormat BasicFormat) (minutesToTimeZone (-1441))
         , testShowReadFormat "timeOffsetFormat" iso8601Format "+00:10" (minutesToTimeZone 10)
         , testShowReadFormat "timeOffsetFormat" iso8601Format "-00:10" (minutesToTimeZone (-10))
         , testShowReadFormat "timeOffsetFormat" iso8601Format "+01:35" (minutesToTimeZone 95)
