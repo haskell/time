@@ -7,6 +7,7 @@
 - fix case-insensitive parsing for AM/PM markers, UTC, and known timezone names
 - fix Unix timezone fallback offset sign and DST abbreviation
 - fix JavaScript getTimeZone offsets and summer flag around DST transitions
+- fix numeric parsers accepting overflowing bounded values
 
 ## [1.16] - 2026-05-03
 

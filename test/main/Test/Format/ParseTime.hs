@@ -293,7 +293,12 @@ particularParseTests =
     lowerKnownZoneLocale = defaultTimeLocale{knownTimeZones = [lowerKnownZone]}
 
 badParseTests :: TestTree
-badParseTests = testGroup "bad" [parseTest False (Nothing :: Maybe Day) "%Y" ""]
+badParseTests =
+    testGroup
+        "bad"
+        [ parseTest False (Nothing :: Maybe Day) "%Y" ""
+        , parseTest False (Nothing :: Maybe TimeOfDay) "%-H" "18446744073709551616"
+        ]
 
 {-
 parseYMD :: Day -> TestTree

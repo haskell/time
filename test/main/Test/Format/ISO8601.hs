@@ -160,6 +160,9 @@ testShowReadFormat name fmt str val =
 testReadFormat :: (Show t, Eq t) => String -> Format t -> String -> t -> TestTree
 testReadFormat name fmt str val = nameTest (name ++ ": " ++ str) $ assertEqual "" (Just val) $ formatParseM fmt str
 
+testReadFormatFails :: (Show t, Eq t) => String -> Format t -> String -> TestTree
+testReadFormatFails name fmt str = nameTest (name ++ ": " ++ str) $ assertEqual "" Nothing $ formatParseM fmt str
+
 testShowFormats :: TestTree
 testShowFormats =
     nameTest
@@ -240,6 +243,10 @@ testShowFormats =
             (recurringIntervalFormat (calendarFormat ExtendedFormat) durationDaysFormat)
             "R74/2015-06-13/P1Y2M7D"
             (74, fromGregorian 2015 6 13, CalendarDiffDays 14 7)
+        , testReadFormatFails
+            "recurringIntervalFormat etc."
+            (recurringIntervalFormat (calendarFormat ExtendedFormat) (calendarFormat ExtendedFormat))
+            "R18446744073709551616/2024-01-01/2024-01-02"
         , testShowReadFormat "timeOffsetFormat" iso8601Format "-06:30" (minutesToTimeZone (-390))
         , testShowReadFormat "timeOffsetFormat" iso8601Format "-06:00" (minutesToTimeZone (-360))
         , testReadFormat "timeOffsetFormat" iso8601Format "-06" (minutesToTimeZone (-360))

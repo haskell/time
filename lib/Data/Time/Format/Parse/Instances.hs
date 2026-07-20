@@ -129,11 +129,20 @@ readSpec_Z _ _ = Nothing
 eqCI :: String -> String -> Bool
 eqCI x y = map toUpper x == map toUpper y
 
+readIntegralMaybe :: Integral a => String -> Maybe a
+readIntegralMaybe str = do
+    i <- readMaybe str
+    let
+        a = fromInteger i
+    if toInteger a == i
+        then Just a
+        else Nothing
+
 makeDayFact :: TimeLocale -> Char -> String -> Maybe [DayFact]
 makeDayFact l c x =
     let
-        ra :: Read a => Maybe a
-        ra = readMaybe x
+        ra :: Integral a => Maybe a
+        ra = readIntegralMaybe x
         zeroBasedListIndex :: [String] -> Maybe Int
         zeroBasedListIndex ss = elemIndex (map toUpper x) $ fmap (map toUpper) ss
         oneBasedListIndex :: [String] -> Maybe Int
@@ -411,8 +420,8 @@ timeFactGetZone = lastMatch $ \case
 makeTimeFact :: TimeLocale -> Char -> String -> Maybe [TimeFact]
 makeTimeFact l c x =
     let
-        ra :: Read a => Maybe a
-        ra = readMaybe x
+        ra :: Integral a => Maybe a
+        ra = readIntegralMaybe x
         getAmPm =
             let
                 (amStr, pmStr) = amPm l

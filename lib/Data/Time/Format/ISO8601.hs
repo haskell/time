@@ -328,7 +328,7 @@ dayAndTimeFormat fday ftod = fday <**> withTimeDesignator ftod
 timeAndOffsetFormat :: Format t -> FormatExtension -> Format (t, TimeZone)
 timeAndOffsetFormat ft fe = ft <**> timeOffsetFormat fe
 
-intDesignator :: (Eq t, Show t, Read t, Num t) => Char -> Format t
+intDesignator :: (Show t, Integral t) => Char -> Format t
 intDesignator c = optionalFormat 0 $ integerFormat NegSign Nothing <** literalFormat [c]
 
 decDesignator :: (Eq t, Show t, Read t, Num t) => Char -> Format t
