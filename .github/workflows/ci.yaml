@@ -219,7 +219,7 @@ jobs:
         - "9.8"
     steps:
     - name: "Install GHC & cabal"
-      uses: haskell-actions/setup@v2
+      uses: haskell-actions/setup@v2.11.0
       id: setup-haskell-cabal
       with:
         ghc-version: ${{matrix.ghc}}
@@ -268,7 +268,7 @@ jobs:
         brew install autoconf
 
     - name: "Install GHC & cabal"
-      uses: haskell-actions/setup@v2
+      uses: haskell-actions/setup@v2.11.0
       id: setup-haskell-cabal
       with:
         ghc-version: ${{matrix.ghc}}
